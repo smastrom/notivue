@@ -38,8 +38,12 @@ app.use(notify)
 **Page.vue**
 
 ```vue
+<script setup>
+const push = useNotify()
+</script>
+
 <template>
-  <button @click="$push({ message: 'Something good has been pushed!' })">Push</button>
+  <button @click="push({ message: 'Something good has been pushed!' })">Push</button>
 </template>
 ```
 
@@ -50,7 +54,7 @@ app.use(notify)
 ### Success
 
 ```js
-const success = $push({ message: 'This is a success message.' })
+const success = push({ message: 'This is a success message.' })
 // { type: 'success' } can be omitted as it's the default
 
 success.clear()
@@ -59,7 +63,7 @@ success.clear()
 ### Error
 
 ```js
-const error = $push({ type: 'error', message: 'Something went wrong.' })
+const error = push({ type: 'error', message: 'Something went wrong.' })
 
 error.clear()
 ```
@@ -67,7 +71,7 @@ error.clear()
 ### Custom
 
 ```js
-const info = $push({ type: 'info', message: 'This is a custom message.' })
+const info = push({ type: 'info', message: 'This is a custom message.' })
 
 info.clear()
 ```
@@ -360,7 +364,7 @@ const promise = push.promise({
         message, // Defined later
         close,
         avatarUrl: prevProps.avatarUrl,
-        ...newProps // Will be defined later
+        ...newProps // Defined later
       })
     },
     reject: {
@@ -370,7 +374,7 @@ const promise = push.promise({
         message, // Defined later
         close,
         avatarUrl: prevProps.avatarUrl,
-        ...newProps // Will be defined later
+        ...newProps // Defined later
       })
     }
   }
@@ -420,7 +424,7 @@ You'll be able to rewrite the transitions as usual:
 
 <br />
 
-## Multiple Receivers
+## Additional Receivers
 
 **main.js**
 
@@ -451,7 +455,7 @@ app.use(notify, {
 ```vue
 <template>
   <div>
-    <Notify key="topbar" position="relative" />
+    <Notify key="topbar" />
     <!-- ... -->
   </div>
 </template>
@@ -470,17 +474,7 @@ app.use(notify, {
 
 **Page.vue**
 
-Call `$notify_<receiverKey>` to push a notification to the receiver:
-
-```js
-$notify({ message: 'Success!' })
-
-$notify_topbar({ message: 'Success!' })
-
-$notify_sidebar({ message: 'Success!' })
-```
-
-Or get the push function from `useNotify` (which is available globally):
+Get the correspondent push function from `useNotify`:
 
 ```js
 const push = useNotify() // Main receiver
