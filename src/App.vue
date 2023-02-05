@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, provide, watch, h } from 'vue';
+import { ref, provide, watch, onMounted } from 'vue';
 
 import Child from './Child.vue';
 import ErrorIcon from './ErrorIcon.vue';
