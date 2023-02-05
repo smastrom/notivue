@@ -1,6 +1,6 @@
 # Vuenotify
 
-Powerful and easy toast notifications for Vue 3.
+Powerful and simple toast notifications for Vue 3.
 
 <br />
 
@@ -17,10 +17,11 @@ pnpm add vuenotify
 **main.js**
 
 ```js
-import { createApp } from 'vue'
 import { notify } from 'vuenotify'
 
-const app = createApp(App).use(notify)
+const app = createApp(App).mount('#app')
+
+app.use(notify)
 ```
 
 **App.vue**
@@ -28,7 +29,7 @@ const app = createApp(App).use(notify)
 ```vue
 <template>
   <div>
-    <Notify />
+    <VueNotify />
     <RouterView />
   </div>
 </template>
@@ -37,12 +38,8 @@ const app = createApp(App).use(notify)
 **Page.vue**
 
 ```vue
-<script setup>
-const push = useNotify()
-</script>
-
 <template>
-  <button @click="push({ message: 'Something good has been pushed!' })">Push First</button>
+  <button @click="$push({ message: 'Something good has been pushed!' })">Push</button>
 </template>
 ```
 
@@ -50,16 +47,10 @@ const push = useNotify()
 
 ## Usage
 
-In the setup function get the `push` function. Then call it how many times you want to push a new notification.
-
-```js
-const push = useNotify()
-```
-
 ### Success
 
 ```js
-const success = push({ message: 'This is a success message.' })
+const success = $push({ message: 'This is a success message.' })
 // { type: 'success' } can be omitted as it's the default
 
 success.clear()
@@ -68,7 +59,7 @@ success.clear()
 ### Error
 
 ```js
-const error = push({ type: 'error', message: 'Something went wrong.' })
+const error = $push({ type: 'error', message: 'Something went wrong.' })
 
 error.clear()
 ```
@@ -76,7 +67,7 @@ error.clear()
 ### Custom
 
 ```js
-const info = push({ type: 'info', message: 'This is a custom message.' })
+const info = $push({ type: 'info', message: 'This is a custom message.' })
 
 info.clear()
 ```
@@ -116,16 +107,16 @@ try {
 
 ### Options
 
-| Prop     | Description                                                   | Default                         |
-| -------- | ------------------------------------------------------------- | ------------------------------- |
-| type     | -                                                             | `success`                       |
-| title    | -                                                             | Defined in `<Notify />` options |
-| message  | -                                                             | `<empty-string>`                |
-| duration | -                                                             | Defined in `<Notify />` options |
-| method   | Wheter to push this notification at top or bottom of the list | Defined in `<Notify />` options |
-| ariaLive | -                                                             | Defined in `<Notify />` options |
-| ariaRole | -                                                             | Defined in `<Notify />` options |
-| render   | -                                                             | null                            |
+| Prop     | Description | Default                         |
+| -------- | ----------- | ------------------------------- |
+| render   | -           | null                            |
+| type     | -           | `success`                       |
+| title    | -           | Defined in `<Notify />` options |
+| message  | -           | Defined in `<Notify />` options |
+| duration | -           | Defined in `<Notify />` options |
+| method   | -           | Defined in `<Notify />` options |
+| ariaLive | -           | Defined in `<Notify />` options |
+| ariaRole | -           | Defined in `<Notify />` options |
 
 <br />
 
@@ -210,7 +201,7 @@ For example to change background and text color of the success notification:
   background-color: green;
 }
 
-[data-vuenotify='success'] .MyClass__content-message {
+[data-vuenotify='error'] .MyClass__content-message {
   color: white;
 }
 ```
@@ -265,7 +256,7 @@ push({
 
 ## Custom Components
 
-Custom components can be rendered in place of the default ones. Vuenotify exposes a simple API built on top of render functions.
+While Vuenotify will still take care of rendering the ARIA region and the root component which handle transitions/positioning; it exposes a simple API to render your own components in place of the default ones.
 
 ```vue
 <!-- CustomNotification.vue -->
@@ -365,21 +356,21 @@ const promise = push.promise({
     resolve: {
       component: Notification,
       props: ({ type, message, close, prevProps, newProps }) => ({
-        message, // 'Your post has been published!'
         type, // 'promise-resolve'
+        message, // Defined later
         close,
-        avatarUrl: prevProps.avatarUrl, //
+        avatarUrl: prevProps.avatarUrl,
         ...newProps // Will be defined later
       })
     },
     reject: {
       component: Notification,
       props: ({ type, message, close, prevProps, newProps }) => ({
-        message, // 'There was an issue publishing your post.'
         type, // 'promise-reject'
+        message, // Defined later
         close,
         avatarUrl: prevProps.avatarUrl,
-        ...newProps
+        ...newProps // Will be defined later
       })
     }
   }
@@ -404,7 +395,7 @@ promise.reject({
 
 ## Transitions
 
-Notify uses Vue Transitions internally, by defining a transition name in `transitionName` prop:
+Vuenotify uses Vue Transitions internally, by defining a transition name in `transitionName` prop:
 
 ```jsx
 <Notify transitionName="MyTransition" />
@@ -429,14 +420,38 @@ You'll be able to rewrite the transitions as usual:
 
 <br />
 
-## Multiple Sources
+## Multiple Receivers
+
+**main.js**
+
+```js
+import { createApp } from 'vue'
+import { notify } from 'vuenotify'
+
+const app = createApp(App).mount('#app')
+
+app.use(notify, {
+  addtionalReceivers: ['topbar', 'sidebar']
+})
+```
+
+**App.vue**
+
+```vue
+<template>
+  <div>
+    <Notify />
+    <!-- ... -->
+  </div>
+</template>
+```
 
 **TopBar.vue**
 
 ```vue
 <template>
   <div>
-    <Notify key="topbar" />
+    <Notify key="topbar" position="relative" />
     <!-- ... -->
   </div>
 </template>
@@ -447,7 +462,7 @@ You'll be able to rewrite the transitions as usual:
 ```vue
 <template>
   <div>
-    <Notify key="sidebar" />
+    <Notify key="sidebar" position="relative" />
     <!-- ... -->
   </div>
 </template>
@@ -455,7 +470,22 @@ You'll be able to rewrite the transitions as usual:
 
 **Page.vue**
 
+Call `$notify_<receiverKey>` to push a notification to the receiver:
+
 ```js
-const push = useNotify('topbar')
+$notify({ message: 'Success!' })
+
+$notify_topbar({ message: 'Success!' })
+
+$notify_sidebar({ message: 'Success!' })
+```
+
+Or get the push function from `useNotify` (which is available globally):
+
+```js
+const push = useNotify() // Main receiver
+
+const pushTopbar = useNotify('topbar')
+
 const pushSidebar = useNotify('sidebar')
 ```

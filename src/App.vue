@@ -141,7 +141,7 @@ watch(incomingData, (newData) => {
 });
 
 function onMouseEnter() {
-	if (notifyArr.value.length > 1 && !isHovering.value) {
+	if (notifyArr.value.length > 0 && !isHovering.value) {
 		isHovering.value = true;
 
 		const stoppedAt = performance.now();
@@ -164,7 +164,7 @@ function onMouseEnter() {
 }
 
 function onMouseLeave() {
-	if (notifyArr.value.length > 1 && isHovering.value) {
+	if (notifyArr.value.length > 0 && isHovering.value) {
 		notifyArr.value = notifyArr.value.map((prevData) => {
 			const newTimeout = DEFAULT_TIMEOUT + FIXED_INCREMENT - prevData.elapsed;
 
@@ -178,6 +178,15 @@ function onMouseLeave() {
 		isHovering.value = false;
 	}
 }
+
+watch(
+	() => notifyArr.value.length === 0,
+	(newArr) => {
+		if (newArr) {
+			isHovering.value = false;
+		}
+	}
+);
 
 function clear(id: string) {
 	notifyArr.value = notifyArr.value.filter(({ id: prevId }) => prevId !== id);
