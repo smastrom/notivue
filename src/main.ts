@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
 import './style.css';
 import App from './App.vue';
+import { notify } from './notify';
 
-const app = createApp(App).mount('#app');
+createApp(App).use(notify).mount('#app');
