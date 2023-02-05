@@ -1,32 +1,94 @@
-import { reactive, ref, type Plugin, type Ref } from 'vue';
+import { reactive, ref, inject, type Plugin, type Ref, type InjectionKey } from 'vue';
 import { Notify } from './_Notify';
+import { Incoming, PushOptions, PushFunction } from './types';
 
 type PluginOptions = {
 	name?: string;
 	keys?: string[];
 };
 
-type ReceiverData = {
+export type Receiver = {
 	container: Ref<any[]>;
-	incoming: Ref<{ id: string; message: string }>;
+	incoming: Ref<Incoming>;
+	push: () => PushFunction;
 };
 
-type ConsumerData = {
-	useNotify: () => void;
+const createID = () => crypto.randomUUID();
+
+export const mainSym = Symbol('') as InjectionKey<Receiver>;
+export const userSyms: Record<string, InjectionKey<Receiver>> = {};
+
+const defaultIcoming: Incoming = {
+	type: 'success',
+	id: '',
+	title: 'Notification',
+	message: 'Message',
+	icon: null,
+	close: true,
+	duration: 3000,
+	ariaLive: 'polite',
+	ariaRole: 'status',
 };
 
-declare module 'vue' {
-	interface ComponentCustomProperties {
-		$notify: () => void;
-	}
-}
+export const defaultData = {
+	container: ref([]),
+	incoming: ref(defaultIcoming),
+};
+
+const notifySyms: InjectionKey<Receiver>[] = [mainSym];
 
 const componentName = 'VueNotify';
 
-const mainSymb = Symbol('vue_notify');
-const userSymb: Record<string, symbol> = {};
+function createPush(receiver: Receiver): PushFunction {
+	function clearAll() {
+		receiver.container.value = [];
+	}
 
-const appKeys: Symbol[] = [mainSymb];
+	function clear(id: string) {
+		receiver.container.value = receiver.container.value.filter((item) => item.id !== id);
+	}
+
+	function push(options: PushOptions) {
+		const id = createID();
+
+		receiver.incoming.value = { ...options, id };
+
+		return { clear: () => clear(id), clearAll };
+	}
+
+	push.promise = (options: PushOptions) => {
+		const id = createID();
+
+		receiver.incoming.value = { ...options, id, type: 'promise' };
+
+		return {
+			resolve: (options: PushOptions) => {
+				receiver.incoming.value = { ...options, id, type: 'resolve' };
+			},
+			reject: (options: PushOptions) => {
+				receiver.incoming.value = { ...options, id, type: 'reject' };
+			},
+			clear: () => clear(id),
+			clearAll,
+		};
+	};
+
+	push.clearAll = clearAll;
+
+	return push;
+}
+
+export function useNotify(key?: string): PushFunction {
+	const { push } = inject(key && key in userSyms ? userSyms[key] : mainSym) as Receiver;
+	return push();
+}
+
+export function useReceiver(key?: string): Pick<Receiver, 'container' | 'incoming'> {
+	const { container, incoming } = inject(
+		key && key in userSyms ? userSyms[key] : mainSym
+	) as Receiver;
+	return { container, incoming };
+}
 
 export const notify: Plugin = {
 	install(
@@ -36,24 +98,24 @@ export const notify: Plugin = {
 			keys: [],
 		}
 	) {
-		const receivers = reactive(new Map<string, ReceiverData & ConsumerData>());
+		const receivers = reactive(new Map<InjectionKey<Receiver>, Receiver>());
 
-		keys.forEach((key) => (userSymb[key.toString()] = Symbol(key.toString())));
+		keys.forEach((key) => {
+			userSyms[key.toString()] = Symbol(key.toString());
+		});
 
-		appKeys.push(...Object.values(userSymb));
+		notifySyms.push(...Object.values(userSyms));
 
-		appKeys.forEach((key) => {
-			const globalFn = key === mainSymb ? '$notify' : `$notify_${key.toString()}`;
-
-			app.config.globalProperties[globalFn] = () => {};
-
-			receivers.set(key.toString(), {
+		notifySyms.forEach((sym) => {
+			receivers.set(sym, {
 				container: ref([]),
-				incoming: ref({ id: '', message: '' }),
-				useNotify: () => {},
+				incoming: ref(defaultIcoming),
+				push: () => createPush(receivers.get(sym) as Receiver),
 			});
+		});
 
-			app.provide(key, receivers.get(key.toString()));
+		receivers.forEach((value, key) => {
+			app.provide(key, value);
 		});
 
 		app.component(name, Notify);

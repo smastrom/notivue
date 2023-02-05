@@ -3,7 +3,8 @@ import type { Component } from 'vue';
 // <Notify />
 
 export type NotifyOption = {
-	icon: Component;
+	type: string;
+	icon: Component | null;
 	title: boolean | string;
 	message: string;
 	close: boolean;
@@ -12,7 +13,11 @@ export type NotifyOption = {
 	ariaRole: 'alert' | 'status';
 };
 
-export type NotifyProps = Partial<{
+export type Incoming = {
+	id: string;
+} & NotifyOption;
+
+export type Props = Partial<{
 	method: 'unshift' | 'push';
 	limit: number;
 	pauseOnHover: boolean;
@@ -36,7 +41,6 @@ export type NotifyProps = Partial<{
 
 type NotifyContenxtRenderProps = Partial<
 	Pick<NotifyOption, 'title' | 'message'> & {
-		type: string;
 		close: () => void;
 		prevProps?: Record<string, any>;
 		nextProps?: Record<string, any>;
@@ -48,5 +52,17 @@ export type PushOptions = NotifyOption & {
 	render: {
 		component: Component;
 		props: ({}: NotifyContenxtRenderProps) => Record<string, any>;
+	} | null;
+};
+
+export type PushFunction = {
+	(options?: PushOptions): ClearFunctions;
+	promise: () => {
+		resolve: (options?: PushOptions) => void;
+		reject: (options?: PushOptions) => void;
+		clear: () => void;
+		clearAll: () => void;
 	};
 };
+
+export type ClearFunctions = { clear: (id: string) => void; clearAll: () => void };
