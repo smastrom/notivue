@@ -49,6 +49,7 @@ async function asyncPush() {
 
 <template>
 	<div>
+		<VueNotify />
 		<button @click="push('Your message has been successfully sent. Please.')">Create</button>
 		<button @click="push.error('Your message has not been successfully sent. Please.')">
 			Error
