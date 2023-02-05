@@ -1,0 +1,5 @@
+{
+    "scripts": {
+        "build": "echo \"Will redirect to notivue.smastrom.dev\" && exit 0"
+    }
+}
