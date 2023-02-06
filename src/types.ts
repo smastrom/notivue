@@ -1,5 +1,10 @@
 import type { Ref, Component } from 'vue';
 
+export type PluginOptions = {
+	name?: string;
+	keys?: string[];
+};
+
 export type Receiver = {
 	container: Ref<ContainerItem[]>;
 	incoming: Ref<IncomingItem>;
