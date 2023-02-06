@@ -1,8 +1,8 @@
 import { h } from 'vue';
 import { featherProps, icons } from './icons';
-import { ContainerItem } from './types';
+import { Notification } from './types';
 
-export function defaultRenderer(notification: ContainerItem) {
+export function defaultRenderer(notification: Notification) {
 	return h(
 		'div',
 		{
@@ -12,7 +12,7 @@ export function defaultRenderer(notification: ContainerItem) {
 		},
 		[
 			h('svg', { 'aria-hidden': true, ...featherProps, class: 'Toast__icon' }, [
-				icons[notification.type] ?? icons.success,
+				icons[notification.type as keyof typeof icons] ?? icons.success,
 			]),
 			h('p', { class: 'Toast__message' }, notification.message),
 			h('button', { class: 'Toast__button', onClick: notification.clear }, [

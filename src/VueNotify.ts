@@ -1,115 +1,137 @@
 import {
+	Component,
 	defineComponent,
 	h,
 	ref,
 	Transition,
 	TransitionGroup,
 	watch,
-	type PropType as PT,
+	type PropType,
+	type Raw,
 } from 'vue';
 import { useReceiver } from './useReceiver';
 import { mergeOptions } from './utils';
-import { FIXED_INCREMENT } from './constants';
+import { FIXED_INCREMENT, Status } from './constants';
 import { defaultRenderer } from './defaultRenderer';
-import type { Props as P } from './types';
-
-import './index.css';
-
-const promiseTypes = ['promise', 'promise-resolve', 'promise-reject'];
-
-const isBasic = (type: string) => !promiseTypes.includes(type);
-const isPromise = (type: string) => type === 'promise';
-const isPromiseResult = (type: string) => ['promise-resolve', 'promise-reject'].includes(type);
+import type { ComponentProps as Props, UserOptionsWithDefaults } from './types';
 
 export const VueNotify = defineComponent({
 	name: 'VueNotify',
 	inheritAttrs: false,
 	props: {
-		method: { type: String as PT<P['method']>, default: 'unshift' },
-		limit: { type: Number as PT<P['limit']>, default: 10 },
-		pauseOnHover: { type: Boolean as PT<P['pauseOnHover']>, default: true },
-		placement: { type: String as PT<P['placement']>, default: 'top-right' },
-		position: { type: String as PT<P['position']>, default: 'fixed' },
-		key: { type: String as PT<P['key']>, default: '' },
-		customClass: { type: String as PT<P['customClass']>, default: '' },
-		noDefaultClass: { type: Boolean as PT<P['noDefaultClass']>, default: false },
-		transitionName: { type: String as PT<P['transitionName']>, default: 'VueNotify' },
-		options: { type: Object as PT<P['options']>, default: () => ({}) },
+		key: { type: String as PropType<Props['key']>, default: '' }, // OK
+		method: { type: String as PropType<Props['method']>, default: 'unshift' }, // OK
+		limit: { type: Number as PropType<Props['limit']>, default: 10 }, // OK
+		pauseOnHover: { type: Boolean as PropType<Props['pauseOnHover']>, default: true }, // OK
+		placement: { type: String as PropType<Props['placement']>, default: 'top-right' },
+		position: { type: String as PropType<Props['position']>, default: 'fixed' },
+		customClass: { type: String as PropType<Props['customClass']>, default: '' },
+		noDefaultClass: { type: Boolean as PropType<Props['noDefaultClass']>, default: false },
+		transitionName: { type: String as PropType<Props['transitionName']>, default: 'VueNotify' },
+		options: { type: Object as PropType<Props['options']>, default: () => ({}) },
 	},
 	setup(props) {
-		const { container, incoming } = useReceiver();
+		const { notifications, incoming } = useReceiver(props.key);
 		const isHovering = ref(false);
 
-		watch(incoming, (_newData) => {
-			//
-			const newData = mergeOptions(_newData.type, props.options, _newData);
+		watch(incoming, (newOptions) => {
+			let userProps: Record<string, any> = {};
+			let component: Raw<Component> | undefined = undefined;
+			let renderFn = undefined;
 
+			const newData = mergeOptions(newOptions.type, props.options, newOptions);
 			const createdAt = performance.now();
 
-			if (newData.render?.component) {
-				// Push default render function or custom
+			if (
+				notifications.value.length >= props.limit &&
+				notifications.value[notifications.value.length - 1].type !== Status.PROMISE
+			) {
+				notifications.value[props.method === 'unshift' ? 'pop' : 'shift']();
 			}
 
-			if (isPromiseResult(newData.type)) {
-				const promiseIndex = container.value.findIndex((data) => data.id === newData.id);
+			if (![Status.PROMISE_RESOLVE, Status.PROMISE_REJECT].includes(newData.type)) {
+				if (newData.render?.component) {
+					userProps = newData.render?.props?.(getNotifyProps(newData)) ?? {};
+					component = newData.render.component;
 
-				return (container.value[promiseIndex] = {
-					...container.value[promiseIndex],
+					renderFn = () => h(component as Raw<Component>, { ...userProps, key: newData.id });
+				}
+
+				notifications.value[props.method]({
+					...newData,
+					timeoutId:
+						newData.type === Status.PROMISE
+							? undefined
+							: createTimeout(newData.id, newData.duration),
+					stoppedAt: 0,
+					elapsed: 0,
+					clear: () => clear(newData.id),
+					createdAt,
+					renderFn,
+					userProps,
+					component,
+				});
+			} else {
+				const currIndex = notifications.value.findIndex((data) => data.id === newData.id);
+				const prevComponent = notifications.value[currIndex]?.component;
+
+				if (prevComponent) {
+					const nextProps = {
+						...getNotifyProps(newData),
+						...getPrevProps(notifications.value[currIndex].userProps),
+					};
+
+					userProps = newData.render?.props?.(nextProps) ?? {};
+					component = newData.render?.component ?? prevComponent;
+
+					renderFn = () => h(component as Raw<Component>, { ...userProps, key: newData.id });
+				}
+
+				notifications.value[currIndex] = {
+					...notifications.value[currIndex],
 					type: newData.type.split('-')[1],
 					timeoutId: isHovering.value ? undefined : createTimeout(newData.id, newData.duration),
 					createdAt,
-				});
+					renderFn,
+					userProps,
+				};
 			}
-
-			if (
-				container.value.length === props.limit &&
-				!isPromise(container.value[container.value.length - 1].type)
-			) {
-				// If limit is reached, remove the last
-				container.value[props.method === 'unshift' ? 'pop' : 'shift']();
-			}
-
-			container.value[props.method]({
-				...newData,
-				createdAt,
-				timeoutId: isPromise(newData.type)
-					? undefined
-					: createTimeout(newData.id, newData.duration),
-				stoppedAt: 0,
-				elapsed: 0,
-				clear: () => clear(newData.id),
-			});
 		});
 
 		watch(
-			() => container.value.length === 0,
-			(newArr) => {
-				if (newArr) {
-					isHovering.value = false;
-				}
-			}
+			() => notifications.value.length === 0,
+			(newLen) => newLen && (isHovering.value = false)
 		);
 
+		function getNotifyProps({ title, message, type, id }: UserOptionsWithDefaults) {
+			return { notifyProps: { title, message, type, close: () => clear(id) } };
+		}
+
+		function getPrevProps(userProps: Record<string, any>) {
+			const { title, message, type, close, ...prevProps } = userProps;
+			return { prevProps };
+		}
+
 		function createTimeout(id: string, time: number) {
-			setTimeout(() => {
+			return setTimeout(() => {
 				clear(id);
 			}, time);
 		}
 
 		function clear(id: string) {
-			container.value = container.value.filter((data) => data.id !== id);
+			notifications.value = notifications.value.filter((data) => data.id !== id);
 		}
 
 		function getPointerEvents() {
 			if (props.pauseOnHover) {
 				return {
 					onMouseenter() {
-						if (container.value.length > 0 && !isHovering.value) {
+						if (notifications.value.length > 0 && !isHovering.value) {
 							isHovering.value = true;
 
 							const stoppedAt = performance.now();
 
-							container.value = container.value.map((prevData) => {
+							notifications.value = notifications.value.map((prevData) => {
 								if (prevData.timeoutId) {
 									clearTimeout(prevData.timeoutId);
 								}
@@ -117,25 +139,23 @@ export const VueNotify = defineComponent({
 								return {
 									...prevData,
 									stoppedAt,
-									elapsed:
-										stoppedAt -
-										prevData.createdAt +
-										/* */ prevData.elapsed /*  <- Zero on first mouseEnter */,
+									elapsed: stoppedAt - prevData.createdAt + prevData.elapsed,
 								};
 							});
 						}
 					},
 					onMouseleave() {
-						if (container.value.length > 0 && isHovering.value) {
-							container.value = container.value.map((prevData) => {
+						if (notifications.value.length > 0 && isHovering.value) {
+							notifications.value = notifications.value.map((prevData) => {
 								const newTimeout = 3000 + FIXED_INCREMENT - prevData.elapsed;
 
 								return {
 									...prevData,
 									createdAt: performance.now(),
-									timeoutId: isBasic(prevData.type)
-										? createTimeout(prevData.id, newTimeout)
-										: undefined,
+									timeoutId:
+										prevData.type !== Status.PROMISE
+											? createTimeout(prevData.id, newTimeout)
+											: undefined,
 								};
 							});
 
@@ -149,7 +169,7 @@ export const VueNotify = defineComponent({
 
 		return () =>
 			h(Transition, { name: 'main' }, () => [
-				container.value.length > 0 &&
+				notifications.value.length > 0 &&
 					h('div', { class: 'VueNotify__root' }, [
 						h(
 							TransitionGroup,
@@ -160,7 +180,7 @@ export const VueNotify = defineComponent({
 								style: { '--VueNotifyTxDuration': '300ms', '--VueNotifyDxDuration': '300ms' },
 								...getPointerEvents(),
 							},
-							() => container.value.map((notification) => defaultRenderer(notification))
+							() => notifications.value.map((data) => data.renderFn?.() ?? defaultRenderer(data))
 						),
 					]),
 			]);

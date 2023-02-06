@@ -2,9 +2,9 @@ import { ref, type Plugin, type InjectionKey } from 'vue';
 import { createPush } from './createPush';
 import { VueNotify } from './VueNotify';
 import { notifySyms, userSyms } from './symbols';
-import { defaultItem } from './defaults';
+import { successDefault } from './defaults';
 import { COMPONENT_NAME } from './constants';
-import type { PluginOptions, Receiver } from './types';
+import type { PluginOptions, ReceiverStore } from './types';
 
 export const notify: Plugin = {
 	install(
@@ -14,19 +14,21 @@ export const notify: Plugin = {
 			keys: [],
 		}
 	) {
-		const receivers = new Map<InjectionKey<Receiver>, Receiver>();
+		const receivers = new Map<InjectionKey<ReceiverStore>, ReceiverStore>();
 
 		keys.forEach((key) => {
 			userSyms[key.toString()] = Symbol(key.toString());
 		});
 
+		Object.freeze(userSyms);
+
 		notifySyms.push(...Object.values(userSyms));
 
 		notifySyms.forEach((sym) => {
 			receivers.set(sym, {
-				container: ref([]),
-				incoming: ref({ ...defaultItem, id: '' }),
-				push: () => createPush(receivers.get(sym) as Receiver),
+				notifications: ref([]),
+				incoming: ref({ ...successDefault, id: '' }),
+				push: () => createPush(receivers.get(sym) as ReceiverStore),
 			});
 		});
 

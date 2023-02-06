@@ -1,47 +1,40 @@
-import { TypeOption, IncomingItem, Props } from './types';
+import { markRaw } from 'vue';
+import { Status } from './constants';
+import { icons } from './icons';
+import { ComponentOptions } from './types';
 
-const successDefault: TypeOption = {
-	type: 'success',
+export const successDefault: ComponentOptions = {
+	type: Status.SUCCESS,
 	title: false,
 	message: 'Success!',
-	icon: null, // Replace with render fn
+	icon: markRaw(icons.success),
 	close: true,
 	duration: 3000,
 	ariaLive: 'polite',
 	ariaRole: 'status',
 };
 
-const errorDefault: TypeOption = {
+const errorDefault: ComponentOptions = {
 	...successDefault,
-	type: 'error',
+	type: Status.ERROR,
+	icon: markRaw(icons.error),
 	message: 'Error!',
 	ariaLive: 'assertive',
 	ariaRole: 'alert',
 };
 
-const promiseDefault: TypeOption = {
+const promiseDefault: ComponentOptions = {
 	...successDefault,
-	type: 'promise',
+	type: Status.PROMISE,
 	message: 'Loading...',
 	close: false,
 	duration: Infinity, // This is useless, but it's here for consistency
 };
 
-export const defaultOptions: Record<string, TypeOption> = {
-	success: successDefault,
-	error: errorDefault,
-	promise: promiseDefault,
-	'promise-resolve': successDefault,
-	'promise-reject': errorDefault,
-};
-
-export const defaultItem: TypeOption = {
-	type: 'success',
-	title: '',
-	message: '',
-	icon: null,
-	close: true,
-	duration: 3000,
-	ariaLive: 'polite',
-	ariaRole: 'status',
+export const defaultOptions: Record<string, ComponentOptions> = {
+	[Status.SUCCESS]: successDefault,
+	[Status.ERROR]: errorDefault,
+	[Status.PROMISE]: promiseDefault,
+	[Status.PROMISE_RESOLVE]: successDefault,
+	[Status.PROMISE_REJECT]: errorDefault,
 };

@@ -309,6 +309,7 @@ defineProps([
 ```
 
 ```js
+import { markRaw } from 'vue'
 import Notification from './CustomNotification.vue'
 import { useUserStore } from '@/stores/useUserStore'
 
@@ -323,13 +324,9 @@ push({
   message: 'There has been a critical error.',
   // 👇 Render your own component
   render: {
-    component: Notification,
-    props: ({ type, title, message, close }) => ({
-      // Props from Vuenotify context, none is required
-      type,
-      title,
-      message,
-      close,
+    component: markRaw(Notification),
+    props: ({ notifyProps }) => ({
+      ...notifyProps, // 'title', 'message', 'type' and 'close'
       // Your props
       avatarUrl: userStore.avatarUrl
     })
@@ -340,6 +337,7 @@ push({
 ### Async
 
 ```js
+import { markRaw } from 'vue'
 import Notification from './CustomNotification.vue'
 
 const push = useNotify()
@@ -349,32 +347,10 @@ const promise = push.promise({
   message: 'Publishing your post...',
   render: {
     promise: {
-      component: Notification,
-      props: ({ type, message, close }) => ({
-        message,
-        type, // 'promise'
-        close,
+      component: markRaw(Notification),
+      props: ({ notifyProps }) => ({
+        ...notifyProps, // 'title', 'message', 'type' or 'close'
         avatarUrl: userStore.avatarUrl
-      })
-    },
-    resolve: {
-      component: Notification,
-      props: ({ type, message, close, prevProps, newProps }) => ({
-        type, // 'promise-resolve'
-        message, // Defined later
-        close,
-        avatarUrl: prevProps.avatarUrl,
-        ...newProps // Defined later
-      })
-    },
-    reject: {
-      component: Notification,
-      props: ({ type, message, close, prevProps, newProps }) => ({
-        type, // 'promise-reject'
-        message, // Defined later
-        close,
-        avatarUrl: prevProps.avatarUrl,
-        ...newProps // Defined later
       })
     }
   }
@@ -382,16 +358,23 @@ const promise = push.promise({
 
 promise.resolve({
   message: 'Your post has been published!',
-  newProps: {
-    postLink: userStore.posts[0].url
-  }
+  component: markRaw(Notification), // Or add a new one
+  props: ({ notifyProps, prevProps }) => ({
+    ...notifyProps,
+    ...prevProps, // avatarUrl
+    postUrl: userStore.posts[0].url
+  })
 })
+
+// Or omit 'component' to use the same of the promise with new props
 
 promise.reject({
   message: 'There was an issue publishing your post.',
-  newProps: {
-    createLink: '/new/post'
-  }
+  props: ({ notifyProps, prevProps }) => ({
+    ...notifyProps,
+    ...prevProps,
+    profileUrl: userStore.profileUrl
+  })
 })
 ```
 
