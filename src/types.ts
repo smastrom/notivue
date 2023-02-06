@@ -1,9 +1,23 @@
-import type { Component } from 'vue';
+import type { Ref, Component } from 'vue';
 
-// <Notify />
+export type Receiver = {
+	container: Ref<ContainerItem[]>;
+	incoming: Ref<IncomingItem>;
+	push: () => PushFunction;
+};
 
-export type NotifyOption = {
-	type: string;
+type Render = {
+	component: Component;
+	props: ({}: NotifyContenxtRenderProps) => Record<string, any>;
+} | null;
+
+export type IncomingItem = {
+	id: string;
+	render: Render;
+} & TypeOption;
+
+export type TypeOption = {
+	type: 'success' | 'error' | 'promise' | 'promise-resolve' | 'promise-reject';
 	icon: Component | null;
 	title: boolean | string;
 	message: string;
@@ -13,11 +27,16 @@ export type NotifyOption = {
 	ariaRole: 'alert' | 'status';
 };
 
-export type Incoming = {
-	id: string;
-} & NotifyOption;
+export type ContainerItem = IncomingItem & {
+	timeoutId: number | undefined;
+	createdAt: number;
+	stoppedAt: number;
+	elapsed: number;
+};
 
-export type Props = Partial<{
+// <Notify />
+
+export type Props = {
 	method: 'unshift' | 'push';
 	limit: number;
 	pauseOnHover: boolean;
@@ -34,32 +53,24 @@ export type Props = Partial<{
 	customClass: string;
 	noDefaultClass: boolean;
 	transitionName: string;
-	options: Record<string, Partial<NotifyOption>>;
-}>;
+	options: Record<string, Partial<TypeOption>>;
+};
 
 // push()
 
 type NotifyContenxtRenderProps = Partial<
-	Pick<NotifyOption, 'title' | 'message'> & {
+	Pick<TypeOption, 'title' | 'message'> & {
 		close: () => void;
 		prevProps?: Record<string, any>;
 		nextProps?: Record<string, any>;
 	}
 >;
 
-export type PushOptions = NotifyOption & {
-	type: string;
-	render: {
-		component: Component;
-		props: ({}: NotifyContenxtRenderProps) => Record<string, any>;
-	} | null;
-};
-
 export type PushFunction = {
-	(options?: PushOptions): ClearFunctions;
+	(options?: IncomingItem): ClearFunctions;
 	promise: () => {
-		resolve: (options?: PushOptions) => void;
-		reject: (options?: PushOptions) => void;
+		resolve: (options?: IncomingItem) => void;
+		reject: (options?: IncomingItem) => void;
 		clear: () => void;
 		clearAll: () => void;
 	};
