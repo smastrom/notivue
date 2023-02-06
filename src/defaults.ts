@@ -34,3 +34,14 @@ export const defaultOptions: Record<string, TypeOption> = {
 	'promise-resolve': successDefault,
 	'promise-reject': errorDefault,
 };
+
+export const defaultItem: TypeOption = {
+	type: 'success',
+	title: '',
+	message: '',
+	icon: null,
+	close: true,
+	duration: 3000,
+	ariaLive: 'polite',
+	ariaRole: 'status',
+};

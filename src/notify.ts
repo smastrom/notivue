@@ -2,19 +2,15 @@ import { ref, type Plugin, type InjectionKey } from 'vue';
 import { createPush } from './createPush';
 import { VueNotify } from './VueNotify';
 import { notifySyms, userSyms } from './symbols';
-import { componentName, defaultItem } from './constants';
-import type { Receiver } from './types';
-
-type PluginOptions = {
-	name?: string;
-	keys?: string[];
-};
+import { defaultItem } from './defaults';
+import { COMPONENT_NAME } from './constants';
+import type { PluginOptions, Receiver } from './types';
 
 export const notify: Plugin = {
 	install(
 		app,
-		{ name = componentName, keys = [] }: PluginOptions = {
-			name: componentName,
+		{ name = COMPONENT_NAME, keys = [] }: PluginOptions = {
+			name: COMPONENT_NAME,
 			keys: [],
 		}
 	) {
