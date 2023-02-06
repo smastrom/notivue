@@ -1,7 +1,30 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import terser from '@rollup/plugin-terser';
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue()],
-})
+	build: {
+		lib: {
+			entry: 'src/notify.ts',
+			name: 'VueNotify',
+			fileName: 'index',
+			formats: ['es', 'cjs'],
+		},
+		rollupOptions: {
+			external: ['vue'],
+			output: {
+				globals: {
+					vue: 'Vue',
+				},
+			},
+			plugins: [
+				terser({
+					compress: {
+						defaults: true,
+					},
+				}),
+			],
+		},
+	},
+	plugins: [vue()],
+});
