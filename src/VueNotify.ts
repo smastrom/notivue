@@ -10,7 +10,7 @@ import {
 import { useReceiver } from './useReceiver';
 import { mergeOptions } from './utils';
 import { FIXED_INCREMENT } from './constants';
-import { featherProps, icons } from './icons';
+import { defaultRenderer } from './defaultRenderer';
 import type { Props as P } from './types';
 
 import './index.css';
@@ -38,18 +38,7 @@ export const VueNotify = defineComponent({
 	},
 	setup(props) {
 		const { container, incoming } = useReceiver();
-
 		const isHovering = ref(false);
-
-		function createTimeout(id: string, time: number) {
-			return setTimeout(() => {
-				clear(id);
-			}, time);
-		}
-
-		function clear(id: string) {
-			container.value = container.value.filter((data) => data.id !== id);
-		}
 
 		watch(incoming, (_newData) => {
 			//
@@ -91,6 +80,25 @@ export const VueNotify = defineComponent({
 				clear: () => clear(newData.id),
 			});
 		});
+
+		watch(
+			() => container.value.length === 0,
+			(newArr) => {
+				if (newArr) {
+					isHovering.value = false;
+				}
+			}
+		);
+
+		function createTimeout(id: string, time: number) {
+			setTimeout(() => {
+				clear(id);
+			}, time);
+		}
+
+		function clear(id: string) {
+			container.value = container.value.filter((data) => data.id !== id);
+		}
 
 		function getPointerEvents() {
 			if (props.pauseOnHover) {
@@ -139,15 +147,6 @@ export const VueNotify = defineComponent({
 			return {};
 		}
 
-		watch(
-			() => container.value.length === 0,
-			(newArr) => {
-				if (newArr) {
-					isHovering.value = false;
-				}
-			}
-		);
-
 		return () =>
 			h(Transition, { name: 'main' }, () => [
 				container.value.length > 0 &&
@@ -161,31 +160,12 @@ export const VueNotify = defineComponent({
 								style: { '--VueNotifyTxDuration': '300ms', '--VueNotifyDxDuration': '300ms' },
 								...getPointerEvents(),
 							},
-							() => [
-								container.value.map((notification) =>
-									h(
-										'div',
-										{
-											class: 'Toast',
-											key: notification.id,
-											'data-vuenotify': notification.type,
-										},
-										[
-											h('svg', { 'aria-hidden': true, ...featherProps, class: 'Toast__icon' }, [
-												icons[notification.type] ?? icons.success,
-											]),
-											h('p', { class: 'Toast__message' }, notification.message),
-											h('button', { class: 'Toast__button', onClick: notification.clear }, [
-												h('svg', { 'aria-hidden': true, ...featherProps }, [icons.close]),
-											]),
-										]
-									)
-								),
-							]
+							() => container.value.map((notification) => defaultRenderer(notification))
 						),
 					]),
 			]);
 	},
 });
 
-// use () => [] instead of expressions - https://stackoverflow.com/questions/69875273/non-function-value-encountered-for-default-slot-in-vue-3-composition-api-comp
+// use () => [] instead of expressions
+// https://stackoverflow.com/questions/69875273/non-function-value-encountered-for-default-slot-in-vue-3-composition-api-comp
