@@ -1,32 +1,33 @@
 import { createID } from './utils';
-import type { Receiver, IncomingItem, PushFunction } from './types';
+import type { ReceiverStore, Notification, PushFn } from './types';
+import { Status } from './constants';
 
-export function createPush(receiver: Receiver): PushFunction {
-	function push(options: IncomingItem) {
+export function createPush(receiver: ReceiverStore): PushFn {
+	function clear(id: string) {
+		receiver.notifications.value = receiver.notifications.value.filter((item) => item.id !== id);
+	}
+
+	function clearAll() {
+		receiver.notifications.value = [];
+	}
+
+	function push(options?: Partial<Notification>) {
 		const id = createID();
 		receiver.incoming.value = { ...options, id };
 
 		return { clear: () => clear(id), clearAll };
 	}
 
-	function clearAll() {
-		receiver.container.value = [];
-	}
-
-	function clear(id: string) {
-		receiver.container.value = receiver.container.value.filter((item) => item.id !== id);
-	}
-
-	push.promise = (options: IncomingItem) => {
+	push.promise = (options?: Partial<Notification>) => {
 		const id = createID();
-		receiver.incoming.value = { ...options, id, type: 'promise' };
+		receiver.incoming.value = { ...options, id, type: Status.PROMISE };
 
 		return {
-			resolve: (options: IncomingItem) => {
-				receiver.incoming.value = { ...options, id, type: 'promise-resolve' };
+			resolve: (options?: Partial<Notification>) => {
+				receiver.incoming.value = { ...options, id, type: Status.PROMISE_RESOLVE };
 			},
-			reject: (options: IncomingItem) => {
-				receiver.incoming.value = { ...options, id, type: 'promise-reject' };
+			reject: (options?: Partial<Notification>) => {
+				receiver.incoming.value = { ...options, id, type: Status.PROMISE_REJECT };
 			},
 			clear: () => clear(id),
 			clearAll,

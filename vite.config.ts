@@ -5,7 +5,7 @@ import terser from '@rollup/plugin-terser';
 export default defineConfig({
 	build: {
 		lib: {
-			entry: 'src/notify.ts',
+			entry: 'src/index.ts',
 			name: 'VueNotify',
 			fileName: 'index',
 			formats: ['es', 'cjs'],

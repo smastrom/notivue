@@ -1,4 +1,5 @@
 import { h } from 'vue';
+import { Status } from './constants';
 
 const success = [
 	h('circle', { cx: 12, cy: 12, r: 10 }),
@@ -27,8 +28,8 @@ export const icons = {
 	error,
 	success,
 	promise,
-	'promise-resolve': success,
-	'promise-reject': error,
+	[Status.PROMISE_RESOLVE]: success,
+	[Status.PROMISE_REJECT]: error,
 };
 
 export const featherProps = {

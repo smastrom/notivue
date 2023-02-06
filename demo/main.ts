@@ -3,6 +3,8 @@ import './style.css';
 import App from './App.vue';
 import { notify } from '../src/notify';
 
+import '../src/index.css';
+
 createApp(App)
 	.use(notify, {
 		keys: ['user1', 'user2'],
