@@ -1,4 +1,6 @@
-import './index.css';
+import './css/core.css';
+import './css/blocks.css';
+import './css/transitions.css';
 
 export { VueNotify } from './VueNotify';
 export { useNotify } from './useNotify';
