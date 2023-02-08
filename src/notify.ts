@@ -1,6 +1,6 @@
-import { ref, type Plugin, type InjectionKey } from 'vue';
-import { createPush } from './createPush';
+import { ref, shallowRef, type Plugin, type InjectionKey } from 'vue';
 import { VueNotify } from './VueNotify';
+import { createPush } from './createPush';
 import { notifySyms, userSyms } from './symbols';
 import { successDefault } from './defaults';
 import { COMPONENT_NAME } from './constants';
@@ -20,14 +20,12 @@ export const notify: Plugin = {
 			userSyms[key.toString()] = Symbol(key.toString());
 		});
 
-		Object.freeze(userSyms);
-
 		notifySyms.push(...Object.values(userSyms));
 
 		notifySyms.forEach((sym) => {
 			receivers.set(sym, {
 				notifications: ref([]),
-				incoming: ref({ ...successDefault, id: '' }),
+				incoming: shallowRef({ ...successDefault, id: '' }),
 				push: () => createPush(receivers.get(sym) as ReceiverStore),
 			});
 		});

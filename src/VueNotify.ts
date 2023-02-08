@@ -23,23 +23,23 @@ export const VueNotify = defineComponent({
 		method: { type: String as PropType<Props['method']>, default: 'unshift' }, // OK
 		limit: { type: Number as PropType<Props['limit']>, default: 10 }, // OK
 		pauseOnHover: { type: Boolean as PropType<Props['pauseOnHover']>, default: true }, // OK
+		customClass: { type: String as PropType<Props['customClass']>, default: '' }, // OK
+		noDefaultClass: { type: Boolean as PropType<Props['noDefaultClass']>, default: false }, // OK
+		options: { type: Object as PropType<Props['options']>, default: () => ({}) },
 		placement: { type: String as PropType<Props['placement']>, default: 'top-right' },
 		position: { type: String as PropType<Props['position']>, default: 'fixed' },
-		customClass: { type: String as PropType<Props['customClass']>, default: '' },
-		noDefaultClass: { type: Boolean as PropType<Props['noDefaultClass']>, default: false },
 		transitionName: { type: String as PropType<Props['transitionName']>, default: 'VueNotify' },
-		options: { type: Object as PropType<Props['options']>, default: () => ({}) },
 	},
 	setup(props) {
 		const { notifications, incoming } = useReceiver(props.key);
 		const isHovering = ref(false);
 
-		watch(incoming, (newOptions) => {
-			let userProps: Record<string, any> = {};
+		watch(incoming, (_options) => {
+			let userProps = {};
 			let component: Raw<Component> | undefined = undefined;
-			let renderFn = undefined;
+			let renderFn;
 
-			const newData = mergeOptions(newOptions.type, props.options, newOptions);
+			const options = mergeOptions(_options.type, props.options, _options);
 			const createdAt = performance.now();
 
 			if (
@@ -49,52 +49,53 @@ export const VueNotify = defineComponent({
 				notifications.value[props.method === 'unshift' ? 'pop' : 'shift']();
 			}
 
-			if (![Status.PROMISE_RESOLVE, Status.PROMISE_REJECT].includes(newData.type)) {
-				if (newData.render?.component) {
-					userProps = newData.render?.props?.(getNotifyProps(newData)) ?? {};
-					component = newData.render.component;
+			if ([Status.PROMISE_RESOLVE, Status.PROMISE_REJECT].includes(options.type)) {
+				const currIndex = notifications.value.findIndex((data) => data.id === options.id);
+				const prevComponent = notifications.value[currIndex]?.component;
 
-					renderFn = () => h(component as Raw<Component>, { ...userProps, key: newData.id });
+				if (prevComponent) {
+					const { title, message, type, close, ...prevProps } =
+						notifications.value[currIndex].userProps;
+
+					const nextProps = {
+						...getNotifyProps(options),
+						prevProps,
+					};
+
+					userProps = options.render?.props?.(nextProps) ?? {};
+					component = options.render?.component ?? prevComponent;
+					renderFn = () => h(component as Raw<Component>, { ...userProps, key: options.id });
+				}
+
+				notifications.value[currIndex] = {
+					...notifications.value[currIndex],
+					...options,
+					timeoutId: isHovering.value ? undefined : createTimeout(options.id, options.duration),
+					createdAt,
+					renderFn,
+					userProps,
+				};
+			} else {
+				if (options.render?.component) {
+					userProps = options.render?.props?.(getNotifyProps(options)) ?? {};
+					component = options.render.component;
+					renderFn = () => h(component as Raw<Component>, { ...userProps, key: options.id });
 				}
 
 				notifications.value[props.method]({
-					...newData,
+					...options,
 					timeoutId:
-						newData.type === Status.PROMISE
+						options.type === Status.PROMISE
 							? undefined
-							: createTimeout(newData.id, newData.duration),
+							: createTimeout(options.id, options.duration),
 					stoppedAt: 0,
 					elapsed: 0,
-					clear: () => clear(newData.id),
+					clear: () => _clear(options.id),
 					createdAt,
 					renderFn,
 					userProps,
 					component,
 				});
-			} else {
-				const currIndex = notifications.value.findIndex((data) => data.id === newData.id);
-				const prevComponent = notifications.value[currIndex]?.component;
-
-				if (prevComponent) {
-					const nextProps = {
-						...getNotifyProps(newData),
-						...getPrevProps(notifications.value[currIndex].userProps),
-					};
-
-					userProps = newData.render?.props?.(nextProps) ?? {};
-					component = newData.render?.component ?? prevComponent;
-
-					renderFn = () => h(component as Raw<Component>, { ...userProps, key: newData.id });
-				}
-
-				notifications.value[currIndex] = {
-					...notifications.value[currIndex],
-					type: newData.type.split('-')[1],
-					timeoutId: isHovering.value ? undefined : createTimeout(newData.id, newData.duration),
-					createdAt,
-					renderFn,
-					userProps,
-				};
 			}
 		});
 
@@ -104,21 +105,16 @@ export const VueNotify = defineComponent({
 		);
 
 		function getNotifyProps({ title, message, type, id }: UserOptionsWithDefaults) {
-			return { notifyProps: { title, message, type, close: () => clear(id) } };
-		}
-
-		function getPrevProps(userProps: Record<string, any>) {
-			const { title, message, type, close, ...prevProps } = userProps;
-			return { prevProps };
+			return { notifyProps: { title, message, type, close: () => _clear(id) } };
 		}
 
 		function createTimeout(id: string, time: number) {
 			return setTimeout(() => {
-				clear(id);
+				_clear(id);
 			}, time);
 		}
 
-		function clear(id: string) {
+		function _clear(id: string) {
 			notifications.value = notifications.value.filter((data) => data.id !== id);
 		}
 
@@ -147,7 +143,7 @@ export const VueNotify = defineComponent({
 					onMouseleave() {
 						if (notifications.value.length > 0 && isHovering.value) {
 							notifications.value = notifications.value.map((prevData) => {
-								const newTimeout = 3000 + FIXED_INCREMENT - prevData.elapsed;
+								const newTimeout = prevData.duration + FIXED_INCREMENT - prevData.elapsed;
 
 								return {
 									...prevData,
@@ -168,24 +164,29 @@ export const VueNotify = defineComponent({
 		}
 
 		return () =>
-			h(Transition, { name: 'main' }, () => [
-				notifications.value.length > 0 &&
+			h(
+				Transition,
+				{ name: 'main' },
+				() =>
+					notifications.value.length > 0 &&
 					h('div', { class: 'VueNotify__root' }, [
 						h(
 							TransitionGroup,
 							{
 								name: 'list',
 								tag: 'div',
-								class: 'VueNotify__container',
+								class: 'VueNotify__list',
 								style: { '--VueNotifyTxDuration': '300ms', '--VueNotifyDxDuration': '300ms' },
 								...getPointerEvents(),
 							},
-							() => notifications.value.map((data) => data.renderFn?.() ?? defaultRenderer(data))
+							() =>
+								notifications.value.map(
+									(data) =>
+										data.renderFn?.() ??
+										defaultRenderer(data, props.noDefaultClass, props.customClass)
+								)
 						),
-					]),
-			]);
+					])
+			);
 	},
 });
-
-// use () => [] instead of expressions
-// https://stackoverflow.com/questions/69875273/non-function-value-encountered-for-default-slot-in-vue-3-composition-api-comp
