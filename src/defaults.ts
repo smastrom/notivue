@@ -1,7 +1,7 @@
 import { markRaw } from 'vue';
 import { Status } from './constants';
 import { icons } from './icons';
-import { ComponentOptions } from './types';
+import type { ComponentOptions } from './types';
 
 export const successDefault: ComponentOptions = {
 	type: Status.SUCCESS,
@@ -18,6 +18,7 @@ const errorDefault: ComponentOptions = {
 	...successDefault,
 	type: Status.ERROR,
 	icon: markRaw(icons.error),
+	duration: 6000,
 	message: 'Error!',
 	ariaLive: 'assertive',
 	ariaRole: 'alert',
@@ -28,13 +29,23 @@ const promiseDefault: ComponentOptions = {
 	type: Status.PROMISE,
 	message: 'Loading...',
 	close: false,
-	duration: Infinity, // This is useless, but it's here for consistency
+	duration: Infinity,
+};
+
+const promiseSuccessDef: ComponentOptions = {
+	...successDefault,
+	type: Status.PROMISE_RESOLVE,
+};
+
+const promiseErrorDef: ComponentOptions = {
+	...errorDefault,
+	type: Status.PROMISE_REJECT,
 };
 
 export const defaultOptions: Record<string, ComponentOptions> = {
 	[Status.SUCCESS]: successDefault,
 	[Status.ERROR]: errorDefault,
 	[Status.PROMISE]: promiseDefault,
-	[Status.PROMISE_RESOLVE]: successDefault,
-	[Status.PROMISE_REJECT]: errorDefault,
+	[Status.PROMISE_RESOLVE]: promiseSuccessDef,
+	[Status.PROMISE_REJECT]: promiseErrorDef,
 };

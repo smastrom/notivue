@@ -13,7 +13,7 @@ const error = [
 ];
 
 const promise = [
-	h('g', { class: 'VueNotify_Spinner' }, [
+	h('g', { class: 'VueNotify__spinner' }, [
 		h('circle', { cx: 12, cy: 12, r: 9.5, fill: 'none', 'stroke-width': 3 }),
 	]),
 ];

@@ -19,9 +19,9 @@ async function asyncPush() {
 	await new Promise((resolve) => setTimeout(resolve, getRandomInt(2000, 4000)));
 
 	if (Math.random() > 0.5) {
-		ayncNotify.resolve({ message: 'Promise rejected!' });
+		ayncNotify.reject({ message: 'Promise rejected!' });
 	} else {
-		ayncNotify.reject({ message: 'Promise successfully resolved!' });
+		ayncNotify.resolve({ message: 'Promise successfully resolved!' });
 	}
 }
 

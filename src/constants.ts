@@ -9,3 +9,15 @@ export const Status = {
 	PROMISE_RESOLVE: 'promise-resolve',
 	PROMISE_REJECT: 'promise-reject',
 };
+
+export const Classes = {
+	ROOT: 'root',
+	CONTAINER: 'container',
+	ICON: 'icon',
+	CONTENT: 'content',
+	TITLE: 'title',
+	MESSAGE: 'message',
+	BUTTON: 'button',
+	TX_LIST: 'list',
+	TX_ROOT: 'main',
+};

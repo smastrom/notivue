@@ -1,0 +1,101 @@
+.VueNotify__notification {
+	background: #68ff004a;
+	margin: 10px;
+	padding: 10px;
+	width: 300px;
+	border-radius: 10px;
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	border: 1px solid #75ff77;
+	box-shadow: 0 0 3px #67ff0052;
+	gap: 10px;
+	justify-items: center;
+	align-items: center;
+}
+
+[data-vuenotify='error'],
+[data-vuenotify='promise-reject'] {
+	background: #ff00004a;
+	border: 1px solid #ff0000;
+	box-shadow: 0 0 3px #ff000052;
+}
+
+[data-vuenotify='promise'] {
+	background: #ffff004a;
+	border: 1px solid #ffff00;
+	box-shadow: 0 0 3px #ffff0052;
+}
+
+/* Left */
+
+.VueNotify__icon svg {
+	opacity: 0.75;
+	display: flex;
+}
+
+/* Center */
+
+.VueNotify__content-message {
+	text-align: left;
+	margin: 0;
+	padding: 0;
+	font-weight: 600;
+	font-size: 0.925rem;
+	line-height: 1.33em;
+}
+
+/* Right */
+
+.VueNotify__button {
+	border-left: 1px solid #ffffff26;
+	border: none;
+	background: none;
+	padding: 10px;
+	margin: 0;
+	opacity: 0.5;
+	margin-right: -10px;
+}
+
+.VueNotify__button svg {
+	display: flex;
+}
+
+.VueNotify__button:hover {
+	border: none;
+	background: none;
+	opacity: 1;
+}
+
+/** Promise Spinner */
+
+.VueNotify__spinner {
+	transform-origin: center;
+	animation: VueNotify__spinner-out 2s linear infinite;
+}
+
+.VueNotify__spinner circle {
+	stroke-linecap: round;
+	animation: VueNotify__spinner-in 1.5s ease-in-out infinite;
+}
+
+@keyframes VueNotify__spinner-out {
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes VueNotify__spinner-in {
+	0% {
+		stroke-dasharray: 0 150;
+		stroke-dashoffset: 0;
+	}
+	47.5% {
+		stroke-dasharray: 42 150;
+		stroke-dashoffset: -16;
+	}
+	95%,
+	100% {
+		stroke-dasharray: 42 150;
+		stroke-dashoffset: -59;
+	}
+}

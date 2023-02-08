@@ -1,9 +1,9 @@
 import { createID } from './utils';
-import type { ReceiverStore, Notification, PushFn } from './types';
 import { Status } from './constants';
+import type { ReceiverStore, UserOptions, PushFn } from './types';
 
 export function createPush(receiver: ReceiverStore): PushFn {
-	function clear(id: string) {
+	function _clear(id: string) {
 		receiver.notifications.value = receiver.notifications.value.filter((item) => item.id !== id);
 	}
 
@@ -11,28 +11,28 @@ export function createPush(receiver: ReceiverStore): PushFn {
 		receiver.notifications.value = [];
 	}
 
-	function push(options?: Partial<Notification>) {
+	function push(options: Partial<UserOptions>) {
 		const id = createID();
 		receiver.incoming.value = { ...options, id };
 
-		return { clear: () => clear(id), clearAll };
+		return { clear: () => _clear(id), clearAll };
 	}
 
-	push.promise = (options?: Partial<Notification>) => {
+	push.promise = ((options) => {
 		const id = createID();
 		receiver.incoming.value = { ...options, id, type: Status.PROMISE };
 
 		return {
-			resolve: (options?: Partial<Notification>) => {
+			resolve: (options) => {
 				receiver.incoming.value = { ...options, id, type: Status.PROMISE_RESOLVE };
 			},
-			reject: (options?: Partial<Notification>) => {
+			reject: (options) => {
 				receiver.incoming.value = { ...options, id, type: Status.PROMISE_REJECT };
 			},
-			clear: () => clear(id),
+			clear: () => _clear(id),
 			clearAll,
 		};
-	};
+	}) satisfies PushFn['promise'];
 
 	push.clearAll = clearAll;
 

@@ -30,7 +30,7 @@ export type ComponentOptions = {
 	type: keyof typeof Status | string;
 	icon: Component | false;
 	title: boolean | string;
-	message: string;
+	message: boolean | string;
 	close: boolean;
 	duration: number;
 	ariaLive: 'polite' | 'assertive';
@@ -44,8 +44,8 @@ export type ReceiverStore = {
 };
 
 export type Notification = ComponentOptions & {
-	id: string;
 	timeoutId: number | undefined;
+	id: string;
 	createdAt: number;
 	stoppedAt: number;
 	elapsed: number;
@@ -76,7 +76,7 @@ export type UserOptionsWithDefaults<T = NotifyProps> = ComponentOptions &
 	MaybeRender<T> & { id: string };
 
 type WithPrevProps = Partial<
-	UserOptions<NotifyProps & { prevProps: Record<string, any> | undefined }>
+	UserOptions<NotifyProps & { prevProps?: Record<string, any> | undefined }>
 >;
 
 export type PushFn = {
