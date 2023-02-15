@@ -71,14 +71,18 @@ async function customAsync() {
 		<button @click="push({ message: 'Your message has been successfully sent. Please.' })">
 			Success
 		</button>
-		<button
-			@click="push({ type: 'error', message: 'Your message has been successfully sent. Please.' })"
-		>
+		<button @click="push.error({ message: 'Your message has been successfully sent. Please.' })">
 			Error
 		</button>
-		<button @click="asyncPush">Promise</button>
+		<button @click="push.info({ message: 'Your message has been successfully sent. Please.' })">
+			Info
+		</button>
+		<button @click="push.warning({ message: 'Your message has been successfully sent. Please.' })">
+			Warning
+		</button>
+		<!-- 		<button @click="asyncPush">Promise</button>
 		<button @click="customPush">Custom</button>
-		<button @click="customAsync">Custom Promise</button>
+		<button @click="customAsync">Custom Promise</button> -->
 		<button @click="push.clearAll()">Clear All</button>
 	</div>
 </template>
