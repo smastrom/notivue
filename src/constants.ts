@@ -5,6 +5,8 @@ export const COMPONENT_NAME = 'VueNotify';
 export const Status = {
 	SUCCESS: 'success',
 	ERROR: 'error',
+	WARNING: 'warning',
+	INFO: 'info',
 	PROMISE: 'promise',
 	PROMISE_RESOLVE: 'promise-resolve',
 	PROMISE_REJECT: 'promise-reject',

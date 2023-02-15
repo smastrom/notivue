@@ -1,8 +1,12 @@
 import {
 	Component,
+	computed,
+	CSSProperties,
 	defineComponent,
 	h,
 	ref,
+	Teleport,
+	toRef,
 	Transition,
 	TransitionGroup,
 	watch,
@@ -13,26 +17,32 @@ import { useReceiver } from './useReceiver';
 import { mergeOptions } from './utils';
 import { FIXED_INCREMENT, Status } from './constants';
 import { defaultRenderer } from './defaultRenderer';
-import type { ComponentProps as Props, UserOptionsWithDefaults } from './types';
+import type { ComponentProps as Props, UserOptionsWithInternals } from './types';
 
 export const VueNotify = defineComponent({
 	name: 'VueNotify',
 	inheritAttrs: false,
 	props: {
-		key: { type: String as PropType<Props['key']>, default: '' }, // OK
-		method: { type: String as PropType<Props['method']>, default: 'unshift' }, // OK
-		limit: { type: Number as PropType<Props['limit']>, default: 10 }, // OK
-		pauseOnHover: { type: Boolean as PropType<Props['pauseOnHover']>, default: true }, // OK
-		customClass: { type: String as PropType<Props['customClass']>, default: '' }, // OK
-		noDefaultClass: { type: Boolean as PropType<Props['noDefaultClass']>, default: false }, // OK
+		key: { type: String as PropType<Props['key']>, default: '' },
+		method: { type: String as PropType<Props['method']>, default: 'unshift' },
+		limit: { type: Number as PropType<Props['limit']>, default: 8 },
+		pauseOnHover: { type: Boolean as PropType<Props['pauseOnHover']>, default: true },
+		customClass: { type: String as PropType<Props['customClass']>, default: '' },
+		noDefaultClass: { type: Boolean as PropType<Props['noDefaultClass']>, default: false },
+		margin: { type: Object as PropType<Props['margin']>, default: () => ({ y: 30, x: 30 }) },
+		maxWidth: { type: Number as PropType<Props['maxWidth']>, default: 1280 /* null */ },
+		placement: { type: String as PropType<Props['placement']>, default: 'bottom-right' },
 		options: { type: Object as PropType<Props['options']>, default: () => ({}) },
-		placement: { type: String as PropType<Props['placement']>, default: 'top-right' },
-		position: { type: String as PropType<Props['position']>, default: 'fixed' },
 		transitionName: { type: String as PropType<Props['transitionName']>, default: 'VueNotify' },
 	},
 	setup(props) {
 		const { notifications, incoming } = useReceiver(props.key);
+
 		const isHovering = ref(false);
+
+		const placement = toRef(props, 'placement');
+		const margin = toRef(props, 'margin');
+		const maxWidth = toRef(props, 'maxWidth');
 
 		watch(incoming, (_options) => {
 			let userProps = {};
@@ -43,19 +53,18 @@ export const VueNotify = defineComponent({
 			const createdAt = performance.now();
 
 			if (
-				notifications.value.length >= props.limit &&
-				notifications.value[notifications.value.length - 1].type !== Status.PROMISE
+				notifications.length >= props.limit &&
+				notifications[notifications.length - 1].type !== Status.PROMISE
 			) {
-				notifications.value[props.method === 'unshift' ? 'pop' : 'shift']();
+				notifications[props.method === 'unshift' ? 'pop' : 'shift']();
 			}
 
 			if ([Status.PROMISE_RESOLVE, Status.PROMISE_REJECT].includes(options.type)) {
-				const currIndex = notifications.value.findIndex((data) => data.id === options.id);
-				const prevComponent = notifications.value[currIndex]?.component;
+				const currIndex = notifications.findIndex((data) => data.id === options.id);
+				const prevComponent = notifications[currIndex]?.component;
 
 				if (prevComponent) {
-					const { title, message, type, close, ...prevProps } =
-						notifications.value[currIndex].userProps;
+					const { title, message, type, close, ...prevProps } = notifications[currIndex].userProps;
 
 					const nextProps = {
 						...getNotifyProps(options),
@@ -67,8 +76,8 @@ export const VueNotify = defineComponent({
 					renderFn = () => h(component as Raw<Component>, { ...userProps, key: options.id });
 				}
 
-				notifications.value[currIndex] = {
-					...notifications.value[currIndex],
+				notifications[currIndex] = {
+					...notifications[currIndex],
 					...options,
 					timeoutId: isHovering.value ? undefined : createTimeout(options.id, options.duration),
 					createdAt,
@@ -82,7 +91,7 @@ export const VueNotify = defineComponent({
 					renderFn = () => h(component as Raw<Component>, { ...userProps, key: options.id });
 				}
 
-				notifications.value[props.method]({
+				notifications[props.method]({
 					...options,
 					timeoutId:
 						options.type === Status.PROMISE
@@ -100,11 +109,11 @@ export const VueNotify = defineComponent({
 		});
 
 		watch(
-			() => notifications.value.length === 0,
+			() => notifications.length === 0,
 			(newLen) => newLen && (isHovering.value = false)
 		);
 
-		function getNotifyProps({ title, message, type, id }: UserOptionsWithDefaults) {
+		function getNotifyProps({ title, message, type, id }: UserOptionsWithInternals) {
 			return { notifyProps: { title, message, type, close: () => _clear(id) } };
 		}
 
@@ -115,78 +124,103 @@ export const VueNotify = defineComponent({
 		}
 
 		function _clear(id: string) {
-			notifications.value = notifications.value.filter((data) => data.id !== id);
+			const toRemove = notifications.findIndex((data) => data.id === id);
+			notifications.splice(toRemove, 1);
 		}
 
-		function getPointerEvents() {
-			if (props.pauseOnHover) {
-				return {
-					onMouseenter() {
-						if (notifications.value.length > 0 && !isHovering.value) {
-							isHovering.value = true;
+		const pointerEvts = {
+			onPointerenter() {
+				if (notifications.length > 0 && !isHovering.value) {
+					isHovering.value = true;
+					const stoppedAt = performance.now();
 
-							const stoppedAt = performance.now();
-
-							notifications.value = notifications.value.map((prevData) => {
-								if (prevData.timeoutId) {
-									clearTimeout(prevData.timeoutId);
-								}
-
-								return {
-									...prevData,
-									stoppedAt,
-									elapsed: stoppedAt - prevData.createdAt + prevData.elapsed,
-								};
-							});
+					notifications.forEach((prevData, currIndex) => {
+						if (prevData.timeoutId) {
+							clearTimeout(notifications[currIndex].timeoutId);
 						}
-					},
-					onMouseleave() {
-						if (notifications.value.length > 0 && isHovering.value) {
-							notifications.value = notifications.value.map((prevData) => {
-								const newTimeout = prevData.duration + FIXED_INCREMENT - prevData.elapsed;
 
-								return {
-									...prevData,
-									createdAt: performance.now(),
-									timeoutId:
-										prevData.type !== Status.PROMISE
-											? createTimeout(prevData.id, newTimeout)
-											: undefined,
-								};
-							});
+						notifications[currIndex] = {
+							...prevData,
+							stoppedAt,
+							elapsed: stoppedAt - prevData.createdAt + prevData.elapsed,
+						};
+					});
+				}
+			},
+			onPointerleave() {
+				if (notifications.length > 0 && isHovering.value) {
+					notifications.forEach((prevData, currIndex) => {
+						const newTimeout = prevData.duration + FIXED_INCREMENT - prevData.elapsed;
 
-							isHovering.value = false;
-						}
-					},
-				};
-			}
-			return {};
-		}
+						notifications[currIndex] = {
+							...prevData,
+							createdAt: performance.now(),
+							timeoutId:
+								prevData.type !== Status.PROMISE
+									? createTimeout(prevData.id, newTimeout)
+									: undefined,
+						};
+					});
+
+					isHovering.value = false;
+				}
+			},
+		};
+
+		const rootStyles = {
+			pointerEvents: 'none',
+			position: 'fixed',
+			width: '100%',
+			display: 'flex',
+			justifyContent: 'center',
+		};
+
+		const rootContStyles = computed(() => ({
+			position: 'relative',
+			padding: `${margin.value.y}px ${margin.value.x}px`,
+			width: `${maxWidth.value}px`,
+			maxWidth: '100%',
+			boxSizing: 'border-box',
+			display: 'flex',
+			alignItems: placement.value.includes('top') ? 'flex-start' : 'flex-end',
+			justifyContent: placement.value.includes('right')
+				? 'flex-end'
+				: placement.value.includes('left')
+				? 'flex-start'
+				: 'flex-center',
+		}));
 
 		return () =>
-			h(
-				Transition,
-				{ name: 'main' },
-				() =>
-					notifications.value.length > 0 &&
-					h('div', { class: 'VueNotify__root' }, [
+			h(Teleport, { to: 'body' }, [
+				h(
+					Transition,
+					{ name: 'main' },
+					() =>
+						notifications.length > 0 &&
 						h(
-							TransitionGroup,
+							'div',
 							{
-								name: 'list',
-								tag: 'div',
-								class: 'VueNotify__list',
-								style: { '--VueNotifyTxDuration': '300ms', '--VueNotifyDxDuration': '300ms' },
-								...getPointerEvents(),
+								style: rootStyles,
 							},
-							() =>
-								notifications.value.map(
-									(data) =>
-										data.renderFn?.() ??
-										defaultRenderer(data, props.noDefaultClass, props.customClass)
-								)
-						),
-					])
-			);
+							h('div', { style: rootContStyles.value }, [
+								h(
+									TransitionGroup,
+									{
+										name: 'list',
+										tag: 'div',
+										class: 'VueNotify__list',
+										...(props.pauseOnHover ? pointerEvts : {}),
+									},
+									() =>
+										notifications.map(
+											(data) =>
+												data.renderFn?.() ??
+												defaultRenderer(data, props.noDefaultClass, props.customClass)
+										)
+								),
+							])
+						)
+				),
+			]);
 	},
 });

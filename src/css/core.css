@@ -1,13 +1,3 @@
-.VueNotify__root {
-	display: flex;
-	position: fixed;
-	justify-content: center;
-	align-items: center;
-	width: 100vw;
-	top: 0;
-	left: 0;
-}
-
 .VueNotify__hidden {
 	clip: rect(0 0 0 0);
 	clip-path: inset(50%);

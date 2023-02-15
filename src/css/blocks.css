@@ -1,68 +1,86 @@
 .VueNotify__notification {
-	background: #68ff004a;
-	margin: 10px;
-	padding: 10px;
-	width: 300px;
-	border-radius: 10px;
+	--VNGap: 0.875rem;
+	background: white;
+	margin: 0 0 var(--VNGap) 0;
+	padding: 0.75rem 0 0.75rem 0.75rem;
+	width: 375px;
+	border-radius: 0.75rem;
 	display: grid;
-	grid-template-columns: auto 1fr auto;
-	border: 1px solid #75ff77;
-	box-shadow: 0 0 3px #67ff0052;
-	gap: 10px;
+	grid-template-columns: auto 1fr minmax(0, auto);
+	gap: var(--VNGap);
+	border: 1px solid #dedede;
 	justify-items: center;
 	align-items: center;
+	box-shadow: 0 calc(1rem / 3) calc(1rem / 2) rgba(0, 0, 0, 0.08);
+	pointer-events: all;
 }
 
-[data-vuenotify='error'],
-[data-vuenotify='promise-reject'] {
-	background: #ff00004a;
-	border: 1px solid #ff0000;
-	box-shadow: 0 0 3px #ff000052;
+.VueNotify__content {
+	display: grid;
+	gap: calc(1rem / 4);
 }
 
-[data-vuenotify='promise'] {
-	background: #ffff004a;
-	border: 1px solid #ffff00;
-	box-shadow: 0 0 3px #ffff0052;
+.VueNotify__content-title {
+	color: #2b2b2b;
+	font-weight: 700;
+	font-size: 1rem;
+	padding: 0;
+	margin: 0;
+	text-align: left;
 }
-
-/* Left */
-
-.VueNotify__icon svg {
-	opacity: 0.75;
-	display: flex;
-}
-
-/* Center */
 
 .VueNotify__content-message {
+	color: #666666;
+	font-weight: 600;
+	line-height: 1.35;
 	text-align: left;
 	margin: 0;
 	padding: 0;
-	font-weight: 600;
-	font-size: 0.925rem;
-	line-height: 1.33em;
+	font-size: 0.875rem;
+}
+
+.VueNotify__icon {
+	display: flex;
+}
+
+[data-vuenotify='success'] .VueNotify__icon,
+[data-vuenotify='promise-resolve'] .VueNotify__icon {
+	color: #28b780;
+}
+
+[data-vuenotify='error'] .VueNotify__icon,
+[data-vuenotify='promise-reject'] .VueNotify__icon {
+	color: #ef4444;
+}
+
+[data-vuenotify='info'] .VueNotify__icon {
+	color: #3e8eff;
+}
+
+[data-vuenotify='warning'] .VueNotify__icon {
+	color: #f59e0b;
 }
 
 /* Right */
 
 .VueNotify__button {
-	border-left: 1px solid #ffffff26;
 	border: none;
+	border-left: 1px solid #dedede;
+	border-radius: 0;
 	background: none;
-	padding: 10px;
+	padding: var(--VNGap);
 	margin: 0;
 	opacity: 0.5;
-	margin-right: -10px;
+	height: 100%;
 }
 
 .VueNotify__button svg {
 	display: flex;
+	opacity: 0.5;
+	fill: #8e8e8e;
 }
 
-.VueNotify__button:hover {
-	border: none;
-	background: none;
+.VueNotify__button:hover svg {
 	opacity: 1;
 }
 
