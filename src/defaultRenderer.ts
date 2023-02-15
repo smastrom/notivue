@@ -1,6 +1,6 @@
 import { h } from 'vue';
 import { ariaRenderer } from './ariaRenderer';
-import { featherProps, icons } from './icons';
+import { featherProps, icons, ionProps } from './icons';
 import { Notification } from './types';
 import { getCX as _getCX } from './utils';
 
@@ -20,7 +20,7 @@ export function defaultRenderer(
 			'data-vuenotify': notification.type,
 		},
 		[
-			h('svg', { 'aria-hidden': true, ...featherProps, class: getCX('icon') }, [
+			h('svg', { 'aria-hidden': true, ...ionProps, class: getCX('icon') }, [
 				icons[notification.type] ?? icons.success,
 			]),
 

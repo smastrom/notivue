@@ -12,22 +12,21 @@ export type ComponentProps = {
 	pauseOnHover: boolean;
 	placement:
 		| 'top-left'
-		| 'top-right'
 		| 'top-center'
-		| 'center'
+		| 'top-right'
 		| 'bottom-left'
 		| 'bottom-center'
 		| 'bottom-right';
-	position: 'fixed' | 'relative';
+	maxWidth: number | null;
 	key: string;
 	customClass: string;
+	margin: { x: number; y: number };
 	noDefaultClass: boolean;
 	transitionName: string;
 	options: Record<string, Partial<ComponentOptions>>;
 };
 
 export type ComponentOptions = {
-	type: keyof typeof Status | string;
 	icon: Component | false;
 	title: boolean | string;
 	message: boolean | string;
@@ -37,32 +36,23 @@ export type ComponentOptions = {
 	ariaRole: 'alert' | 'status';
 };
 
-export type ReceiverStore = {
-	notifications: Ref<Notification[]>;
-	incoming: Ref<UserOptions & { id: string }>;
-	push: () => PushFn;
-};
-
-export type Notification = ComponentOptions & {
-	timeoutId: number | undefined;
+type InternalOptions = {
 	id: string;
-	createdAt: number;
-	stoppedAt: number;
-	elapsed: number;
-	clear: () => void;
-	userProps: Record<string, any>;
-	component?: Component;
-	renderFn?: () => VNode;
+	type: keyof typeof Status | string;
 };
 
-type NotifyProps = {
-	notifyProps: {
-		type: ComponentOptions['type'];
-		close: () => void;
-		title?: ComponentOptions['title'];
-		message?: ComponentOptions['message'];
+export type Notification = InternalOptions &
+	ComponentOptions & {
+		timeoutId: number | undefined;
+		id: string;
+		createdAt: number;
+		stoppedAt: number;
+		elapsed: number;
+		clear: () => void;
+		userProps: Record<string, any>;
+		component?: Component;
+		renderFn?: () => VNode;
 	};
-};
 
 type MaybeRender<T> = {
 	render?: {
@@ -72,8 +62,25 @@ type MaybeRender<T> = {
 };
 
 export type UserOptions<T = NotifyProps> = Partial<ComponentOptions> & MaybeRender<T>;
-export type UserOptionsWithDefaults<T = NotifyProps> = ComponentOptions &
-	MaybeRender<T> & { id: string };
+
+export type UserOptionsWithInternals<T = NotifyProps> = ComponentOptions &
+	MaybeRender<T> &
+	InternalOptions;
+
+export type Receiver = {
+	notifications: Notification[];
+	incoming: Ref<UserOptions & InternalOptions>;
+	push: () => PushFn;
+};
+
+type NotifyProps = {
+	notifyProps: {
+		type: InternalOptions['type'];
+		close: () => void;
+		title?: ComponentOptions['title'];
+		message?: ComponentOptions['message'];
+	};
+};
 
 type WithPrevProps = Partial<
 	UserOptions<NotifyProps & { prevProps?: Record<string, any> | undefined }>
@@ -87,6 +94,10 @@ export type PushFn = {
 		clear: ClearFns['clear'];
 		clearAll: ClearFns['clearAll'];
 	};
+	error: (options: Partial<UserOptions>) => ClearFns;
+	success: (options: Partial<UserOptions>) => ClearFns;
+	warning: (options: Partial<UserOptions>) => ClearFns;
+	info: (options: Partial<UserOptions>) => ClearFns;
 	clearAll: ClearFns['clearAll'];
 };
 

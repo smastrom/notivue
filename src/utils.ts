@@ -1,6 +1,6 @@
 import { Status } from './constants';
 import { defaultOptions } from './defaults';
-import type { UserOptions, UserOptionsWithDefaults, ComponentProps } from './types';
+import type { UserOptions, UserOptionsWithInternals, ComponentProps } from './types';
 
 export function createID() {
 	return crypto ? crypto.randomUUID() : (Math.random() + 1).toString(36).substring(7);
@@ -10,7 +10,7 @@ export function mergeOptions(
 	type: string = Status.SUCCESS,
 	componentOptions: ComponentProps['options'] = {},
 	incomingOptions: UserOptions & { id: string }
-): UserOptionsWithDefaults {
+): UserOptionsWithInternals {
 	return { ...defaultOptions[type], ...componentOptions[type], ...incomingOptions };
 }
 

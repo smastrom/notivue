@@ -5,11 +5,11 @@ import type { ComponentOptions } from './types';
 
 export const successDefault: ComponentOptions = {
 	type: Status.SUCCESS,
-	title: false,
+	title: 'Successfully submitted!',
 	message: 'Success!',
 	icon: markRaw(icons.success),
 	close: true,
-	duration: 3000,
+	duration: 300000 /* 3000 */,
 	ariaLive: 'polite',
 	ariaRole: 'status',
 };
@@ -45,6 +45,8 @@ const promiseErrorDef: ComponentOptions = {
 export const defaultOptions: Record<string, ComponentOptions> = {
 	[Status.SUCCESS]: successDefault,
 	[Status.ERROR]: errorDefault,
+	[Status.WARNING]: errorDefault,
+	[Status.INFO]: errorDefault,
 	[Status.PROMISE]: promiseDefault,
 	[Status.PROMISE_RESOLVE]: promiseSuccessDef,
 	[Status.PROMISE_REJECT]: promiseErrorDef,
