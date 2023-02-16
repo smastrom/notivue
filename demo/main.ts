@@ -4,7 +4,6 @@ import App from './App.vue';
 import { notify } from '../src/notify';
 
 import '../src/css/transitions.css';
-import '../src/css/core.css';
 import '../src/css/blocks.css';
 
 createApp(App)

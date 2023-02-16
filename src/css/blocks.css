@@ -3,10 +3,11 @@
 	background: white;
 	margin: 0 0 var(--VNGap) 0;
 	padding: 0.75rem 0 0.75rem 0.75rem;
-	width: 375px;
+	max-width: 375px;
+	width: 100%;
 	border-radius: 0.75rem;
 	display: grid;
-	grid-template-columns: auto 1fr minmax(0, auto);
+	grid-template-columns: auto 1fr auto;
 	gap: var(--VNGap);
 	border: 1px solid #dedede;
 	justify-items: center;
