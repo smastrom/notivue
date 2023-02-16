@@ -21,12 +21,12 @@ export type ComponentProps = {
 	key: string;
 	customClass: string;
 	margin: { x: number; y: number };
-	noDefaultClass: boolean;
 	transitionName: string;
 	options: Record<string, Partial<ComponentOptions>>;
 };
 
 export type ComponentOptions = {
+	type: keyof typeof Status;
 	icon: Component | false;
 	title: boolean | string;
 	message: boolean | string;

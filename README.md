@@ -1,6 +1,6 @@
 # Vuenotify
 
-Powerful and simple toast notifications for Vue 3.
+Lightweight, simple and powerful toast notifications for Vue 3.
 
 <br />
 
@@ -19,14 +19,16 @@ pnpm add vuenotify
 ```js
 import { notify } from 'vuenotify'
 
-const app = createApp(App).mount('#app')
-
-app.use(notify)
+createApp(App).use(notify).mount('#app')
 ```
 
 **App.vue**
 
 ```vue
+<script setup>
+import { VueNotify } from 'vuenotify'
+</script>
+
 <template>
   <div>
     <VueNotify />
@@ -63,15 +65,23 @@ success.clear()
 ### Error
 
 ```js
-const error = push({ type: 'error', message: 'Something went wrong.' })
+const error = push.error({ message: 'Something went wrong.' })
 
 error.clear()
 ```
 
-### Custom
+### Warning
 
 ```js
-const info = push({ type: 'info', message: 'This is a custom message.' })
+const info = push.warning({ message: 'This is a custom message.' })
+
+info.clear()
+```
+
+### Info
+
+```js
+const info = push.info({ message: 'This is a custom message.' })
 
 info.clear()
 ```
@@ -88,24 +98,28 @@ try {
 }
 ```
 
+### Clear all
+
+```js
+push.clearAll()
+```
+
 <br />
 
 # API
 
 ## \<Notify />
 
-| Prop           | Description | Default          | Type |
-| -------------- | ----------- | ---------------- | ---- |
-| method         | -           | `unshift`        | -    |
-| limit          | -           | 10               | -    |
-| pauseOnHover   | -           | true             | -    |
-| placement      | -           | `top-center`     | -    |
-| position       | -           | `fixed`          | -    |
-| key            | -           | `vue_notify`     | -    |
-| customClass    | -           | `<empty-string>` | -    |
-| noDefaultClass | -           | false            | -    |
-| transitionName | -           | `VueNotify`      | -    |
-| options        | -           | [See below]()    | -    |
+| Prop                | Description | Default       | Type |
+| ------------------- | ----------- | ------------- | ---- |
+| method              | -           | `unshift`     | -    |
+| limit               | -           | 10            | -    |
+| pauseOnHover        | -           | true          | -    |
+| position            | -           | `top-center`  | -    |
+| key                 | -           | `vue_notify`  | -    |
+| transitionName      | -           | `VNRoot`      | -    |
+| transitionGroupName | -           | `VNList`      | -    |
+| options             | -           | [See below]() | -    |
 
 ## push()
 
@@ -177,86 +191,32 @@ import SuccessIcon from './SuccessIcon.vue'
 
 <br />
 
-## Custom Styles
+## Styling
 
-Add a custom class at your convenience:
-
-```jsx
-<Notify customClass="MyClass" />
-```
-
-And the following will be added to each notification block:
-
-| customClass                 | Block                  | Tag      |
-| --------------------------- | ---------------------- | -------- |
-| `.MyClass__container`       | Notification container | `div`    |
-| `.MyClass__icon`            | SVG Icon               | `svg`    |
-| `.MyClass__content`         | Text Container         | `div`    |
-| `.MyClass__content-title`   | Title                  | `h3`     |
-| `.MyClass__content-message` | Message                | `p`      |
-| `.MyClass__button`          | Button                 | `button` |
+| Class                         | Block                  | Tag      |
+| ----------------------------- | ---------------------- | -------- |
+| `.VueNotify__container`       | Notification container | `div`    |
+| `.VueNotify__icon`            | SVG Icon               | `svg`    |
+| `.VueNotify__content`         | Text Container         | `div`    |
+| `.VueNotify__content-title`   | Title                  | `h3`     |
+| `.VueNotify__content-message` | Message                | `p`      |
+| `.VueNotify__button`          | Button                 | `button` |
 
 Each type (`success`, `error`, `promise`, `promise-resolve`, `promise-reject`, `<custom>`) can be styled using `data-vuenotify` attribute.
 
 For example to change background and text color of the success notification:
 
 ```css
-[data-vuenotify='success'] .MyClass__container {
+[data-vuenotify='success'] .VueNotify__container {
   background-color: green;
 }
 
-[data-vuenotify='error'] .MyClass__content-message {
+[data-vuenotify='error'] .VueNotify__content-message {
   color: white;
 }
 ```
 
-Custom classes are added **after** the default ones so you don't have to
-re-work everything nor use `!important`.
-
-However, you might want to style the blocks from scratch hence to remove default classes. You can do so by:
-
-```html
-<Notify :noDefaultClass="true" />
-```
-
-<br />
-
-## Custom Notifications
-
-Add an option with defaults:
-
-```jsx
-<Notify
-  :options="{
-    suggestion: {
-      icon: BulbIcon,
-      title: 'Did you know?'
-      close: true,
-      duration: 5000,
-      ariaLive: 'assertive'
-    }
-  }"
-/>
-```
-
-Edit styles using `data-vuenotify` attribute:
-
-```css
-[data-vuenotify='suggestion'] .MyClass__container {
-  background-color: yellow;
-}
-```
-
-Then start pushing the notification:
-
-```js
-push({
-  type: 'suggestion'
-  message: '...that you can press SPACE to scroll down?',
-})
-```
-
-<br />
+<br/>
 
 ## Custom Components
 
@@ -377,33 +337,6 @@ promise.reject({
   })
 })
 ```
-
-<br />
-
-## Transitions
-
-Vuenotify uses Vue Transitions internally, by defining a transition name in `transitionName` prop:
-
-```jsx
-<Notify transitionName="MyTransition" />
-```
-
-You'll be able to rewrite the transitions as usual:
-
-```css
-.MyTransition-move,
-.MyTransition-enter-active,
-.MyTransition-leave-active {
-  /* styles... */
-}
-
-.MyTransition-enter-from,
-.MyTransition-leave-to {
-  /* styles... */
-}
-```
-
-<details><summary><strong>Default transitions</strong></summary></details>
 
 <br />
 
