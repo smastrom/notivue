@@ -1,42 +1,33 @@
 import { h } from 'vue';
 import { ariaRenderer } from './ariaRenderer';
 import { featherProps, icons, ionProps } from './icons';
-import { Notification } from './types';
-import { getCX as _getCX } from './utils';
+import { getCX as _cx } from './utils';
+import type { Notification } from './types';
 
-export function defaultRenderer(
-	notification: Notification,
-	noDefaultClass: boolean,
-	customClass: string
-) {
-	const getCX = (block: string) => _getCX(block, noDefaultClass, customClass);
-	const _ = null;
+export function defaultRenderer(notification: Notification, customClass: string) {
+	const cx = (block: string) => _cx(block, customClass);
 
 	return h(
 		'div',
 		{
-			class: getCX('notification'),
+			class: cx('notification'),
 			key: notification.id,
 			'data-vuenotify': notification.type,
 		},
 		[
-			h('svg', { 'aria-hidden': true, ...ionProps, class: getCX('icon') }, [
+			h('svg', { 'aria-hidden': true, ...ionProps, class: cx('icon') }, [
 				icons[notification.type] ?? icons.success,
 			]),
 
-			h('div', { class: getCX('content') }, [
-				notification.title ? h('h3', { class: getCX('content-title') }, notification.title) : _,
-				notification.message
-					? h('p', { class: getCX('content-message') }, notification.message)
-					: _,
+			h('div', { class: cx('content') }, [
+				notification.title && h('h3', { class: cx('content-title') }, notification.title),
+				notification.message && h('p', { class: cx('content-message') }, notification.message),
 			]),
 
-			notification.close
-				? h('button', { class: getCX('button'), onClick: notification.clear }, [
-						h('svg', { 'aria-hidden': true, ...featherProps }, [icons.close]),
-				  ])
-				: _,
-
+			notification.close &&
+				h('button', { class: cx('button'), onClick: notification.clear }, [
+					h('svg', { 'aria-hidden': true, ...featherProps }, [icons.close]),
+				]),
 			ariaRenderer(notification),
 		]
 	);

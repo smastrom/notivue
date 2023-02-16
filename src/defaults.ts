@@ -9,7 +9,7 @@ export const successDefault: ComponentOptions = {
 	message: 'Success!',
 	icon: markRaw(icons.success),
 	close: true,
-	duration: 300000 /* 3000 */,
+	duration: 3000,
 	ariaLive: 'polite',
 	ariaRole: 'status',
 };

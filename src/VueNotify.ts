@@ -5,6 +5,7 @@ import {
 	ref,
 	Teleport,
 	toRef,
+	Transition,
 	TransitionGroup,
 	watch,
 	type CSSProperties,
@@ -25,14 +26,13 @@ export const VueNotify = defineComponent({
 		limit: { type: Number as PropType<Props['limit']>, default: 10 },
 		pauseOnHover: { type: Boolean as PropType<Props['pauseOnHover']>, default: true },
 		customClass: { type: String as PropType<Props['customClass']>, default: '' },
-		noDefaultClass: { type: Boolean as PropType<Props['noDefaultClass']>, default: false },
 		margin: { type: Object as PropType<Props['margin']>, default: () => ({ y: 30, x: 30 }) },
 		maxWidth: { type: Number as PropType<Props['maxWidth']>, default: 1280 },
 		placement: { type: String as PropType<Props['placement']>, default: 'bottom-right' },
 		options: { type: Object as PropType<Props['options']>, default: () => ({}) },
 		transitionName: { type: String as PropType<Props['transitionName']>, default: 'VueNotify' },
 	},
-	setup(props: Props) {
+	setup(props) {
 		const { notifications, incoming } = useReceiver(props.key);
 
 		const isHovering = ref(false);
@@ -44,7 +44,14 @@ export const VueNotify = defineComponent({
 		// Watchers
 
 		watch(incoming, (_options) => {
-			let customH: Pick<Notification, 'userProps' | 'component' | 'renderFn'> = {
+			if (
+				notifications.length >= props.limit &&
+				notifications[notifications.length - 1].type !== 'promise'
+			) {
+				notifications[props.method === 'unshift' ? 'pop' : 'shift']();
+			}
+
+			let customRender: Pick<Notification, 'userProps' | 'component' | 'renderFn'> = {
 				userProps: {},
 				component: undefined,
 				renderFn: undefined,
@@ -53,14 +60,7 @@ export const VueNotify = defineComponent({
 			const options = mergeOptions(_options.type, props.options, _options);
 			const createdAt = performance.now();
 
-			if (
-				notifications.length >= props.limit &&
-				notifications[notifications.length - 1].type !== Status.PROMISE
-			) {
-				notifications[props.method === 'unshift' ? 'pop' : 'shift']();
-			}
-
-			if ([Status.PROMISE_RESOLVE, Status.PROMISE_REJECT].includes(options.type)) {
+			if (options.type.includes('promise-')) {
 				const currIndex = notifications.findIndex((data) => data.id === options.id);
 				const prevComponent = notifications[currIndex]?.component;
 
@@ -72,32 +72,34 @@ export const VueNotify = defineComponent({
 						prevProps,
 					};
 
-					customH = {
+					customRender = {
 						userProps: options.render?.props?.(nextProps) ?? {},
 						component: options.render?.component ?? prevComponent,
-						renderFn: () => h(customH.component ?? {}, { ...customH.userProps, key: options.id }),
+						renderFn: () =>
+							h(customRender.component ?? {}, { ...customRender.userProps, key: options.id }),
 					};
 				}
 
 				notifications[currIndex] = {
 					...notifications[currIndex],
 					...options,
-					...customH,
+					...customRender,
 					timeoutId: isHovering.value ? undefined : createTimeout(options.id, options.duration),
 					createdAt,
 				};
 			} else {
 				if (options.render?.component) {
-					customH = {
+					customRender = {
 						userProps: options.render?.props?.(getNotifyProps(options)) ?? {},
 						component: options.render.component,
-						renderFn: () => h(customH.component ?? {}, { ...customH.userProps, key: options.id }),
+						renderFn: () =>
+							h(customRender.component ?? {}, { ...customRender.userProps, key: options.id }),
 					};
 				}
 
 				notifications[props.method]({
 					...options,
-					...customH,
+					...customRender,
 					timeoutId:
 						options.type === Status.PROMISE
 							? undefined
@@ -113,46 +115,47 @@ export const VueNotify = defineComponent({
 			(newLen) => newLen && (isHovering.value = false)
 		);
 
-		// Methods
+		// Fns
+
+		function clear(id: string) {
+			const index = notifications.findIndex((data) => data.id === id);
+			notifications.splice(index, 1);
+		}
+
+		function createTimeout(id: string, time: number) {
+			return setTimeout(() => {
+				notifications.find((data) => data.id === id)?.clear();
+			}, time);
+		}
 
 		function getNotifyProps({ title, message, type, id }: UserOptionsWithInternals) {
 			return { notifyProps: { title, message, type, close: () => clear(id) } };
 		}
 
-		function createTimeout(id: string, time: number) {
-			return setTimeout(() => {
-				clear(id);
-			}, time);
-		}
-
-		function clear(id: string) {
-			const toRemove = notifications.findIndex((data) => data.id === id);
-			notifications.splice(toRemove, 1);
-		}
-
 		// Props
 
-		const rootStyles: CSSProperties = {
+		const wrapperStyles: CSSProperties = {
 			pointerEvents: 'none',
 			position: 'fixed',
 			width: '100%',
+			height: '100%',
 			display: 'flex',
 			justifyContent: 'center',
+			boxSizing: 'border-box',
 		};
 
-		const rootContStyles = computed<CSSProperties>(() => ({
+		const containerStyles = computed<CSSProperties>(() => ({
 			padding: `${margin.value.y}px ${margin.value.x}px`,
-			width: `${maxWidth.value}px`,
-			maxWidth: '100%',
+			maxWidth: `${maxWidth.value}px`,
+			width: '100%',
 			boxSizing: 'border-box',
-			display: 'flex',
-			flexDirection: 'column',
-			alignItems: placement.value.includes('top') ? 'flex-start' : 'flex-end',
-			justifyContent: placement.value.includes('right')
-				? 'flex-end'
+			display: 'grid',
+			alignItems: placement.value.includes('top') ? 'start' : 'end',
+			justifyItems: placement.value.includes('right')
+				? 'end'
 				: placement.value.includes('left')
-				? 'flex-start'
-				: 'flex-center',
+				? 'start'
+				: 'center',
 		}));
 
 		const pointerEvts = {
@@ -194,19 +197,45 @@ export const VueNotify = defineComponent({
 			},
 		};
 
+		const x = {
+			display: 'flex',
+			flexDirection: 'column',
+			justifyContent: 'center',
+		};
+
 		return () =>
 			h(Teleport, { to: 'body' }, [
-				h('div', { style: rootStyles }, [
-					h('div', { style: rootContStyles.value, ...(props.pauseOnHover ? pointerEvts : {}) }, [
-						h(TransitionGroup, { name: 'list' }, () =>
-							notifications.map(
-								(data) =>
-									data.renderFn?.() ??
-									defaultRenderer(data, props.noDefaultClass, props.customClass)
-							)
-						),
-					]),
-				]),
+				h(
+					Transition,
+					{
+						name: 'VNRoot',
+						onBeforeEnter(el) {
+							const { marginLeft, marginTop, width, height } = window.getComputedStyle(el);
+						},
+					},
+					() =>
+						notifications.length > 0 && [
+							h('div', { style: wrapperStyles }, [
+								h('div', { style: containerStyles.value }, [
+									h(
+										'div',
+										{
+											style: { pointerEvents: 'all', boxSizing: 'border-box' },
+											...(props.pauseOnHover ? pointerEvts : {}),
+											...(props.key ? { 'data-vuenotify-key': props.key } : {}),
+										},
+										[
+											h(TransitionGroup, { name: 'VNList' }, () =>
+												notifications.map(
+													(data) => data.renderFn?.() ?? defaultRenderer(data, props.customClass)
+												)
+											),
+										]
+									),
+								]),
+							]),
+						]
+				),
 			]);
 	},
 });
