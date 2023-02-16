@@ -14,8 +14,6 @@ export function mergeOptions(
 	return { ...defaultOptions[type], ...componentOptions[type], ...incomingOptions };
 }
 
-export function getCX(block: string, noDefaultClass: boolean, customClass?: string): string {
-	return `${noDefaultClass ? '' : `VueNotify__${block}`} ${
-		customClass ? `${customClass}_${block}` : ''
-	}`.trim();
+export function getCX(block: string, customClass?: string): string {
+	return `VueNotify__${block} ${customClass ? `${customClass}_${block}` : ''}`.trim();
 }
