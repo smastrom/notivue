@@ -43,15 +43,14 @@ const svgProps = {
 
 export const ionProps = {
 	...svgProps,
-	viewBox: '0 0 12 12',
 	fill: 'currentColor',
+	viewBox: '0 0 12 12',
 };
 
 export const featherProps = {
 	...svgProps,
-	viewBox: '0 0 24 24',
-	fill: 'none',
 	stroke: 'currentColor',
+	viewBox: '0 0 24 24',
 	'stroke-width': 2,
 	'stroke-linecap': 'round',
 	'stroke-linejoin': 'round',
