@@ -1,4 +1,3 @@
-import './css/core.css';
 import './css/blocks.css';
 import './css/transitions.css';
 
