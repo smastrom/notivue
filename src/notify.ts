@@ -20,7 +20,7 @@ export const notify: Plugin = {
 
 		notifySyms.forEach((sym) => {
 			receivers.set(sym, {
-				notifications: shallowReactive([]),
+				items: shallowReactive([]),
 				incoming: shallowRef({}) as ReceiverT['incoming'],
 				push: () => createPush(receivers.get(sym) as ReceiverT),
 			});

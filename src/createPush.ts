@@ -12,11 +12,11 @@ export function createPush(receiver: Receiver): PushFn {
 	}
 
 	function clear(id: string) {
-		receiver.notifications.find((notification) => notification.id === id)?.clear();
+		receiver.items.find((notification) => notification.id === id)?.clear();
 	}
 
 	function clearAll() {
-		receiver.notifications.length = 0;
+		receiver.items.length = 0;
 	}
 
 	function push(options: Options) {
