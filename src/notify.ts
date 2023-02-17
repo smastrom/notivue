@@ -1,4 +1,4 @@
-import { shallowRef, type Plugin, type InjectionKey, shallowReactive } from 'vue';
+import { shallowReactive, shallowRef, type Plugin, type InjectionKey } from 'vue';
 import { VueNotify } from './VueNotify';
 import { createPush } from './createPush';
 import { notifySyms, userSyms } from './symbols';
@@ -8,14 +8,14 @@ import type { PluginOptions, Receiver } from './types';
 export const notify: Plugin = {
 	install(
 		app,
-		{ name = COMPONENT_NAME, keys = [] }: PluginOptions = {
+		{ name = COMPONENT_NAME, additionalReceivers = [] }: PluginOptions = {
 			name: COMPONENT_NAME,
-			keys: [],
+			additionalReceivers: [],
 		}
 	) {
 		const receivers = new Map<InjectionKey<Receiver>, Receiver>();
 
-		keys.forEach((key) => {
+		additionalReceivers.forEach((key) => {
 			userSyms[key.toString()] = Symbol(key.toString());
 		});
 

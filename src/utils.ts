@@ -4,7 +4,7 @@ import type { Ref } from 'vue';
 import type { UserOptions, UserOptionsWithInternals, ComponentProps } from './types';
 
 export function createID() {
-	return crypto ? crypto.randomUUID() : (Math.random() + 1).toString(36).substring(7);
+	return (Math.random() + 1).toString(36).substring(7);
 }
 
 export function mergeOptions(
@@ -16,11 +16,11 @@ export function mergeOptions(
 }
 
 /**
- * This calculates proper transform-origin just right after the root element has been mounted,
- * in order to avoid undesidered flying animations.
+ * This calculates proper transform-origin just right after the root
+ * element has been mounted, in order to avoid undesidered flying animations.
  * Prevents this to happen https://github.com/vuejs/vue/issues/11654.
  */
-export function calcOrigin(el: HTMLElement, placement: Ref<ComponentProps['placement']>) {
+export function getOrigin(el: HTMLElement, placement: Ref<ComponentProps['placement']>) {
 	const notification = el.children[0].children[0]?.children[0];
 
 	if (!notification) {
