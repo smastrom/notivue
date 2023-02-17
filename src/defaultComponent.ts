@@ -22,7 +22,11 @@ export function defaultComponent(notification: Notification) {
 			]),
 
 			notification.close &&
-				h('button', { class: CLASS_PREFIX + 'close', onClick: notification.clear }, [icons.close]),
+				h(
+					'button',
+					{ class: CLASS_PREFIX + 'close', ariaLabel: 'Close', onClick: notification.clear },
+					[icons.close]
+				),
 		]
 	);
 }

@@ -22,11 +22,11 @@ export type ComponentProps = {
 	position: Position;
 	maxWidth: number;
 	id: string;
-	rootMargin: { x: number; y: number };
+	rootMargin: string;
 	transitionName: string;
 	transitionGroupName: string;
 	options: Partial<Record<`${Type}`, Partial<ComponentOptions>>>;
-	closeAriaLabel: string;
+	theme: Record<`--${string}`, string>;
 };
 
 export type ComponentOptions = {

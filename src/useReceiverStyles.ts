@@ -27,12 +27,11 @@ export function useReceiverStyles({ rootMargin, maxWidth, position }: Params) {
 	const containerStyles = computed<CSSProperties>(() => ({
 		...brBox,
 		...(maxWidth.value ? { maxWidth: `${maxWidth.value}px` } : {}),
-		padding: `${is('top') ? rootMargin.value.y : 0}px ${is('right') ? rootMargin.value.x : 0}px
-			${is('bottom') ? rootMargin.value.y : 0}px ${is('left') ? rootMargin.value.x : 0}px`,
+		padding: rootMargin.value,
 		alignItems: is('top') ? 'start' : 'end',
-		justifyItems: is('right') ? 'end' : is('left') ? 'start' : 'center',
+		justifyContent: is('right') ? 'end' : is('left') ? 'start' : 'center',
 		width: '100%',
-		display: 'grid',
+		display: 'flex',
 	}));
 
 	return { wrapperStyles, containerStyles, hoverAreaStyles };
