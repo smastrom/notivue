@@ -3,7 +3,7 @@ import type { Ref } from 'vue';
 import type { UserOptions, MergedOptions, ComponentProps, InternalPushOptions } from './types';
 
 export function createID() {
-	return (Math.random() + 1).toString(36).substring(7);
+	return crypto ? crypto.randomUUID() : (Math.random() + 1).toString(36).substring(7);
 }
 
 export function mergeOptions(

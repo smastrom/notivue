@@ -1,13 +1,12 @@
 .VueNotify__notification {
 	background: white;
 	margin: 0 auto 0.875rem auto;
-	padding: 0.625rem 0 0.625em 0.625rem;
-	max-width: 100%;
-	width: 375px;
+	padding: 0.625rem;
+	width: 100%;
+	max-width: 375px;
 	border-radius: 0.75rem;
 	display: grid;
 	grid-template-columns: auto 1fr auto;
-	gap: 0.875rem;
 	border: 1px solid #dedede;
 	justify-items: start;
 	align-items: center;
@@ -43,6 +42,7 @@
 
 .VueNotify__icon {
 	display: flex;
+	margin: 0 0.875rem 0 0;
 }
 
 [data-vuenotify='success'] .VueNotify__icon,
@@ -65,24 +65,26 @@
 
 /* Right */
 
-.VueNotify__button {
+.VueNotify__close {
+	left: 0.625rem;
+	position: relative;
 	border: none;
+	margin: 0;
 	border-left: 1px solid #dedede;
 	border-radius: 0;
 	background: none;
 	padding: 0.875rem;
-	margin: 0;
 	opacity: 0.5;
 	height: 100%;
 }
 
-.VueNotify__button svg {
+.VueNotify__close-icon {
 	display: flex;
 	opacity: 0.5;
 	fill: #8e8e8e;
 }
 
-.VueNotify__button:hover svg {
+.VueNotify__close:hover .VueNotify__close-icon {
 	opacity: 1;
 }
 
