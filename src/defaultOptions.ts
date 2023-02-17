@@ -1,9 +1,9 @@
 import { markRaw } from 'vue';
 import { NType } from './constants';
 import { icons } from './icons';
-import type { ComponentOptions } from './types';
+import type { ReceiverOptions } from './types';
 
-export const success: ComponentOptions = {
+export const success: ReceiverOptions = {
 	title: 'Success!',
 	message: '',
 	icon: markRaw(icons.success),
@@ -13,7 +13,7 @@ export const success: ComponentOptions = {
 	ariaRole: 'status',
 };
 
-const error: ComponentOptions = {
+const error: ReceiverOptions = {
 	...success,
 	icon: markRaw(icons.error),
 	duration: 6000,
@@ -22,26 +22,26 @@ const error: ComponentOptions = {
 	ariaRole: 'alert',
 };
 
-const promise: ComponentOptions = {
+const promise: ReceiverOptions = {
 	...success,
 	icon: markRaw(icons.promise),
 	title: 'Loading...',
 	close: false,
 };
 
-const warning: ComponentOptions = {
+const warning: ReceiverOptions = {
 	...error,
 	icon: markRaw(icons.warning),
 	title: 'Warning!',
 };
 
-const info: ComponentOptions = {
+const info: ReceiverOptions = {
 	...success,
 	icon: markRaw(icons.info),
 	title: 'Info!',
 };
 
-export const defaultOptions: Record<`${NType}`, ComponentOptions> = {
+export const defaultOptions: Record<`${NType}`, ReceiverOptions> = {
 	[NType.SUCCESS]: success,
 	[NType.ERROR]: error,
 	[NType.WARNING]: warning,
