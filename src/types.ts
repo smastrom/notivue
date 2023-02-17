@@ -15,7 +15,7 @@ export enum Type {
 	PROMISE_REJECT = 'promise-reject',
 }
 
-type Placement =
+export type Position =
 	| 'top-left'
 	| 'top-center'
 	| 'top-right'
@@ -28,10 +28,10 @@ export type ComponentProps = {
 	method: 'unshift' | 'push';
 	limit: number;
 	pauseOnHover: boolean;
-	placement: Placement;
+	position: Position;
 	maxWidth: number;
 	id: string;
-	margin: { x: number; y: number };
+	rootMargin: { x: number; y: number };
 	transitionName: string;
 	transitionGroupName: string;
 	options: Record<`${Type}`, Partial<ComponentOptions>>;

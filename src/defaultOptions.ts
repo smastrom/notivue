@@ -53,7 +53,7 @@ export const defaultOptions: Record<`${Type}`, ComponentOptions> = {
 	[Type.SUCCESS]: success,
 	[Type.ERROR]: error,
 	[Type.WARNING]: error,
-	[Type.INFO]: error,
+	[Type.INFO]: info,
 	[Type.PROMISE]: promiseDefault,
 	[Type.PROMISE_RESOLVE]: promiseResolve,
 	[Type.PROMISE_REJECT]: promiseReject,
