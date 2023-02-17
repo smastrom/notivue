@@ -7,6 +7,6 @@ import '../src/style.css';
 
 createApp(App)
 	.use(notify, {
-		keys: ['user1', 'user2'],
+		additionalReceivers: ['user-1'],
 	})
 	.mount('#app');

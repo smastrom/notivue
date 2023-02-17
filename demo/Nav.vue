@@ -2,10 +2,12 @@
 import { markRaw } from 'vue';
 import { ComponentProps } from '../src/types';
 import { useNotify } from '../src/useNotify';
-import { settings } from './useSettings';
+import { settings } from './store';
 import Custom from './Custom.vue';
 
 const push = useNotify();
+
+const pushToUser = useNotify('user-1');
 
 function getRandomInt(min: number, max: number) {
 	min = Math.ceil(min);
@@ -70,11 +72,22 @@ async function customAsync() {
 function setPosition(placement: ComponentProps['placement']) {
 	settings.placement = placement;
 }
+
+function setWidth() {
+	settings.maxWidth = settings.maxWidth === 1280 ? 0 : 1280;
+}
+
+function toggleEnable() {
+	settings.disabled = !settings.disabled;
+}
 </script>
 
 <template>
 	<nav>
 		<div>
+			<button @click="setWidth">
+				{{ settings.maxWidth === 1280 ? 'Full Width' : 'Container Width' }}
+			</button>
 			<button @click="setPosition('top-left')">Top Left</button>
 			<button @click="setPosition('top-center')">Top Center</button>
 			<button @click="setPosition('top-right')">Top Right</button>
@@ -84,6 +97,13 @@ function setPosition(placement: ComponentProps['placement']) {
 		</div>
 
 		<div>
+			<button @click="pushToUser({ message: 'Your message has been successfully sent. Please.' })">
+				To User
+			</button>
+			<button @click="toggleEnable">
+				{{ settings.disabled ? 'Enable' : 'Disable' }}
+			</button>
+
 			<button @click="push({ message: 'Your message has been successfully sent. Please.' })">
 				Success
 			</button>

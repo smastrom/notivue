@@ -11,7 +11,7 @@ import {
 } from 'vue';
 import { useReceiver } from './useReceiver';
 import { useReceiverStyles } from './useReceiverStyles';
-import { calcOrigin, mergeOptions } from './utils';
+import { getOrigin, mergeOptions } from './utils';
 import { FIXED_INCREMENT, Status } from './constants';
 import { defaultComponent } from './defaultComponent';
 import type { ComponentProps as Props, UserOptionsWithInternals, Notification } from './types';
@@ -20,8 +20,8 @@ export const VueNotify = defineComponent({
 	name: 'VueNotify',
 	inheritAttrs: false,
 	props: {
-		key: {
-			type: String as PropType<Props['key']>,
+		id: {
+			type: String as PropType<Props['id']>,
 			default: '',
 		},
 		method: {
@@ -36,35 +36,44 @@ export const VueNotify = defineComponent({
 			type: Boolean as PropType<Props['pauseOnHover']>,
 			default: true,
 		},
+		disabled: {
+			type: Boolean as PropType<Props['disabled']>,
+			default: false,
+		},
 		margin: {
 			type: Object as PropType<Props['margin']>,
 			default: () => ({ y: 30, x: 30 }),
 		},
 		maxWidth: {
 			type: Number as PropType<Props['maxWidth']>,
-			default: 1280,
+			default: 0,
 		},
 		placement: {
 			type: String as PropType<Props['placement']>,
-			default: 'top-right',
+			default: 'top-center',
+		},
+		transitionName: {
+			type: String as PropType<Props['transitionName']>,
+			default: 'VNRoot',
+		},
+		transitionGroupName: {
+			type: String as PropType<Props['transitionGroupName']>,
+			default: 'VNList',
 		},
 		options: {
 			type: Object as PropType<Props['options']>,
 			default: () => ({}),
-		},
-		transitionName: {
-			type: String as PropType<Props['transitionName']>,
-			default: 'VueNotify',
 		},
 	},
 	setup(props) {
 		const placement = toRef(props, 'placement');
 		const margin = toRef(props, 'margin');
 		const maxWidth = toRef(props, 'maxWidth');
+		const disabled = toRef(props, 'disabled');
 
 		const isHovering = ref(false);
 
-		const { notifications, incoming } = useReceiver(props.key);
+		const { notifications, incoming } = useReceiver(props.id);
 		const { wrapperStyles, containerStyles, hoverAreaStyles } = useReceiverStyles({
 			margin,
 			maxWidth,
@@ -73,76 +82,14 @@ export const VueNotify = defineComponent({
 
 		// Watchers
 
-		watch(incoming, (_options) => {
-			if (
-				notifications.length >= props.limit &&
-				notifications[notifications.length - 1].type !== Status.PROMISE
-			) {
-				notifications[props.method === 'unshift' ? 'pop' : 'shift']();
-			}
+		let unsubscribe = subscribe();
 
-			let customRender: Pick<Notification, 'userProps' | 'component' | 'renderFn'> = {
-				component: undefined,
-				userProps: {},
-				renderFn: undefined,
-			};
-
-			const options = mergeOptions(_options.type, props.options, _options);
-			const createdAt = performance.now();
-
-			if (options.type.includes('promise-')) {
-				const currIndex = notifications.findIndex((data) => data.id === options.id);
-				const prevComponent = notifications[currIndex]?.component;
-
-				if (prevComponent) {
-					const { title, message, type, close, ...prevProps } = notifications[currIndex].userProps;
-
-					const nextProps = {
-						...getNotifyProps(options),
-						prevProps,
-					};
-
-					customRender = {
-						userProps: options.render?.props?.(nextProps) ?? {},
-						component: options.render?.component ?? prevComponent,
-						renderFn: () =>
-							h(customRender.component ?? {}, {
-								...customRender.userProps,
-								key: options.id,
-							}),
-					};
-				}
-
-				notifications[currIndex] = {
-					...notifications[currIndex],
-					...options,
-					...customRender,
-					timeoutId: isHovering.value ? undefined : createTimeout(options.id, options.duration),
-					createdAt,
-				};
+		watch(disabled, (isDisabled) => {
+			if (isDisabled) {
+				notifications.length = 0;
+				unsubscribe();
 			} else {
-				if (options.render?.component) {
-					customRender = {
-						userProps: options.render?.props?.(getNotifyProps(options)) ?? {},
-						component: options.render.component,
-						renderFn: () =>
-							h(customRender.component ?? {}, {
-								...customRender.userProps,
-								key: options.id,
-							}),
-					};
-				}
-
-				notifications[props.method]({
-					...options,
-					...customRender,
-					timeoutId:
-						options.type === Status.PROMISE
-							? undefined
-							: createTimeout(options.id, options.duration),
-					clear: () => clear(options.id),
-					createdAt,
-				} as Notification);
+				unsubscribe = subscribe();
 			}
 		});
 
@@ -151,6 +98,82 @@ export const VueNotify = defineComponent({
 			(newLen) => newLen && (isHovering.value = false),
 			{ flush: 'post' }
 		);
+
+		function subscribe() {
+			return watch(incoming, (_options) => {
+				if (
+					notifications.length >= props.limit &&
+					notifications[notifications.length - 1].type !== Status.PROMISE
+				) {
+					notifications[props.method === 'unshift' ? 'pop' : 'shift']();
+				}
+
+				let customRender: Pick<Notification, 'userProps' | 'component' | 'renderFn'> = {
+					component: undefined,
+					userProps: {},
+					renderFn: undefined,
+				};
+
+				const options = mergeOptions(_options.type, props.options, _options);
+				const createdAt = performance.now();
+
+				if (options.type.includes('promise-')) {
+					const currIndex = notifications.findIndex((data) => data.id === options.id);
+					const prevComponent = notifications[currIndex]?.component;
+
+					if (prevComponent) {
+						const { title, message, type, close, ...prevProps } =
+							notifications[currIndex].userProps;
+
+						const nextProps = {
+							...getNotifyProps(options),
+							prevProps,
+						};
+
+						customRender = {
+							userProps: options.render?.props?.(nextProps) ?? {},
+							component: options.render?.component ?? prevComponent,
+							renderFn: () =>
+								h(customRender.component ?? {}, {
+									...customRender.userProps,
+									key: options.id,
+								}),
+						};
+					}
+
+					notifications[currIndex] = {
+						...notifications[currIndex],
+						...options,
+						...customRender,
+						timeoutId: isHovering.value ? undefined : createTimeout(options.id, options.duration),
+						createdAt,
+					};
+				} else {
+					if (options.render?.component) {
+						customRender = {
+							userProps: options.render?.props?.(getNotifyProps(options)) ?? {},
+							component: options.render.component,
+							renderFn: () =>
+								h(customRender.component ?? {}, {
+									...customRender.userProps,
+									key: options.id,
+								}),
+						};
+					}
+
+					notifications[props.method]({
+						...options,
+						...customRender,
+						timeoutId:
+							options.type === Status.PROMISE
+								? undefined
+								: createTimeout(options.id, options.duration),
+						clear: () => clear(options.id),
+						createdAt,
+					} as Notification);
+				}
+			});
+		}
 
 		// Fns
 
@@ -168,6 +191,8 @@ export const VueNotify = defineComponent({
 		function getNotifyProps({ title, message, type, id }: UserOptionsWithInternals) {
 			return { notifyProps: { title, message, type, close: () => clear(id) } };
 		}
+
+		// Props
 
 		const pointerEvts = {
 			onPointerenter() {
@@ -212,9 +237,9 @@ export const VueNotify = defineComponent({
 				h(
 					Transition,
 					{
-						name: 'VNRoot',
+						name: props.transitionName,
 						onEnter(el) {
-							(el as HTMLElement).style.transformOrigin = calcOrigin(el as HTMLElement, placement);
+							(el as HTMLElement).style.transformOrigin = getOrigin(el as HTMLElement, placement);
 						},
 					},
 					() =>
@@ -226,10 +251,10 @@ export const VueNotify = defineComponent({
 										{
 											style: hoverAreaStyles,
 											...(props.pauseOnHover ? pointerEvts : {}),
-											...(props.key ? { 'data-vuenotify-key': props.key } : {}),
+											...(props.id ? { 'data-vuenotify': props.id } : {}),
 										},
 										[
-											h(TransitionGroup, { name: 'VNList' }, () =>
+											h(TransitionGroup, { name: props.transitionGroupName }, () =>
 												notifications.map(
 													(notification) =>
 														notification.renderFn?.() ?? defaultComponent(notification)
