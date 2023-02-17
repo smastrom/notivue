@@ -26,6 +26,7 @@ export type ComponentProps = {
 	transitionName: string;
 	transitionGroupName: string;
 	options: Partial<Record<`${Type}`, Partial<ComponentOptions>>>;
+	closeAriaLabel: string;
 };
 
 export type ComponentOptions = {

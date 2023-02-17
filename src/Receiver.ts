@@ -13,6 +13,7 @@ import { useReceiverStyles } from './useReceiverStyles';
 import { getOrigin, mergeOptions } from './utils';
 import { Type, FIXED_INCREMENT } from './constants';
 import { defaultComponent } from './defaultComponent';
+import { defaultOptions } from './defaultOptions';
 import { ariaLive } from './ariaLive';
 import type { ComponentProps as Props, MergedOptions, Notification } from './types';
 
@@ -62,7 +63,11 @@ export const Receiver = defineComponent({
 		},
 		options: {
 			type: Object as PropType<Props['options']>,
-			default: () => ({}),
+			default: () => defaultOptions,
+		},
+		closeAriaLabel: {
+			type: String as PropType<Props['closeAriaLabel']>,
+			default: 'Close',
 		},
 	},
 	setup(props) {
@@ -97,9 +102,7 @@ export const Receiver = defineComponent({
 
 		watch(
 			() => items.length === 0,
-			(newLen) => {
-				newLen && (isHovering = false);
-			},
+			(newLen) => newLen && (isHovering = false),
 			{ flush: 'post' }
 		);
 
