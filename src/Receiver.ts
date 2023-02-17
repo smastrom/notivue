@@ -13,6 +13,7 @@ import { useReceiverStyles } from './useReceiverStyles';
 import { getOrigin, mergeOptions } from './utils';
 import { Type, FIXED_INCREMENT } from './constants';
 import { defaultComponent } from './defaultComponent';
+import { ariaLive } from './ariaLive';
 import type { ComponentProps as Props, MergedOptions, Notification } from './types';
 
 export const Receiver = defineComponent({
@@ -74,7 +75,7 @@ export const Receiver = defineComponent({
 		const maxWidth = toRef(props, 'maxWidth');
 		const disabled = toRef(props, 'disabled');
 
-		const { notifications, incoming } = useReceiver(props.id);
+		const { items, incoming } = useReceiver(props.id);
 		const { wrapperStyles, containerStyles, hoverAreaStyles } = useReceiverStyles({
 			rootMargin,
 			maxWidth,
@@ -87,7 +88,7 @@ export const Receiver = defineComponent({
 
 		watch(disabled, (isDisabled) => {
 			if (isDisabled) {
-				notifications.length = 0;
+				items.length = 0;
 				unsubscribe();
 			} else {
 				unsubscribe = subscribe();
@@ -95,7 +96,7 @@ export const Receiver = defineComponent({
 		});
 
 		watch(
-			() => notifications.length === 0,
+			() => items.length === 0,
 			(newLen) => {
 				newLen && (isHovering = false);
 			},
@@ -106,11 +107,13 @@ export const Receiver = defineComponent({
 
 		function subscribe() {
 			return watch(incoming, (_options) => {
+				const isUnshift = props.method === 'unshift';
+
 				if (
-					notifications.length >= props.limit &&
-					notifications[notifications.length - 1].type !== Type.PROMISE
+					items.length >= props.limit &&
+					items[isUnshift ? items.length - 1 : 0].type !== Type.PROMISE
 				) {
-					notifications[props.method === 'unshift' ? 'pop' : 'shift']();
+					items[isUnshift ? 'pop' : 'shift']();
 				}
 
 				let customRender: Pick<Notification, 'userProps' | 'component' | 'renderFn'> = {
@@ -122,18 +125,16 @@ export const Receiver = defineComponent({
 				const options = mergeOptions(props.options, _options);
 				const createdAt = performance.now();
 
-				if (options.type.includes('promise-')) {
-					const currIndex = notifications.findIndex((data) => data.id === options.id);
-					const prevComponent = notifications[currIndex]?.component;
+				if (
+					options.type.includes(Type.PROMISE_REJECT) ||
+					options.type.includes(Type.PROMISE_RESOLVE)
+				) {
+					const currIndex = items.findIndex((data) => data.id === options.id);
+					const prevComponent = items[currIndex]?.component;
 
 					if (prevComponent) {
-						const { title, message, type, close, ...prevProps } =
-							notifications[currIndex].userProps;
-
-						const nextProps = {
-							...getNotifyProps(options),
-							prevProps,
-						};
+						const { title, message, type, close, ...prevProps } = items[currIndex].userProps;
+						const nextProps = { ...getNotifyProps(options), prevProps };
 
 						customRender = {
 							userProps: options.render?.props?.(nextProps) ?? {},
@@ -146,8 +147,8 @@ export const Receiver = defineComponent({
 						};
 					}
 
-					notifications[currIndex] = {
-						...notifications[currIndex],
+					items[currIndex] = {
+						...items[currIndex],
 						...options,
 						...customRender,
 						timeoutId: isHovering ? undefined : createTimeout(options.id, options.duration),
@@ -155,7 +156,6 @@ export const Receiver = defineComponent({
 					};
 				} else {
 					if (options.render?.component) {
-						console.log(options.render?.component);
 						customRender = {
 							userProps: options.render?.props?.(getNotifyProps(options)) ?? {},
 							component: options.render.component,
@@ -167,7 +167,7 @@ export const Receiver = defineComponent({
 						};
 					}
 
-					notifications[props.method]({
+					items[props.method]({
 						...options,
 						...customRender,
 						timeoutId:
@@ -181,15 +181,15 @@ export const Receiver = defineComponent({
 			});
 		}
 
-		function clear(id: string) {
-			const index = notifications.findIndex((data) => data.id === id);
-			notifications.splice(index, 1);
-		}
-
 		function createTimeout(id: string, time: number) {
 			return setTimeout(() => {
-				notifications.find((data) => data.id === id)?.clear();
+				items.find((data) => data.id === id)?.clear();
 			}, time);
+		}
+
+		function clear(id: string) {
+			const index = items.findIndex((data) => data.id === id);
+			items.splice(index, 1);
 		}
 
 		function getNotifyProps({ title, message, type, id }: MergedOptions) {
@@ -200,15 +200,15 @@ export const Receiver = defineComponent({
 
 		const pointerEvts = {
 			onPointerenter() {
-				if (notifications.length > 0 && !isHovering) {
+				if (items.length > 0 && !isHovering) {
 					isHovering = true;
 
 					const stoppedAt = performance.now();
 
-					notifications.forEach((prevData, currIndex) => {
-						clearTimeout(notifications[currIndex].timeoutId);
+					items.forEach((prevData, currIndex) => {
+						clearTimeout(items[currIndex].timeoutId);
 
-						notifications[currIndex] = {
+						items[currIndex] = {
 							...prevData,
 							stoppedAt,
 							elapsed: stoppedAt - prevData.createdAt + (prevData.elapsed ?? 0),
@@ -217,11 +217,11 @@ export const Receiver = defineComponent({
 				}
 			},
 			onPointerleave() {
-				if (notifications.length > 0 && isHovering) {
-					notifications.forEach((prevData, currIndex) => {
+				if (items.length > 0 && isHovering) {
+					items.forEach((prevData, currIndex) => {
 						const newTimeout = prevData.duration + FIXED_INCREMENT - prevData.elapsed;
 
-						notifications[currIndex] = {
+						items[currIndex] = {
 							...prevData,
 							createdAt: performance.now(),
 							timeoutId:
@@ -245,7 +245,7 @@ export const Receiver = defineComponent({
 						},
 					},
 					() =>
-						notifications.length > 0 && [
+						items.length > 0 && [
 							h('div', { style: wrapperStyles }, [
 								h('div', { style: containerStyles.value }, [
 									h(
@@ -257,10 +257,12 @@ export const Receiver = defineComponent({
 										},
 										[
 											h(TransitionGroup, { name: props.transitionGroupName }, () =>
-												notifications.map(
-													(notification) =>
-														notification.renderFn?.() ?? defaultComponent(notification)
-												)
+												items.map((item) => [
+													h('div', { key: item.id }, [
+														item.renderFn?.() ?? defaultComponent(item),
+														ariaLive(item),
+													]),
+												])
 											),
 										]
 									),

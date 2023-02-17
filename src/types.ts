@@ -70,7 +70,7 @@ type MaybeRender<T> = {
 };
 
 export type Receiver = {
-	notifications: Notification[];
+	items: Notification[];
 	incoming: Ref<UserOptions & InternalPushOptions>;
 	push: () => PushFn;
 };
