@@ -16,7 +16,7 @@ import { FIXED_INCREMENT, Status } from './constants';
 import { defaultComponent } from './defaultComponent';
 import type { ComponentProps as Props, UserOptionsWithInternals, Notification } from './types';
 
-export const VueNotify = defineComponent({
+export const Receiver = defineComponent({
 	name: 'VueNotify',
 	inheritAttrs: false,
 	props: {
@@ -71,8 +71,6 @@ export const VueNotify = defineComponent({
 		const maxWidth = toRef(props, 'maxWidth');
 		const disabled = toRef(props, 'disabled');
 
-		const isHovering = ref(false);
-
 		const { notifications, incoming } = useReceiver(props.id);
 		const { wrapperStyles, containerStyles, hoverAreaStyles } = useReceiverStyles({
 			margin,
@@ -80,9 +78,9 @@ export const VueNotify = defineComponent({
 			placement,
 		});
 
-		// Watchers
+		const isHovering = ref(false);
 
-		let unsubscribe = subscribe();
+		// Watchers
 
 		watch(disabled, (isDisabled) => {
 			if (isDisabled) {
@@ -98,6 +96,8 @@ export const VueNotify = defineComponent({
 			(newLen) => newLen && (isHovering.value = false),
 			{ flush: 'post' }
 		);
+
+		let unsubscribe = subscribe();
 
 		function subscribe() {
 			return watch(incoming, (_options) => {

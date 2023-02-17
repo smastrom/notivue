@@ -1,5 +1,5 @@
 import './style.css';
 
-export { VueNotify } from './VueNotify';
+export { Receiver as VueNotify } from './Receiver';
 export { useNotify } from './useNotify';
 export { notify } from './notify';
