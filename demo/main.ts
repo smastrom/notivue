@@ -3,7 +3,8 @@ import './style.css';
 import App from './App.vue';
 import { notify } from '../src/notify';
 
-import '../src/style.css';
+import '../src/notification.css';
+import '../src/transition.css';
 
 createApp(App)
 	.use(notify, {

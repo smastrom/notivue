@@ -1,7 +1,7 @@
+import { h, isVNode, type Ref } from 'vue';
 import { defaultOptions } from './defaultOptions';
-import { h, isVNode, Ref } from 'vue';
-import type { UserOptions, MergedOptions, ComponentProps, InternalPushOptions } from './types';
 import { CLASS_PREFIX } from './constants';
+import type { UserOptions, MergedOptions, ComponentProps, InternalPushOptions } from './types';
 
 export function createID() {
 	return crypto ? crypto.randomUUID() : (Math.random() + 1).toString(36).substring(7);
