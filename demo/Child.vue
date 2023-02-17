@@ -67,7 +67,7 @@ async function customAsync() {
 </script>
 
 <template>
-	<div>
+	<nav>
 		<button @click="push({ message: 'Your message has been successfully sent. Please.' })">
 			Success
 		</button>
@@ -80,22 +80,30 @@ async function customAsync() {
 		<button @click="push.warning({ message: 'Your message has been successfully sent. Please.' })">
 			Warning
 		</button>
-		<!-- 		<button @click="asyncPush">Promise</button>
+		<button @click="asyncPush">Promise</button>
 		<button @click="customPush">Custom</button>
-		<button @click="customAsync">Custom Promise</button> -->
+		<button @click="customAsync">Custom Promise</button>
 		<button @click="push.clearAll()">Clear All</button>
-	</div>
+	</nav>
 </template>
 
 <style scoped>
-div {
-	display: grid;
+nav {
+	display: flex;
+	width: 100%;
 	gap: 20px;
-	grid-auto-flow: column;
+	justify-content: center;
+	z-index: 9999999;
 	bottom: 0;
-	white-space: nowrap;
 	left: 0;
 	padding: 30px;
+	flex-wrap: wrap;
 	position: fixed;
+	gap: 20px;
+}
+
+nav button {
+	width: max-content;
+	white-space: nowrap;
 }
 </style>

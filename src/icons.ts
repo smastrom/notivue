@@ -13,11 +13,46 @@ const info = h('path', {
 	d: 'M6,0c-3.308,0 -6,2.692 -6,6c0,3.308 2.692,6 6,6c3.308,0 6,-2.692 6,-6c0,-3.308 -2.692,-6 -6,-6Zm0,2.46c0.428,0 0.78,0.352 0.78,0.78c-0,0.428 -0.352,0.78 -0.78,0.78c-0.428,0 -0.78,-0.352 -0.78,-0.78c0,-0.428 0.352,-0.78 0.78,-0.78Zm1.44,6.78l-2.64,0c-0.263,0 -0.48,-0.217 -0.48,-0.48c0,-0.263 0.217,-0.48 0.48,-0.48l0.84,0l0,-2.64l-0.48,0c-0.263,0 -0.48,-0.217 -0.48,-0.48c0,-0.263 0.217,-0.48 0.48,-0.48l0.96,0c0.263,0 0.48,0.217 0.48,0.48l0,3.12l0.84,0c0.263,0 0.48,0.217 0.48,0.48c0,0.263 -0.217,0.48 -0.48,0.48Z',
 });
 
-const promise = [
-	h('g', { class: 'VueNotify__spinner' }, [
-		h('circle', { cx: 12, cy: 12, r: 9.5, fill: 'none', 'stroke-width': 3 }),
-	]),
-];
+export const svgProps = {
+	xmlns: 'http://www.w3.org/2000/svg',
+	width: 24,
+	height: 24,
+	viewBox: '0 0 24 24',
+};
+
+const anShared = {
+	dur: '1.5s',
+	calcMode: 'spline',
+	repeatCount: 'indefinite',
+	keyTimes: '0;0.475;0.95;1',
+	keySplines: '0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1',
+};
+
+const promise = h('g', [
+	h(
+		'circle',
+		{ cx: 12, cy: 12, r: 9.5, fill: 'none', 'stroke-width': 3.3, 'stroke-linecap': 'round' },
+		[
+			h('animate', {
+				...anShared,
+				attributeName: 'stroke-dasharray',
+				values: '0 150;42 150;42 150;42 150',
+			}),
+			h('animate', {
+				...anShared,
+				attributeName: 'stroke-dashoffset',
+				values: '0;-16;-59;-59',
+			}),
+		]
+	),
+	h('animateTransform', {
+		attributeName: 'transform',
+		type: 'rotate',
+		dur: '2s',
+		values: '0 12 12;360 12 12',
+		repeatCount: 'indefinite',
+	}),
+]);
 
 const close = [
 	h('line', { x1: 18, y1: 6, x2: 6, y2: 18 }),
@@ -35,12 +70,6 @@ export const icons = {
 	close,
 };
 
-const svgProps = {
-	xmlns: 'http://www.w3.org/2000/svg',
-	width: 25,
-	height: 25,
-};
-
 export const ionProps = {
 	...svgProps,
 	fill: 'currentColor',
@@ -50,7 +79,6 @@ export const ionProps = {
 export const featherProps = {
 	...svgProps,
 	stroke: 'currentColor',
-	viewBox: '0 0 24 24',
 	'stroke-width': 2,
 	'stroke-linecap': 'round',
 	'stroke-linejoin': 'round',

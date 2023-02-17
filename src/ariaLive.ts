@@ -11,7 +11,7 @@ const style = {
 	width: '1px',
 };
 
-export function ariaRenderer(notification: Notification) {
+export function ariaLive(notification: Notification) {
 	return h(
 		'div',
 		{ 'aria-live': notification.ariaLive, role: notification.ariaRole, style },

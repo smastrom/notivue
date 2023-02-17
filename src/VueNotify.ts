@@ -12,25 +12,51 @@ import {
 	type PropType,
 } from 'vue';
 import { useReceiver } from './useReceiver';
-import { mergeOptions } from './utils';
+import { calcOrigin, mergeOptions } from './utils';
 import { FIXED_INCREMENT, Status } from './constants';
-import { defaultRenderer } from './defaultRenderer';
+import { defaultComponent } from './defaultComponent';
 import type { ComponentProps as Props, UserOptionsWithInternals, Notification } from './types';
 
 export const VueNotify = defineComponent({
 	name: 'VueNotify',
 	inheritAttrs: false,
 	props: {
-		key: { type: String as PropType<Props['key']>, default: '' },
-		method: { type: String as PropType<Props['method']>, default: 'unshift' },
-		limit: { type: Number as PropType<Props['limit']>, default: 10 },
-		pauseOnHover: { type: Boolean as PropType<Props['pauseOnHover']>, default: true },
-		customClass: { type: String as PropType<Props['customClass']>, default: '' },
-		margin: { type: Object as PropType<Props['margin']>, default: () => ({ y: 30, x: 30 }) },
-		maxWidth: { type: Number as PropType<Props['maxWidth']>, default: 1280 },
-		placement: { type: String as PropType<Props['placement']>, default: 'bottom-right' },
-		options: { type: Object as PropType<Props['options']>, default: () => ({}) },
-		transitionName: { type: String as PropType<Props['transitionName']>, default: 'VueNotify' },
+		key: {
+			type: String as PropType<Props['key']>,
+			default: '',
+		},
+		method: {
+			type: String as PropType<Props['method']>,
+			default: 'unshift',
+		},
+		limit: {
+			type: Number as PropType<Props['limit']>,
+			default: 10,
+		},
+		pauseOnHover: {
+			type: Boolean as PropType<Props['pauseOnHover']>,
+			default: true,
+		},
+		margin: {
+			type: Object as PropType<Props['margin']>,
+			default: () => ({ y: 30, x: 30 }),
+		},
+		maxWidth: {
+			type: Number as PropType<Props['maxWidth']>,
+			default: 1280,
+		},
+		placement: {
+			type: String as PropType<Props['placement']>,
+			default: 'top-right',
+		},
+		options: {
+			type: Object as PropType<Props['options']>,
+			default: () => ({}),
+		},
+		transitionName: {
+			type: String as PropType<Props['transitionName']>,
+			default: 'VueNotify',
+		},
 	},
 	setup(props) {
 		const { notifications, incoming } = useReceiver(props.key);
@@ -46,14 +72,14 @@ export const VueNotify = defineComponent({
 		watch(incoming, (_options) => {
 			if (
 				notifications.length >= props.limit &&
-				notifications[notifications.length - 1].type !== 'promise'
+				notifications[notifications.length - 1].type !== Status.PROMISE
 			) {
 				notifications[props.method === 'unshift' ? 'pop' : 'shift']();
 			}
 
 			let customRender: Pick<Notification, 'userProps' | 'component' | 'renderFn'> = {
-				userProps: {},
 				component: undefined,
+				userProps: {},
 				renderFn: undefined,
 			};
 
@@ -140,8 +166,8 @@ export const VueNotify = defineComponent({
 			width: '100%',
 			height: '100%',
 			display: 'flex',
-			justifyContent: 'center',
 			boxSizing: 'border-box',
+			justifyContent: 'center',
 		};
 
 		const containerStyles = computed<CSSProperties>(() => ({
@@ -162,12 +188,11 @@ export const VueNotify = defineComponent({
 			onPointerenter() {
 				if (notifications.length > 0 && !isHovering.value) {
 					isHovering.value = true;
+
 					const stoppedAt = performance.now();
 
 					notifications.forEach((prevData, currIndex) => {
-						if (prevData.timeoutId) {
-							clearTimeout(notifications[currIndex].timeoutId);
-						}
+						clearTimeout(notifications[currIndex].timeoutId);
 
 						notifications[currIndex] = {
 							...prevData,
@@ -197,20 +222,17 @@ export const VueNotify = defineComponent({
 			},
 		};
 
-		const x = {
-			display: 'flex',
-			flexDirection: 'column',
-			justifyContent: 'center',
-		};
-
 		return () =>
 			h(Teleport, { to: 'body' }, [
 				h(
 					Transition,
 					{
 						name: 'VNRoot',
-						onBeforeEnter(el) {
-							const { marginLeft, marginTop, width, height } = window.getComputedStyle(el);
+						onEnter(el) {
+							(el as HTMLElement).style.transformOrigin = calcOrigin(
+								el as HTMLElement,
+								placement.value
+							);
 						},
 					},
 					() =>
@@ -227,7 +249,8 @@ export const VueNotify = defineComponent({
 										[
 											h(TransitionGroup, { name: 'VNList' }, () =>
 												notifications.map(
-													(data) => data.renderFn?.() ?? defaultRenderer(data, props.customClass)
+													(notification) =>
+														notification.renderFn?.() ?? defaultComponent(notification)
 												)
 											),
 										]

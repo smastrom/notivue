@@ -1,15 +1,15 @@
 .VueNotify__notification {
 	background: white;
-	margin: 0 0 0.875rem 0;
+	margin: 0 auto 0.875rem auto;
 	padding: 0.625rem 0 0.625em 0.625rem;
-	max-width: 375px;
-	width: 100%;
+	max-width: 100%;
+	width: 375px;
 	border-radius: 0.75rem;
 	display: grid;
 	grid-template-columns: auto 1fr auto;
 	gap: 0.875rem;
 	border: 1px solid #dedede;
-	justify-items: center;
+	justify-items: start;
 	align-items: center;
 	box-shadow: 0 calc(1rem / 3) calc(1rem / 2) rgba(0, 0, 0, 0.08);
 	pointer-events: all;
@@ -86,64 +86,24 @@
 	opacity: 1;
 }
 
-/** Promise Spinner */
-
-.VueNotify__spinner {
-	transform-origin: center;
-	animation: VueNotify__spinner-out 2s linear infinite;
-}
-
-.VueNotify__spinner circle {
-	stroke-linecap: round;
-	animation: VueNotify__spinner-in 1.5s ease-in-out infinite;
-}
-
-@keyframes VueNotify__spinner-out {
-	100% {
-		transform: rotate(360deg);
-	}
-}
-
-@keyframes VueNotify__spinner-in {
-	0% {
-		stroke-dasharray: 0 150;
-		stroke-dashoffset: 0;
-	}
-
-	47.5% {
-		stroke-dasharray: 42 150;
-		stroke-dashoffset: -16;
-	}
-
-	95%,
-	100% {
-		stroke-dasharray: 42 150;
-		stroke-dashoffset: -59;
-	}
-}
-
-/* Root Transition */
+/* Transition */
 
 .VNRoot-enter-from {
 	opacity: 0;
 	transform: scale(0.85) translate3d(0, -40px, 0);
 }
 
-.VNRoot-enter-active {
-	transform-origin: top center;
-	transition: transform 300ms cubic-bezier(0.25, 1, 0.5, 1),
-		opacity 300ms cubic-bezier(0.25, 1, 0.5, 1);
+.VNRoot-enter-active,
+.VNRoot-leave-active {
+	--CBCBZR: 400ms cubic-bezier(0.25, 1, 0.5, 1);
+	transition: transform var(--CBCBZR), opacity var(--CBCBZR);
 }
 
 .VNRoot-leave-to {
 	opacity: 0;
 }
 
-.VNRoot-leave-active {
-	transition: opacity 300ms cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-/* List Transition */
+/* Transition Group */
 
 .VNList-enter-from,
 .VNList-leave-to {
@@ -151,18 +111,13 @@
 	transform: scale(0.85) translate3d(0, -40px, 0);
 }
 
+.VNList-enter-active,
+.VNList-leave-active,
 .VNList-move {
-	transition: transform 400ms cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-.VNList-enter-active {
-	transform-origin: top center;
-	transition: transform 400ms cubic-bezier(0.25, 1, 0.5, 1),
-		opacity 400ms cubic-bezier(0.25, 1, 0.5, 1);
+	--CBCBZR: 400ms cubic-bezier(0.25, 1, 0.5, 1);
+	transition: transform var(--CBCBZR), opacity var(--CBCBZR);
 }
 
 .VNList-leave-active {
 	position: absolute;
-	transition: transform 400ms cubic-bezier(0.25, 1, 0.5, 1),
-		opacity 400ms cubic-bezier(0.25, 1, 0.5, 1);
 }

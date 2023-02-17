@@ -31,7 +31,7 @@ defineProps<{
 	border-radius: 5px;
 	display: grid;
 	grid-template-columns: auto 100px;
-	margin: 10px;
+	margin: 10px auto;
 
 	& > p {
 		margin: 0 !important;
