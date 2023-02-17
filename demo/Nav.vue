@@ -114,7 +114,11 @@ function toggleEnable() {
 				Info
 			</button>
 			<button
-				@click="push.warning({ message: 'Your message has been successfully sent. Please.' })"
+				@click="
+					push.warning({
+						message: 'Your message has been successfully sent. Please.',
+					})
+				"
 			>
 				Warning
 			</button>
@@ -128,6 +132,7 @@ function toggleEnable() {
 
 <style scoped>
 nav {
+	box-sizing: border-box;
 	pointer-events: none;
 	display: flex;
 	flex-direction: column;

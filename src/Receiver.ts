@@ -11,9 +11,9 @@ import {
 import { useReceiver } from './useReceiver';
 import { useReceiverStyles } from './useReceiverStyles';
 import { getOrigin, mergeOptions } from './utils';
-import { FIXED_INCREMENT } from './constants';
+import { Type, FIXED_INCREMENT } from './constants';
 import { defaultComponent } from './defaultComponent';
-import { Type, type ComponentProps as Props, type MergedOptions, type Notification } from './types';
+import type { ComponentProps as Props, MergedOptions, Notification } from './types';
 
 export const Receiver = defineComponent({
 	name: 'VueNotify',
@@ -155,6 +155,7 @@ export const Receiver = defineComponent({
 					};
 				} else {
 					if (options.render?.component) {
+						console.log(options.render?.component);
 						customRender = {
 							userProps: options.render?.props?.(getNotifyProps(options)) ?? {},
 							component: options.render.component,

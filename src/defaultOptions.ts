@@ -1,13 +1,14 @@
 import { markRaw } from 'vue';
+import { Type } from './constants';
 import { icons } from './icons';
-import { Type, type ComponentOptions } from './types';
+import type { ComponentOptions } from './types';
 
 export const success: ComponentOptions = {
 	title: 'Success!',
 	message: '',
 	icon: markRaw(icons.success),
 	close: true,
-	duration: 3000,
+	duration: 300000,
 	ariaLive: 'polite',
 	ariaRole: 'status',
 };
@@ -52,7 +53,7 @@ const promiseReject: ComponentOptions = {
 export const defaultOptions: Record<`${Type}`, ComponentOptions> = {
 	[Type.SUCCESS]: success,
 	[Type.ERROR]: error,
-	[Type.WARNING]: error,
+	[Type.WARNING]: warning,
 	[Type.INFO]: info,
 	[Type.PROMISE]: promiseDefault,
 	[Type.PROMISE_RESOLVE]: promiseResolve,

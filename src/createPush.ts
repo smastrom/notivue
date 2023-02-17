@@ -1,5 +1,6 @@
 import { createID } from './utils';
-import { Type, type Receiver, type UserOptions, type PushFn } from './types';
+import { Type } from './constants';
+import type { Receiver, UserOptions, PushFn } from './types';
 
 type Options = Partial<UserOptions>;
 
@@ -11,8 +12,7 @@ export function createPush(receiver: Receiver): PushFn {
 	}
 
 	function clear(id: string) {
-		const toRemove = receiver.notifications.findIndex((data) => data.id === id);
-		receiver.notifications.splice(toRemove, 1);
+		receiver.notifications.find((notification) => notification.id === id)?.clear();
 	}
 
 	function clearAll() {
