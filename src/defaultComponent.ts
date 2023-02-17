@@ -1,8 +1,7 @@
 import { h } from 'vue';
 import { ariaLive } from './ariaLive';
 import { featherProps, icons, ionProps, svgProps } from './icons';
-import { Status } from './constants';
-import type { Notification } from './types';
+import { Type, type Notification } from './types';
 
 const PREFIX = 'VueNotify__';
 
@@ -19,7 +18,7 @@ export function defaultComponent(notification: Notification) {
 				'svg',
 				{
 					'aria-hidden': true,
-					...(notification.type === Status.PROMISE
+					...(notification.type === Type.PROMISE
 						? { ...svgProps, stroke: 'currentColor' }
 						: ionProps),
 					class: PREFIX + 'icon',

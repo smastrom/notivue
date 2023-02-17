@@ -1,7 +1,6 @@
 import {
 	defineComponent,
 	h,
-	ref,
 	Teleport,
 	toRef,
 	Transition,
@@ -12,9 +11,9 @@ import {
 import { useReceiver } from './useReceiver';
 import { useReceiverStyles } from './useReceiverStyles';
 import { getOrigin, mergeOptions } from './utils';
-import { FIXED_INCREMENT, Status } from './constants';
+import { FIXED_INCREMENT } from './constants';
 import { defaultComponent } from './defaultComponent';
-import type { ComponentProps as Props, UserOptionsWithInternals, Notification } from './types';
+import { Type, type ComponentProps as Props, type MergedOptions, type Notification } from './types';
 
 export const Receiver = defineComponent({
 	name: 'VueNotify',
@@ -66,10 +65,16 @@ export const Receiver = defineComponent({
 		},
 	},
 	setup(props) {
+		let isHovering = false;
+
+		// Reactivity
+
 		const placement = toRef(props, 'placement');
 		const margin = toRef(props, 'margin');
 		const maxWidth = toRef(props, 'maxWidth');
 		const disabled = toRef(props, 'disabled');
+
+		// Composables
 
 		const { notifications, incoming } = useReceiver(props.id);
 		const { wrapperStyles, containerStyles, hoverAreaStyles } = useReceiverStyles({
@@ -78,9 +83,9 @@ export const Receiver = defineComponent({
 			placement,
 		});
 
-		const isHovering = ref(false);
-
 		// Watchers
+
+		let unsubscribe = subscribe();
 
 		watch(disabled, (isDisabled) => {
 			if (isDisabled) {
@@ -93,17 +98,19 @@ export const Receiver = defineComponent({
 
 		watch(
 			() => notifications.length === 0,
-			(newLen) => newLen && (isHovering.value = false),
+			(newLen) => {
+				newLen && (isHovering = false);
+			},
 			{ flush: 'post' }
 		);
 
-		let unsubscribe = subscribe();
+		// Fns
 
 		function subscribe() {
 			return watch(incoming, (_options) => {
 				if (
 					notifications.length >= props.limit &&
-					notifications[notifications.length - 1].type !== Status.PROMISE
+					notifications[notifications.length - 1].type !== Type.PROMISE
 				) {
 					notifications[props.method === 'unshift' ? 'pop' : 'shift']();
 				}
@@ -145,7 +152,7 @@ export const Receiver = defineComponent({
 						...notifications[currIndex],
 						...options,
 						...customRender,
-						timeoutId: isHovering.value ? undefined : createTimeout(options.id, options.duration),
+						timeoutId: isHovering ? undefined : createTimeout(options.id, options.duration),
 						createdAt,
 					};
 				} else {
@@ -165,7 +172,7 @@ export const Receiver = defineComponent({
 						...options,
 						...customRender,
 						timeoutId:
-							options.type === Status.PROMISE
+							options.type === Type.PROMISE
 								? undefined
 								: createTimeout(options.id, options.duration),
 						clear: () => clear(options.id),
@@ -174,8 +181,6 @@ export const Receiver = defineComponent({
 				}
 			});
 		}
-
-		// Fns
 
 		function clear(id: string) {
 			const index = notifications.findIndex((data) => data.id === id);
@@ -188,7 +193,7 @@ export const Receiver = defineComponent({
 			}, time);
 		}
 
-		function getNotifyProps({ title, message, type, id }: UserOptionsWithInternals) {
+		function getNotifyProps({ title, message, type, id }: MergedOptions) {
 			return { notifyProps: { title, message, type, close: () => clear(id) } };
 		}
 
@@ -196,8 +201,8 @@ export const Receiver = defineComponent({
 
 		const pointerEvts = {
 			onPointerenter() {
-				if (notifications.length > 0 && !isHovering.value) {
-					isHovering.value = true;
+				if (notifications.length > 0 && !isHovering) {
+					isHovering = true;
 
 					const stoppedAt = performance.now();
 
@@ -213,7 +218,7 @@ export const Receiver = defineComponent({
 				}
 			},
 			onPointerleave() {
-				if (notifications.length > 0 && isHovering.value) {
+				if (notifications.length > 0 && isHovering) {
 					notifications.forEach((prevData, currIndex) => {
 						const newTimeout = prevData.duration + FIXED_INCREMENT - prevData.elapsed;
 
@@ -221,13 +226,11 @@ export const Receiver = defineComponent({
 							...prevData,
 							createdAt: performance.now(),
 							timeoutId:
-								prevData.type !== Status.PROMISE
-									? createTimeout(prevData.id, newTimeout)
-									: undefined,
+								prevData.type !== Type.PROMISE ? createTimeout(prevData.id, newTimeout) : undefined,
 						};
 					});
 
-					isHovering.value = false;
+					isHovering = false;
 				}
 			},
 		};

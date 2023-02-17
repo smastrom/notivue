@@ -1,33 +1,43 @@
 import type { VNode, Ref, Component, Raw } from 'vue';
-import { Status } from './constants';
 
 export type PluginOptions = {
 	name?: string;
 	additionalReceivers?: string[];
 };
 
+export enum Type {
+	SUCCESS = 'success',
+	ERROR = 'error',
+	WARNING = 'warning',
+	INFO = 'info',
+	PROMISE = 'promise',
+	PROMISE_RESOLVE = 'promise-resolve',
+	PROMISE_REJECT = 'promise-reject',
+}
+
+type Placement =
+	| 'top-left'
+	| 'top-center'
+	| 'top-right'
+	| 'bottom-left'
+	| 'bottom-center'
+	| 'bottom-right';
+
 export type ComponentProps = {
 	disabled: boolean;
 	method: 'unshift' | 'push';
 	limit: number;
 	pauseOnHover: boolean;
-	placement:
-		| 'top-left'
-		| 'top-center'
-		| 'top-right'
-		| 'bottom-left'
-		| 'bottom-center'
-		| 'bottom-right';
+	placement: Placement;
 	maxWidth: number;
 	id: string;
 	margin: { x: number; y: number };
 	transitionName: string;
 	transitionGroupName: string;
-	options: Record<string, Partial<ComponentOptions>>;
+	options: Record<`${Type}`, Partial<ComponentOptions>>;
 };
 
 export type ComponentOptions = {
-	type: keyof typeof Status;
 	icon: Component | false;
 	title: boolean | string;
 	message: boolean | string;
@@ -37,12 +47,18 @@ export type ComponentOptions = {
 	ariaRole: 'alert' | 'status';
 };
 
-type InternalOptions = {
+export type InternalPushOptions = {
 	id: string;
-	type: keyof typeof Status | string;
+	type: `${Type}`;
 };
 
-export type Notification = InternalOptions &
+export type UserOptions<T = NotifyProps> = Partial<ComponentOptions> & MaybeRender<T>;
+
+export type MergedOptions<T = NotifyProps> = ComponentOptions &
+	InternalPushOptions &
+	MaybeRender<T>;
+
+export type Notification = InternalPushOptions &
 	ComponentOptions & {
 		timeoutId: number | undefined;
 		id: string;
@@ -62,21 +78,15 @@ type MaybeRender<T> = {
 	};
 };
 
-export type UserOptions<T = NotifyProps> = Partial<ComponentOptions> & MaybeRender<T>;
-
-export type UserOptionsWithInternals<T = NotifyProps> = ComponentOptions &
-	MaybeRender<T> &
-	InternalOptions;
-
 export type Receiver = {
 	notifications: Notification[];
-	incoming: Ref<UserOptions & InternalOptions>;
+	incoming: Ref<UserOptions & InternalPushOptions>;
 	push: () => PushFn;
 };
 
 type NotifyProps = {
 	notifyProps: {
-		type: InternalOptions['type'];
+		type: InternalPushOptions['type'];
 		close: () => void;
 		title?: ComponentOptions['title'];
 		message?: ComponentOptions['message'];
