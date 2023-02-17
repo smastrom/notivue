@@ -1,3 +1,5 @@
+/* Container */
+
 .VueNotify__notification {
 	background: white;
 	margin: 0 auto 0.875rem auto;
@@ -21,6 +23,33 @@
 		width: 100%;
 	}
 }
+
+/* Icon */
+
+.VueNotify__icon {
+	display: flex;
+	margin: 0 0.875rem 0 0;
+}
+
+[data-vuenotify='success'] .VueNotify__icon,
+[data-vuenotify='promise-resolve'] .VueNotify__icon {
+	color: #28b780;
+}
+
+[data-vuenotify='error'] .VueNotify__icon,
+[data-vuenotify='promise-reject'] .VueNotify__icon {
+	color: #ef4444;
+}
+
+[data-vuenotify='info'] .VueNotify__icon {
+	color: #3e8eff;
+}
+
+[data-vuenotify='warning'] .VueNotify__icon {
+	color: #f59e0b;
+}
+
+/* Content */
 
 .VueNotify__content {
 	display: grid;
@@ -46,30 +75,7 @@
 	font-size: 0.875rem;
 }
 
-.VueNotify__icon {
-	display: flex;
-	margin: 0 0.875rem 0 0;
-}
-
-[data-vuenotify='success'] .VueNotify__icon,
-[data-vuenotify='promise-resolve'] .VueNotify__icon {
-	color: #28b780;
-}
-
-[data-vuenotify='error'] .VueNotify__icon,
-[data-vuenotify='promise-reject'] .VueNotify__icon {
-	color: #ef4444;
-}
-
-[data-vuenotify='info'] .VueNotify__icon {
-	color: #3e8eff;
-}
-
-[data-vuenotify='warning'] .VueNotify__icon {
-	color: #f59e0b;
-}
-
-/* Right */
+/* Close */
 
 .VueNotify__close {
 	left: 0.625rem;
@@ -92,40 +98,4 @@
 
 .VueNotify__close:hover .VueNotify__close-icon {
 	opacity: 1;
-}
-
-/* Transition */
-
-.VNRoot-enter-from {
-	opacity: 0;
-	transform: scale(0.85) translate3d(0, -40px, 0);
-}
-
-.VNRoot-enter-active,
-.VNRoot-leave-active {
-	--CBCBZR: 400ms cubic-bezier(0.25, 1, 0.5, 1);
-	transition: transform var(--CBCBZR), opacity var(--CBCBZR);
-}
-
-.VNRoot-leave-to {
-	opacity: 0;
-}
-
-/* Transition Group */
-
-.VNList-enter-from,
-.VNList-leave-to {
-	opacity: 0;
-	transform: scale(0.85) translate3d(0, -40px, 0);
-}
-
-.VNList-enter-active,
-.VNList-leave-active,
-.VNList-move {
-	--CBCBZR: 400ms cubic-bezier(0.25, 1, 0.5, 1);
-	transition: transform var(--CBCBZR), opacity var(--CBCBZR);
-}
-
-.VNList-leave-active {
-	position: absolute;
 }
