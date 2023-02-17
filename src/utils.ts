@@ -1,6 +1,6 @@
-import { nextTick } from 'vue';
 import { Status } from './constants';
-import { defaultOptions } from './defaults';
+import { defaultOptions } from './defaultOptions';
+import type { Ref } from 'vue';
 import type { UserOptions, UserOptionsWithInternals, ComponentProps } from './types';
 
 export function createID() {
@@ -20,7 +20,7 @@ export function mergeOptions(
  * in order to avoid undesidered flying animations.
  * Prevents this to happen https://github.com/vuejs/vue/issues/11654.
  */
-export function calcOrigin(el: HTMLElement, placement: ComponentProps['placement']) {
+export function calcOrigin(el: HTMLElement, placement: Ref<ComponentProps['placement']>) {
 	const notification = el.children[0].children[0]?.children[0];
 
 	if (!notification) {
@@ -29,12 +29,12 @@ export function calcOrigin(el: HTMLElement, placement: ComponentProps['placement
 
 	const { left, right, top, width } = notification.getBoundingClientRect();
 	const wOffset = Math.abs(width - notification.clientWidth);
-	const xOffset = placement.includes('left')
+	const xOffset = placement.value.includes('left')
 		? `${left + wOffset}px`
-		: placement.includes('right')
+		: placement.value.includes('right')
 		? `${right - wOffset}px`
 		: 'center';
-	const yOffset = placement.includes('bottom') ? `${top}px` : 'top';
+	const yOffset = placement.value.includes('bottom') ? `${top}px` : 'top';
 
 	return `${xOffset} ${yOffset}`;
 }

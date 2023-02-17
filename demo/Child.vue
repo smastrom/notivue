@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { markRaw } from 'vue';
+import { ComponentProps } from '../src/types';
 import { useNotify } from '../src/useNotify';
+import { settings } from './useSettings';
 import Custom from './Custom.vue';
 
 const push = useNotify();
@@ -64,32 +66,51 @@ async function customAsync() {
 		},
 	});
 }
+
+function setPosition(placement: ComponentProps['placement']) {
+	settings.placement = placement;
+}
 </script>
 
 <template>
 	<nav>
-		<button @click="push({ message: 'Your message has been successfully sent. Please.' })">
-			Success
-		</button>
-		<button @click="push.error({ message: 'Your message has been successfully sent. Please.' })">
-			Error
-		</button>
-		<button @click="push.info({ message: 'Your message has been successfully sent. Please.' })">
-			Info
-		</button>
-		<button @click="push.warning({ message: 'Your message has been successfully sent. Please.' })">
-			Warning
-		</button>
-		<button @click="asyncPush">Promise</button>
-		<button @click="customPush">Custom</button>
-		<button @click="customAsync">Custom Promise</button>
-		<button @click="push.clearAll()">Clear All</button>
+		<div>
+			<button @click="setPosition('top-left')">Top Left</button>
+			<button @click="setPosition('top-center')">Top Center</button>
+			<button @click="setPosition('top-right')">Top Right</button>
+			<button @click="setPosition('bottom-left')">Bottom Left</button>
+			<button @click="setPosition('bottom-center')">Bottom Center</button>
+			<button @click="setPosition('bottom-right')">Bottom Right</button>
+		</div>
+
+		<div>
+			<button @click="push({ message: 'Your message has been successfully sent. Please.' })">
+				Success
+			</button>
+			<button @click="push.error({ message: 'Your message has been successfully sent. Please.' })">
+				Error
+			</button>
+			<button @click="push.info({ message: 'Your message has been successfully sent. Please.' })">
+				Info
+			</button>
+			<button
+				@click="push.warning({ message: 'Your message has been successfully sent. Please.' })"
+			>
+				Warning
+			</button>
+			<button @click="asyncPush">Promise</button>
+			<button @click="customPush">Custom</button>
+			<button @click="customAsync">Custom Promise</button>
+			<button @click="push.clearAll()">Clear All</button>
+		</div>
 	</nav>
 </template>
 
 <style scoped>
 nav {
+	pointer-events: none;
 	display: flex;
+	flex-direction: column;
 	width: 100%;
 	gap: 20px;
 	justify-content: center;
@@ -97,12 +118,18 @@ nav {
 	bottom: 0;
 	left: 0;
 	padding: 30px;
-	flex-wrap: wrap;
 	position: fixed;
+}
+
+nav div {
+	justify-content: center;
+	display: flex;
+	flex-wrap: wrap;
 	gap: 20px;
 }
 
 nav button {
+	pointer-events: all;
 	width: max-content;
 	white-space: nowrap;
 }

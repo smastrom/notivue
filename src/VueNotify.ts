@@ -1,5 +1,4 @@
 import {
-	computed,
 	defineComponent,
 	h,
 	ref,
@@ -8,10 +7,10 @@ import {
 	Transition,
 	TransitionGroup,
 	watch,
-	type CSSProperties,
 	type PropType,
 } from 'vue';
 import { useReceiver } from './useReceiver';
+import { useReceiverStyles } from './useReceiverStyles';
 import { calcOrigin, mergeOptions } from './utils';
 import { FIXED_INCREMENT, Status } from './constants';
 import { defaultComponent } from './defaultComponent';
@@ -59,13 +58,18 @@ export const VueNotify = defineComponent({
 		},
 	},
 	setup(props) {
-		const { notifications, incoming } = useReceiver(props.key);
-
-		const isHovering = ref(false);
-
 		const placement = toRef(props, 'placement');
 		const margin = toRef(props, 'margin');
 		const maxWidth = toRef(props, 'maxWidth');
+
+		const isHovering = ref(false);
+
+		const { notifications, incoming } = useReceiver(props.key);
+		const { wrapperStyles, containerStyles, hoverAreaStyles } = useReceiverStyles({
+			margin,
+			maxWidth,
+			placement,
+		});
 
 		// Watchers
 
@@ -102,7 +106,10 @@ export const VueNotify = defineComponent({
 						userProps: options.render?.props?.(nextProps) ?? {},
 						component: options.render?.component ?? prevComponent,
 						renderFn: () =>
-							h(customRender.component ?? {}, { ...customRender.userProps, key: options.id }),
+							h(customRender.component ?? {}, {
+								...customRender.userProps,
+								key: options.id,
+							}),
 					};
 				}
 
@@ -119,7 +126,10 @@ export const VueNotify = defineComponent({
 						userProps: options.render?.props?.(getNotifyProps(options)) ?? {},
 						component: options.render.component,
 						renderFn: () =>
-							h(customRender.component ?? {}, { ...customRender.userProps, key: options.id }),
+							h(customRender.component ?? {}, {
+								...customRender.userProps,
+								key: options.id,
+							}),
 					};
 				}
 
@@ -138,7 +148,8 @@ export const VueNotify = defineComponent({
 
 		watch(
 			() => notifications.length === 0,
-			(newLen) => newLen && (isHovering.value = false)
+			(newLen) => newLen && (isHovering.value = false),
+			{ flush: 'post' }
 		);
 
 		// Fns
@@ -157,32 +168,6 @@ export const VueNotify = defineComponent({
 		function getNotifyProps({ title, message, type, id }: UserOptionsWithInternals) {
 			return { notifyProps: { title, message, type, close: () => clear(id) } };
 		}
-
-		// Props
-
-		const wrapperStyles: CSSProperties = {
-			pointerEvents: 'none',
-			position: 'fixed',
-			width: '100%',
-			height: '100%',
-			display: 'flex',
-			boxSizing: 'border-box',
-			justifyContent: 'center',
-		};
-
-		const containerStyles = computed<CSSProperties>(() => ({
-			padding: `${margin.value.y}px ${margin.value.x}px`,
-			maxWidth: `${maxWidth.value}px`,
-			width: '100%',
-			boxSizing: 'border-box',
-			display: 'grid',
-			alignItems: placement.value.includes('top') ? 'start' : 'end',
-			justifyItems: placement.value.includes('right')
-				? 'end'
-				: placement.value.includes('left')
-				? 'start'
-				: 'center',
-		}));
 
 		const pointerEvts = {
 			onPointerenter() {
@@ -229,10 +214,7 @@ export const VueNotify = defineComponent({
 					{
 						name: 'VNRoot',
 						onEnter(el) {
-							(el as HTMLElement).style.transformOrigin = calcOrigin(
-								el as HTMLElement,
-								placement.value
-							);
+							(el as HTMLElement).style.transformOrigin = calcOrigin(el as HTMLElement, placement);
 						},
 					},
 					() =>
@@ -242,7 +224,7 @@ export const VueNotify = defineComponent({
 									h(
 										'div',
 										{
-											style: { pointerEvents: 'all', boxSizing: 'border-box' },
+											style: hoverAreaStyles,
 											...(props.pauseOnHover ? pointerEvts : {}),
 											...(props.key ? { 'data-vuenotify-key': props.key } : {}),
 										},
