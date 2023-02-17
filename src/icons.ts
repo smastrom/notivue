@@ -1,5 +1,5 @@
 import { h } from 'vue';
-import { Type, CLASS_PREFIX } from './constants';
+import { NType, CLASS_PREFIX } from './constants';
 
 const className = { class: CLASS_PREFIX + 'icon' };
 
@@ -89,12 +89,12 @@ const close = [
 ];
 
 export const icons = {
-	[Type.SUCCESS]: success,
-	[Type.ERROR]: error,
-	[Type.INFO]: info,
-	[Type.WARNING]: error,
-	[Type.PROMISE]: promise,
-	[Type.PROMISE_RESOLVE]: success,
-	[Type.PROMISE_REJECT]: error,
+	[NType.SUCCESS]: success,
+	[NType.ERROR]: error,
+	[NType.INFO]: info,
+	[NType.WARNING]: error,
+	[NType.PROMISE]: promise,
+	[NType.PROMISE_RESOLVE]: success,
+	[NType.PROMISE_REJECT]: error,
 	close,
 };

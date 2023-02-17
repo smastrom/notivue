@@ -2,7 +2,7 @@ export const FIXED_INCREMENT = 300;
 
 export const CLASS_PREFIX = 'VueNotify__';
 
-export enum Type {
+export enum NType {
 	SUCCESS = 'success',
 	ERROR = 'error',
 	WARNING = 'warning',

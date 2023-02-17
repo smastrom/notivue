@@ -1,5 +1,5 @@
 import type { VNode, Ref, Component, Raw } from 'vue';
-import { Type } from './constants';
+import { NType } from './constants';
 
 export type PluginOptions = {
 	name?: string;
@@ -25,7 +25,7 @@ export type ComponentProps = {
 	rootMargin: string;
 	transitionName: string;
 	transitionGroupName: string;
-	options: Partial<Record<`${Type}`, Partial<ComponentOptions>>>;
+	options: Partial<Record<`${NType}`, Partial<ComponentOptions>>>;
 	theme: Record<`--${string}`, string>;
 };
 
@@ -41,7 +41,7 @@ export type ComponentOptions = {
 
 export type InternalPushOptions = {
 	id: string;
-	type: `${Type}`;
+	type: `${NType}`;
 };
 
 export type UserOptions<T = NotifyProps> = Partial<ComponentOptions> & MaybeRender<T>;
@@ -58,9 +58,9 @@ export type Notification = InternalPushOptions &
 		stoppedAt: number;
 		elapsed: number;
 		clear: () => void;
-		userProps: Record<string, any>;
+		props: Record<string, any>;
 		component?: Component;
-		renderFn?: () => VNode;
+		h?: () => VNode;
 	};
 
 type MaybeRender<T> = {
