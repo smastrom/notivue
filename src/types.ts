@@ -3,10 +3,11 @@ import { Status } from './constants';
 
 export type PluginOptions = {
 	name?: string;
-	keys?: string[];
+	additionalReceivers?: string[];
 };
 
 export type ComponentProps = {
+	disabled: boolean;
 	method: 'unshift' | 'push';
 	limit: number;
 	pauseOnHover: boolean;
@@ -17,10 +18,11 @@ export type ComponentProps = {
 		| 'bottom-left'
 		| 'bottom-center'
 		| 'bottom-right';
-	maxWidth: number | null;
-	key: string;
+	maxWidth: number;
+	id: string;
 	margin: { x: number; y: number };
 	transitionName: string;
+	transitionGroupName: string;
 	options: Record<string, Partial<ComponentOptions>>;
 };
 
