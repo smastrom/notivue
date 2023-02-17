@@ -27,9 +27,7 @@ export const notify: Plugin = {
 			});
 		});
 
-		receivers.forEach((value, sym) => {
-			app.provide(sym, value);
-		});
+		receivers.forEach((value, sym) => app.provide(sym, value));
 
 		app.component('VueNotify', Receiver);
 	},

@@ -1,17 +1,22 @@
-import { Status } from './constants';
 import { defaultOptions } from './defaultOptions';
 import type { Ref } from 'vue';
-import type { UserOptions, UserOptionsWithInternals, ComponentProps } from './types';
+import {
+	Type,
+	type UserOptions,
+	type MergedOptions,
+	type ComponentProps,
+	type InternalPushOptions,
+} from './types';
 
 export function createID() {
 	return (Math.random() + 1).toString(36).substring(7);
 }
 
 export function mergeOptions(
-	type: string = Status.SUCCESS,
-	componentOptions: ComponentProps['options'] = {},
-	pushOptions: UserOptions & { id: string }
-): UserOptionsWithInternals {
+	type: `${Type}` = Type.SUCCESS,
+	componentOptions: ComponentProps['options'],
+	pushOptions: UserOptions & InternalPushOptions
+): MergedOptions {
 	return { ...defaultOptions[type], ...componentOptions[type], ...pushOptions };
 }
 

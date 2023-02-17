@@ -1,53 +1,60 @@
 import { markRaw } from 'vue';
-import { Status } from './constants';
 import { icons } from './icons';
-import type { ComponentOptions } from './types';
+import { Type, type ComponentOptions } from './types';
 
-export const successDefault: ComponentOptions = {
-	type: Status.SUCCESS,
-	title: 'Successfully submitted!',
-	message: 'Success!',
+export const success: ComponentOptions = {
+	title: 'Success!',
+	message: '',
 	icon: markRaw(icons.success),
 	close: true,
-	duration: 300000 /* 3000 */,
+	duration: 3000,
 	ariaLive: 'polite',
 	ariaRole: 'status',
 };
 
-const errorDefault: ComponentOptions = {
-	...successDefault,
-	type: Status.ERROR,
+const error: ComponentOptions = {
+	...success,
 	icon: markRaw(icons.error),
 	duration: 6000,
-	message: 'Error!',
+	title: 'Error!',
 	ariaLive: 'assertive',
 	ariaRole: 'alert',
 };
 
 const promiseDefault: ComponentOptions = {
-	...successDefault,
-	type: Status.PROMISE,
-	message: 'Loading...',
+	...success,
+	icon: markRaw(icons.promise),
+	title: 'Loading...',
 	close: false,
 	duration: Infinity,
 };
 
-const promiseSuccessDef: ComponentOptions = {
-	...successDefault,
-	type: Status.PROMISE_RESOLVE,
+const warning: ComponentOptions = {
+	...error,
+	icon: markRaw(icons.warning),
+	title: 'Warning!',
 };
 
-const promiseErrorDef: ComponentOptions = {
-	...errorDefault,
-	type: Status.PROMISE_REJECT,
+const info: ComponentOptions = {
+	...success,
+	icon: markRaw(icons.info),
+	title: 'Info!',
 };
 
-export const defaultOptions: Record<string, ComponentOptions> = {
-	[Status.SUCCESS]: successDefault,
-	[Status.ERROR]: errorDefault,
-	[Status.WARNING]: errorDefault,
-	[Status.INFO]: errorDefault,
-	[Status.PROMISE]: promiseDefault,
-	[Status.PROMISE_RESOLVE]: promiseSuccessDef,
-	[Status.PROMISE_REJECT]: promiseErrorDef,
+const promiseResolve: ComponentOptions = {
+	...success,
+};
+
+const promiseReject: ComponentOptions = {
+	...error,
+};
+
+export const defaultOptions: Record<`${Type}`, ComponentOptions> = {
+	[Type.SUCCESS]: success,
+	[Type.ERROR]: error,
+	[Type.WARNING]: error,
+	[Type.INFO]: error,
+	[Type.PROMISE]: promiseDefault,
+	[Type.PROMISE_RESOLVE]: promiseResolve,
+	[Type.PROMISE_REJECT]: promiseReject,
 };
