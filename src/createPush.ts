@@ -1,11 +1,10 @@
 import { createID } from './utils';
-import { Status } from './constants';
-import type { Receiver, UserOptions, PushFn } from './types';
+import { Type, type Receiver, type UserOptions, type PushFn } from './types';
 
 type Options = Partial<UserOptions>;
 
 export function createPush(receiver: Receiver): PushFn {
-	function create(options: Options, status = Status.SUCCESS, id = createID()) {
+	function create(options: Options, status = Type.SUCCESS, id = createID()) {
 		receiver.incoming.value = { ...options, id, type: status };
 
 		return { id, clear: () => clear(id), clearAll };
@@ -28,18 +27,18 @@ export function createPush(receiver: Receiver): PushFn {
 
 	push.success = (options: Options) => create(options);
 
-	push.error = (options: Options) => create(options, Status.ERROR);
+	push.error = (options: Options) => create(options, Type.ERROR);
 
-	push.warning = (options: Options) => create(options, Status.WARNING);
+	push.warning = (options: Options) => create(options, Type.WARNING);
 
-	push.info = (options: Options) => create(options, Status.INFO);
+	push.info = (options: Options) => create(options, Type.INFO);
 
 	push.promise = ((options) => {
-		const { clear, clearAll, id } = create(options, Status.PROMISE);
+		const { clear, clearAll, id } = create(options, Type.PROMISE);
 
 		return {
-			resolve: (options) => create(options, Status.PROMISE_RESOLVE, id),
-			reject: (options) => create(options, Status.PROMISE_REJECT, id),
+			resolve: (options) => create(options, Type.PROMISE_RESOLVE, id),
+			reject: (options) => create(options, Type.PROMISE_REJECT, id),
 			clear,
 			clearAll,
 		};
