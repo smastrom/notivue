@@ -8,7 +8,7 @@ export const success: ComponentOptions = {
 	message: '',
 	icon: markRaw(icons.success),
 	close: true,
-	duration: 300000,
+	duration: 3000,
 	ariaLive: 'polite',
 	ariaRole: 'status',
 };
