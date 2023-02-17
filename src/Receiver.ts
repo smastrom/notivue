@@ -39,16 +39,16 @@ export const Receiver = defineComponent({
 			type: Boolean as PropType<Props['disabled']>,
 			default: false,
 		},
-		margin: {
-			type: Object as PropType<Props['margin']>,
+		rootMargin: {
+			type: Object as PropType<Props['rootMargin']>,
 			default: () => ({ y: 30, x: 30 }),
 		},
 		maxWidth: {
 			type: Number as PropType<Props['maxWidth']>,
 			default: 0,
 		},
-		placement: {
-			type: String as PropType<Props['placement']>,
+		position: {
+			type: String as PropType<Props['position']>,
 			default: 'top-center',
 		},
 		transitionName: {
@@ -69,18 +69,16 @@ export const Receiver = defineComponent({
 
 		// Reactivity
 
-		const placement = toRef(props, 'placement');
-		const margin = toRef(props, 'margin');
+		const position = toRef(props, 'position');
+		const rootMargin = toRef(props, 'rootMargin');
 		const maxWidth = toRef(props, 'maxWidth');
 		const disabled = toRef(props, 'disabled');
 
-		// Composables
-
 		const { notifications, incoming } = useReceiver(props.id);
 		const { wrapperStyles, containerStyles, hoverAreaStyles } = useReceiverStyles({
-			margin,
+			rootMargin,
 			maxWidth,
-			placement,
+			position,
 		});
 
 		// Watchers
@@ -104,7 +102,7 @@ export const Receiver = defineComponent({
 			{ flush: 'post' }
 		);
 
-		// Fns
+		// Functions
 
 		function subscribe() {
 			return watch(incoming, (_options) => {
@@ -121,7 +119,7 @@ export const Receiver = defineComponent({
 					renderFn: undefined,
 				};
 
-				const options = mergeOptions(_options.type, props.options, _options);
+				const options = mergeOptions(props.options, _options);
 				const createdAt = performance.now();
 
 				if (options.type.includes('promise-')) {
@@ -242,7 +240,7 @@ export const Receiver = defineComponent({
 					{
 						name: props.transitionName,
 						onEnter(el) {
-							(el as HTMLElement).style.transformOrigin = getOrigin(el as HTMLElement, placement);
+							(el as HTMLElement).style.transformOrigin = getOrigin(el as HTMLElement, position);
 						},
 					},
 					() =>

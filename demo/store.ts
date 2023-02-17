@@ -1,7 +1,14 @@
 import { reactive } from 'vue';
+import type { Position } from '../src/types';
 
-export const settings = reactive({
-	placement: 'top-center',
+type Settings = {
+	position: Position;
+	maxWidth: number;
+	disabled: boolean;
+};
+
+export const settings = reactive<Settings>({
+	position: 'top-center',
 	maxWidth: 0,
 	disabled: false,
 });

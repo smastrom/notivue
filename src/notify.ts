@@ -1,5 +1,4 @@
 import { shallowReactive, shallowRef, type Plugin, type InjectionKey, customRef } from 'vue';
-import { Receiver } from './Receiver';
 import { createPush } from './createPush';
 import { notifySyms, userSyms } from './symbols';
 import type { PluginOptions, Receiver as ReceiverT } from './types';
@@ -28,7 +27,5 @@ export const notify: Plugin = {
 		});
 
 		receivers.forEach((value, sym) => app.provide(sym, value));
-
-		app.component('VueNotify', Receiver);
 	},
 };
