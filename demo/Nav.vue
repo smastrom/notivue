@@ -69,8 +69,8 @@ async function customAsync() {
 	});
 }
 
-function setPosition(placement: ComponentProps['placement']) {
-	settings.placement = placement;
+function setPosition(position: ComponentProps['position']) {
+	settings.position = position;
 }
 
 function setWidth() {
