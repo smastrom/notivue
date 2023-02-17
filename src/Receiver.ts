@@ -15,6 +15,7 @@ import { Type, FIXED_INCREMENT } from './constants';
 import { defaultComponent } from './defaultComponent';
 import { defaultOptions } from './defaultOptions';
 import { ariaLive } from './ariaLive';
+import { light } from './themes';
 import type { ComponentProps as Props, MergedOptions, Notification } from './types';
 
 export const Receiver = defineComponent({
@@ -42,8 +43,8 @@ export const Receiver = defineComponent({
 			default: false,
 		},
 		rootMargin: {
-			type: Object as PropType<Props['rootMargin']>,
-			default: () => ({ y: 30, x: 30 }),
+			type: String as PropType<Props['rootMargin']>,
+			default: '20px',
 		},
 		maxWidth: {
 			type: Number as PropType<Props['maxWidth']>,
@@ -65,9 +66,9 @@ export const Receiver = defineComponent({
 			type: Object as PropType<Props['options']>,
 			default: () => defaultOptions,
 		},
-		closeAriaLabel: {
-			type: String as PropType<Props['closeAriaLabel']>,
-			default: 'Close',
+		theme: {
+			type: Object as PropType<Props['theme']>,
+			default: () => light,
 		},
 	},
 	setup(props) {
