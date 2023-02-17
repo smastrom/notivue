@@ -1,19 +1,17 @@
-import { shallowReactive, shallowRef, type Plugin, type InjectionKey } from 'vue';
-import { VueNotify } from './VueNotify';
+import { shallowReactive, shallowRef, type Plugin, type InjectionKey, customRef } from 'vue';
+import { Receiver } from './Receiver';
 import { createPush } from './createPush';
 import { notifySyms, userSyms } from './symbols';
-import { COMPONENT_NAME } from './constants';
-import type { PluginOptions, Receiver } from './types';
+import type { PluginOptions, Receiver as ReceiverT } from './types';
 
 export const notify: Plugin = {
 	install(
 		app,
-		{ name = COMPONENT_NAME, additionalReceivers = [] }: PluginOptions = {
-			name: COMPONENT_NAME,
+		{ additionalReceivers = [] }: PluginOptions = {
 			additionalReceivers: [],
 		}
 	) {
-		const receivers = new Map<InjectionKey<Receiver>, Receiver>();
+		const receivers = new Map<InjectionKey<ReceiverT>, ReceiverT>();
 
 		additionalReceivers.forEach((key) => {
 			userSyms[key.toString()] = Symbol(key.toString());
@@ -24,8 +22,8 @@ export const notify: Plugin = {
 		notifySyms.forEach((sym) => {
 			receivers.set(sym, {
 				notifications: shallowReactive([]),
-				incoming: shallowRef({}) as Receiver['incoming'],
-				push: () => createPush(receivers.get(sym) as Receiver),
+				incoming: shallowRef({}) as ReceiverT['incoming'],
+				push: () => createPush(receivers.get(sym) as ReceiverT),
 			});
 		});
 
@@ -33,6 +31,6 @@ export const notify: Plugin = {
 			app.provide(sym, value);
 		});
 
-		app.component(name, VueNotify);
+		app.component('VueNotify', Receiver);
 	},
 };
