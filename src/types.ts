@@ -19,7 +19,6 @@ export type ComponentProps = {
 		| 'bottom-right';
 	maxWidth: number | null;
 	key: string;
-	customClass: string;
 	margin: { x: number; y: number };
 	transitionName: string;
 	options: Record<string, Partial<ComponentOptions>>;
