@@ -11,7 +11,7 @@ import {
 import { useReceiver } from './useReceiver';
 import { useReceiverStyles } from './useReceiverStyles';
 import { getOrigin, mergeOptions } from './utils';
-import { Type, FIXED_INCREMENT } from './constants';
+import { NType, FIXED_INCREMENT } from './constants';
 import { defaultComponent } from './defaultComponent';
 import { defaultOptions } from './defaultOptions';
 import { ariaLive } from './ariaLive';
@@ -115,39 +115,35 @@ export const Receiver = defineComponent({
 
 				if (
 					items.length >= props.limit &&
-					items[isUnshift ? items.length - 1 : 0].type !== Type.PROMISE
+					items[isUnshift ? items.length - 1 : 0].type !== NType.PROMISE
 				) {
 					items[isUnshift ? 'pop' : 'shift']();
 				}
 
-				let customRender: Pick<Notification, 'userProps' | 'component' | 'renderFn'> = {
-					component: undefined,
-					userProps: {},
-					renderFn: undefined,
-				};
-
 				const options = mergeOptions(props.options, _options);
 				const createdAt = performance.now();
 
+				let customRender: Partial<Pick<Notification, 'props' | 'component' | 'h'>> = {
+					h: undefined,
+				};
+
 				if (
-					options.type.includes(Type.PROMISE_REJECT) ||
-					options.type.includes(Type.PROMISE_RESOLVE)
+					options.type.includes(NType.PROMISE_REJECT) ||
+					options.type.includes(NType.PROMISE_RESOLVE)
 				) {
 					const currIndex = items.findIndex((data) => data.id === options.id);
 					const prevComponent = items[currIndex]?.component;
 
 					if (prevComponent) {
-						const { title, message, type, close, ...prevProps } = items[currIndex].userProps;
+						const { title, message, type, close, ...prevProps } = items[currIndex].props;
 						const nextProps = { ...getNotifyProps(options), prevProps };
 
 						customRender = {
-							userProps: options.render?.props?.(nextProps) ?? {},
-							component: options.render?.component ?? prevComponent,
-							renderFn: () =>
-								h(customRender.component ?? {}, {
-									...customRender.userProps,
-									key: options.id,
-								}),
+							h: () =>
+								h(
+									options.render?.component ?? prevComponent,
+									options.render?.props?.(nextProps) ?? {}
+								),
 						};
 					}
 
@@ -159,15 +155,13 @@ export const Receiver = defineComponent({
 						createdAt,
 					};
 				} else {
-					if (options.render?.component) {
+					const component = options.render?.component;
+
+					if (component) {
+						const props = options.render?.props?.(getNotifyProps(options)) ?? {};
 						customRender = {
-							userProps: options.render?.props?.(getNotifyProps(options)) ?? {},
-							component: options.render.component,
-							renderFn: () =>
-								h(customRender.component ?? {}, {
-									...customRender.userProps,
-									key: options.id,
-								}),
+							h: () => h(component, props),
+							...(options.type === NType.PROMISE ? { props, component } : {}),
 						};
 					}
 
@@ -175,7 +169,7 @@ export const Receiver = defineComponent({
 						...options,
 						...customRender,
 						timeoutId:
-							options.type === Type.PROMISE
+							options.type === NType.PROMISE
 								? undefined
 								: createTimeout(options.id, options.duration),
 						clear: () => clear(options.id),
@@ -210,7 +204,7 @@ export const Receiver = defineComponent({
 					const stoppedAt = performance.now();
 
 					items.forEach((prevData, currIndex) => {
-						clearTimeout(items[currIndex].timeoutId);
+						clearTimeout(prevData.timeoutId);
 
 						items[currIndex] = {
 							...prevData,
@@ -229,7 +223,9 @@ export const Receiver = defineComponent({
 							...prevData,
 							createdAt: performance.now(),
 							timeoutId:
-								prevData.type !== Type.PROMISE ? createTimeout(prevData.id, newTimeout) : undefined,
+								prevData.type !== NType.PROMISE
+									? createTimeout(prevData.id, newTimeout)
+									: undefined,
 						};
 					});
 
@@ -245,7 +241,10 @@ export const Receiver = defineComponent({
 					{
 						name: props.transitionName,
 						onEnter(el) {
-							(el as HTMLElement).style.transformOrigin = getOrigin(el as HTMLElement, position);
+							(el as HTMLElement).style.transformOrigin = getOrigin(
+								el as HTMLElement,
+								position
+							);
 						},
 					},
 					() =>
@@ -263,7 +262,7 @@ export const Receiver = defineComponent({
 											h(TransitionGroup, { name: props.transitionGroupName }, () =>
 												items.map((item) => [
 													h('div', { key: item.id }, [
-														item.renderFn?.() ?? defaultComponent(item),
+														item.h?.() ?? defaultComponent(item),
 														ariaLive(item),
 													]),
 												])
