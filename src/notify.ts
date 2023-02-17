@@ -1,4 +1,4 @@
-import { shallowReactive, shallowRef, type Plugin, type InjectionKey, customRef } from 'vue';
+import { shallowReactive, shallowRef, type Plugin, type InjectionKey } from 'vue';
 import { createPush } from './createPush';
 import { notifySyms, userSyms } from './symbols';
 import type { PluginOptions, Receiver as ReceiverT } from './types';

@@ -16,7 +16,7 @@ import { defaultComponent } from './defaultComponent';
 import { defaultOptions } from './defaultOptions';
 import { ariaLive } from './ariaLive';
 import { light } from './themes';
-import type { ComponentProps as Props, MergedOptions, Notification } from './types';
+import type { ReceiverProps as Props, MergedOptions, Notification } from './types';
 
 export const Receiver = defineComponent({
 	name: 'VueNotify',
@@ -236,9 +236,8 @@ export const Receiver = defineComponent({
 
 		return () =>
 			h(Teleport, { to: 'body' }, [
-				h(
-					Transition,
-					{
+				/* prettier-ignore */
+				h(Transition, {
 						name: props.transitionName,
 						onEnter(el) {
 							(el as HTMLElement).style.transformOrigin = getOrigin(
@@ -247,31 +246,25 @@ export const Receiver = defineComponent({
 							);
 						},
 					},
-					() =>
-						items.length > 0 && [
-							h('div', { style: wrapperStyles }, [
-								h('div', { style: containerStyles.value }, [
-									h(
-										'div',
-										{
-											style: hoverAreaStyles,
-											...(props.pauseOnHover ? pointerEvts : {}),
-											...(props.id ? { 'data-vuenotify': props.id } : {}),
-										},
-										[
-											h(TransitionGroup, { name: props.transitionGroupName }, () =>
-												items.map((item) => [
-													h('div', { key: item.id }, [
-														item.h?.() ?? defaultComponent(item),
-														ariaLive(item),
-													]),
-												])
-											),
-										]
-									),
-								]),
-							]),
-						]
+					() =>	items.length > 0 && 
+						h('div', { style: wrapperStyles },
+							h('div', { style: containerStyles.value },
+								h('div', {
+										style: hoverAreaStyles,
+										...(props.pauseOnHover ? pointerEvts : {}),
+										...(props.id ? { 'data-vuenotify': props.id } : {}),
+									},
+									h(TransitionGroup, { name: props.transitionGroupName }, () =>
+										items.map((item) => [
+											h('div', { key: item.id }, [
+												item.h?.() ?? defaultComponent(item),
+												ariaLive(item),
+											]),
+										])
+									)
+								)
+							)
+					)
 				),
 			]);
 	},

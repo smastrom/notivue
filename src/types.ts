@@ -14,7 +14,7 @@ export type Position =
 	| 'bottom-center'
 	| 'bottom-right';
 
-export type ComponentProps = {
+export type ReceiverProps = {
 	disabled: boolean;
 	method: 'unshift' | 'push';
 	limit: number;
@@ -25,11 +25,11 @@ export type ComponentProps = {
 	rootMargin: string;
 	transitionName: string;
 	transitionGroupName: string;
-	options: Partial<Record<`${NType}`, Partial<ComponentOptions>>>;
+	options: Partial<Record<`${NType}`, Partial<ReceiverOptions>>>;
 	theme: Record<`--${string}`, string>;
 };
 
-export type ComponentOptions = {
+export type ReceiverOptions = {
 	icon: Component | false;
 	title: boolean | string;
 	message: boolean | string;
@@ -44,14 +44,12 @@ export type InternalPushOptions = {
 	type: `${NType}`;
 };
 
-export type UserOptions<T = NotifyProps> = Partial<ComponentOptions> & MaybeRender<T>;
+export type UserOptions<T = NotifyProps> = Partial<ReceiverOptions> & MaybeRender<T>;
 
-export type MergedOptions<T = NotifyProps> = ComponentOptions &
-	InternalPushOptions &
-	MaybeRender<T>;
+export type MergedOptions<T = NotifyProps> = ReceiverOptions & InternalPushOptions & MaybeRender<T>;
 
 export type Notification = InternalPushOptions &
-	ComponentOptions & {
+	ReceiverOptions & {
 		timeoutId: number | undefined;
 		id: string;
 		createdAt: number;
@@ -80,8 +78,8 @@ type NotifyProps = {
 	notifyProps: {
 		type: InternalPushOptions['type'];
 		close: () => void;
-		title?: ComponentOptions['title'];
-		message?: ComponentOptions['message'];
+		title?: ReceiverOptions['title'];
+		message?: ReceiverOptions['message'];
 	};
 };
 

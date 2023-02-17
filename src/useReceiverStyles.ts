@@ -1,10 +1,10 @@
 import { computed, type Ref, type CSSProperties, ref } from 'vue';
-import type { ComponentProps } from './types';
+import type { ReceiverProps } from './types';
 
 type Params = {
-	rootMargin: Ref<ComponentProps['rootMargin']>;
-	maxWidth: Ref<ComponentProps['maxWidth']>;
-	position: Ref<ComponentProps['position']>;
+	rootMargin: Ref<ReceiverProps['rootMargin']>;
+	maxWidth: Ref<ReceiverProps['maxWidth']>;
+	position: Ref<ReceiverProps['position']>;
 };
 
 const brBox: CSSProperties = { boxSizing: 'border-box' };
