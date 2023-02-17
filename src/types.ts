@@ -1,19 +1,10 @@
 import type { VNode, Ref, Component, Raw } from 'vue';
+import { Type } from './constants';
 
 export type PluginOptions = {
 	name?: string;
 	additionalReceivers?: string[];
 };
-
-export enum Type {
-	SUCCESS = 'success',
-	ERROR = 'error',
-	WARNING = 'warning',
-	INFO = 'info',
-	PROMISE = 'promise',
-	PROMISE_RESOLVE = 'promise-resolve',
-	PROMISE_REJECT = 'promise-reject',
-}
 
 export type Position =
 	| 'top-left'
@@ -34,7 +25,7 @@ export type ComponentProps = {
 	rootMargin: { x: number; y: number };
 	transitionName: string;
 	transitionGroupName: string;
-	options: Record<`${Type}`, Partial<ComponentOptions>>;
+	options: Partial<Record<`${Type}`, Partial<ComponentOptions>>>;
 };
 
 export type ComponentOptions = {
