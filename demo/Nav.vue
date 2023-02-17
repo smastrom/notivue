@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { markRaw } from 'vue';
-import { ComponentProps } from '../src/types';
+import { ReceiverProps } from '../src/types';
 import { useNotify } from '../src/useNotify';
 import { settings } from './store';
 import Custom from './Custom.vue';
@@ -69,7 +69,7 @@ async function customAsync() {
 	});
 }
 
-function setPosition(position: ComponentProps['position']) {
+function setPosition(position: ReceiverProps['position']) {
 	settings.position = position;
 }
 
@@ -97,7 +97,9 @@ function toggleEnable() {
 		</div>
 
 		<div>
-			<button @click="pushToUser({ message: 'Your message has been successfully sent. Please.' })">
+			<button
+				@click="pushToUser({ message: 'Your message has been successfully sent. Please.' })"
+			>
 				To User
 			</button>
 			<button @click="toggleEnable">
@@ -107,10 +109,14 @@ function toggleEnable() {
 			<button @click="push({ message: 'Your message has been successfully sent. Please.' })">
 				Success
 			</button>
-			<button @click="push.error({ message: 'Your message has been successfully sent. Please.' })">
+			<button
+				@click="push.error({ message: 'Your message has been successfully sent. Please.' })"
+			>
 				Error
 			</button>
-			<button @click="push.info({ message: 'Your message has been successfully sent. Please.' })">
+			<button
+				@click="push.info({ message: 'Your message has been successfully sent. Please.' })"
+			>
 				Info
 			</button>
 			<button
