@@ -1,7 +1,7 @@
 /* Container */
 
 .VueNotify__notification {
-	background: white;
+	background: #fff;
 	margin: 0 auto 0.875rem auto;
 	padding: 0.625rem;
 	width: 375px;

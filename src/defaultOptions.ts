@@ -1,5 +1,5 @@
 import { markRaw } from 'vue';
-import { Type } from './constants';
+import { NType } from './constants';
 import { icons } from './icons';
 import type { ComponentOptions } from './types';
 
@@ -22,12 +22,11 @@ const error: ComponentOptions = {
 	ariaRole: 'alert',
 };
 
-const promiseDefault: ComponentOptions = {
+const promise: ComponentOptions = {
 	...success,
 	icon: markRaw(icons.promise),
 	title: 'Loading...',
 	close: false,
-	duration: Infinity,
 };
 
 const warning: ComponentOptions = {
@@ -42,20 +41,12 @@ const info: ComponentOptions = {
 	title: 'Info!',
 };
 
-const promiseResolve: ComponentOptions = {
-	...success,
-};
-
-const promiseReject: ComponentOptions = {
-	...error,
-};
-
-export const defaultOptions: Record<`${Type}`, ComponentOptions> = {
-	[Type.SUCCESS]: success,
-	[Type.ERROR]: error,
-	[Type.WARNING]: warning,
-	[Type.INFO]: info,
-	[Type.PROMISE]: promiseDefault,
-	[Type.PROMISE_RESOLVE]: promiseResolve,
-	[Type.PROMISE_REJECT]: promiseReject,
+export const defaultOptions: Record<`${NType}`, ComponentOptions> = {
+	[NType.SUCCESS]: success,
+	[NType.ERROR]: error,
+	[NType.WARNING]: warning,
+	[NType.INFO]: info,
+	[NType.PROMISE]: promise,
+	[NType.PROMISE_RESOLVE]: success,
+	[NType.PROMISE_REJECT]: error,
 };
