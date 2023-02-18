@@ -1,31 +1,31 @@
 <script setup lang="ts">
-import { markRaw } from 'vue';
-import { ReceiverProps } from '../src/types';
-import { useNotify } from '../src/useNotify';
-import { settings } from './store';
-import Custom from './Custom.vue';
+import { markRaw } from 'vue'
+import { ReceiverProps } from '../src/types'
+import { useNotify } from '../src/useNotify'
+import { settings } from './store'
+import Custom from './Custom.vue'
 
-const push = useNotify();
+const push = useNotify()
 
-const pushToUser = useNotify('user-1');
+const pushToUser = useNotify('user-1')
 
 function getRandomInt(min: number, max: number) {
-   min = Math.ceil(min);
-   max = Math.floor(max);
-   return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
+   min = Math.ceil(min)
+   max = Math.floor(max)
+   return Math.floor(Math.random() * (max - min) + min) // The maximum is exclusive and the minimum is inclusive
 }
 
 async function asyncPush() {
    const ayncNotify = push.promise({
       message: "We're sending your message. This will take a moment or two...",
-   });
+   })
 
-   await new Promise((resolve) => setTimeout(resolve, getRandomInt(2000, 4000)));
+   await new Promise((resolve) => setTimeout(resolve, getRandomInt(2000, 4000)))
 
    if (Math.random() > 0.5) {
-      ayncNotify.reject({ message: 'Promise rejected!' });
+      ayncNotify.reject({ message: 'Promise rejected!' })
    } else {
-      ayncNotify.resolve({ message: 'Promise successfully resolved!' });
+      ayncNotify.resolve({ message: 'Promise successfully resolved!' })
    }
 }
 
@@ -39,7 +39,7 @@ function customPush() {
             avatarUrl: 'https://i.pravatar.cc/150?img=1',
          }),
       },
-   });
+   })
 }
 
 async function customAsync() {
@@ -52,9 +52,9 @@ async function customAsync() {
             avatarUrl: 'https://i.pravatar.cc/150?img=1',
          }),
       },
-   });
+   })
 
-   await new Promise((resolve) => setTimeout(resolve, 3000));
+   await new Promise((resolve) => setTimeout(resolve, 3000))
 
    promise.resolve({
       message: 'Async resolved',
@@ -66,19 +66,19 @@ async function customAsync() {
             name: 'Rubrante',
          }),
       },
-   });
+   })
 }
 
 function setPosition(position: ReceiverProps['position']) {
-   settings.position = position;
+   settings.position = position
 }
 
 function setWidth() {
-   settings.maxWidth = settings.maxWidth === 1280 ? 0 : 1280;
+   settings.maxWidth = settings.maxWidth === 1280 ? 0 : 1280
 }
 
 function toggleEnable() {
-   settings.disabled = !settings.disabled;
+   settings.disabled = !settings.disabled
 }
 </script>
 

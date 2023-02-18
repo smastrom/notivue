@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
-import terser from '@rollup/plugin-terser';
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import terser from '@rollup/plugin-terser'
 
 export default defineConfig({
    build: {
@@ -27,4 +27,4 @@ export default defineConfig({
       },
    },
    plugins: [vue()],
-});
+})

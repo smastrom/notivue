@@ -1,5 +1,5 @@
-import { h, type CSSProperties } from 'vue';
-import type { Notification } from './types';
+import { h, type CSSProperties } from 'vue'
+import type { Notification } from './types'
 
 const style: CSSProperties = {
    clip: 'rect(0 0 0 0)',
@@ -9,12 +9,12 @@ const style: CSSProperties = {
    position: 'absolute',
    whiteSpace: 'nowrap',
    width: '1px',
-};
+}
 
 export function ariaLive(item: Notification) {
    return h(
       'div',
       { 'aria-live': item.ariaLive, role: item.ariaRole, style },
       `${item.title ? `${item.title}:` : ''} ${item.message || ''}`
-   );
+   )
 }

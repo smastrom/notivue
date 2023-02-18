@@ -1,7 +1,7 @@
-import { markRaw } from 'vue';
-import { NType } from './constants';
-import { icons } from './icons';
-import type { ReceiverOptions } from './types';
+import { markRaw } from 'vue'
+import { NType } from './constants'
+import { icons } from './icons'
+import type { ReceiverOptions } from './types'
 
 export const success: ReceiverOptions = {
    title: 'Success!',
@@ -11,7 +11,7 @@ export const success: ReceiverOptions = {
    duration: 3000,
    ariaLive: 'polite',
    ariaRole: 'status',
-};
+}
 
 const error: ReceiverOptions = {
    ...success,
@@ -20,26 +20,26 @@ const error: ReceiverOptions = {
    title: 'Error!',
    ariaLive: 'assertive',
    ariaRole: 'alert',
-};
+}
 
 const promise: ReceiverOptions = {
    ...success,
    icon: markRaw(icons.promise),
    title: 'Loading...',
    close: false,
-};
+}
 
 const warning: ReceiverOptions = {
    ...error,
    icon: markRaw(icons.warning),
    title: 'Warning!',
-};
+}
 
 const info: ReceiverOptions = {
    ...success,
    icon: markRaw(icons.info),
    title: 'Info!',
-};
+}
 
 export const defaultOptions: Record<`${NType}`, ReceiverOptions> = {
    [NType.SUCCESS]: success,
@@ -49,4 +49,4 @@ export const defaultOptions: Record<`${NType}`, ReceiverOptions> = {
    [NType.PROMISE]: promise,
    [NType.PROMISE_RESOLVE]: success,
    [NType.PROMISE_REJECT]: error,
-};
+}
