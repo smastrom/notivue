@@ -4,49 +4,49 @@ import { icons } from './icons';
 import type { ReceiverOptions } from './types';
 
 export const success: ReceiverOptions = {
-	title: 'Success!',
-	message: '',
-	icon: markRaw(icons.success),
-	close: true,
-	duration: 3000,
-	ariaLive: 'polite',
-	ariaRole: 'status',
+   title: 'Success!',
+   message: '',
+   icon: markRaw(icons.success),
+   close: true,
+   duration: 3000,
+   ariaLive: 'polite',
+   ariaRole: 'status',
 };
 
 const error: ReceiverOptions = {
-	...success,
-	icon: markRaw(icons.error),
-	duration: 6000,
-	title: 'Error!',
-	ariaLive: 'assertive',
-	ariaRole: 'alert',
+   ...success,
+   icon: markRaw(icons.error),
+   duration: 6000,
+   title: 'Error!',
+   ariaLive: 'assertive',
+   ariaRole: 'alert',
 };
 
 const promise: ReceiverOptions = {
-	...success,
-	icon: markRaw(icons.promise),
-	title: 'Loading...',
-	close: false,
+   ...success,
+   icon: markRaw(icons.promise),
+   title: 'Loading...',
+   close: false,
 };
 
 const warning: ReceiverOptions = {
-	...error,
-	icon: markRaw(icons.warning),
-	title: 'Warning!',
+   ...error,
+   icon: markRaw(icons.warning),
+   title: 'Warning!',
 };
 
 const info: ReceiverOptions = {
-	...success,
-	icon: markRaw(icons.info),
-	title: 'Info!',
+   ...success,
+   icon: markRaw(icons.info),
+   title: 'Info!',
 };
 
 export const defaultOptions: Record<`${NType}`, ReceiverOptions> = {
-	[NType.SUCCESS]: success,
-	[NType.ERROR]: error,
-	[NType.WARNING]: warning,
-	[NType.INFO]: info,
-	[NType.PROMISE]: promise,
-	[NType.PROMISE_RESOLVE]: success,
-	[NType.PROMISE_REJECT]: error,
+   [NType.SUCCESS]: success,
+   [NType.ERROR]: error,
+   [NType.WARNING]: warning,
+   [NType.INFO]: info,
+   [NType.PROMISE]: promise,
+   [NType.PROMISE_RESOLVE]: success,
+   [NType.PROMISE_REJECT]: error,
 };
