@@ -1,13 +1,13 @@
-import { computed, type Ref, type CSSProperties, ref } from 'vue';
-import type { ReceiverProps } from './types';
+import { computed, type Ref, type CSSProperties, ref } from 'vue'
+import type { ReceiverProps } from './types'
 
 type Params = {
-   rootMargin: Ref<ReceiverProps['rootMargin']>;
-   maxWidth: Ref<ReceiverProps['maxWidth']>;
-   position: Ref<ReceiverProps['position']>;
-};
+   rootMargin: Ref<ReceiverProps['rootMargin']>
+   maxWidth: Ref<ReceiverProps['maxWidth']>
+   position: Ref<ReceiverProps['position']>
+}
 
-const brBox: CSSProperties = { boxSizing: 'border-box' };
+const brBox: CSSProperties = { boxSizing: 'border-box' }
 
 const wrapperStyles: CSSProperties = {
    ...brBox,
@@ -17,12 +17,12 @@ const wrapperStyles: CSSProperties = {
    display: 'flex',
    justifyContent: 'center',
    pointerEvents: 'none',
-};
+}
 
-const hoverAreaStyles: CSSProperties = { ...brBox, pointerEvents: 'all' };
+const hoverAreaStyles: CSSProperties = { ...brBox, pointerEvents: 'all' }
 
 export function useReceiverStyles({ rootMargin, maxWidth, position }: Params) {
-   const is = (_position: string) => position.value.includes(_position);
+   const is = (_position: string) => position.value.includes(_position)
 
    const containerStyles = computed<CSSProperties>(() => ({
       ...brBox,
@@ -32,7 +32,7 @@ export function useReceiverStyles({ rootMargin, maxWidth, position }: Params) {
       justifyContent: is('right') ? 'end' : is('left') ? 'start' : 'center',
       width: '100%',
       display: 'flex',
-   }));
+   }))
 
-   return { wrapperStyles, containerStyles, hoverAreaStyles };
+   return { wrapperStyles, containerStyles, hoverAreaStyles }
 }

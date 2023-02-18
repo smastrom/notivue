@@ -7,16 +7,16 @@ import {
    TransitionGroup,
    watch,
    type PropType,
-} from 'vue';
-import { useReceiver } from './useReceiver';
-import { useReceiverStyles } from './useReceiverStyles';
-import { getOrigin, mergeOptions } from './utils';
-import { NType, FIXED_INCREMENT } from './constants';
-import { defaultComponent } from './defaultComponent';
-import { defaultOptions } from './defaultOptions';
-import { ariaLive } from './ariaLive';
-import { light } from './themes';
-import type { ReceiverProps as Props, MergedOptions, Notification } from './types';
+} from 'vue'
+import { useReceiver } from './useReceiver'
+import { useReceiverStyles } from './useReceiverStyles'
+import { getOrigin, mergeOptions } from './utils'
+import { NType, FIXED_INCREMENT } from './constants'
+import { defaultComponent } from './defaultComponent'
+import { defaultOptions } from './defaultOptions'
+import { ariaLive } from './ariaLive'
+import { light } from './themes'
+import type { ReceiverProps as Props, MergedOptions, Notification } from './types'
 
 export const Receiver = defineComponent({
    name: 'VueNotify',
@@ -72,71 +72,71 @@ export const Receiver = defineComponent({
       },
    },
    setup(props) {
-      let isHovering = false;
+      let isHovering = false
 
       // Reactivity
 
-      const position = toRef(props, 'position');
-      const rootMargin = toRef(props, 'rootMargin');
-      const maxWidth = toRef(props, 'maxWidth');
-      const disabled = toRef(props, 'disabled');
+      const position = toRef(props, 'position')
+      const rootMargin = toRef(props, 'rootMargin')
+      const maxWidth = toRef(props, 'maxWidth')
+      const disabled = toRef(props, 'disabled')
 
-      const { items, incoming } = useReceiver(props.id);
+      const { items, incoming } = useReceiver(props.id)
       const { wrapperStyles, containerStyles, hoverAreaStyles } = useReceiverStyles({
          rootMargin,
          maxWidth,
          position,
-      });
+      })
 
       // Watchers
 
-      let unsubscribe = subscribe();
+      let unsubscribe = subscribe()
 
       watch(disabled, (isDisabled) => {
          if (isDisabled) {
-            items.length = 0;
-            unsubscribe();
+            items.length = 0
+            unsubscribe()
          } else {
-            unsubscribe = subscribe();
+            unsubscribe = subscribe()
          }
-      });
+      })
 
       watch(
          () => items.length === 0,
          (newLen) => newLen && (isHovering = false),
          { flush: 'post' }
-      );
+      )
 
       // Functions
 
       function subscribe() {
          return watch(incoming, (_options) => {
-            const isUnshift = props.method === 'unshift';
+            const isUnshift = props.method === 'unshift'
 
             if (
                items.length >= props.limit &&
                items[isUnshift ? items.length - 1 : 0].type !== NType.PROMISE
             ) {
-               items[isUnshift ? 'pop' : 'shift']();
+               items[isUnshift ? 'pop' : 'shift']()
             }
 
-            const options = mergeOptions(props.options, _options);
-            const createdAt = performance.now();
+            const options = mergeOptions(props.options, _options)
+            const createdAt = performance.now()
 
             let customRender: Partial<Pick<Notification, 'props' | 'component' | 'h'>> = {
                h: undefined,
-            };
+            }
 
             if (
                options.type.includes(NType.PROMISE_REJECT) ||
                options.type.includes(NType.PROMISE_RESOLVE)
             ) {
-               const currIndex = items.findIndex((data) => data.id === options.id);
-               const prevComponent = items[currIndex]?.component;
+               const currIndex = items.findIndex((data) => data.id === options.id)
+               const prevComponent = items[currIndex]?.component
 
                if (prevComponent) {
-                  const { title, message, type, close, ...prevProps } = items[currIndex].props;
-                  const nextProps = { ...getNotifyProps(options), prevProps };
+                  const { title, message, type, close, ...prevProps } = items[currIndex].props
+                  const nextProps = { ...getNotifyProps(options), prevProps }
 
                   customRender = {
                      h: () =>
@@ -144,7 +144,7 @@ export const Receiver = defineComponent({
                            options.render?.component ?? prevComponent,
                            options.render?.props?.(nextProps) ?? {}
                         ),
-                  };
+                  }
                }
 
                items[currIndex] = {
@@ -153,16 +153,16 @@ export const Receiver = defineComponent({
                   ...customRender,
                   timeoutId: isHovering ? undefined : createTimeout(options.id, options.duration),
                   createdAt,
-               };
+               }
             } else {
-               const component = options.render?.component;
+               const component = options.render?.component
 
                if (component) {
-                  const props = options.render?.props?.(getNotifyProps(options)) ?? {};
+                  const props = options.render?.props?.(getNotifyProps(options)) ?? {}
                   customRender = {
                      h: () => h(component, props),
                      ...(options.type === NType.PROMISE ? { props, component } : {}),
-                  };
+                  }
                }
 
                items[props.method]({
@@ -172,24 +172,26 @@ export const Receiver = defineComponent({
                      options.type !== NType.PROMISE && createTimeout(options.id, options.duration),
                   clear: () => clear(options.id),
                   createdAt,
-               } as Notification);
+               } as Notification)
             }
-         });
+         })
       }
 
       function createTimeout(id: string, time: number) {
          return setTimeout(() => {
-            items.find((data) => data.id === id)?.clear();
-         }, time);
+            items.find((data) => data.id === id)?.clear()
+         }, time)
       }
 
       function clear(id: string) {
-         const index = items.findIndex((data) => data.id === id);
-         items.splice(index, 1);
+         items.splice(
+            items.findIndex((data) => data.id === id),
+            1
+         )
       }
 
       function getNotifyProps({ title, message, type, id }: MergedOptions) {
-         return { notifyProps: { title, message, type, close: () => clear(id) } };
+         return { notifyProps: { title, message, type, close: () => clear(id) } }
       }
 
       // Props
@@ -197,25 +199,25 @@ export const Receiver = defineComponent({
       const pointerEvts = {
          onPointerenter() {
             if (items.length > 0 && !isHovering) {
-               isHovering = true;
+               isHovering = true
 
-               const stoppedAt = performance.now();
+               const stoppedAt = performance.now()
 
                items.forEach((prevData, currIndex) => {
-                  clearTimeout(prevData.timeoutId);
+                  clearTimeout(prevData.timeoutId)
 
                   items[currIndex] = {
                      ...prevData,
                      stoppedAt,
                      elapsed: stoppedAt - prevData.createdAt + (prevData.elapsed ?? 0),
-                  };
-               });
+                  }
+               })
             }
          },
          onPointerleave() {
             if (items.length > 0 && isHovering) {
                items.forEach((prevData, currIndex) => {
-                  const newTimeout = prevData.duration + FIXED_INCREMENT - prevData.elapsed;
+                  const newTimeout = prevData.duration + FIXED_INCREMENT - prevData.elapsed
 
                   items[currIndex] = {
                      ...prevData,
@@ -224,35 +226,32 @@ export const Receiver = defineComponent({
                         prevData.type !== NType.PROMISE
                            ? createTimeout(prevData.id, newTimeout)
                            : undefined,
-                  };
-               });
+                  }
+               })
 
-               isHovering = false;
+               isHovering = false
             }
          },
-      };
+      }
 
       return () =>
+         /* prettier-ignore */
          h(Teleport, { to: 'body' }, [
-            h(
-               Transition,
-               {
-                  name: props.transitionName,
-                  onEnter(el) {
+            h(Transition, {
+               name: props.transitionName,
+               onEnter(el) {
                      (el as HTMLElement).style.transformOrigin = getOrigin(
                         el as HTMLElement,
                         position
                      );
                   },
                },
-               /* prettier-ignore */
-               () =>
-                  items.length > 0 &&
+               () => items.length > 0 &&
                   h('div', { style: wrapperStyles },
                      h('div', { style: containerStyles.value },
                         h('div',
                            {
-                              style: hoverAreaStyles,
+                              style: {...hoverAreaStyles, ...props.theme},
                               ...(props.pauseOnHover ? pointerEvts : {}),
                               ...(props.id ? { 'data-vuenotify': props.id } : {}),
                            },
@@ -268,6 +267,6 @@ export const Receiver = defineComponent({
                      )
                   )
             ),
-         ]);
+         ])
    },
-});
+})

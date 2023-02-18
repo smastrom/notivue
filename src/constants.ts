@@ -1,6 +1,6 @@
-export const FIXED_INCREMENT = 300;
+export const FIXED_INCREMENT = 300
 
-export const CLASS_PREFIX = 'VueNotify__';
+export const CLASS_PREFIX = 'VueNotify__'
 
 export enum NType {
    SUCCESS = 'success',

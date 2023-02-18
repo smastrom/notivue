@@ -1,12 +1,12 @@
 <script setup lang="ts">
 defineProps<{
-   message?: string;
-   title?: string | boolean;
-   type?: string;
-   close: () => void;
-   avatarUrl?: string;
-   name?: string;
-}>();
+   message?: string
+   title?: string | boolean
+   type?: string
+   close: () => void
+   avatarUrl?: string
+   name?: string
+}>()
 </script>
 
 <template>
