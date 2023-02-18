@@ -1,8 +1,8 @@
-import { h } from 'vue';
-import { icons } from './icons';
-import { CLASS_PREFIX } from './constants';
-import { hIcon } from './utils';
-import type { Notification } from './types';
+import { h } from 'vue'
+import { icons } from './icons'
+import { CLASS_PREFIX } from './constants'
+import { hIcon } from './utils'
+import type { Notification } from './types'
 
 export function defaultComponent(item: Notification) {
    return h(
@@ -26,5 +26,5 @@ export function defaultComponent(item: Notification) {
                [icons.close]
             ),
       ]
-   );
+   )
 }

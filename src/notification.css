@@ -1,27 +1,21 @@
 /* Container */
 
 .VueNotify__notification {
-   background: #fff;
+   background: var(--VNBackground);
    margin: 0 auto 0.875rem auto;
    padding: 0.625rem;
-   width: 375px;
+   width: var(--VNWidth);
    max-width: 100%;
    border-radius: 0.75rem;
    display: grid;
    grid-template-columns: auto 1fr auto;
-   border: 1px solid #dedede;
+   border: var(--VNBorderRadius);
    justify-items: start;
    align-items: center;
-   box-shadow: 0 calc(1rem / 3) calc(1rem / 2) rgba(0, 0, 0, 0.08);
+   box-shadow: var(--VNBoxShadow);
    pointer-events: all;
    will-change: transform;
    box-sizing: border-box;
-}
-
-@media (max-width: 375px) {
-   .VueNotify__notification {
-      width: 100%;
-   }
 }
 
 /* Icon */
@@ -33,20 +27,24 @@
 
 [data-vuenotify='success'] .VueNotify__icon,
 [data-vuenotify='promise-resolve'] .VueNotify__icon {
-   color: #28b780;
+   color: var(--VNSuccessColor);
 }
 
 [data-vuenotify='error'] .VueNotify__icon,
 [data-vuenotify='promise-reject'] .VueNotify__icon {
-   color: #ef4444;
+   color: var(--VNErrorColor);
+}
+
+[data-vuenotify='promise'] .VueNotify__icon {
+   color: var(--VNPromiseColor);
 }
 
 [data-vuenotify='info'] .VueNotify__icon {
-   color: #3e8eff;
+   color: var(--VNInfoColor);
 }
 
 [data-vuenotify='warning'] .VueNotify__icon {
-   color: #f59e0b;
+   color: var(--VNWarningColor);
 }
 
 /* Content */
@@ -57,7 +55,7 @@
 }
 
 .VueNotify__content-title {
-   color: #2b2b2b;
+   color: var(--VNTitleColor);
    font-weight: 700;
    font-size: 1rem;
    padding: 0;
@@ -66,7 +64,7 @@
 }
 
 .VueNotify__content-message {
-   color: #666666;
+   color: var(--VNMessageColor);
    font-weight: 600;
    line-height: 1.35;
    text-align: left;
@@ -82,7 +80,7 @@
    position: relative;
    border: none;
    margin: 0;
-   border-left: 1px solid #dedede;
+   border-left: var(--VNBorder);
    border-radius: 0;
    background: none;
    padding: 0.875rem;
@@ -93,7 +91,7 @@
 .VueNotify__close-icon {
    display: flex;
    opacity: 0.5;
-   fill: #8e8e8e;
+   color: var(--VNCloseColor);
 }
 
 .VueNotify__close:hover .VueNotify__close-icon {
