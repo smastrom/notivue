@@ -30,10 +30,10 @@ import { VueNotify } from 'vuenotify'
 </script>
 
 <template>
-  <div>
-    <VueNotify />
-    <RouterView />
-  </div>
+   <div>
+      <VueNotify />
+      <RouterView />
+   </div>
 </template>
 ```
 
@@ -45,7 +45,7 @@ const push = useNotify()
 </script>
 
 <template>
-  <button @click="push({ message: 'Something good has been pushed!' })">Push</button>
+   <button @click="push({ message: 'Something good has been pushed!' })">Push</button>
 </template>
 ```
 
@@ -90,11 +90,11 @@ info.clear()
 
 ```js
 try {
-  const promise = push.promise({ message: 'Loading...' })
-  await new Promise((resolve) => setTimeout(resolve, 1000))
-  promise.resolve({ message: 'Resolved!' })
+   const promise = push.promise({ message: 'Loading...' })
+   await new Promise((resolve) => setTimeout(resolve, 1000))
+   promise.resolve({ message: 'Resolved!' })
 } catch (error) {
-  promise.reject({ message: 'Rejected!' }) // or promise.clear() to manually clear
+   promise.reject({ message: 'Rejected!' }) // or promise.clear() to manually clear
 }
 ```
 
@@ -144,21 +144,21 @@ push.clearAll()
 <!-- SuccessIcon.vue -->
 
 <template>
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  >
-    <circle cx="12" cy="12" r="10" />
-    <line x1="12" y1="16" x2="12" y2="12" />
-    <line x1="12" y1="8" x2="12.01" y2="8" />
-  </svg>
+   <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+   >
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="16" x2="12" y2="12" />
+      <line x1="12" y1="8" x2="12.01" y2="8" />
+   </svg>
 </template>
 
 <!-- Source: https://feathericons.com/?query=info -->
@@ -172,18 +172,18 @@ import SuccessIcon from './SuccessIcon.vue'
 </script>
 
 <template>
-  <Notify
-    :options="{
-      success: {
-        icon: SuccessIcon, // Or false to not render an icon
-        title: true, // Or false to not render or 'My Title' to enable and also assign a default title
-        close: false,
-        duration: 3000,
-        ariaLive: 'polite',
-        ariaRole: 'status'
-      }
-    }"
-  />
+   <Notify
+      :options="{
+         success: {
+            icon: SuccessIcon, // Or false to not render an icon
+            title: true, // Or false to not render or 'My Title' to enable and also assign a default title
+            close: false,
+            duration: 3000,
+            ariaLive: 'polite',
+            ariaRole: 'status'
+         }
+      }"
+   />
 </template>
 ```
 
@@ -208,11 +208,11 @@ For example to change background and text color of the success notification:
 
 ```css
 [data-vuenotify='success'] .VueNotify__container {
-  background-color: green;
+   background-color: green;
 }
 
 [data-vuenotify='error'] .VueNotify__content-message {
-  color: white;
+   color: white;
 }
 ```
 
@@ -227,43 +227,43 @@ While Vuenotify will still take care of rendering the ARIA region and the root c
 
 <script setup>
 defineProps([
-  // 👇 Vuenotify context
-  'type',
-  'title',
-  'close',
-  'message',
-  // 👇 Your own props
-  'avatarUrl',
-  'postUrl'
+   // 👇 Vuenotify context
+   'type',
+   'title',
+   'close',
+   'message',
+   // 👇 Your own props
+   'avatarUrl',
+   'postUrl'
 ])
 </script>
 
 <template>
-  <div class="Container">
-    <img :src="avatarUrl" />
-    <p>{{ message }}</p>
-    <nav>
-      <a v-if="type !== 'error'" :href="postUrl">View</a>
-      <button @click="close" class="Button">Dismiss</button>
-    </nav>
-  </div>
+   <div class="Container">
+      <img :src="avatarUrl" />
+      <p>{{ message }}</p>
+      <nav>
+         <a v-if="type !== 'error'" :href="postUrl">View</a>
+         <button @click="close" class="Button">Dismiss</button>
+      </nav>
+   </div>
 </template>
 
 <style scoped>
 .Container {
-  width: 300px;
-  display: grid;
-  align-items: center;
-  grid-template-columns: auto 1fr auto;
-  background-color: white;
+   width: 300px;
+   display: grid;
+   align-items: center;
+   grid-template-columns: auto 1fr auto;
+   background-color: white;
 }
 
 [data-vuenotify='success'] .Container {
-  background-color: green;
+   background-color: green;
 }
 
 [data-vuenotify='success'] .Container {
-  background-color: red;
+   background-color: red;
 }
 </style>
 ```
@@ -277,20 +277,20 @@ const push = useNotify()
 const userStore = useUserStore()
 
 push({
-  // Set 'type' so that duration and aria attributes are retained.
-  type: 'error',
-  // Define 'title' and/or 'message', will be used to render the content of the ARIA live region.
-  title: 'New Error',
-  message: 'There has been a critical error.',
-  // 👇 Render your own component
-  render: {
-    component: markRaw(Notification),
-    props: ({ notifyProps }) => ({
-      ...notifyProps, // 'title', 'message', 'type' and 'close'
-      // Your props
-      avatarUrl: userStore.avatarUrl
-    })
-  }
+   // Set 'type' so that duration and aria attributes are retained.
+   type: 'error',
+   // Define 'title' and/or 'message', will be used to render the content of the ARIA live region.
+   title: 'New Error',
+   message: 'There has been a critical error.',
+   // 👇 Render your own component
+   render: {
+      component: markRaw(Notification),
+      props: ({ notifyProps }) => ({
+         ...notifyProps, // 'title', 'message', 'type' and 'close'
+         // Your props
+         avatarUrl: userStore.avatarUrl
+      })
+   }
 })
 ```
 
@@ -304,37 +304,37 @@ const push = useNotify()
 const userStore = useUserStore()
 
 const promise = push.promise({
-  message: 'Publishing your post...',
-  render: {
-    promise: {
-      component: markRaw(Notification),
-      props: ({ notifyProps }) => ({
-        ...notifyProps, // 'title', 'message', 'type' or 'close'
-        avatarUrl: userStore.avatarUrl
-      })
-    }
-  }
+   message: 'Publishing your post...',
+   render: {
+      promise: {
+         component: markRaw(Notification),
+         props: ({ notifyProps }) => ({
+            ...notifyProps, // 'title', 'message', 'type' or 'close'
+            avatarUrl: userStore.avatarUrl
+         })
+      }
+   }
 })
 
 promise.resolve({
-  message: 'Your post has been published!',
-  component: markRaw(Notification), // Or add a new one
-  props: ({ notifyProps, prevProps }) => ({
-    ...notifyProps,
-    ...prevProps, // avatarUrl
-    postUrl: userStore.posts[0].url
-  })
+   message: 'Your post has been published!',
+   component: markRaw(Notification), // Or add a new one
+   props: ({ notifyProps, prevProps }) => ({
+      ...notifyProps,
+      ...prevProps, // avatarUrl
+      postUrl: userStore.posts[0].url
+   })
 })
 
 // Or omit 'component' to use the same of the promise with new props
 
 promise.reject({
-  message: 'There was an issue publishing your post.',
-  props: ({ notifyProps, prevProps }) => ({
-    ...notifyProps,
-    ...prevProps,
-    profileUrl: userStore.profileUrl
-  })
+   message: 'There was an issue publishing your post.',
+   props: ({ notifyProps, prevProps }) => ({
+      ...notifyProps,
+      ...prevProps,
+      profileUrl: userStore.profileUrl
+   })
 })
 ```
 
@@ -351,7 +351,7 @@ import { notify } from 'vuenotify'
 const app = createApp(App).mount('#app')
 
 app.use(notify, {
-  addtionalReceivers: ['topbar', 'sidebar']
+   addtionalReceivers: ['topbar', 'sidebar']
 })
 ```
 
@@ -359,10 +359,10 @@ app.use(notify, {
 
 ```vue
 <template>
-  <div>
-    <Notify />
-    <!-- ... -->
-  </div>
+   <div>
+      <Notify />
+      <!-- ... -->
+   </div>
 </template>
 ```
 
@@ -370,10 +370,10 @@ app.use(notify, {
 
 ```vue
 <template>
-  <div>
-    <Notify key="topbar" />
-    <!-- ... -->
-  </div>
+   <div>
+      <Notify key="topbar" />
+      <!-- ... -->
+   </div>
 </template>
 ```
 
@@ -381,10 +381,10 @@ app.use(notify, {
 
 ```vue
 <template>
-  <div>
-    <Notify key="sidebar" position="relative" />
-    <!-- ... -->
-  </div>
+   <div>
+      <Notify key="sidebar" position="relative" />
+      <!-- ... -->
+   </div>
 </template>
 ```
 

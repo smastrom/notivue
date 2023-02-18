@@ -10,35 +10,35 @@ const text = `
 `;
 
 const options = {
-	info: {
-		title: 'Did you know that...',
-		icon: false,
-	},
-	error: {
-		title: false,
-		close: false,
-	},
-	warning: {
-		icon: markRaw(CustomIcon),
-	},
+   info: {
+      title: 'Did you know that...',
+      icon: false,
+   },
+   error: {
+      title: false,
+      close: false,
+   },
+   warning: {
+      icon: markRaw(CustomIcon),
+   },
 } as const;
 </script>
 
 <template>
-	<VueNotify
-		:position="settings.position"
-		:maxWidth="settings.maxWidth"
-		:disabled="settings.disabled"
-		:options="options"
-	/>
+   <VueNotify
+      :position="settings.position"
+      :maxWidth="settings.maxWidth"
+      :disabled="settings.disabled"
+      :options="options"
+   />
 
-	<VueNotify id="user-1" position="bottom-right" />
+   <VueNotify id="user-1" position="bottom-right" />
 
-	<h1>
-		Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
-		Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus
-		mus.
-	</h1>
-	<p>{{ text }}</p>
-	<Nav />
+   <h1>
+      Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+      Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus
+      mus.
+   </h1>
+   <p>{{ text }}</p>
+   <Nav />
 </template>
