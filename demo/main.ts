@@ -7,7 +7,7 @@ import '../src/notification.css';
 import '../src/transition.css';
 
 createApp(App)
-	.use(notify, {
-		additionalReceivers: ['user-1'],
-	})
-	.mount('#app');
+   .use(notify, {
+      additionalReceivers: ['user-1'],
+   })
+   .mount('#app');

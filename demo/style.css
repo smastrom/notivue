@@ -1,42 +1,42 @@
 :root {
-	font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-	font-size: 16px;
-	line-height: 24px;
-	font-weight: 400;
-	font-synthesis: none;
-	text-rendering: optimizeLegibility;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	-webkit-text-size-adjust: 100%;
-	background-color: #9e9e9e;
-	color: #7f7f7f;
+   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+   font-size: 16px;
+   line-height: 24px;
+   font-weight: 400;
+   font-synthesis: none;
+   text-rendering: optimizeLegibility;
+   -webkit-font-smoothing: antialiased;
+   -moz-osx-font-smoothing: grayscale;
+   -webkit-text-size-adjust: 100%;
+   background-color: #9e9e9e;
+   color: #7f7f7f;
 }
 
 body {
-	margin: 0;
-	display: flex;
-	place-items: top;
-	min-width: 320px;
-	min-height: 100vh;
+   margin: 0;
+   display: flex;
+   place-items: top;
+   min-width: 320px;
+   min-height: 100vh;
 }
 
 h1 {
-	font-size: 3.2em;
-	line-height: 1.1;
+   font-size: 3.2em;
+   line-height: 1.1;
 }
 
 button {
-	border-radius: 8px;
-	border: none;
-	padding: 0.4em 0.8em;
-	font-size: 1rem;
-	font-family: inherit;
-	cursor: pointer;
+   border-radius: 8px;
+   border: none;
+   padding: 0.4em 0.8em;
+   font-size: 1rem;
+   font-family: inherit;
+   cursor: pointer;
 }
 
 #app {
-	max-width: 1280px;
-	margin: 0 auto;
-	padding: 2rem;
-	text-align: center;
+   max-width: 1280px;
+   margin: 0 auto;
+   padding: 2rem;
+   text-align: center;
 }

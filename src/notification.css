@@ -1,101 +1,101 @@
 /* Container */
 
 .VueNotify__notification {
-	background: #fff;
-	margin: 0 auto 0.875rem auto;
-	padding: 0.625rem;
-	width: 375px;
-	max-width: 100%;
-	border-radius: 0.75rem;
-	display: grid;
-	grid-template-columns: auto 1fr auto;
-	border: 1px solid #dedede;
-	justify-items: start;
-	align-items: center;
-	box-shadow: 0 calc(1rem / 3) calc(1rem / 2) rgba(0, 0, 0, 0.08);
-	pointer-events: all;
-	will-change: transform;
-	box-sizing: border-box;
+   background: #fff;
+   margin: 0 auto 0.875rem auto;
+   padding: 0.625rem;
+   width: 375px;
+   max-width: 100%;
+   border-radius: 0.75rem;
+   display: grid;
+   grid-template-columns: auto 1fr auto;
+   border: 1px solid #dedede;
+   justify-items: start;
+   align-items: center;
+   box-shadow: 0 calc(1rem / 3) calc(1rem / 2) rgba(0, 0, 0, 0.08);
+   pointer-events: all;
+   will-change: transform;
+   box-sizing: border-box;
 }
 
 @media (max-width: 375px) {
-	.VueNotify__notification {
-		width: 100%;
-	}
+   .VueNotify__notification {
+      width: 100%;
+   }
 }
 
 /* Icon */
 
 .VueNotify__icon {
-	display: flex;
-	margin: 0 0.875rem 0 0;
+   display: flex;
+   margin: 0 0.875rem 0 0;
 }
 
 [data-vuenotify='success'] .VueNotify__icon,
 [data-vuenotify='promise-resolve'] .VueNotify__icon {
-	color: #28b780;
+   color: #28b780;
 }
 
 [data-vuenotify='error'] .VueNotify__icon,
 [data-vuenotify='promise-reject'] .VueNotify__icon {
-	color: #ef4444;
+   color: #ef4444;
 }
 
 [data-vuenotify='info'] .VueNotify__icon {
-	color: #3e8eff;
+   color: #3e8eff;
 }
 
 [data-vuenotify='warning'] .VueNotify__icon {
-	color: #f59e0b;
+   color: #f59e0b;
 }
 
 /* Content */
 
 .VueNotify__content {
-	display: grid;
-	gap: calc(1rem / 4);
+   display: grid;
+   gap: calc(1rem / 4);
 }
 
 .VueNotify__content-title {
-	color: #2b2b2b;
-	font-weight: 700;
-	font-size: 1rem;
-	padding: 0;
-	margin: 0;
-	text-align: left;
+   color: #2b2b2b;
+   font-weight: 700;
+   font-size: 1rem;
+   padding: 0;
+   margin: 0;
+   text-align: left;
 }
 
 .VueNotify__content-message {
-	color: #666666;
-	font-weight: 600;
-	line-height: 1.35;
-	text-align: left;
-	margin: 0;
-	padding: 0;
-	font-size: 0.875rem;
+   color: #666666;
+   font-weight: 600;
+   line-height: 1.35;
+   text-align: left;
+   margin: 0;
+   padding: 0;
+   font-size: 0.875rem;
 }
 
 /* Close */
 
 .VueNotify__close {
-	left: 0.625rem;
-	position: relative;
-	border: none;
-	margin: 0;
-	border-left: 1px solid #dedede;
-	border-radius: 0;
-	background: none;
-	padding: 0.875rem;
-	opacity: 0.5;
-	height: 100%;
+   left: 0.625rem;
+   position: relative;
+   border: none;
+   margin: 0;
+   border-left: 1px solid #dedede;
+   border-radius: 0;
+   background: none;
+   padding: 0.875rem;
+   opacity: 0.5;
+   height: 100%;
 }
 
 .VueNotify__close-icon {
-	display: flex;
-	opacity: 0.5;
-	fill: #8e8e8e;
+   display: flex;
+   opacity: 0.5;
+   fill: #8e8e8e;
 }
 
 .VueNotify__close:hover .VueNotify__close-icon {
-	opacity: 1;
+   opacity: 1;
 }
