@@ -6,7 +6,6 @@ import {
    Transition,
    TransitionGroup,
    watch,
-   watchEffect,
    type PropType,
 } from 'vue'
 import { useReceiver } from './useReceiver'
@@ -23,7 +22,6 @@ import type {
    Notification,
    Receiver as ReceiverT,
 } from './types'
-import { useReducedMotion } from './useReducedMotion'
 
 export const Receiver = defineComponent({
    name: 'VueNotify',
@@ -88,8 +86,7 @@ export const Receiver = defineComponent({
       const maxWidth = toRef(props, 'maxWidth')
       const disabled = toRef(props, 'disabled')
 
-      const hasNoPreference = useReducedMotion()
-      const { items, incoming } = useReceiver(props.id)
+      const { items, incoming, isAnimated } = useReceiver(props.id)
       const { wrapperStyles, containerStyles, hoverAreaStyles } = useReceiverStyles({
          rootMargin,
          maxWidth,
@@ -124,7 +121,7 @@ export const Receiver = defineComponent({
       // Functions
 
       function subscribe() {
-         return watch(incoming, (_options) => {
+         return watch(incoming, (pushOptions) => {
             const isUnshift = props.method === 'unshift'
 
             if (
@@ -134,7 +131,7 @@ export const Receiver = defineComponent({
                items[isUnshift ? 'pop' : 'shift']()
             }
 
-            const options = mergeOptions(props.options, _options)
+            const options = mergeOptions(props.options, pushOptions)
             const createdAt = performance.now()
 
             let customRender: Partial<Pick<Notification, 'props' | 'component' | 'h'>> = {
@@ -252,7 +249,7 @@ export const Receiver = defineComponent({
          /* prettier-ignore */
          h(Teleport, { to: 'body' }, [
             h(Transition, {
-               css: hasNoPreference.value,
+               css: isAnimated.value,
                name: props.transitionName,
                onEnter(el) {
                      (el as HTMLElement).style.transformOrigin = getOrigin(
@@ -270,7 +267,11 @@ export const Receiver = defineComponent({
                               ...(props.pauseOnHover ? pointerEvts : {}),
                               ...(props.id ? { 'data-vuenotify-id': props.id } : {}),
                            },
-                           h(TransitionGroup, { name: props.transitionGroupName, css: hasNoPreference.value, }, () =>
+                           h(TransitionGroup, { 
+                                 name: props.transitionGroupName,
+                                 css: isAnimated.value,
+                              },
+                              () =>
                               items.map((item) => 
                                  h('div', { key: item.id }, [
                                     item.h?.() ?? defaultComponent(item),

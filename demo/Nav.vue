@@ -114,6 +114,7 @@ function toggleEnable() {
          >
             Error
          </button>
+         <button @click="push.destroyAll()">Destroy</button>
          <button
             @click="push.info({ message: 'Your message has been successfully sent. Please.' })"
          >
