@@ -1,3 +1,4 @@
+import { nextTick } from 'vue'
 import { createID } from './utils'
 import { NType } from './constants'
 import type { Receiver, UserOptions, PushFn } from './types'
@@ -22,11 +23,23 @@ export function createPush(receiver: Receiver): PushFn {
       receiver.items.length = 0
    }
 
+   async function destroyAll() {
+      if (receiver.isAnimated.value) {
+         receiver.isAnimated.value = false
+         await nextTick()
+         clearAll()
+         await nextTick()
+         receiver.isAnimated.value = true
+      }
+   }
+
    function push(options: Options) {
       return create(options)
    }
 
    push.clearAll = clearAll
+
+   push.destroyAll = destroyAll
 
    push.success = (options: Options) => create(options)
 

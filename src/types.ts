@@ -74,6 +74,7 @@ type MaybeRender<T> = {
 export type Receiver = {
    items: Notification[]
    incoming: Ref<UserOptions & InternalPushOptions>
+   isAnimated: Ref<boolean>
    push: () => PushFn
 }
 

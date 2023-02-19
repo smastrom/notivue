@@ -1,11 +1,14 @@
 import { inject } from 'vue'
 import { defaultSymbol, userSymbols } from './symbols'
+import { onMotionChange } from './onMotionChange'
 import type { Receiver } from './types'
 
-export function useReceiver(key?: string): Pick<Receiver, 'items' | 'incoming'> {
-   const { items, incoming } = inject(
+export function useReceiver(key?: string): Pick<Receiver, 'items' | 'incoming' | 'isAnimated'> {
+   const { items, incoming, isAnimated } = inject(
       key && key in userSymbols ? userSymbols[key] : defaultSymbol
    ) as Receiver
 
-   return { items, incoming }
+   onMotionChange(isAnimated)
+
+   return { items, incoming, isAnimated }
 }
