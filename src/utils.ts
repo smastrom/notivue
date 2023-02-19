@@ -3,6 +3,8 @@ import { defaultOptions } from './defaultOptions'
 import { CLASS_PREFIX } from './constants'
 import type { UserOptions, MergedOptions, ReceiverProps, InternalPushOptions } from './types'
 
+export const isSSR = typeof window === 'undefined'
+
 export function createID() {
    return (Math.random() + 1).toString(36).substring(7)
 }
