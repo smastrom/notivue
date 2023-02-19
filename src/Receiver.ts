@@ -23,6 +23,7 @@ import type {
    Notification,
    Receiver as ReceiverT,
 } from './types'
+import { useReducedMotion } from './useReducedMotion'
 
 export const Receiver = defineComponent({
    name: 'VueNotify',
@@ -87,6 +88,7 @@ export const Receiver = defineComponent({
       const maxWidth = toRef(props, 'maxWidth')
       const disabled = toRef(props, 'disabled')
 
+      const hasNoPreference = useReducedMotion()
       const { items, incoming } = useReceiver(props.id)
       const { wrapperStyles, containerStyles, hoverAreaStyles } = useReceiverStyles({
          rootMargin,
@@ -250,6 +252,7 @@ export const Receiver = defineComponent({
          /* prettier-ignore */
          h(Teleport, { to: 'body' }, [
             h(Transition, {
+               css: hasNoPreference.value,
                name: props.transitionName,
                onEnter(el) {
                      (el as HTMLElement).style.transformOrigin = getOrigin(
@@ -267,7 +270,7 @@ export const Receiver = defineComponent({
                               ...(props.pauseOnHover ? pointerEvts : {}),
                               ...(props.id ? { 'data-vuenotify-id': props.id } : {}),
                            },
-                           h(TransitionGroup, { name: props.transitionGroupName }, () =>
+                           h(TransitionGroup, { name: props.transitionGroupName, css: hasNoPreference.value, }, () =>
                               items.map((item) => 
                                  h('div', { key: item.id }, [
                                     item.h?.() ?? defaultComponent(item),
