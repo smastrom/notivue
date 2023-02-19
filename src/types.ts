@@ -29,9 +29,9 @@ export type ReceiverProps = {
 }
 
 export type ReceiverOptions = {
-   icon: Component | false
-   title: boolean | string
-   message: boolean | string
+   icon: Raw<Component> | false
+   title: string | false
+   message: string | false
    close: boolean
    duration: number
    ariaLive: 'polite' | 'assertive'
