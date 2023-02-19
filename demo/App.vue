@@ -32,7 +32,7 @@ const options = {
       :options="options"
    />
 
-   <VueNotify id="user-1" position="bottom-right" />
+   <VueNotify id="user-1" position="bottom-right" :disabled="false" />
 
    <h1>
       Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
