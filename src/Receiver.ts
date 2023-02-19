@@ -253,15 +253,15 @@ export const Receiver = defineComponent({
                            {
                               style: {...hoverAreaStyles, ...props.theme},
                               ...(props.pauseOnHover ? pointerEvts : {}),
-                              ...(props.id ? { 'data-vuenotify': props.id } : {}),
+                              ...(props.id ? { 'data-vuenotify-id': props.id } : {}),
                            },
                            h(TransitionGroup, { name: props.transitionGroupName }, () =>
-                              items.map((item) => [
+                              items.map((item) => 
                                  h('div', { key: item.id }, [
                                     item.h?.() ?? defaultComponent(item),
                                     ariaLive(item),
                                  ]),
-                              ])
+                              )
                            )
                         )
                      )

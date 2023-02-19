@@ -3,7 +3,7 @@ import { NType, CLASS_PREFIX } from './constants'
 
 const className = { class: CLASS_PREFIX + 'icon' }
 
-export const svgProps = {
+const svgProps = {
    xmlns: 'http://www.w3.org/2000/svg',
    width: 24,
    height: 24,
@@ -11,14 +11,14 @@ export const svgProps = {
    'aria-hidden': 'true',
 }
 
-export const ionProps = {
+const ionProps = {
    ...svgProps,
    ...className,
    fill: 'currentColor',
    viewBox: '0 0 12 12',
 }
 
-export const featherProps = {
+const featherProps = {
    ...svgProps,
    class: CLASS_PREFIX + 'close-icon',
    stroke: 'currentColor',
@@ -81,13 +81,6 @@ const promise = h('svg', { ...svgProps, ...className, stroke: 'currentColor' }, 
    ]),
 ])
 
-const close = [
-   h('svg', featherProps, [
-      h('line', { x1: 18, y1: 6, x2: 6, y2: 18 }),
-      h('line', { x1: 6, y1: 6, x2: 18, y2: 18 }),
-   ]),
-]
-
 export const icons = {
    [NType.SUCCESS]: success,
    [NType.ERROR]: error,
@@ -96,5 +89,11 @@ export const icons = {
    [NType.PROMISE]: promise,
    [NType.PROMISE_RESOLVE]: success,
    [NType.PROMISE_REJECT]: error,
-   close,
 }
+
+export const close = [
+   h('svg', featherProps, [
+      h('line', { x1: 18, y1: 6, x2: 6, y2: 18 }),
+      h('line', { x1: 6, y1: 6, x2: 18, y2: 18 }),
+   ]),
+]
