@@ -6,8 +6,11 @@ type Options = Partial<UserOptions>
 
 export function createPush(receiver: Receiver): PushFn {
    function create(options: Options, status = NType.SUCCESS, id = createID()) {
-      receiver.incoming.value = { ...options, id, type: status }
+      if (!receiver.incoming.value) {
+         return { id, clear: () => {}, clearAll: () => {} }
+      }
 
+      receiver.incoming.value = { ...options, id, type: status }
       return { id, clear: () => clear(id), clearAll }
    }
 

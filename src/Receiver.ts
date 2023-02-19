@@ -6,6 +6,7 @@ import {
    Transition,
    TransitionGroup,
    watch,
+   watchEffect,
    type PropType,
 } from 'vue'
 import { useReceiver } from './useReceiver'
@@ -16,7 +17,12 @@ import { defaultComponent } from './defaultComponent'
 import { defaultOptions } from './defaultOptions'
 import { ariaLive } from './ariaLive'
 import { light } from './themes'
-import type { ReceiverProps as Props, MergedOptions, Notification } from './types'
+import type {
+   ReceiverProps as Props,
+   MergedOptions,
+   Notification,
+   Receiver as ReceiverT,
+} from './types'
 
 export const Receiver = defineComponent({
    name: 'VueNotify',
@@ -90,20 +96,26 @@ export const Receiver = defineComponent({
 
       // Watchers
 
-      let unsubscribe = subscribe()
+      let unsubscribe: ReturnType<typeof subscribe>
 
-      watch(disabled, (isDisabled) => {
-         if (isDisabled) {
-            items.length = 0
-            unsubscribe()
-         } else {
-            unsubscribe = subscribe()
-         }
-      })
+      watch(
+         disabled,
+         (isDisabled) => {
+            if (isDisabled && unsubscribe) {
+               unsubscribe()
+               items.length = 0
+               incoming.value = null as unknown as ReceiverT['incoming']['value']
+            } else {
+               incoming.value = {} as ReceiverT['incoming']['value']
+               unsubscribe = subscribe()
+            }
+         },
+         { immediate: true }
+      )
 
       watch(
          () => items.length === 0,
-         (newLen) => newLen && (isHovering = false),
+         (isCleared) => isCleared && (isHovering = false),
          { flush: 'post' }
       )
 
