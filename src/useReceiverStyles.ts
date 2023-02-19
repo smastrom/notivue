@@ -1,4 +1,4 @@
-import { computed, type Ref, type CSSProperties, ref } from 'vue'
+import { ref, computed, type Ref, type CSSProperties } from 'vue'
 import type { ReceiverProps } from './types'
 
 type Params = {

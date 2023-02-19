@@ -1,5 +1,5 @@
 import { h } from 'vue'
-import { icons } from './icons'
+import { close } from './icons'
 import { CLASS_PREFIX } from './constants'
 import { hIcon } from './utils'
 import type { Notification } from './types'
@@ -23,7 +23,7 @@ export function defaultComponent(item: Notification) {
             h(
                'button',
                { class: CLASS_PREFIX + 'close', ariaLabel: 'Close', onClick: item.clear },
-               [icons.close]
+               close
             ),
       ]
    )

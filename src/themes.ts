@@ -21,8 +21,11 @@ export const light: Theme = {
    '--VNCloseColor': '#8e8e8e',
 }
 
+// @ts-ignore
 export const colorful: Theme = {}
 
+// @ts-ignore
 export const dark: Theme = {}
 
+// @ts-ignore
 export const colorfulDark: Theme = {}
