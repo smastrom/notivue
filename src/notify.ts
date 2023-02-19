@@ -21,7 +21,7 @@ export const notify: Plugin = {
          .forEach((sym) => {
             receivers.set(sym, {
                items: shallowReactive([]),
-               incoming: shallowRef({}) as Receiver['incoming'],
+               incoming: shallowRef(null) as unknown as Receiver['incoming'],
                push: () => createPush(receivers.get(sym) as Receiver),
             })
          })
