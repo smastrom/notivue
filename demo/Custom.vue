@@ -25,13 +25,13 @@ defineProps<{
 <style scoped>
 .Container {
    padding: 10px;
-   width: 300px;
+   width: 500px;
    color: black;
    background-color: white;
    border-radius: 5px;
    display: grid;
    grid-template-columns: auto 100px;
-   margin: 10px auto;
+   margin: 0;
 
    & > p {
       margin: 0 !important;

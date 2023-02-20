@@ -80,6 +80,21 @@ function setWidth() {
 function toggleEnable() {
    settings.disabled = !settings.disabled
 }
+
+function pushThousand() {
+   let start = 1
+
+   let interval = setInterval(() => {
+      push({
+         message: `Message Message Message Message ${start}`,
+      })
+      start++
+   }, 60)
+
+   setTimeout(() => {
+      clearInterval(interval)
+   }, 60 * 100)
+}
 </script>
 
 <template>
@@ -105,7 +120,7 @@ function toggleEnable() {
          <button @click="toggleEnable">
             {{ settings.disabled ? 'Enable' : 'Disable' }}
          </button>
-
+         <button @click="pushThousand">Push 1000</button>
          <button @click="push({ message: 'Your message has been successfully sent. Please.' })">
             Success
          </button>
@@ -114,6 +129,7 @@ function toggleEnable() {
          >
             Error
          </button>
+
          <button @click="push.destroyAll()">Destroy</button>
          <button
             @click="push.info({ message: 'Your message has been successfully sent. Please.' })"

@@ -4,7 +4,6 @@ import App from './App.vue'
 import { notify } from '../src/notify'
 
 import '../src/notification.css'
-import '../src/transition.css'
 
 createApp(App)
    .use(notify, {

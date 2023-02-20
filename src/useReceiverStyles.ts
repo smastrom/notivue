@@ -19,7 +19,10 @@ const wrapperStyles: CSSProperties = {
    pointerEvents: 'none',
 }
 
-const hoverAreaStyles: CSSProperties = { ...brBox, pointerEvents: 'all' }
+const hoverAreaStyles: CSSProperties = {
+   ...brBox,
+   pointerEvents: 'all',
+}
 
 export function useReceiverStyles({ rootMargin, maxWidth, position }: Params) {
    const is = (_position: string) => position.value.includes(_position)
@@ -27,7 +30,6 @@ export function useReceiverStyles({ rootMargin, maxWidth, position }: Params) {
    const containerStyles = computed<CSSProperties>(() => ({
       ...brBox,
       ...(maxWidth.value ? { maxWidth: `${maxWidth.value}px` } : {}),
-      padding: rootMargin.value,
       alignItems: is('top') ? 'start' : 'end',
       justifyContent: is('right') ? 'end' : is('left') ? 'start' : 'center',
       width: '100%',

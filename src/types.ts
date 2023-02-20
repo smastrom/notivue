@@ -1,4 +1,4 @@
-import type { VNode, Ref, Component, Raw } from 'vue'
+import type { VNode, Ref, Component, Raw, CSSProperties } from 'vue'
 import { NType } from './constants'
 
 export type PluginOptions = {
@@ -22,8 +22,7 @@ export type ReceiverProps = {
    maxWidth: number
    id: string
    rootMargin: string
-   transitionName: string
-   transitionGroupName: string
+   gap: number
    options: Partial<Record<`${NType}`, Partial<ReceiverOptions>>>
    theme: Record<`--${string}`, string>
 }
@@ -59,6 +58,9 @@ export type Notification = InternalPushOptions &
       stoppedAt: number
       elapsed: number
       clear: () => void
+      style: CSSProperties
+      animationClass: string | undefined
+      onAnimationend: (() => void) | undefined
       props: Record<string, any>
       component?: Component
       h?: () => VNode

@@ -38,7 +38,6 @@ pnpm add vuenotify
 ```js
 import { notify } from 'vuenotify'
 import 'vuenotify/notifications.css'
-import 'vuenotify/transitions.css'
 
 const app = createApp(App).mount('#app')
 

@@ -1,20 +1,12 @@
-import {
-   defineComponent,
-   h,
-   Teleport,
-   toRef,
-   Transition,
-   TransitionGroup,
-   watch,
-   type PropType,
-} from 'vue'
+import { defineComponent, h, toRef, nextTick, Teleport, watch, type PropType } from 'vue'
 import { useReceiver } from './useReceiver'
 import { useReceiverStyles } from './useReceiverStyles'
-import { getOrigin, mergeOptions } from './utils'
+import { mergeOptions } from './utils'
 import { NType, FIXED_INCREMENT } from './constants'
 import { defaultComponent } from './defaultComponent'
 import { defaultOptions } from './defaultOptions'
 import { ariaLive } from './ariaLive'
+import { useRefsMap } from './useRefsMap'
 import { light } from './themes'
 import type {
    ReceiverProps as Props,
@@ -59,13 +51,9 @@ export const Receiver = defineComponent({
          type: String as PropType<Props['position']>,
          default: 'top-center',
       },
-      transitionName: {
-         type: String as PropType<Props['transitionName']>,
-         default: 'VNRoot',
-      },
-      transitionGroupName: {
-         type: String as PropType<Props['transitionGroupName']>,
-         default: 'VNList',
+      gap: {
+         type: Number as PropType<Props['gap']>,
+         default: 20,
       },
       options: {
          type: Object as PropType<Props['options']>,
@@ -86,7 +74,7 @@ export const Receiver = defineComponent({
       const maxWidth = toRef(props, 'maxWidth')
       const disabled = toRef(props, 'disabled')
 
-      const { items, incoming, isAnimated } = useReceiver(props.id)
+      const { items, incoming } = useReceiver(props.id)
       const { wrapperStyles, containerStyles, hoverAreaStyles } = useReceiverStyles({
          rootMargin,
          maxWidth,
@@ -94,6 +82,8 @@ export const Receiver = defineComponent({
       })
 
       // Watchers
+
+      const { refs, setRefs } = useRefsMap()
 
       let unsubscribe: ReturnType<typeof subscribe>
 
@@ -128,7 +118,6 @@ export const Receiver = defineComponent({
                items.length >= props.limit &&
                items[isUnshift ? items.length - 1 : 0].type !== NType.PROMISE
             ) {
-               items[isUnshift ? 'pop' : 'shift']()
             }
 
             const options = mergeOptions(props.options, pushOptions)
@@ -181,9 +170,11 @@ export const Receiver = defineComponent({
                   ...customRender,
                   timeoutId:
                      options.type !== NType.PROMISE && createTimeout(options.id, options.duration),
-                  clear: () => clear(options.id),
+                  clear: () => onLeave(options.id),
                   createdAt,
                } as Notification)
+
+               nextTick(() => onEnter(options.id))
             }
          })
       }
@@ -194,7 +185,7 @@ export const Receiver = defineComponent({
          }, time)
       }
 
-      function clear(id: string) {
+      function splice(id: string) {
          items.splice(
             items.findIndex((data) => data.id === id),
             1
@@ -202,7 +193,7 @@ export const Receiver = defineComponent({
       }
 
       function getNotifyProps({ title, message, type, id }: MergedOptions) {
-         return { notifyProps: { title, message, type, close: () => clear(id) } }
+         return { notifyProps: { title, message, type, close: () => onLeave(id) } }
       }
 
       // Props
@@ -245,44 +236,113 @@ export const Receiver = defineComponent({
          },
       }
 
+      const PADDING_TOP = 20
+      const GAP = 10
+
+      function getItem(id: string) {
+         return items.find(({ id: _id }) => _id === id)
+      }
+
+      function getRefs() {
+         const sortedEntries = Array.from(refs.entries()).sort(([, prev], [, next]) => {
+            return prev.value.getBoundingClientRect().y - next.value.getBoundingClientRect().y
+         })
+
+         return {
+            ids: sortedEntries.map(([id]) => id),
+            tops: sortedEntries.map(([, ref]) => ref.value.getBoundingClientRect().y),
+            heights: sortedEntries.map(([, ref]) => ref.value.getBoundingClientRect().height),
+         }
+      }
+
+      function onEnter(id: string) {
+         const currItem = getItem(id)
+         if (currItem) {
+            currItem.animationClass = 'VNEnter'
+            currItem.onAnimationend = () => {
+               currItem.animationClass = ''
+               nextTick(() => (currItem.onAnimationend = undefined))
+            }
+         }
+
+         const sortedRefs = getRefs()
+
+         sortedRefs.ids.forEach((_id, index) => {
+            const prevDistance = sortedRefs.heights
+               .slice(0, index)
+               .reduce((acc, curr) => acc + curr, 0)
+
+            const newTop = PADDING_TOP + prevDistance + GAP * index + 'px'
+            const currItem = getItem(_id)
+            if (currItem) currItem.style = { top: newTop }
+         })
+      }
+
+      function onLeave(id: string) {
+         const currItem = getItem(id)
+         if (currItem) {
+            currItem.animationClass = 'VNLeave'
+            currItem.onAnimationend = () => splice(id)
+         }
+
+         const sortedRefs = getRefs()
+
+         const removedIndex = sortedRefs.ids.indexOf(id)
+         const nextIds = sortedRefs.ids.slice(removedIndex + 1)
+
+         sortedRefs.tops.slice(removedIndex + 1).forEach((prevTop, index) => {
+            const newTop = prevTop - sortedRefs.heights[removedIndex] - GAP + 'px'
+            const currItem = getItem(nextIds[index])
+            if (currItem) currItem.style = { top: newTop }
+         })
+      }
+
       return () =>
-         /* prettier-ignore */
          h(Teleport, { to: 'body' }, [
-            h(Transition, {
-               css: isAnimated.value,
-               name: props.transitionName,
-               onEnter(el) {
-                     (el as HTMLElement).style.transformOrigin = getOrigin(
-                        el as HTMLElement,
-                        position
-                     );
-                  },
-               },
-               () => items.length > 0 &&
-                  h('div', { style: wrapperStyles },
-                     h('div', { style: containerStyles.value },
-                        h('div',
-                           {
-                              style: {...hoverAreaStyles, ...props.theme},
-                              ...(props.pauseOnHover ? pointerEvts : {}),
-                              ...(props.id ? { 'data-vuenotify-id': props.id } : {}),
+            items.length > 0 &&
+               h(
+                  'div',
+                  { style: wrapperStyles },
+                  h(
+                     'div',
+                     {
+                        style: { ...containerStyles.value, ...props.theme },
+                        /* ...(props.pauseOnHover ? pointerEvts : {}), */
+                        ...(props.id ? { 'data-vuenotify-id': props.id } : {}),
+                     },
+                     h(
+                        'div',
+                        {
+                           style: {
+                              ...hoverAreaStyles,
+                              position: 'relative',
                            },
-                           h(TransitionGroup, { 
-                                 name: props.transitionGroupName,
-                                 css: isAnimated.value,
-                              },
-                              () =>
-                              items.map((item) => 
-                                 h('div', { key: item.id }, [
-                                    item.h?.() ?? defaultComponent(item),
-                                    ariaLive(item),
-                                 ]),
+                        },
+                        [
+                           items.map((item) =>
+                              h(
+                                 'div',
+                                 {
+                                    key: item.id,
+                                    id: item.id,
+                                    ref: (_ref) => {
+                                       // @ts-ignore
+                                       setRefs(_ref, item.id)
+                                    },
+                                    style: {
+                                       height: 'auto',
+                                       transition: 'top 300ms cubic-bezier(0.22, 1, 0.36, 1)',
+                                       position: 'absolute',
+                                       ...item.style,
+                                    },
+                                 },
+                                 [item.h?.() ?? defaultComponent(item), ariaLive(item)]
                               )
-                           )
-                        )
+                           ),
+                        ]
                      )
                   )
-            ),
+               ),
          ])
    },
 })
