@@ -1,9 +1,9 @@
 import { markRaw } from 'vue'
-import { NType } from './constants'
+import { CLASS_PREFIX as CX, NType } from './constants'
 import { icons } from './icons'
 import type { ReceiverOptions } from './types'
 
-export const success: ReceiverOptions = {
+const success: ReceiverOptions = {
    title: 'Success!',
    message: '',
    icon: markRaw(icons.success),
@@ -24,6 +24,7 @@ const error: ReceiverOptions = {
 
 const promise: ReceiverOptions = {
    ...success,
+   duration: Infinity,
    icon: markRaw(icons.promise),
    title: 'Loading...',
    close: false,
@@ -41,7 +42,7 @@ const info: ReceiverOptions = {
    title: 'Info!',
 }
 
-export const defaultOptions: Record<`${NType}`, ReceiverOptions> = {
+export const defaultOptions: Required<Record<`${NType}`, ReceiverOptions>> = {
    [NType.SUCCESS]: success,
    [NType.ERROR]: error,
    [NType.WARNING]: warning,
@@ -49,4 +50,10 @@ export const defaultOptions: Record<`${NType}`, ReceiverOptions> = {
    [NType.PROMISE]: promise,
    [NType.PROMISE_RESOLVE]: success,
    [NType.PROMISE_REJECT]: error,
+}
+
+export const defaultAnimations = {
+   enter: CX + 'enter',
+   leave: CX + 'leave',
+   clearAll: CX + 'clearAll',
 }

@@ -1,64 +1,56 @@
-import { nextTick } from 'vue'
 import { createID } from './utils'
 import { NType } from './constants'
-import type { Receiver, UserOptions, PushFn } from './types'
+import type {
+   IncomingOptions,
+   StaticPushOptions,
+   PushPromise,
+   PushFn,
+   PromiseResultPushOptions,
+} from './types'
 
-type Options = Partial<UserOptions>
+type Param = {
+   setIncoming: (options: IncomingOptions) => void
+   clearItem: (id: string) => void
+   setClearTrigger: () => void
+   destroyAll: () => void
+}
 
-export function createPush(receiver: Receiver): PushFn {
-   function create(options: Options, status = NType.SUCCESS, id = createID()) {
-      if (!receiver.incoming.value) {
-         return { id, clear: () => {}, clearAll: () => {} }
-      }
+export function createPush({ setIncoming, clearItem, setClearTrigger, destroyAll }: Param): PushFn {
+   function create<T>(
+      options: StaticPushOptions<T> | PromiseResultPushOptions<T>,
+      status = NType.SUCCESS,
+      id = createID()
+   ) {
+      setIncoming({ ...options, id, type: status })
 
-      receiver.incoming.value = { ...options, id, type: status }
-      return { id, clear: () => clear(id), clearAll }
+      return { id, clear: () => clearItem(id) }
    }
 
-   function clear(id: string) {
-      receiver.items.find((item) => item.id === id)?.clear()
+   function push<T>(options: StaticPushOptions<T>) {
+      return create<T>(options)
    }
 
-   function clearAll() {
-      receiver.items.length = 0
-   }
-
-   async function destroyAll() {
-      if (receiver.isAnimated.value) {
-         receiver.isAnimated.value = false
-         await nextTick()
-         clearAll()
-         await nextTick()
-         receiver.isAnimated.value = true
-      }
-   }
-
-   function push(options: Options) {
-      return create(options)
-   }
-
-   push.clearAll = clearAll
+   push.clearAll = setClearTrigger
 
    push.destroyAll = destroyAll
 
-   push.success = (options: Options) => create(options)
+   push.success = <T>(options: StaticPushOptions<T>) => create(options)
 
-   push.error = (options: Options) => create(options, NType.ERROR)
+   push.error = <T>(options: StaticPushOptions<T>) => create(options, NType.ERROR)
 
-   push.warning = (options: Options) => create(options, NType.WARNING)
+   push.warning = <T>(options: StaticPushOptions<T>) => create(options, NType.WARNING)
 
-   push.info = (options: Options) => create(options, NType.INFO)
+   push.info = <T>(options: StaticPushOptions<T>) => create(options, NType.INFO)
 
    push.promise = ((options) => {
-      const { clear, clearAll, id } = create(options, NType.PROMISE)
+      const { clear, id } = create(options, NType.PROMISE)
 
       return {
          resolve: (options) => create(options, NType.PROMISE_RESOLVE, id),
          reject: (options) => create(options, NType.PROMISE_REJECT, id),
          clear,
-         clearAll,
       }
-   }) satisfies PushFn['promise']
+   }) satisfies PushPromise
 
    return push
 }

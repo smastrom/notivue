@@ -1,10 +1,10 @@
 import { createApp } from 'vue'
-import './style.css'
 import App from './App.vue'
-import { notify } from '../src/notify'
+import { notify } from '../src'
 
-import '../src/notification.css'
-import '../src/transition.css'
+import './style.css'
+import '../src/notifications.css'
+import '../src/animations.css'
 
 createApp(App)
    .use(notify, {

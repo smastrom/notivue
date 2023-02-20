@@ -1,19 +1,37 @@
 <script setup lang="ts">
-import { markRaw } from 'vue'
+import { markRaw, ref } from 'vue'
 import { ReceiverProps } from '../src/types'
-import { useNotify } from '../src/useNotify'
+import { usePush } from '../src/usePush'
 import { settings } from './store'
 import Custom from './Custom.vue'
 
-const push = useNotify()
+import { _PushOptions } from '../src/types'
 
-const pushToUser = useNotify('user-1')
+const push = usePush()
+
+const pushToUser = usePush('user-1')
 
 function getRandomInt(min: number, max: number) {
    min = Math.ceil(min)
    max = Math.floor(max)
    return Math.floor(Math.random() * (max - min) + min) // The maximum is exclusive and the minimum is inclusive
 }
+
+function usePostSuccess<T extends _PushOptions & { props?: Record<string, any> }>() {
+   return ({ props = {}, ...options }: T) =>
+      push.success({
+         ...options,
+         render: {
+            component: markRaw(Custom),
+            props: ({ notifyProps }) => ({
+               ...notifyProps,
+               ...props,
+            }),
+         },
+      })
+}
+
+const pushX = usePostSuccess()
 
 async function asyncPush() {
    const ayncNotify = push.promise({
@@ -22,15 +40,24 @@ async function asyncPush() {
 
    await new Promise((resolve) => setTimeout(resolve, getRandomInt(2000, 4000)))
 
-   if (Math.random() > 0.5) {
+   if (Math.random() > 0.3) {
       ayncNotify.reject({ message: 'Promise rejected!' })
    } else {
-      ayncNotify.resolve({ message: 'Promise successfully resolved!' })
+      ayncNotify.resolve({ message: 'Promise successfully resolved!'.repeat(6) })
    }
 }
 
 function customPush() {
-   push({
+   pushX({
+      duration: 5000,
+      message: 'Your message has been successfully sent. Please.',
+      props: {
+         avatarUrl: 'https://i.pravatar.cc/150?img=2',
+         nameSurname: 'John Doe',
+      },
+   })
+
+   /*    push({
       message: 'Custom',
       render: {
          component: markRaw(Custom),
@@ -39,7 +66,15 @@ function customPush() {
             avatarUrl: 'https://i.pravatar.cc/150?img=1',
          }),
       },
-   })
+   }) */
+
+   /*    push({
+      message: 'Custom',
+      render: {
+         component: markRaw(Custom),
+         props: ({ notifyProps }) => ({}),
+      },
+   }) */
 }
 
 async function customAsync() {
@@ -50,6 +85,7 @@ async function customAsync() {
          props: ({ notifyProps }) => ({
             ...notifyProps,
             avatarUrl: 'https://i.pravatar.cc/150?img=1',
+            nameSurname: 'John Doe',
          }),
       },
    })
@@ -63,10 +99,28 @@ async function customAsync() {
          props: ({ notifyProps, prevProps }) => ({
             ...notifyProps,
             ...prevProps,
-            name: 'Rubrante',
+            avatarUrl: 'https://i.pravatar.cc/150?img=1',
          }),
       },
    })
+
+   /*    promise.reject({
+      message: 'Async resolved',
+      render: {
+         component: markRaw(Custom),
+         props: ({ notifyProps }) => ({
+            ...notifyProps,
+         }),
+      },
+   })
+
+   promise.reject({
+      message: 'Async resolved',
+      render: {
+         component: markRaw(Custom),
+         props: ({ notifyProps }) => ({}),
+      },
+   }) */
 }
 
 function setPosition(position: ReceiverProps['position']) {
@@ -79,6 +133,23 @@ function setWidth() {
 
 function toggleEnable() {
    settings.disabled = !settings.disabled
+}
+
+const counter = ref(0)
+
+function pushThousand() {
+   let start = 1
+
+   let interval = setInterval(() => {
+      push({
+         message: `Message Message Message Message ${start}`,
+      })
+      start++
+   }, 60)
+
+   setTimeout(() => {
+      clearInterval(interval)
+   }, 60 * 100)
 }
 </script>
 
@@ -105,8 +176,17 @@ function toggleEnable() {
          <button @click="toggleEnable">
             {{ settings.disabled ? 'Enable' : 'Disable' }}
          </button>
-
-         <button @click="push({ message: 'Your message has been successfully sent. Please.' })">
+         <button @click="pushThousand">Push 1000</button>
+         <button
+            @click="
+               () => {
+                  counter++
+                  push({
+                     message: `${counter} Your message has been successfully sent. Please.`,
+                  })
+               }
+            "
+         >
             Success
          </button>
          <button
@@ -114,6 +194,7 @@ function toggleEnable() {
          >
             Error
          </button>
+
          <button @click="push.destroyAll()">Destroy</button>
          <button
             @click="push.info({ message: 'Your message has been successfully sent. Please.' })"

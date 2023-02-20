@@ -1,43 +1,41 @@
 import {
    defineComponent,
-   h,
-   Teleport,
-   toRef,
-   Transition,
-   TransitionGroup,
+   ref,
+   computed,
    watch,
+   h,
+   toRef,
+   nextTick,
+   Teleport,
    type PropType,
 } from 'vue'
-import { useReceiver } from './useReceiver'
+import { useStore } from './useStore'
 import { useReceiverStyles } from './useReceiverStyles'
-import { getOrigin, mergeOptions } from './utils'
-import { NType, FIXED_INCREMENT } from './constants'
-import { defaultComponent } from './defaultComponent'
-import { defaultOptions } from './defaultOptions'
-import { ariaLive } from './ariaLive'
+import { useRefsMap } from './useRefsMap'
+import { useResizeObserver } from './useResizeObserver'
+import { defaultRenderFn } from './defaultRender'
+import { defaultAnimations, defaultOptions } from './defaultOptions'
+import { ariaRenderFn } from './ariaRender'
+import { mergeOptions } from './utils'
+import { TType, NType, FIXED_INCREMENT, NOTIFICATIONS_LIMIT, COMPONENT_NAME } from './constants'
 import { light } from './themes'
 import type {
    ReceiverProps as Props,
+   StoreItem,
    MergedOptions,
-   Notification,
-   Receiver as ReceiverT,
+   MaybeRenderStatic,
+   MaybeRenderPromiseResult,
+   CtxProps,
 } from './types'
+import { useWindowSize } from './useWindowSize'
 
 export const Receiver = defineComponent({
-   name: 'VueNotify',
+   name: COMPONENT_NAME,
    inheritAttrs: false,
    props: {
       id: {
          type: String as PropType<Props['id']>,
          default: '',
-      },
-      method: {
-         type: String as PropType<Props['method']>,
-         default: 'unshift',
-      },
-      limit: {
-         type: Number as PropType<Props['limit']>,
-         default: 10,
       },
       pauseOnHover: {
          type: Boolean as PropType<Props['pauseOnHover']>,
@@ -47,9 +45,9 @@ export const Receiver = defineComponent({
          type: Boolean as PropType<Props['disabled']>,
          default: false,
       },
-      rootMargin: {
-         type: String as PropType<Props['rootMargin']>,
-         default: '20px',
+      rootPadding: {
+         type: Array as PropType<Props['rootPadding']>,
+         default: () => [20, 20, 20, 20],
       },
       maxWidth: {
          type: Number as PropType<Props['maxWidth']>,
@@ -59,13 +57,9 @@ export const Receiver = defineComponent({
          type: String as PropType<Props['position']>,
          default: 'top-center',
       },
-      transitionName: {
-         type: String as PropType<Props['transitionName']>,
-         default: 'VNRoot',
-      },
-      transitionGroupName: {
-         type: String as PropType<Props['transitionGroupName']>,
-         default: 'VNList',
+      gap: {
+         type: Number as PropType<Props['gap']>,
+         default: 10,
       },
       options: {
          type: Object as PropType<Props['options']>,
@@ -75,25 +69,69 @@ export const Receiver = defineComponent({
          type: Object as PropType<Props['theme']>,
          default: () => light,
       },
+      animations: {
+         type: Object as PropType<Props['animations']>,
+         default: () => defaultAnimations,
+      },
    },
    setup(props) {
       let isHovering = false
 
-      // Reactivity
+      const wrapperRef = ref<HTMLElement>()
+
+      // Reactivity - Props
 
       const position = toRef(props, 'position')
-      const rootMargin = toRef(props, 'rootMargin')
+      const rootPadding = toRef(props, 'rootPadding')
       const maxWidth = toRef(props, 'maxWidth')
+      const gap = toRef(props, 'gap')
+      const pauseOnHover = toRef(props, 'pauseOnHover')
       const disabled = toRef(props, 'disabled')
+      const animations = toRef(props, 'animations')
 
-      const { items, incoming, isAnimated } = useReceiver(props.id)
-      const { wrapperStyles, containerStyles, hoverAreaStyles } = useReceiverStyles({
-         rootMargin,
+      // Reactivity - Props - Computed
+
+      const isTop = computed(() => position.value.startsWith('top'))
+
+      const mergedAnims = computed(() => ({
+         ...defaultAnimations,
+         ...animations.value,
+      }))
+
+      // Reactivity - Store
+
+      const {
+         items,
+         incoming,
+         clearTrigger,
+         createItem,
+         getItem,
+         updateItem,
+         removeItem,
+         destroyAll,
+         updateAll,
+         animateItem,
+         resetClearTrigger,
+      } = useStore(props.id)
+
+      // Reactivity - Store - Computed
+
+      const hasItems = computed(() => items.value.length > 0)
+
+      // Reactivity - Composables - Behavior and Style
+
+      const { refs, sortedIds, setRefs } = useRefsMap()
+
+      const { wrapperStyles, containerStyles, rowStyles, boxStyles } = useReceiverStyles({
+         rootPadding,
          maxWidth,
          position,
+         gap,
       })
 
-      // Watchers
+      const resizeObserver = useResizeObserver(() => setPositions(TType.HEIGHT))
+
+      // Watchers - Notifications
 
       let unsubscribe: ReturnType<typeof subscribe>
 
@@ -102,10 +140,8 @@ export const Receiver = defineComponent({
          (isDisabled) => {
             if (isDisabled && unsubscribe) {
                unsubscribe()
-               items.length = 0
-               incoming.value = null as unknown as ReceiverT['incoming']['value']
+               destroyAll()
             } else {
-               incoming.value = {} as ReceiverT['incoming']['value']
                unsubscribe = subscribe()
             }
          },
@@ -113,130 +149,233 @@ export const Receiver = defineComponent({
       )
 
       watch(
-         () => items.length === 0,
-         (isCleared) => isCleared && (isHovering = false),
+         () => clearTrigger.value && hasItems.value,
+         (shouldClear) => {
+            if (shouldClear) {
+               animateClearAll()
+            }
+         },
          { flush: 'post' }
       )
 
-      // Functions
+      // Watchers - Resize and Position
+
+      useWindowSize(() => setPositions(TType.SILENT))
+
+      watch(isTop, () => setPositions(TType.SILENT))
+
+      watch(
+         () => items.value.filter(({ type }) => type === NType.PROMISE).map(({ id }) => id),
+         (newPromises) => {
+            if (newPromises.length > 0) {
+               newPromises.forEach((id) =>
+                  resizeObserver.value?.observe(refs.get(id) as HTMLElement)
+               )
+            }
+         },
+         { flush: 'post' }
+      )
+
+      // Watchers - Hover
+
+      watch(
+         () => !hasItems.value,
+         (noItems) => {
+            if (noItems) {
+               isHovering = false
+            }
+         },
+         { flush: 'post' }
+      )
+
+      // Functions - Listener
 
       function subscribe() {
-         return watch(incoming, (pushOptions) => {
-            const isUnshift = props.method === 'unshift'
+         return watch(
+            incoming,
+            (pushOptions) => {
+               if (
+                  items.value.length >= NOTIFICATIONS_LIMIT &&
+                  items.value[0].type !== NType.PROMISE
+               ) {
+                  animateLeave(items.value[0].id)
+               }
 
-            if (
-               items.length >= props.limit &&
-               items[isUnshift ? items.length - 1 : 0].type !== NType.PROMISE
-            ) {
-               items[isUnshift ? 'pop' : 'shift']()
-            }
+               const createdAt = performance.now()
+               const options = mergeOptions(defaultOptions, props.options, pushOptions)
 
-            const options = mergeOptions(props.options, pushOptions)
-            const createdAt = performance.now()
+               let customComponent: Partial<
+                  Pick<StoreItem, 'prevProps' | 'prevComponent' | 'customRenderFn'>
+               > = {
+                  customRenderFn: undefined,
+               }
 
-            let customRender: Partial<Pick<Notification, 'props' | 'component' | 'h'>> = {
-               h: undefined,
-            }
+               if (
+                  options.type.includes(NType.PROMISE_REJECT) ||
+                  options.type.includes(NType.PROMISE_RESOLVE)
+               ) {
+                  const currItem = getItem(options.id)
+                  const prevComponent = currItem?.prevComponent
 
-            if (
-               options.type.includes(NType.PROMISE_REJECT) ||
-               options.type.includes(NType.PROMISE_RESOLVE)
-            ) {
-               const currIndex = items.findIndex((data) => data.id === options.id)
-               const prevComponent = items[currIndex]?.component
+                  if (prevComponent) {
+                     const prevProps: Record<string, unknown> = { ...(currItem.prevProps ?? {}) }
 
-               if (prevComponent) {
-                  const { title, message, type, close, ...prevProps } = items[currIndex].props
-                  const nextProps = { ...getNotifyProps(options), prevProps }
+                     delete prevProps.title
+                     delete prevProps.message
+                     delete prevProps.type
+                     delete prevProps.duration
+                     delete prevProps.close
 
-                  customRender = {
-                     h: () =>
-                        h(
-                           options.render?.component ?? prevComponent,
-                           options.render?.props?.(nextProps) ?? {}
-                        ),
+                     const nextProps = { ...getCtxProps(options), prevProps }
+
+                     customComponent = {
+                        customRenderFn: () =>
+                           h(
+                              options.render?.component ?? prevComponent,
+                              (
+                                 options.render?.props as NonNullable<
+                                    MaybeRenderPromiseResult['render']
+                                 >['props']
+                              )?.(nextProps) ?? {}
+                           ),
+                     }
                   }
-               }
 
-               items[currIndex] = {
-                  ...items[currIndex],
-                  ...options,
-                  ...customRender,
-                  timeoutId: isHovering ? undefined : createTimeout(options.id, options.duration),
-                  createdAt,
-               }
-            } else {
-               const component = options.render?.component
+                  updateItem(options.id, {
+                     ...options,
+                     ...customComponent,
+                     timeoutId: isHovering
+                        ? undefined
+                        : createTimeout(options.id, options.duration),
+                     createdAt,
+                  })
+               } else {
+                  const component = options.render?.component
 
-               if (component) {
-                  const props = options.render?.props?.(getNotifyProps(options)) ?? {}
-                  customRender = {
-                     h: () => h(component, props),
-                     ...(options.type === NType.PROMISE ? { props, component } : {}),
+                  if (component) {
+                     const props = ((
+                        options.render?.props as NonNullable<
+                           MaybeRenderStatic<CtxProps & Record<string, unknown>>['render']
+                        >['props']
+                     )?.(getCtxProps(options)) ?? {}) as CtxProps
+
+                     customComponent = {
+                        customRenderFn: () => h(component, props),
+                        ...(options.type === NType.PROMISE
+                           ? { prevProps: props, prevComponent: component }
+                           : {}),
+                     }
                   }
+
+                  createItem({
+                     ...options,
+                     ...customComponent,
+                     timeoutId:
+                        options.duration === Infinity
+                           ? undefined
+                           : createTimeout(options.id, options.duration),
+                     clear: () => animateLeave(options.id),
+                     createdAt,
+                  })
+
+                  nextTick(() => animateEnter(options.id))
                }
-
-               items[props.method]({
-                  ...options,
-                  ...customRender,
-                  timeoutId:
-                     options.type !== NType.PROMISE && createTimeout(options.id, options.duration),
-                  clear: () => clear(options.id),
-                  createdAt,
-               } as Notification)
-            }
-         })
-      }
-
-      function createTimeout(id: string, time: number) {
-         return setTimeout(() => {
-            items.find((data) => data.id === id)?.clear()
-         }, time)
-      }
-
-      function clear(id: string) {
-         items.splice(
-            items.findIndex((data) => data.id === id),
-            1
+            },
+            { flush: 'post' }
          )
       }
 
-      function getNotifyProps({ title, message, type, id }: MergedOptions) {
-         return { notifyProps: { title, message, type, close: () => clear(id) } }
+      function createTimeout(id: string, time: number) {
+         return setTimeout(() => animateLeave(id), time)
+      }
+
+      function getCtxProps({ title, message, type, duration, id }: MergedOptions) {
+         return { notifyProps: { title, message, type, duration, close: () => animateLeave(id) } }
+      }
+
+      // Functions - Animations
+
+      function animateEnter(id: string) {
+         animateItem(id, mergedAnims.value.enter, () =>
+            updateItem(id, { animClass: '', onAnimationend: undefined })
+         )
+
+         setPositions()
+      }
+
+      function animateLeave(id: string) {
+         animateItem(id, mergedAnims.value.leave, () => removeItem(id))
+
+         setPositions()
+      }
+
+      function animateClearAll() {
+         if (wrapperRef.value) {
+            wrapperRef.value.classList.add(mergedAnims.value.clearAll)
+            wrapperRef.value.onanimationend = () => {
+               destroyAll()
+               resetClearTrigger()
+            }
+         }
+      }
+
+      // Functions - Transitions
+
+      function setPositions(type: TType = TType.PUSH) {
+         const factor = isTop.value ? 1 : -1
+
+         let accPrevHeights = 0
+
+         for (const id of sortedIds.value) {
+            const thisEl = refs.get(id)
+            const thisItem = getItem(id)
+
+            if (!thisEl || !thisItem || thisItem.animClass === mergedAnims.value.leave) {
+               continue
+            }
+
+            updateItem(id, {
+               style: {
+                  ...(type === TType.HEIGHT ? { transitionProperty: 'all' } : {}),
+                  ...(type === TType.SILENT ? { transition: 'none' } : {}),
+                  transform: `translate3d(0, ${accPrevHeights}px, 0)`,
+               },
+            })
+
+            accPrevHeights += factor * thisEl.clientHeight
+         }
       }
 
       // Props
 
-      const pointerEvts = {
+      const pointerEvents = {
          onPointerenter() {
-            if (items.length > 0 && !isHovering) {
+            if (hasItems.value && !isHovering) {
                isHovering = true
 
                const stoppedAt = performance.now()
 
-               items.forEach((prevData, currIndex) => {
-                  clearTimeout(prevData.timeoutId)
+               updateAll((item) => {
+                  clearTimeout(item.timeoutId)
 
-                  items[currIndex] = {
-                     ...prevData,
+                  return {
+                     ...item,
                      stoppedAt,
-                     elapsed: stoppedAt - prevData.createdAt + (prevData.elapsed ?? 0),
+                     elapsed: stoppedAt - item.createdAt + (item.elapsed ?? 0),
                   }
                })
             }
          },
          onPointerleave() {
-            if (items.length > 0 && isHovering) {
-               items.forEach((prevData, currIndex) => {
-                  const newTimeout = prevData.duration + FIXED_INCREMENT - prevData.elapsed
+            if (hasItems.value && isHovering) {
+               updateAll((item) => {
+                  const newTimeout = item.duration + FIXED_INCREMENT - (item.elapsed ?? 0)
 
-                  items[currIndex] = {
-                     ...prevData,
+                  return {
+                     ...item,
                      createdAt: performance.now(),
                      timeoutId:
-                        prevData.type !== NType.PROMISE
-                           ? createTimeout(prevData.id, newTimeout)
-                           : undefined,
+                        item.duration === Infinity ? undefined : createTimeout(item.id, newTimeout),
                   }
                })
 
@@ -246,43 +385,46 @@ export const Receiver = defineComponent({
       }
 
       return () =>
-         /* prettier-ignore */
          h(Teleport, { to: 'body' }, [
-            h(Transition, {
-               css: isAnimated.value,
-               name: props.transitionName,
-               onEnter(el) {
-                     (el as HTMLElement).style.transformOrigin = getOrigin(
-                        el as HTMLElement,
-                        position
-                     );
+            items.value.length > 0 &&
+               h(
+                  'div',
+                  {
+                     style: wrapperStyles,
+                     ref: wrapperRef,
                   },
-               },
-               () => items.length > 0 &&
-                  h('div', { style: wrapperStyles },
-                     h('div', { style: containerStyles.value },
-                        h('div',
+                  h(
+                     'div',
+                     {
+                        style: { ...containerStyles.value, ...props.theme },
+                        ...(props.id ? { 'data-vuenotify-id': props.id } : {}),
+                        ...(pauseOnHover.value ? pointerEvents : {}),
+                     },
+                     items.value.map((item) =>
+                        h(
+                           'div',
                            {
-                              style: {...hoverAreaStyles, ...props.theme},
-                              ...(props.pauseOnHover ? pointerEvts : {}),
-                              ...(props.id ? { 'data-vuenotify-id': props.id } : {}),
-                           },
-                           h(TransitionGroup, { 
-                                 name: props.transitionGroupName,
-                                 css: isAnimated.value,
+                              key: item.id,
+                              ref: (_ref) => setRefs(_ref as HTMLElement | null, item.id),
+                              style: {
+                                 ...rowStyles.value,
+                                 ...item.style,
                               },
-                              () =>
-                              items.map((item) => 
-                                 h('div', { key: item.id }, [
-                                    item.h?.() ?? defaultComponent(item),
-                                    ariaLive(item),
-                                 ]),
-                              )
+                           },
+                           h(
+                              'div',
+                              {
+                                 class: item.animClass,
+                                 style: boxStyles.value,
+                                 onAnimationstart: item.onAnimationstart,
+                                 onAnimationend: item.onAnimationend,
+                              },
+                              [item.customRenderFn?.() ?? defaultRenderFn(item), ariaRenderFn(item)]
                            )
                         )
                      )
                   )
-            ),
+               ),
          ])
    },
 })

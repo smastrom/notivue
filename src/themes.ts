@@ -16,7 +16,7 @@ export const light: Theme = {
    '--VNWarningBackground': '#fff',
    '--VNInfoColor': '#3e8eff',
    '--VNInfoBackground': '#fff',
-   '--VNPromiseColor': '#666666',
+   '--VNPromiseColor': '#64748b',
    '--VNPromiseBackground': '#fff',
    '--VNCloseColor': '#8e8e8e',
 }
