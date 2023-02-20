@@ -2,7 +2,6 @@
 
 .VueNotify__notification {
    background: var(--VNBackground);
-   margin: 0 auto 0.875rem auto;
    padding: 0.625rem;
    width: var(--VNWidth);
    max-width: 100%;
@@ -13,16 +12,27 @@
    justify-items: start;
    align-items: center;
    box-shadow: var(--VNBoxShadow);
-   pointer-events: all;
-   will-change: transform;
    box-sizing: border-box;
 }
 
 /* Icon */
 
 .VueNotify__icon {
+   animation: VueNotify__icon-kf 250ms cubic-bezier(0.22, 1, 0.36, 1) both 150ms;
    display: flex;
    margin: 0 0.875rem 0 0;
+}
+
+@keyframes VueNotify__icon-kf {
+   0% {
+      transform: scale(0.75);
+      opacity: 0.7;
+   }
+
+   100% {
+      transform: scale(1);
+      opacity: 1;
+   }
 }
 
 [data-vuenotify='success'] .VueNotify__icon,

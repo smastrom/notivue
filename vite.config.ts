@@ -10,7 +10,6 @@ export default defineConfig({
          fileName: 'index',
          formats: ['es', 'cjs'],
       },
-      cssCodeSplit: true,
       rollupOptions: {
          external: ['vue'],
          output: {

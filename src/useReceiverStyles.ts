@@ -1,38 +1,72 @@
-import { ref, computed, type Ref, type CSSProperties } from 'vue'
+import { computed, type Ref, type CSSProperties } from 'vue'
+import { useReducedMotion } from './useReducedMotion'
+import { EASING } from './constants'
 import type { ReceiverProps } from './types'
 
-type Params = {
-   rootMargin: Ref<ReceiverProps['rootMargin']>
+type Param = {
+   rootPadding: Ref<ReceiverProps['rootPadding']>
    maxWidth: Ref<ReceiverProps['maxWidth']>
    position: Ref<ReceiverProps['position']>
+   gap: Ref<ReceiverProps['gap']>
 }
 
-const brBox: CSSProperties = { boxSizing: 'border-box' }
+const boxSizing: CSSProperties = { boxSizing: 'border-box' }
 
-const wrapperStyles: CSSProperties = {
-   ...brBox,
-   position: 'fixed',
-   width: '100%',
-   height: '100%',
+const NO_DUR = '0ms !important'
+
+const flexCenter: CSSProperties = {
    display: 'flex',
    justifyContent: 'center',
+   width: '100%',
+}
+
+const wrapperStyles: CSSProperties = {
+   ...boxSizing,
+   ...flexCenter,
+   zIndex: 2147483647,
+   position: 'fixed',
+   height: '100%',
    pointerEvents: 'none',
 }
 
-const hoverAreaStyles: CSSProperties = { ...brBox, pointerEvents: 'all' }
+export function useReceiverStyles({ rootPadding, maxWidth, position, gap }: Param) {
+   const isReduced = useReducedMotion()
 
-export function useReceiverStyles({ rootMargin, maxWidth, position }: Params) {
-   const is = (_position: string) => position.value.includes(_position)
+   const xAlignment = computed(() => {
+      const [, x] = position.value.split('-')
+      return x === 'left' ? 'flex-start' : x === 'right' ? 'flex-end' : 'center'
+   })
 
    const containerStyles = computed<CSSProperties>(() => ({
-      ...brBox,
+      ...boxSizing,
+      ...flexCenter,
       ...(maxWidth.value ? { maxWidth: `${maxWidth.value}px` } : {}),
-      padding: rootMargin.value,
-      alignItems: is('top') ? 'start' : 'end',
-      justifyContent: is('right') ? 'end' : is('left') ? 'start' : 'center',
-      width: '100%',
-      display: 'flex',
+      position: 'relative',
    }))
 
-   return { wrapperStyles, containerStyles, hoverAreaStyles }
+   const rowStyles = computed<CSSProperties>(() => ({
+      ...boxSizing,
+      transitionTimingFunction: EASING,
+      transitionDuration: '250ms',
+      transitionProperty: 'transform',
+      position: 'absolute',
+      display: 'flex',
+      padding: `0 ${rootPadding.value[1]}px 0 ${rootPadding.value[3]}px`,
+      width: '100%',
+      justifyContent: xAlignment.value,
+      ...(position.value.startsWith('top')
+         ? { top: rootPadding.value[0] + 'px' }
+         : { bottom: rootPadding.value[2] + 'px' }),
+      ...(isReduced.value ? { transitionDuration: NO_DUR } : {}),
+   }))
+
+   const boxStyles = computed<CSSProperties>(() => ({
+      ...boxSizing,
+      pointerEvents: 'auto',
+      maxWidth: '100%',
+      padding: `0 0 ${gap.value}px 0`,
+      ...(isReduced.value ? { animationDuration: NO_DUR } : {}),
+   }))
+
+   return { wrapperStyles, containerStyles, rowStyles, boxStyles }
 }

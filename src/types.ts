@@ -1,17 +1,11 @@
-import type { VNode, Ref, Component, Raw } from 'vue'
+import type { VNode, Component, Raw, CSSProperties, Ref, ShallowRef } from 'vue'
 import { NType } from './constants'
 
 export type PluginOptions = {
    additionalReceivers?: string[]
 }
 
-export type Position =
-   | 'top-left'
-   | 'top-center'
-   | 'top-right'
-   | 'bottom-left'
-   | 'bottom-center'
-   | 'bottom-right'
+// Receiver Props
 
 export type ReceiverProps = {
    disabled: boolean
@@ -21,11 +15,17 @@ export type ReceiverProps = {
    position: Position
    maxWidth: number
    id: string
-   rootMargin: string
-   transitionName: string
-   transitionGroupName: string
+   rootPadding: number[]
+   gap: number
    options: Partial<Record<`${NType}`, Partial<ReceiverOptions>>>
    theme: Record<`--${string}`, string>
+   animations: Partial<Animations>
+}
+
+type Animations = {
+   enter: string
+   leave: string
+   clearAll: string
 }
 
 export type ReceiverOptions = {
@@ -38,75 +38,114 @@ export type ReceiverOptions = {
    ariaRole: 'alert' | 'status'
 }
 
-type PushOnlyOptions = {
-   className?: string
+// Receiver Internal
+
+type InternalData = {
+   timeoutId: number | undefined
+   createdAt: number
+   clear: () => void
+   elapsed?: number
+   stoppedAt?: number
+   style?: CSSProperties
+   animClass?: string
+   onAnimationstart?: (event: AnimationEvent) => void
+   onAnimationend?: (event: AnimationEvent) => void
+   customRenderFn?: () => VNode
+   prevProps?: CtxProps & Record<string, unknown>
+   prevComponent?: Raw<Component>
 }
 
-export type InternalPushOptions = {
-   id: string
-   type: `${NType}`
+export type MergedOptions = Required<ReceiverOptions> & IncomingOptions
+
+export type InternalPushOptions = { id: string; type: `${NType}` }
+
+// Store
+
+export type StoreItem = InternalData & MergedOptions
+
+export type StoreRefs = {
+   items: Ref<StoreItem[]>
+   incoming: ShallowRef<IncomingOptions>
+   clearTrigger: Ref<boolean>
 }
 
-export type UserOptions<T = NotifyProps> = Partial<ReceiverOptions> & MaybeRender<T>
+export type StoreFunctions = {
+   createPush: () => PushFn
+   createItem: (options: StoreItem) => void
+   getItem: (id: string) => StoreItem | undefined
+   updateItem: (id: string, options: Partial<StoreItem>) => void
+   removeItem: (id: string) => void
+   destroyAll: () => void
+   updateAll: (onUpdate: (item: StoreItem) => StoreItem) => void
+   animateItem: (id: string, className: string, onEnd: () => void) => void
+   resetClearTrigger: () => void
+}
 
-export type MergedOptions<T = NotifyProps> = ReceiverOptions & InternalPushOptions & MaybeRender<T>
+export type Store = StoreRefs & StoreFunctions
 
-export type Notification = InternalPushOptions &
-   ReceiverOptions & {
-      timeoutId: number | undefined
-      id: string
-      createdAt: number
-      stoppedAt: number
-      elapsed: number
-      clear: () => void
-      props: Record<string, any>
-      component?: Component
-      h?: () => VNode
-   }
+// Push - Incoming
 
-type MaybeRender<T> = {
+export type _PushOptions = Partial<ReceiverOptions>
+
+export type IncomingOptions<T = unknown> = Partial<ReceiverOptions> &
+   InternalPushOptions &
+   (MaybeRenderStatic<T> | MaybeRenderPromiseResult<T extends Record<string, unknown> ? T : never>)
+
+export type StaticPushOptions<T> = Partial<ReceiverOptions> & MaybeRenderStatic<T>
+
+export type MaybeRenderStatic<T> = {
    render?: {
       component?: Raw<Component>
-      props?: (props: T) => Record<string, any>
+      props?: (props: { notifyProps: CtxProps }) => Partial<CtxProps & T>
    }
 }
 
-export type Receiver = {
-   items: Notification[]
-   incoming: Ref<UserOptions & InternalPushOptions>
-   isAnimated: Ref<boolean>
-   push: () => PushFn
-}
+export type PromiseResultPushOptions<T> = Partial<ReceiverOptions> & MaybeRenderPromiseResult<T>
 
-type NotifyProps = {
-   notifyProps: {
-      type: InternalPushOptions['type']
-      close: () => void
-      title?: ReceiverOptions['title']
-      message?: ReceiverOptions['message']
+export type MaybeRenderPromiseResult<T = {}> = {
+   render?: {
+      component?: Raw<Component>
+      props?: (props: {
+         notifyProps: CtxProps
+         prevProps: Omit<T, keyof CtxProps>
+      }) => Record<string, unknown>
    }
 }
 
-type WithPrevProps = Partial<
-   UserOptions<NotifyProps & { prevProps?: Record<string, any> | undefined }>
->
+// Push - Returned
 
-export type PushFn = {
-   (options: Partial<UserOptions>): ClearFns
-   promise: (options: Partial<UserOptions>) => {
-      resolve: (options: WithPrevProps) => void
-      reject: (options: WithPrevProps) => void
-      clear: ClearFns['clear']
-      clearAll: ClearFns['clearAll']
-   }
-   error: (options: Partial<UserOptions>) => ClearFns
-   success: (options: Partial<UserOptions>) => ClearFns
-   warning: (options: Partial<UserOptions>) => ClearFns
-   info: (options: Partial<UserOptions>) => ClearFns
-   clearAll: ClearFns['clearAll']
+export type CtxProps = Omit<InternalPushOptions, 'id'> & {
+   duration: ReceiverOptions['duration']
+   title: ReceiverOptions['title']
+   message: ReceiverOptions['message']
+   close: () => void
 }
 
-export type ClearFns = { clear: () => void; clearAll: () => void }
+export type PushStatic = <T extends Record<string, unknown>>(
+   options: StaticPushOptions<T>
+) => ClearFn
+
+export type PushPromise = <T extends Record<string, unknown>>(
+   options: StaticPushOptions<T>
+) => {
+   resolve: (options: PromiseResultPushOptions<T>) => ClearFn
+   reject: (options: PromiseResultPushOptions<T>) => ClearFn
+   clear: ClearFn['clear']
+}
+
+export type PushFn = PushStatic & {
+   error: PushStatic
+   success: PushStatic
+   warning: PushStatic
+   info: PushStatic
+   promise: PushPromise
+   clearAll: () => void
+   destroyAll: () => void
+}
+
+export type ClearFn = { clear: () => void }
+
+// CSS
 
 type Vars =
    | '--VNWidth'
@@ -127,5 +166,13 @@ type Vars =
    | '--VNPromiseColor'
    | '--VNPromiseBackground'
    | '--VNCloseColor'
+
+export type Position =
+   | 'top-left'
+   | 'top-center'
+   | 'top-right'
+   | 'bottom-left'
+   | 'bottom-center'
+   | 'bottom-right'
 
 export type Theme = Record<Vars, string>
