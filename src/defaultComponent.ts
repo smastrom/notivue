@@ -8,7 +8,7 @@ export function defaultComponent(item: Notification) {
    return h(
       'div',
       {
-         class: [CLASS_PREFIX + 'notification', item.animationClass ?? ''],
+         class: [CLASS_PREFIX + 'notification', item.animClass ?? ''],
          'data-vuenotify': item.type,
          ...(item.onAnimationend ? { onAnimationend: item.onAnimationend } : {}),
       },

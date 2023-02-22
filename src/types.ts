@@ -59,7 +59,7 @@ export type Notification = InternalPushOptions &
       elapsed: number
       clear: () => void
       style: CSSProperties
-      animationClass: string | undefined
+      animClass: string | undefined
       onAnimationend: (() => void) | undefined
       props: Record<string, any>
       component?: Component

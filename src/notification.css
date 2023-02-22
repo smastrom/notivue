@@ -17,11 +17,11 @@
 }
 
 .VNEnter {
-   animation: KFVNEnter 400ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+   animation: KFVNEnter 300ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .VNLeave {
-   animation: KFVNLeave 400ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+   animation: KFVNLeave 200ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 @keyframes KFVNEnter {
@@ -41,7 +41,7 @@
       opacity: 1;
    }
    100% {
-      transform: scale(0.5) translate3d(0, -100px, 0);
+      transform: scale(0.5) translate3d(0, -50px, 0);
       opacity: 0;
    }
 }
