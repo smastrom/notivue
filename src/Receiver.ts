@@ -1,12 +1,13 @@
-import { defineComponent, h, toRef, nextTick, Teleport, watch, type PropType } from 'vue'
+import { defineComponent, h, toRef, nextTick, Teleport, watch, computed, type PropType } from 'vue'
 import { useReceiver } from './useReceiver'
 import { useReceiverStyles } from './useReceiverStyles'
-import { mergeOptions } from './utils'
-import { NType, FIXED_INCREMENT } from './constants'
+import { useRefsMap } from './useRefsMap'
+import { useResizeObserver } from './useResizeObserver'
 import { defaultComponent } from './defaultComponent'
 import { defaultOptions } from './defaultOptions'
 import { ariaLive } from './ariaLive'
-import { useRefsMap } from './useRefsMap'
+import { mergeOptions } from './utils'
+import { NType, FIXED_INCREMENT } from './constants'
 import { light } from './themes'
 import type {
    ReceiverProps as Props,
@@ -14,7 +15,6 @@ import type {
    Notification,
    Receiver as ReceiverT,
 } from './types'
-import { useResizeObserver } from './useResizeObserver'
 
 const PADDING_TOP = 20
 const GAP = 10
@@ -26,10 +26,6 @@ export const Receiver = defineComponent({
       id: {
          type: String as PropType<Props['id']>,
          default: '',
-      },
-      method: {
-         type: String as PropType<Props['method']>,
-         default: 'unshift',
       },
       pauseOnHover: {
          type: Boolean as PropType<Props['pauseOnHover']>,
@@ -45,7 +41,7 @@ export const Receiver = defineComponent({
       },
       maxWidth: {
          type: Number as PropType<Props['maxWidth']>,
-         default: 0,
+         default: 1280,
       },
       position: {
          type: String as PropType<Props['position']>,
@@ -67,27 +63,47 @@ export const Receiver = defineComponent({
    setup(props) {
       let isHovering = false
 
-      // Reactivity
+      // Reactivity - Props
 
       const position = toRef(props, 'position')
       const rootMargin = toRef(props, 'rootMargin')
       const maxWidth = toRef(props, 'maxWidth')
       const disabled = toRef(props, 'disabled')
 
-      const { refs, setRefs } = useRefsMap()
+      const cssProp = computed(() => {
+         const [y, x] = position.value.split('-')
+         return { y, x }
+      })
+
+      // Reactivity - Composables
 
       const { items, incoming } = useReceiver(props.id)
-      const { wrapperStyles, containerStyles, hoverAreaStyles } = useReceiverStyles({
+      const { wrapperStyles, containerStyles } = useReceiverStyles({
          rootMargin,
          maxWidth,
          position,
       })
 
-      const resizeObserver = useResizeObserver({ onSizeChange: setTop })
+      const { refs, refsData, setRefs } = useRefsMap()
+
+      const resizeObserver = useResizeObserver({ onSizeChange: setNewTop })
 
       // Watchers
 
       let unsubscribe: ReturnType<typeof subscribe>
+
+      watch(
+         () => cssProp.value.y,
+         (newY, prevY) => {
+            items.forEach((item) => {
+               // @ts-ignore
+               item.style[newY] = item.style[prevY]
+               // @ts-ignore
+               delete item.style[prevY]
+            })
+         },
+         { flush: 'post' }
+      )
 
       watch(
          disabled,
@@ -108,21 +124,19 @@ export const Receiver = defineComponent({
          () => items.filter(({ type }) => type === NType.PROMISE).map(({ id }) => id),
          (newPromises) =>
             newPromises.length > 0 &&
-            newPromises.forEach((id) =>
-               resizeObserver.value?.observe(refs.get(id)?.value as HTMLElement)
-            ),
+            newPromises.forEach((id) => resizeObserver.value?.observe(refs.get(id) as HTMLElement)),
          { flush: 'post' }
       )
 
       watch(
          () => items.filter(({ animClass }) => animClass === 'VNLeave').length === 0,
-         (areDestroyed) => areDestroyed && setTop(),
+         (areDestroyed) => areDestroyed && setNewTop(),
          { flush: 'post' }
       )
 
       watch(
          () => items.length === 0,
-         (isCleared) => isCleared && (isHovering = false),
+         (noNotifications) => noNotifications && (isHovering = false),
          { flush: 'post' }
       )
 
@@ -146,7 +160,7 @@ export const Receiver = defineComponent({
 
                   if (prevComponent) {
                      const { title, message, type, close, ...prevProps } = items[currIndex].props
-                     const nextProps = { ...getNotifyProps(options), prevProps }
+                     const nextProps = { ...getCtxProps(options), prevProps }
 
                      customRender = {
                         h: () =>
@@ -170,99 +184,89 @@ export const Receiver = defineComponent({
                   const component = options.render?.component
 
                   if (component) {
-                     const props = options.render?.props?.(getNotifyProps(options)) ?? {}
+                     const props = options.render?.props?.(getCtxProps(options)) ?? {}
                      customRender = {
                         h: () => h(component, props),
                         ...(options.type === NType.PROMISE ? { props, component } : {}),
                      }
                   }
 
-                  items[props.method]({
+                  items.push({
                      ...options,
                      ...customRender,
                      timeoutId:
                         options.type !== NType.PROMISE &&
                         createTimeout(options.id, options.duration),
-                     clear: () => onLeave(options.id),
+                     clear: () => setLeave(options.id),
                      createdAt,
                   } as Notification)
 
-                  nextTick(() => onEnter(options.id))
+                  nextTick(() => setEnter(options.id))
                }
             },
             { flush: 'post' }
          )
       }
 
-      // Functions - Refs
-
-      function getRefs() {
-         const entries = Array.from(refs.entries()).sort(
-            ([, prev], [, next]) =>
-               prev.value.getBoundingClientRect().y - next.value.getBoundingClientRect().y
-         )
-
-         return {
-            ids: entries.map(([id]) => id),
-            tops: entries.map(([, ref]) => ref.value.getBoundingClientRect().y),
-            heights: entries.map(([, ref]) => ref.value.getBoundingClientRect().height),
-         }
-      }
-
       // Functions - Animations / Transitions
 
-      function setTop(currId = '') {
-         const { ids, heights } = getRefs()
-         const startIndex = ids.indexOf(currId) + 1 // -1+1=0
+      function setNewTop(currId = '') {
+         const { ids, heights } = refsData.value
+         const start = ids.indexOf(currId) + 1
 
-         ids.slice(startIndex).forEach((id, index) => {
+         ids.slice(start).forEach((id, index) => {
             const prevHeights = heights
-               .slice(0, startIndex + index)
+               .slice(0, start + index)
                .reduce((acc, curr) => acc + curr, PADDING_TOP)
 
             const currItem = getItem(id)
+
             if (currItem) {
-               currItem.style = { top: prevHeights + GAP * (startIndex + index) + 'px' }
+               currItem.style = {
+                  [cssProp.value.y]: prevHeights + GAP * (start + index) + 'px',
+               }
             }
          })
       }
 
-      function onEnter(id: string) {
-         const currItem = getItem(id)
-         if (currItem) {
-            currItem.animClass = 'VNEnter'
-            currItem.onAnimationend = () => {
-               currItem.animClass = ''
-               currItem.onAnimationend = undefined
+      function setEnter(id: string) {
+         const item = getItem(id)
+         if (item) {
+            item.animClass = 'VNEnter'
+            item.onAnimationend = () => {
+               item.animClass = ''
+               item.onAnimationend = undefined
             }
          }
-
-         setTop()
+         setNewTop()
       }
 
-      function onLeave(id: string) {
-         const currItem = getItem(id)
-         if (currItem) {
-            currItem.animClass = 'VNLeave'
-            currItem.onAnimationend = () => removeItem(id)
+      function setLeave(id: string) {
+         const item = getItem(id)
+         if (item) {
+            item.animClass = 'VNLeave'
+            item.onAnimationend = () => removeItem(id)
          }
 
-         const { ids, tops, heights } = getRefs()
-
+         // TO DO: Improve
+         const { ids, tops, bottoms, heights } = refsData.value
          const removedIndex = ids.indexOf(id)
          const nextIds = ids.slice(removedIndex + 1)
 
-         tops.slice(removedIndex + 1).forEach((prevTop, index) => {
+         let _tops = cssProp.value.y === 'top' ? tops : bottoms
+
+         _tops.slice(removedIndex + 1).forEach((prevTop, index) => {
             const newTop = prevTop - heights[removedIndex] - GAP + 'px'
-            const currItem = getItem(nextIds[index])
-            if (currItem) currItem.style = { top: newTop }
+
+            const item = getItem(nextIds[index])
+            if (item) item.style = { [cssProp.value.y]: newTop }
          })
       }
 
       // Functions - Utils
 
       function createTimeout(id: string, time: number) {
-         return setTimeout(() => onLeave(id), time)
+         return setTimeout(() => setLeave(id), time)
       }
 
       function removeItem(id: string) {
@@ -276,13 +280,13 @@ export const Receiver = defineComponent({
          return items.find(({ id: _id }) => _id === id)
       }
 
-      function getNotifyProps({ title, message, type, id }: MergedOptions) {
-         return { notifyProps: { title, message, type, close: () => onLeave(id) } }
+      function getCtxProps({ title, message, type, id }: MergedOptions) {
+         return { notifyProps: { title, message, type, close: () => setLeave(id) } }
       }
 
       // Props
 
-      const pointerEvts = {
+      const pointerEvents = {
          onPointerenter() {
             if (items.length > 0 && !isHovering) {
                isHovering = true
@@ -330,39 +334,26 @@ export const Receiver = defineComponent({
                      'div',
                      {
                         style: { ...containerStyles.value, ...props.theme },
-                        ...(props.pauseOnHover ? pointerEvts : {}),
                         ...(props.id ? { 'data-vuenotify-id': props.id } : {}),
+                        ...(props.pauseOnHover ? pointerEvents : {}),
                      },
-                     h(
-                        'div',
-                        {
-                           style: {
-                              ...hoverAreaStyles,
-                              position: 'relative',
+                     items.map((item) =>
+                        h(
+                           'div',
+                           {
+                              key: item.id,
+                              id: item.id,
+                              // @ts-ignore
+                              ref: (_ref) => setRefs(_ref, item.id),
+                              style: {
+                                 transition: 'all 300ms cubic-bezier(0.22, 1, 0.36, 1)',
+                                 width: '100%',
+                                 position: 'absolute',
+                                 ...item.style,
+                              },
                            },
-                        },
-                        [
-                           items.map((item) =>
-                              h(
-                                 'div',
-                                 {
-                                    key: item.id,
-                                    id: item.id,
-                                    ref: (_ref) => {
-                                       // @ts-ignore
-                                       setRefs(_ref, item.id)
-                                    },
-                                    style: {
-                                       transition: 'top 300ms cubic-bezier(0.22, 1, 0.36, 1)',
-                                       height: 'auto',
-                                       position: 'absolute',
-                                       ...item.style,
-                                    },
-                                 },
-                                 [item.h?.() ?? defaultComponent(item), ariaLive(item)]
-                              )
-                           ),
-                        ]
+                           [item.h?.() ?? defaultComponent(item), ariaLive(item)]
+                        )
                      )
                   )
                ),

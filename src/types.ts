@@ -37,10 +37,6 @@ export type ReceiverOptions = {
    ariaRole: 'alert' | 'status'
 }
 
-type PushOnlyOptions = {
-   className?: string
-}
-
 export type InternalPushOptions = {
    id: string
    type: `${NType}`

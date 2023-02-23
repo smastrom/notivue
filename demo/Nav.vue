@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { markRaw } from 'vue'
+import { markRaw, ref } from 'vue'
 import { ReceiverProps } from '../src/types'
 import { useNotify } from '../src/useNotify'
 import { settings } from './store'
@@ -81,6 +81,8 @@ function toggleEnable() {
    settings.disabled = !settings.disabled
 }
 
+const counter = ref(0)
+
 function pushThousand() {
    let start = 1
 
@@ -121,7 +123,14 @@ function pushThousand() {
             {{ settings.disabled ? 'Enable' : 'Disable' }}
          </button>
          <button @click="pushThousand">Push 1000</button>
-         <button @click="push({ message: 'Your message has been successfully sent. Please.' })">
+         <button
+            @click="
+               () => {
+                  counter++
+                  push({ message: counter + ' Your message has been successfully sent. Please.' })
+               }
+            "
+         >
             Success
          </button>
          <button
@@ -130,7 +139,7 @@ function pushThousand() {
             Error
          </button>
 
-         <button @click="push.destroyAll()">Destroy</button>
+         <!-- <button @click="push.destroyAll()">Destroy</button> -->
          <button
             @click="push.info({ message: 'Your message has been successfully sent. Please.' })"
          >

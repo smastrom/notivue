@@ -29,8 +29,8 @@ export function useReceiverStyles({ rootMargin, maxWidth, position }: Params) {
 
    const containerStyles = computed<CSSProperties>(() => ({
       ...brBox,
+      position: 'relative',
       ...(maxWidth.value ? { maxWidth: `${maxWidth.value}px` } : {}),
-      alignItems: is('top') ? 'start' : 'end',
       justifyContent: is('right') ? 'end' : is('left') ? 'start' : 'center',
       width: '100%',
       display: 'flex',
