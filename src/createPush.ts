@@ -7,19 +7,23 @@ type Options = Partial<UserOptions>
 export function createPush(receiver: Receiver): PushFn {
    function create(options: Options, status = NType.SUCCESS, id = createID()) {
       if (!receiver.incoming.value) {
-         return { id, clear: () => {}, clearAll: () => {} }
+         return { id, clear: () => {}, clearAll: () => {}, destroyAll: () => {} }
       }
 
       receiver.incoming.value = { ...options, id, type: status }
-      return { id, clear: () => clear(id), clearAll }
+      return { id, clear: () => clear(id), clearAll, destroyAll }
    }
 
    function clear(id: string) {
       receiver.items.find((item) => item.id === id)?.clear()
    }
 
-   function clearAll() {
+   function destroyAll() {
       receiver.items.length = 0
+   }
+
+   function clearAll() {
+      receiver.runClear.value = true
    }
 
    function push(options: Options) {
@@ -27,6 +31,8 @@ export function createPush(receiver: Receiver): PushFn {
    }
 
    push.clearAll = clearAll
+
+   push.destroyAll = destroyAll
 
    push.success = (options: Options) => create(options)
 

@@ -22,7 +22,7 @@ export const notify: Plugin = {
             receivers.set(sym, {
                items: reactive([]),
                incoming: shallowRef(null) as unknown as Receiver['incoming'],
-               isAnimated: ref(true),
+               runClear: ref(false),
                push: () => createPush(receivers.get(sym) as Receiver),
             })
          })

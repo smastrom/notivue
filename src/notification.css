@@ -21,7 +21,22 @@
 }
 
 .VNLeave {
-   animation: KFVNLeave 200ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+   animation: KFVNLeave 300ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.VNClear {
+   animation: KFVNClear 800ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes KFVNClear {
+   0% {
+      filter: blur(0);
+      opacity: 1;
+   }
+   100% {
+      filter: blur(10px);
+      opacity: 0;
+   }
 }
 
 @keyframes KFVNEnter {

@@ -72,7 +72,7 @@ type MaybeRender<T> = {
 export type Receiver = {
    items: Notification[]
    incoming: Ref<UserOptions & InternalPushOptions>
-   isAnimated: Ref<boolean>
+   runClear: Ref<boolean>
    push: () => PushFn
 }
 
@@ -96,15 +96,17 @@ export type PushFn = {
       reject: (options: WithPrevProps) => void
       clear: ClearFns['clear']
       clearAll: ClearFns['clearAll']
+      destroyAll: ClearFns['destroyAll']
    }
    error: (options: Partial<UserOptions>) => ClearFns
    success: (options: Partial<UserOptions>) => ClearFns
    warning: (options: Partial<UserOptions>) => ClearFns
    info: (options: Partial<UserOptions>) => ClearFns
    clearAll: ClearFns['clearAll']
+   destroyAll: ClearFns['destroyAll']
 }
 
-export type ClearFns = { clear: () => void; clearAll: () => void }
+export type ClearFns = { clear: () => void; clearAll: () => void; destroyAll: () => void }
 
 type Vars =
    | '--VNWidth'

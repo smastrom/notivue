@@ -8,6 +8,7 @@ import {
    computed,
    type PropType,
    type CSSProperties,
+   ref,
 } from 'vue'
 import { useReceiver } from './useReceiver'
 import { useReceiverStyles } from './useReceiverStyles'
@@ -70,6 +71,10 @@ export const Receiver = defineComponent({
    setup(props) {
       let isHovering = false
 
+      // Reactivity - Internal
+
+      const wrapperRef = ref<HTMLElement>()
+
       // Reactivity - Props
 
       const position = toRef(props, 'position')
@@ -89,7 +94,7 @@ export const Receiver = defineComponent({
 
       // Reactivity - Composables
 
-      const { items, incoming } = useReceiver(props.id)
+      const { items, incoming, runClear } = useReceiver(props.id)
       const { wrapperStyles, containerStyles, itemStyles } = useReceiverStyles({
          rootPadding,
          maxWidth,
@@ -119,6 +124,16 @@ export const Receiver = defineComponent({
             }
          },
          { immediate: true }
+      )
+
+      watch(
+         runClear,
+         (shouldClear) => {
+            if (shouldClear && items.length > 0) {
+               animateClearAll()
+            }
+         },
+         { flush: 'post' }
       )
 
       // Watchers - Styles
@@ -254,11 +269,22 @@ export const Receiver = defineComponent({
          setNextY(id, { actionType: 'REMOVE' })
       }
 
-      // Functions - Repositioning (Transitions)
+      function animateClearAll() {
+         if (wrapperRef.value) {
+            wrapperRef.value.classList.add('VNClear')
+            wrapperRef.value.onanimationend = () => {
+               items.length = 0
+               runClear.value = false
+            }
+         }
+      }
+
+      /**
+       * Functions - Repositioning (Transitions)
+       * Reason for reinventing the wheel: https://github.com/vuejs/vue/issues/11654
+       */
 
       type ActionType = 'RESIZE' | 'REMOVE' | 'PUSH'
-
-      // Reason for reinventing the wheel: https://github.com/vuejs/vue/issues/11654
 
       function setNextY(id: string, { actionType }: { actionType: ActionType }) {
          const isResize = actionType === 'RESIZE'
@@ -319,7 +345,7 @@ export const Receiver = defineComponent({
                   [yCssProp.value]: startY + accPrevHeights + 'px',
                }
 
-               // Be 100% sure element is not in the DOM or leaving
+               // Be 100% sure element is in the DOM
                const currEl = refs.get(id)
 
                // If the item is leaving, do not accumulate its height nor its gap
@@ -398,7 +424,7 @@ export const Receiver = defineComponent({
             items.length > 0 &&
                h(
                   'div',
-                  { style: wrapperStyles },
+                  { style: wrapperStyles, ref: wrapperRef },
                   h(
                      'div',
                      {
