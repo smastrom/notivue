@@ -1,6 +1,6 @@
 import { shallowRef, onMounted, onBeforeUnmount } from 'vue'
 
-export function useResizeObserver({ onSizeChange }: { onSizeChange: (id?: string) => void }) {
+export function useResizeObserver({ onSizeChange }: { onSizeChange: (id: string) => void }) {
    const callSet = new Set()
    const resizeObserver = shallowRef<ResizeObserver>()
 

@@ -11,8 +11,6 @@ export function useRefsMap() {
       return {
          ids: entries.map(([id]) => id),
          heights: entries.map(([, el]) => el.clientHeight),
-         tops: entries.map(([, el]) => el.getBoundingClientRect().top),
-         bottoms: entries.map(([, el]) => el.getBoundingClientRect().bottom),
       }
    })
 

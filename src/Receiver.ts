@@ -16,6 +16,7 @@ import type {
    Receiver as ReceiverT,
 } from './types'
 
+const PADDING_BOTTOM = 80
 const PADDING_TOP = 20
 const GAP = 10
 
@@ -70,6 +71,7 @@ export const Receiver = defineComponent({
       const maxWidth = toRef(props, 'maxWidth')
       const disabled = toRef(props, 'disabled')
 
+      const isTopAlign = computed(() => position.value.startsWith('top'))
       const cssProp = computed(() => {
          const [y, x] = position.value.split('-')
          return { y, x }
@@ -86,24 +88,13 @@ export const Receiver = defineComponent({
 
       const { refs, refsData, setRefs } = useRefsMap()
 
-      const resizeObserver = useResizeObserver({ onSizeChange: setNewTop })
+      const resizeObserver = useResizeObserver({
+         onSizeChange: (id) => setNextY(id, { actionType: 'RESIZE' }),
+      })
 
       // Watchers
 
       let unsubscribe: ReturnType<typeof subscribe>
-
-      watch(
-         () => cssProp.value.y,
-         (newY, prevY) => {
-            items.forEach((item) => {
-               // @ts-ignore
-               item.style[newY] = item.style[prevY]
-               // @ts-ignore
-               delete item.style[prevY]
-            })
-         },
-         { flush: 'post' }
-      )
 
       watch(
          disabled,
@@ -121,16 +112,23 @@ export const Receiver = defineComponent({
       )
 
       watch(
-         () => items.filter(({ type }) => type === NType.PROMISE).map(({ id }) => id),
-         (newPromises) =>
-            newPromises.length > 0 &&
-            newPromises.forEach((id) => resizeObserver.value?.observe(refs.get(id) as HTMLElement)),
+         () => cssProp.value.y,
+         (newPosition, prevPosition) => {
+            items.forEach((item) => {
+               // @ts-ignore
+               item.style[newPosition] = item.style[prevPosition]
+               // @ts-ignore
+               delete item.style[prevPosition]
+            })
+         },
          { flush: 'post' }
       )
 
       watch(
-         () => items.filter(({ animClass }) => animClass === 'VNLeave').length === 0,
-         (areDestroyed) => areDestroyed && setNewTop(),
+         () => items.filter(({ type }) => type === NType.PROMISE).map(({ id }) => id),
+         (newPromises) =>
+            newPromises.length > 0 &&
+            newPromises.forEach((id) => resizeObserver.value?.observe(refs.get(id) as HTMLElement)),
          { flush: 'post' }
       )
 
@@ -197,39 +195,20 @@ export const Receiver = defineComponent({
                      timeoutId:
                         options.type !== NType.PROMISE &&
                         createTimeout(options.id, options.duration),
-                     clear: () => setLeave(options.id),
+                     clear: () => animateLeave(options.id),
                      createdAt,
                   } as Notification)
 
-                  nextTick(() => setEnter(options.id))
+                  nextTick(() => animateEnter(options.id))
                }
             },
             { flush: 'post' }
          )
       }
 
-      // Functions - Animations / Transitions
+      // Functions - Animations
 
-      function setNewTop(currId = '') {
-         const { ids, heights } = refsData.value
-         const start = ids.indexOf(currId) + 1
-
-         ids.slice(start).forEach((id, index) => {
-            const prevHeights = heights
-               .slice(0, start + index)
-               .reduce((acc, curr) => acc + curr, PADDING_TOP)
-
-            const currItem = getItem(id)
-
-            if (currItem) {
-               currItem.style = {
-                  [cssProp.value.y]: prevHeights + GAP * (start + index) + 'px',
-               }
-            }
-         })
-      }
-
-      function setEnter(id: string) {
+      function animateEnter(id: string) {
          const item = getItem(id)
          if (item) {
             item.animClass = 'VNEnter'
@@ -238,35 +217,104 @@ export const Receiver = defineComponent({
                item.onAnimationend = undefined
             }
          }
-         setNewTop()
+
+         setNextY(id, { actionType: 'PUSH' })
       }
 
-      function setLeave(id: string) {
+      function animateLeave(id: string) {
          const item = getItem(id)
          if (item) {
             item.animClass = 'VNLeave'
             item.onAnimationend = () => removeItem(id)
          }
 
-         // TO DO: Improve
-         const { ids, tops, bottoms, heights } = refsData.value
-         const removedIndex = ids.indexOf(id)
-         const nextIds = ids.slice(removedIndex + 1)
+         setNextY(id, { actionType: 'REMOVE' })
+      }
 
-         let _tops = cssProp.value.y === 'top' ? tops : bottoms
+      // Functions - Repositioning (Transitions)
 
-         _tops.slice(removedIndex + 1).forEach((prevTop, index) => {
-            const newTop = prevTop - heights[removedIndex] - GAP + 'px'
+      type ActionType = 'RESIZE' | 'REMOVE' | 'PUSH'
 
-            const item = getItem(nextIds[index])
-            if (item) item.style = { [cssProp.value.y]: newTop }
+      function setNextY(id: string, { actionType }: { actionType: ActionType }) {
+         const isResize = actionType === 'RESIZE'
+         const isPush = actionType === 'PUSH'
+         const isRemove = actionType === 'REMOVE'
+
+         const { ids } = refsData.value
+         const currIndex = ids.indexOf(id)
+
+         const isLastRemoved = isRemove && ids.length > 1 && currIndex === ids.length - 1
+
+         if (currIndex === -1 || isLastRemoved) return
+
+         /**
+          * 1. Get the first, previous item which is not animating.
+          * Since items are ordered by creation time, iterate backwards to get the most recent one
+          */
+
+         let prevEl: HTMLElement | undefined = undefined as unknown as HTMLElement
+
+         if (!isPush) {
+            for (const prevId of ids.slice(0, currIndex).reverse()) {
+               if (getItem(prevId)?.animClass !== 'VNLeave') {
+                  prevEl = refs.get(prevId)
+                  break
+               }
+            }
+         }
+
+         // 2. Get the starting point from which to add the height of the items that are not leaving
+
+         let startY = isTopAlign.value ? PADDING_TOP : PADDING_BOTTOM
+
+         if (prevEl) {
+            if (isTopAlign.value) {
+               startY = prevEl.getBoundingClientRect().bottom + GAP
+            } else {
+               startY = window.innerHeight - prevEl.getBoundingClientRect().top + GAP
+            }
+         }
+
+         /**
+          * 3. Iterate over the next items and set their new top/bottom.
+          * Since they're ordered by creation date, if stream is aligned to bottom,
+          * iteration will "upwards" and vice versa.
+          */
+
+         let accPrevHeights = 0
+         let startIndex = !isRemove ? currIndex : currIndex + 1
+
+         ids.slice(startIndex).forEach((id) => {
+            const currItem = getItem(id)
+
+            // On first iteration, nextY is equal to the starting point
+            if (currItem) {
+               currItem.style = {
+                  transitionDuration: isResize ? '100ms, 100ms' : '300ms, 300ms',
+                  [cssProp.value.y]: startY + accPrevHeights + 'px',
+               }
+
+               // If the item is leaving, do not include its height nor its gap in the accumulator
+               if (currItem.animClass === 'VNLeave') {
+                  accPrevHeights += 0
+               } else {
+                  // It might happen that element is removed, check again to be sure
+                  const currEl = refs.get(id)
+
+                  if (currEl) {
+                     accPrevHeights += currEl.clientHeight + GAP
+                  } else {
+                     accPrevHeights += 0
+                  }
+               }
+            }
          })
       }
 
       // Functions - Utils
 
       function createTimeout(id: string, time: number) {
-         return setTimeout(() => setLeave(id), time)
+         return setTimeout(() => animateLeave(id), time)
       }
 
       function removeItem(id: string) {
@@ -281,7 +329,7 @@ export const Receiver = defineComponent({
       }
 
       function getCtxProps({ title, message, type, id }: MergedOptions) {
-         return { notifyProps: { title, message, type, close: () => setLeave(id) } }
+         return { notifyProps: { title, message, type, close: () => animateLeave(id) } }
       }
 
       // Props
@@ -346,7 +394,8 @@ export const Receiver = defineComponent({
                               // @ts-ignore
                               ref: (_ref) => setRefs(_ref, item.id),
                               style: {
-                                 transition: 'all 300ms cubic-bezier(0.22, 1, 0.36, 1)',
+                                 transition:
+                                    'top 300ms cubic-bezier(0.22, 1, 0.36, 1), bottom 300ms cubic-bezier(0.22, 1, 0.36, 1)',
                                  width: '100%',
                                  position: 'absolute',
                                  ...item.style,
