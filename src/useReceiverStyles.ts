@@ -12,6 +12,7 @@ const brBox: CSSProperties = { boxSizing: 'border-box' }
 
 const wrapperStyles: CSSProperties = {
    ...brBox,
+   zIndex: 2147483647,
    position: 'fixed',
    width: '100%',
    height: '100%',
@@ -32,6 +33,7 @@ export function useReceiverStyles({ rootPadding, maxWidth, position }: Params) {
       ...brBox,
       ...(maxWidth.value ? { maxWidth: `${maxWidth.value}px` } : {}),
       position: 'relative',
+      height: '100vh',
       justifyContent: 'center',
       width: '100%',
       display: 'flex',

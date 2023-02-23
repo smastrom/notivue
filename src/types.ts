@@ -46,6 +46,8 @@ export type UserOptions<T = NotifyProps> = Partial<ReceiverOptions> & MaybeRende
 
 export type MergedOptions<T = NotifyProps> = ReceiverOptions & InternalPushOptions & MaybeRender<T>
 
+type AnimationHandler = ((event: AnimationEvent) => void) | undefined
+
 export type Notification = InternalPushOptions &
    ReceiverOptions & {
       timeoutId: number | undefined
@@ -56,7 +58,8 @@ export type Notification = InternalPushOptions &
       clear: () => void
       style: CSSProperties
       animClass: string | undefined
-      onAnimationend: (() => void) | undefined
+      onAnimationstart: AnimationHandler
+      onAnimationend: AnimationHandler
       props: Record<string, any>
       component?: Component
       h?: () => VNode

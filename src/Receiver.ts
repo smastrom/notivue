@@ -1,14 +1,14 @@
 import {
    defineComponent,
+   ref,
+   computed,
+   watch,
    h,
    toRef,
    nextTick,
    Teleport,
-   watch,
-   computed,
    type PropType,
    type CSSProperties,
-   ref,
 } from 'vue'
 import { useReceiver } from './useReceiver'
 import { useReceiverStyles } from './useReceiverStyles'
@@ -45,7 +45,7 @@ export const Receiver = defineComponent({
       },
       rootPadding: {
          type: Array as PropType<Props['rootPadding']>,
-         default: () => [20, 20, 20, 20],
+         default: () => [20, 20, 140, 20],
       },
       maxWidth: {
          type: Number as PropType<Props['maxWidth']>,
@@ -81,6 +81,7 @@ export const Receiver = defineComponent({
       const rootPadding = toRef(props, 'rootPadding')
       const maxWidth = toRef(props, 'maxWidth')
       const gap = toRef(props, 'gap')
+      const pauseOnHover = toRef(props, 'pauseOnHover')
       const disabled = toRef(props, 'disabled')
 
       // Reactivity - Props - Computed
@@ -250,7 +251,9 @@ export const Receiver = defineComponent({
          const item = getItem(id)
          if (item) {
             item.animClass = 'VNEnter'
-            item.onAnimationend = () => {
+            item.onAnimationstart = (event) => event.stopPropagation()
+            item.onAnimationend = (event) => {
+               event.stopPropagation()
                item.animClass = ''
                item.onAnimationend = undefined
             }
@@ -263,7 +266,10 @@ export const Receiver = defineComponent({
          const item = getItem(id)
          if (item) {
             item.animClass = 'VNLeave'
-            item.onAnimationend = () => removeItem(id)
+            item.onAnimationstart = (event) => event.stopPropagation()
+            item.onAnimationend = (event) => {
+               event.stopPropagation(), removeItem(id)
+            }
          }
 
          setNextY(id, { actionType: 'REMOVE' })
@@ -352,7 +358,7 @@ export const Receiver = defineComponent({
                if (!currEl || currItem.animClass === 'VNLeave') {
                   accPrevHeights += 0
                } else {
-                  accPrevHeights += currEl.clientHeight + gap.value
+                  accPrevHeights += currEl.getBoundingClientRect().height + gap.value
                }
             }
          })
@@ -430,7 +436,7 @@ export const Receiver = defineComponent({
                      {
                         style: { ...containerStyles.value, ...props.theme },
                         ...(props.id ? { 'data-vuenotify-id': props.id } : {}),
-                        ...(props.pauseOnHover ? pointerEvents : {}),
+                        ...(pauseOnHover.value ? pointerEvents : {}),
                      },
                      items.map((item) =>
                         h(
@@ -444,7 +450,15 @@ export const Receiver = defineComponent({
                                  ...item.style,
                               },
                            },
-                           [item.h?.() ?? defaultComponent(item), ariaLive(item)]
+                           h(
+                              'div',
+                              {
+                                 class: item.animClass,
+                                 onAnimationstart: item.onAnimationstart,
+                                 onAnimationend: item.onAnimationend,
+                              },
+                              [item.h?.() ?? defaultComponent(item), ariaLive(item)]
+                           )
                         )
                      )
                   )

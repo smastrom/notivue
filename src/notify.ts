@@ -1,4 +1,4 @@
-import { ref, shallowRef, type Plugin, type InjectionKey, reactive } from 'vue'
+import { ref, shallowRef, type Plugin, type InjectionKey, reactive, shallowReactive } from 'vue'
 import { createPush } from './createPush'
 import { defaultSymbol, userSymbols } from './symbols'
 import type { PluginOptions, Receiver } from './types'

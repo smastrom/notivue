@@ -11,9 +11,20 @@
    border: var(--VNBorderRadius);
    justify-items: start;
    align-items: center;
+   pointer-events: auto;
    box-shadow: var(--VNBoxShadow);
-   pointer-events: all;
    box-sizing: border-box;
+   will-change: transform;
+}
+
+.Fade__enter-active,
+.Fade__leave-active {
+   transition: opacity 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.Fade__enter-from,
+.Fade__leave-to {
+   opacity: 0;
 }
 
 .VNEnter {
