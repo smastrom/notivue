@@ -1,4 +1,14 @@
-import { defineComponent, h, toRef, nextTick, Teleport, watch, computed, type PropType } from 'vue'
+import {
+   defineComponent,
+   h,
+   toRef,
+   nextTick,
+   Teleport,
+   watch,
+   computed,
+   type PropType,
+   CSSProperties,
+} from 'vue'
 import { useReceiver } from './useReceiver'
 import { useReceiverStyles } from './useReceiverStyles'
 import { useRefsMap } from './useRefsMap'
@@ -74,7 +84,7 @@ export const Receiver = defineComponent({
       const isTopAlign = computed(() => position.value.startsWith('top'))
       const cssProp = computed(() => {
          const [y, x] = position.value.split('-')
-         return { y, x }
+         return { y, x } as { y: keyof CSSProperties; x: string }
       })
 
       // Reactivity - Composables
@@ -115,9 +125,13 @@ export const Receiver = defineComponent({
          () => cssProp.value.y,
          (newPosition, prevPosition) => {
             items.forEach((item) => {
-               // @ts-ignore
-               item.style[newPosition] = item.style[prevPosition]
-               // @ts-ignore
+               const currPos = parseFloat(item.style[prevPosition] as string)
+               if (newPosition === 'top') {
+                  item.style.top = currPos - PADDING_BOTTOM + PADDING_TOP + 'px'
+               } else {
+                  item.style.bottom = currPos - PADDING_TOP + PADDING_BOTTOM + 'px'
+               }
+
                delete item.style[prevPosition]
             })
          },
@@ -290,7 +304,7 @@ export const Receiver = defineComponent({
             // On first iteration, nextY is equal to the starting point
             if (currItem) {
                currItem.style = {
-                  transitionDuration: isResize ? '100ms, 100ms' : '300ms, 300ms',
+                  transitionDuration: isResize ? '150ms, 150ms' : '300ms, 300ms',
                   [cssProp.value.y]: startY + accPrevHeights + 'px',
                }
 
