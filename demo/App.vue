@@ -25,7 +25,12 @@ const options = {
 </script>
 
 <template>
-   <VueNotify :position="settings.position" :disabled="settings.disabled" :options="options" />
+   <VueNotify
+      :position="settings.position"
+      :maxWidth="settings.maxWidth"
+      :disabled="settings.disabled"
+      :options="options"
+   />
 
    <!--    <VueNotify id="user-1" position="bottom-right" :disabled="false" /> -->
 

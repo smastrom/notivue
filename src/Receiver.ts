@@ -102,7 +102,7 @@ export const Receiver = defineComponent({
          onSizeChange: (id) => setNextY(id, { actionType: 'RESIZE' }),
       })
 
-      // Watchers
+      // Watchers - Notifications
 
       let unsubscribe: ReturnType<typeof subscribe>
 
@@ -120,6 +120,8 @@ export const Receiver = defineComponent({
          },
          { immediate: true }
       )
+
+      // Watchers - Styles
 
       watch(
          () => yCssProp.value,
@@ -139,6 +141,8 @@ export const Receiver = defineComponent({
          { flush: 'post' }
       )
 
+      // Watchers - Resize
+
       watch(
          () => items.filter(({ type }) => type === NType.PROMISE).map(({ id }) => id),
          (newPromises) =>
@@ -147,11 +151,15 @@ export const Receiver = defineComponent({
          { flush: 'post' }
       )
 
+      // Watchers - Hover
+
       watch(
          () => items.length === 0,
          (noNotifications) => noNotifications && (isHovering = false),
          { flush: 'post' }
       )
+
+      // Functions - Listener
 
       function subscribe() {
          return watch(
@@ -250,6 +258,8 @@ export const Receiver = defineComponent({
 
       type ActionType = 'RESIZE' | 'REMOVE' | 'PUSH'
 
+      // Reason for reinventing the wheel: https://github.com/vuejs/vue/issues/11654
+
       function setNextY(id: string, { actionType }: { actionType: ActionType }) {
          const isResize = actionType === 'RESIZE'
          const isPush = actionType === 'PUSH'
@@ -278,7 +288,7 @@ export const Receiver = defineComponent({
             }
          }
 
-         // 2. Get the starting point from which to add the height of the items that are not leaving
+         // 2. Get the starting point from which starting accumulating heights of the items that are not leaving
 
          let startY = yCssProp.value === 'top' ? padding.value.top : padding.value.bottom
 
@@ -293,7 +303,7 @@ export const Receiver = defineComponent({
          /**
           * 3. Iterate over the next items and set their new top/bottom.
           * Since they're ordered by creation date, if stream is aligned to bottom,
-          * iteration will "upwards" and vice versa.
+          * it will iterate "upwards" and vice versa.
           */
 
          let accPrevHeights = 0
@@ -309,18 +319,14 @@ export const Receiver = defineComponent({
                   [yCssProp.value]: startY + accPrevHeights + 'px',
                }
 
-               // If the item is leaving, do not include its height nor its gap in the accumulator
-               if (currItem.animClass === 'VNLeave') {
+               // Be 100% sure element is not in the DOM or leaving
+               const currEl = refs.get(id)
+
+               // If the item is leaving, do not accumulate its height nor its gap
+               if (!currEl || currItem.animClass === 'VNLeave') {
                   accPrevHeights += 0
                } else {
-                  // It might happen that element is removed, check again to be sure
-                  const currEl = refs.get(id)
-
-                  if (currEl) {
-                     accPrevHeights += currEl.clientHeight + gap.value
-                  } else {
-                     accPrevHeights += 0
-                  }
+                  accPrevHeights += currEl.clientHeight + gap.value
                }
             }
          })
@@ -406,8 +412,7 @@ export const Receiver = defineComponent({
                            {
                               key: item.id,
                               'data-id': item.id,
-                              // @ts-ignore
-                              ref: (_ref) => setRefs(_ref, item.id),
+                              ref: (_ref) => setRefs(_ref as HTMLElement | null, item.id),
                               style: {
                                  ...itemStyles.value,
                                  ...item.style,
