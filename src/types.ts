@@ -21,7 +21,7 @@ export type ReceiverProps = {
    position: Position
    maxWidth: number
    id: string
-   rootMargin: string
+   rootPadding: number[]
    gap: number
    options: Partial<Record<`${NType}`, Partial<ReceiverOptions>>>
    theme: Record<`--${string}`, string>

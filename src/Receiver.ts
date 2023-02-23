@@ -7,7 +7,7 @@ import {
    watch,
    computed,
    type PropType,
-   CSSProperties,
+   type CSSProperties,
 } from 'vue'
 import { useReceiver } from './useReceiver'
 import { useReceiverStyles } from './useReceiverStyles'
@@ -26,10 +26,6 @@ import type {
    Receiver as ReceiverT,
 } from './types'
 
-const PADDING_BOTTOM = 80
-const PADDING_TOP = 20
-const GAP = 10
-
 export const Receiver = defineComponent({
    name: 'VueNotify',
    inheritAttrs: false,
@@ -46,9 +42,9 @@ export const Receiver = defineComponent({
          type: Boolean as PropType<Props['disabled']>,
          default: false,
       },
-      rootMargin: {
-         type: String as PropType<Props['rootMargin']>,
-         default: '20px',
+      rootPadding: {
+         type: Array as PropType<Props['rootPadding']>,
+         default: () => [20, 20, 20, 20],
       },
       maxWidth: {
          type: Number as PropType<Props['maxWidth']>,
@@ -60,7 +56,7 @@ export const Receiver = defineComponent({
       },
       gap: {
          type: Number as PropType<Props['gap']>,
-         default: 20,
+         default: 10,
       },
       options: {
          type: Object as PropType<Props['options']>,
@@ -77,26 +73,30 @@ export const Receiver = defineComponent({
       // Reactivity - Props
 
       const position = toRef(props, 'position')
-      const rootMargin = toRef(props, 'rootMargin')
+      const rootPadding = toRef(props, 'rootPadding')
       const maxWidth = toRef(props, 'maxWidth')
+      const gap = toRef(props, 'gap')
       const disabled = toRef(props, 'disabled')
 
-      const isTopAlign = computed(() => position.value.startsWith('top'))
-      const cssProp = computed(() => {
-         const [y, x] = position.value.split('-')
-         return { y, x } as { y: keyof CSSProperties; x: string }
+      // Reactivity - Props - Computed
+
+      const padding = computed(() => {
+         const [top, , bottom] = rootPadding.value
+         return { top, bottom }
       })
+
+      const yCssProp = computed(() => position.value.split('-')[0] as keyof CSSProperties)
 
       // Reactivity - Composables
 
       const { items, incoming } = useReceiver(props.id)
-      const { wrapperStyles, containerStyles } = useReceiverStyles({
-         rootMargin,
+      const { wrapperStyles, containerStyles, itemStyles } = useReceiverStyles({
+         rootPadding,
          maxWidth,
          position,
       })
 
-      const { refs, refsData, setRefs } = useRefsMap()
+      const { refs, sortedIds, setRefs } = useRefsMap()
 
       const resizeObserver = useResizeObserver({
          onSizeChange: (id) => setNextY(id, { actionType: 'RESIZE' }),
@@ -122,14 +122,15 @@ export const Receiver = defineComponent({
       )
 
       watch(
-         () => cssProp.value.y,
+         () => yCssProp.value,
          (newPosition, prevPosition) => {
             items.forEach((item) => {
                const currPos = parseFloat(item.style[prevPosition] as string)
+
                if (newPosition === 'top') {
-                  item.style.top = currPos - PADDING_BOTTOM + PADDING_TOP + 'px'
+                  item.style.top = currPos - padding.value.bottom + padding.value.top + 'px'
                } else {
-                  item.style.bottom = currPos - PADDING_TOP + PADDING_BOTTOM + 'px'
+                  item.style.bottom = currPos - padding.value.top + padding.value.bottom + 'px'
                }
 
                delete item.style[prevPosition]
@@ -254,7 +255,7 @@ export const Receiver = defineComponent({
          const isPush = actionType === 'PUSH'
          const isRemove = actionType === 'REMOVE'
 
-         const { ids } = refsData.value
+         const ids = sortedIds.value
          const currIndex = ids.indexOf(id)
 
          const isLastRemoved = isRemove && ids.length > 1 && currIndex === ids.length - 1
@@ -279,13 +280,13 @@ export const Receiver = defineComponent({
 
          // 2. Get the starting point from which to add the height of the items that are not leaving
 
-         let startY = isTopAlign.value ? PADDING_TOP : PADDING_BOTTOM
+         let startY = yCssProp.value === 'top' ? padding.value.top : padding.value.bottom
 
          if (prevEl) {
-            if (isTopAlign.value) {
-               startY = prevEl.getBoundingClientRect().bottom + GAP
+            if (yCssProp.value === 'top') {
+               startY = prevEl.getBoundingClientRect().bottom + gap.value
             } else {
-               startY = window.innerHeight - prevEl.getBoundingClientRect().top + GAP
+               startY = window.innerHeight - prevEl.getBoundingClientRect().top + gap.value
             }
          }
 
@@ -304,8 +305,8 @@ export const Receiver = defineComponent({
             // On first iteration, nextY is equal to the starting point
             if (currItem) {
                currItem.style = {
-                  transitionDuration: isResize ? '150ms, 150ms' : '300ms, 300ms',
-                  [cssProp.value.y]: startY + accPrevHeights + 'px',
+                  transitionDuration: isResize ? '150ms' : '300ms',
+                  [yCssProp.value]: startY + accPrevHeights + 'px',
                }
 
                // If the item is leaving, do not include its height nor its gap in the accumulator
@@ -316,7 +317,7 @@ export const Receiver = defineComponent({
                   const currEl = refs.get(id)
 
                   if (currEl) {
-                     accPrevHeights += currEl.clientHeight + GAP
+                     accPrevHeights += currEl.clientHeight + gap.value
                   } else {
                      accPrevHeights += 0
                   }
@@ -327,19 +328,19 @@ export const Receiver = defineComponent({
 
       // Functions - Utils
 
-      function createTimeout(id: string, time: number) {
-         return setTimeout(() => animateLeave(id), time)
+      function getItem(id: string) {
+         return items.find(({ id: _id }) => _id === id)
       }
 
       function removeItem(id: string) {
          items.splice(
-            items.findIndex((data) => data.id === id),
+            items.findIndex(({ id: _id }) => _id === id),
             1
          )
       }
 
-      function getItem(id: string) {
-         return items.find(({ id: _id }) => _id === id)
+      function createTimeout(id: string, time: number) {
+         return setTimeout(() => animateLeave(id), time)
       }
 
       function getCtxProps({ title, message, type, id }: MergedOptions) {
@@ -404,14 +405,11 @@ export const Receiver = defineComponent({
                            'div',
                            {
                               key: item.id,
-                              id: item.id,
+                              'data-id': item.id,
                               // @ts-ignore
                               ref: (_ref) => setRefs(_ref, item.id),
                               style: {
-                                 transition:
-                                    'top 300ms cubic-bezier(0.22, 1, 0.36, 1), bottom 300ms cubic-bezier(0.22, 1, 0.36, 1)',
-                                 width: '100%',
-                                 position: 'absolute',
+                                 ...itemStyles.value,
                                  ...item.style,
                               },
                            },

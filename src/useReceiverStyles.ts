@@ -1,8 +1,9 @@
-import { ref, computed, type Ref, type CSSProperties } from 'vue'
+import { computed, type Ref, type CSSProperties } from 'vue'
+import { EASING } from './constants'
 import type { ReceiverProps } from './types'
 
 type Params = {
-   rootMargin: Ref<ReceiverProps['rootMargin']>
+   rootPadding: Ref<ReceiverProps['rootPadding']>
    maxWidth: Ref<ReceiverProps['maxWidth']>
    position: Ref<ReceiverProps['position']>
 }
@@ -19,22 +20,31 @@ const wrapperStyles: CSSProperties = {
    pointerEvents: 'none',
 }
 
-const hoverAreaStyles: CSSProperties = {
-   ...brBox,
-   pointerEvents: 'all',
-}
+export function useReceiverStyles({ rootPadding, maxWidth, position }: Params) {
+   const xSpacing = computed(() => rootPadding.value[1] + rootPadding.value[3])
 
-export function useReceiverStyles({ rootMargin, maxWidth, position }: Params) {
-   const is = (_position: string) => position.value.includes(_position)
+   const xAlignment = computed(() => {
+      const [, y] = position.value.split('-')
+      return y === 'left' ? 'flex-start' : y === 'right' ? 'flex-end' : 'center'
+   })
 
    const containerStyles = computed<CSSProperties>(() => ({
       ...brBox,
-      position: 'relative',
       ...(maxWidth.value ? { maxWidth: `${maxWidth.value}px` } : {}),
-      justifyContent: is('right') ? 'end' : is('left') ? 'start' : 'center',
+      position: 'relative',
+      justifyContent: 'center',
       width: '100%',
       display: 'flex',
    }))
 
-   return { wrapperStyles, containerStyles, hoverAreaStyles }
+   const itemStyles = computed<CSSProperties>(() => ({
+      ...brBox,
+      transition: `all 300ms ${EASING}`,
+      position: 'absolute',
+      display: 'flex',
+      width: `calc(100% - ${xSpacing.value}px)`,
+      justifyContent: xAlignment.value,
+   }))
+
+   return { wrapperStyles, containerStyles, itemStyles }
 }

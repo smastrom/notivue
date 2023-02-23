@@ -7,7 +7,7 @@ export function useResizeObserver({ onSizeChange }: { onSizeChange: (id: string)
    onMounted(() => {
       resizeObserver.value = new ResizeObserver((entries, _observer) => {
          entries.forEach((entry) => {
-            const id = entry.target.id
+            const id = (entry.target as HTMLElement).dataset.id as string
             if (!callSet.has(id)) {
                callSet.add(id)
             } else {
