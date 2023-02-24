@@ -69,9 +69,9 @@ import { VueNotify } from 'vuenotify'
 
 ```vue
 <script setup>
-import { useNotify } from 'vuenotify'
+import { usePush } from 'vuenotify'
 
-const push = useNotify()
+const push = usePush()
 </script>
 
 <template>
@@ -83,11 +83,11 @@ const push = useNotify()
 
 ```vue
 <script>
-import { useNotify } from 'vuenotify'
+import { usePush } from 'vuenotify'
 
 export default {
    setup() {
-      const push = useNotify()
+      const push = usePush()
       return { push }
    }
 }

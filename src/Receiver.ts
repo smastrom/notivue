@@ -10,7 +10,7 @@ import {
    type PropType,
    type CSSProperties,
 } from 'vue'
-import { useReceiver } from './useReceiver'
+import { useStore } from './useStore'
 import { useReceiverStyles } from './useReceiverStyles'
 import { useRefsMap } from './useRefsMap'
 import { useResizeObserver } from './useResizeObserver'
@@ -93,9 +93,32 @@ export const Receiver = defineComponent({
 
       const yCssProp = computed(() => position.value.split('-')[0] as keyof CSSProperties)
 
+      // Reactivity - Store
+
+      const {
+         items,
+         incoming,
+         clear,
+         createItem,
+         getItem,
+         updateItem,
+         removeItem,
+         destroyAll,
+         updateAll,
+         animateItem,
+         resetClearAll,
+      } = useStore(props.id)
+
+      // Reactivity - Store - Computed
+
+      const newPromises = computed(() =>
+         items.value.filter(({ type }) => type === NType.PROMISE).map(({ id }) => id)
+      )
+
+      const haveNotifications = computed(() => items.value.length > 0)
+
       // Reactivity - Composables
 
-      const { items, incoming, runClear } = useReceiver(props.id)
       const { wrapperStyles, containerStyles, itemStyles } = useReceiverStyles({
          rootPadding,
          maxWidth,
@@ -117,10 +140,8 @@ export const Receiver = defineComponent({
          (isDisabled) => {
             if (isDisabled && unsubscribe) {
                unsubscribe()
-               items.length = 0
-               incoming.value = null as unknown as ReceiverT['incoming']['value']
+               destroyAll()
             } else {
-               incoming.value = {} as ReceiverT['incoming']['value']
                unsubscribe = subscribe()
             }
          },
@@ -128,9 +149,9 @@ export const Receiver = defineComponent({
       )
 
       watch(
-         runClear,
+         clear,
          (shouldClear) => {
-            if (shouldClear && items.length > 0) {
+            if (shouldClear && haveNotifications.value) {
                animateClearAll()
             }
          },
@@ -141,17 +162,16 @@ export const Receiver = defineComponent({
 
       watch(
          () => yCssProp.value,
-         (newPosition, prevPosition) => {
-            items.forEach((item) => {
-               const currPos = parseFloat(item.style[prevPosition] as string)
+         (newPos, prevPos) => {
+            updateAll((item) => {
+               const currPos = parseFloat(item.style[prevPos] as string)
+               // @ts-ignore
+               const _newPos = currPos - padding.value[prevPos] + padding.value[newPos]
 
-               if (newPosition === 'top') {
-                  item.style.top = currPos - padding.value.bottom + padding.value.top + 'px'
-               } else {
-                  item.style.bottom = currPos - padding.value.top + padding.value.bottom + 'px'
+               return {
+                  ...item,
+                  style: { [newPos]: _newPos + 'px' },
                }
-
-               delete item.style[prevPosition]
             })
          },
          { flush: 'post' }
@@ -160,20 +180,20 @@ export const Receiver = defineComponent({
       // Watchers - Resize
 
       watch(
-         () => items.filter(({ type }) => type === NType.PROMISE).map(({ id }) => id),
-         (newPromises) =>
-            newPromises.length > 0 &&
-            newPromises.forEach((id) => resizeObserver.value?.observe(refs.get(id) as HTMLElement)),
+         newPromises,
+         (_newPromises) =>
+            _newPromises.length > 0 &&
+            _newPromises.forEach((id) =>
+               resizeObserver.value?.observe(refs.get(id) as HTMLElement)
+            ),
          { flush: 'post' }
       )
 
       // Watchers - Hover
 
-      watch(
-         () => items.length === 0,
-         (noNotifications) => noNotifications && (isHovering = false),
-         { flush: 'post' }
-      )
+      watch(haveNotifications, (noNotifications) => !noNotifications && (isHovering = false), {
+         flush: 'post',
+      })
 
       // Functions - Listener
 
@@ -192,11 +212,11 @@ export const Receiver = defineComponent({
                   options.type.includes(NType.PROMISE_REJECT) ||
                   options.type.includes(NType.PROMISE_RESOLVE)
                ) {
-                  const currIndex = items.findIndex((data) => data.id === options.id)
-                  const prevComponent = items[currIndex]?.component
+                  const currItem = getItem(options.id)
+                  const prevComponent = currItem?.component
 
                   if (prevComponent) {
-                     const { title, message, type, close, ...prevProps } = items[currIndex].props
+                     const { title, message, type, close, ...prevProps } = currItem.props
                      const nextProps = { ...getCtxProps(options), prevProps }
 
                      customRender = {
@@ -208,15 +228,14 @@ export const Receiver = defineComponent({
                      }
                   }
 
-                  items[currIndex] = {
-                     ...items[currIndex],
+                  updateItem(options.id, {
                      ...options,
                      ...customRender,
                      timeoutId: isHovering
                         ? undefined
                         : createTimeout(options.id, options.duration),
                      createdAt,
-                  }
+                  })
                } else {
                   const component = options.render?.component
 
@@ -228,7 +247,7 @@ export const Receiver = defineComponent({
                      }
                   }
 
-                  items.push({
+                  createItem({
                      ...options,
                      ...customRender,
                      timeoutId:
@@ -248,29 +267,17 @@ export const Receiver = defineComponent({
       // Functions - Animations
 
       function animateEnter(id: string) {
-         const item = getItem(id)
-         if (item) {
-            item.animClass = 'VNEnter'
-            item.onAnimationstart = (event) => event.stopPropagation()
-            item.onAnimationend = (event) => {
-               event.stopPropagation()
-               item.animClass = ''
-               item.onAnimationend = undefined
-            }
-         }
+         animateItem(id, 'VNEnter', () => {
+            updateItem(id, { animClass: '', onAnimationend: undefined })
+         })
 
          setNextY(id, { actionType: 'PUSH' })
       }
 
       function animateLeave(id: string) {
-         const item = getItem(id)
-         if (item) {
-            item.animClass = 'VNLeave'
-            item.onAnimationstart = (event) => event.stopPropagation()
-            item.onAnimationend = (event) => {
-               event.stopPropagation(), removeItem(id)
-            }
-         }
+         animateItem(id, 'VNLeave', () => {
+            removeItem(id)
+         })
 
          setNextY(id, { actionType: 'REMOVE' })
       }
@@ -279,8 +286,8 @@ export const Receiver = defineComponent({
          if (wrapperRef.value) {
             wrapperRef.value.classList.add('VNClear')
             wrapperRef.value.onanimationend = () => {
-               items.length = 0
-               runClear.value = false
+               destroyAll()
+               resetClearAll()
             }
          }
       }
@@ -312,9 +319,9 @@ export const Receiver = defineComponent({
          let prevEl: HTMLElement | undefined = undefined as unknown as HTMLElement
 
          if (!isPush) {
-            for (const prevId of ids.slice(0, currIndex).reverse()) {
-               if (getItem(prevId)?.animClass !== 'VNLeave') {
-                  prevEl = refs.get(prevId)
+            for (const id of ids.slice(0, currIndex).reverse()) {
+               if (getItem(id)?.animClass !== 'VNLeave') {
+                  prevEl = refs.get(id)
                   break
                }
             }
@@ -333,7 +340,7 @@ export const Receiver = defineComponent({
          }
 
          /**
-          * 3. Iterate over the next items and set their new top/bottom.
+          * 3. Iterate over next items and set their new top/bottom.
           * Since they're ordered by creation date, if stream is aligned to bottom,
           * it will iterate "upwards" and vice versa.
           */
@@ -346,10 +353,13 @@ export const Receiver = defineComponent({
 
             // On first iteration, nextY is equal to the starting point
             if (currItem) {
-               currItem.style = {
-                  transitionDuration: isResize ? '150ms' : '300ms',
-                  [yCssProp.value]: startY + accPrevHeights + 'px',
-               }
+               // IMPROVE THIS
+               updateItem(id, {
+                  style: {
+                     transitionDuration: isResize ? '150ms' : '300ms',
+                     [yCssProp.value]: startY + accPrevHeights + 'px',
+                  },
+               })
 
                // Be 100% sure element is in the DOM
                const currEl = refs.get(id)
@@ -366,17 +376,6 @@ export const Receiver = defineComponent({
 
       // Functions - Utils
 
-      function getItem(id: string) {
-         return items.find(({ id: _id }) => _id === id)
-      }
-
-      function removeItem(id: string) {
-         items.splice(
-            items.findIndex(({ id: _id }) => _id === id),
-            1
-         )
-      }
-
       function createTimeout(id: string, time: number) {
          return setTimeout(() => animateLeave(id), time)
       }
@@ -389,33 +388,33 @@ export const Receiver = defineComponent({
 
       const pointerEvents = {
          onPointerenter() {
-            if (items.length > 0 && !isHovering) {
+            if (haveNotifications.value && !isHovering) {
                isHovering = true
 
                const stoppedAt = performance.now()
 
-               items.forEach((prevData, currIndex) => {
-                  clearTimeout(prevData.timeoutId)
+               updateAll((prevItem) => {
+                  clearTimeout(prevItem.timeoutId)
 
-                  items[currIndex] = {
-                     ...prevData,
+                  return {
+                     ...prevItem,
                      stoppedAt,
-                     elapsed: stoppedAt - prevData.createdAt + (prevData.elapsed ?? 0),
+                     elapsed: stoppedAt - prevItem.createdAt + (prevItem.elapsed ?? 0),
                   }
                })
             }
          },
          onPointerleave() {
-            if (items.length > 0 && isHovering) {
-               items.forEach((prevData, currIndex) => {
-                  const newTimeout = prevData.duration + FIXED_INCREMENT - prevData.elapsed
+            if (haveNotifications.value && isHovering) {
+               updateAll((prevItem) => {
+                  const newTimeout = prevItem.duration + FIXED_INCREMENT - prevItem.elapsed
 
-                  items[currIndex] = {
-                     ...prevData,
+                  return {
+                     ...prevItem,
                      createdAt: performance.now(),
                      timeoutId:
-                        prevData.type !== NType.PROMISE
-                           ? createTimeout(prevData.id, newTimeout)
+                        prevItem.type !== NType.PROMISE
+                           ? createTimeout(prevItem.id, newTimeout)
                            : undefined,
                   }
                })
@@ -427,7 +426,7 @@ export const Receiver = defineComponent({
 
       return () =>
          h(Teleport, { to: 'body' }, [
-            items.length > 0 &&
+            items.value.length > 0 &&
                h(
                   'div',
                   { style: wrapperStyles, ref: wrapperRef },
@@ -438,7 +437,7 @@ export const Receiver = defineComponent({
                         ...(props.id ? { 'data-vuenotify-id': props.id } : {}),
                         ...(pauseOnHover.value ? pointerEvents : {}),
                      },
-                     items.map((item) =>
+                     items.value.map((item) =>
                         h(
                            'div',
                            {

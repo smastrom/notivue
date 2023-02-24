@@ -1,5 +1,6 @@
-import { ref, shallowRef, type Plugin, type InjectionKey, reactive, shallowReactive } from 'vue'
-import { createPush } from './createPush'
+import { type Plugin, type InjectionKey, reactive, computed } from 'vue'
+import { createPush as _createPush } from './createPush'
+import { createStore } from './createStore'
 import { defaultSymbol, userSymbols } from './symbols'
 import type { PluginOptions, Receiver } from './types'
 
@@ -19,12 +20,7 @@ export const notify: Plugin = {
       Object.values(userSymbols)
          .concat(defaultSymbol)
          .forEach((sym) => {
-            receivers.set(sym, {
-               items: reactive([]),
-               incoming: shallowRef(null) as unknown as Receiver['incoming'],
-               runClear: ref(false),
-               push: () => createPush(receivers.get(sym) as Receiver),
-            })
+            receivers.set(sym, createStore())
          })
 
       receivers.forEach((value, sym) => app.provide(sym, value))

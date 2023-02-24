@@ -4,26 +4,11 @@ import type { Receiver, UserOptions, PushFn } from './types'
 
 type Options = Partial<UserOptions>
 
-export function createPush(receiver: Receiver): PushFn {
+export function createPush(setIncoming, clearItem, clearAll, destroyAll): PushFn {
    function create(options: Options, status = NType.SUCCESS, id = createID()) {
-      if (!receiver.incoming.value) {
-         return { id, clear: () => {}, clearAll: () => {}, destroyAll: () => {} }
-      }
+      setIncoming({ ...options, id, type: status })
 
-      receiver.incoming.value = { ...options, id, type: status }
-      return { id, clear: () => clear(id), clearAll, destroyAll }
-   }
-
-   function clear(id: string) {
-      receiver.items.find((item) => item.id === id)?.clear()
-   }
-
-   function destroyAll() {
-      receiver.items.length = 0
-   }
-
-   function clearAll() {
-      receiver.runClear.value = true
+      return { id, clear: () => clearItem(id), clearAll, destroyAll }
    }
 
    function push(options: Options) {

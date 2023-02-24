@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { markRaw, ref } from 'vue'
 import { ReceiverProps } from '../src/types'
-import { useNotify } from '../src/useNotify'
+import { usePush } from '../src/usePush'
 import { settings } from './store'
 import Custom from './Custom.vue'
 
-const push = useNotify()
+const push = usePush()
 
-const pushToUser = useNotify('user-1')
+const pushToUser = usePush('user-1')
 
 function getRandomInt(min: number, max: number) {
    min = Math.ceil(min)

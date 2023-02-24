@@ -1,4 +1,4 @@
-import type { VNode, Ref, Component, Raw, CSSProperties } from 'vue'
+import type { VNode, Component, Raw, CSSProperties, Ref, ShallowRef } from 'vue'
 import { NType } from './constants'
 
 export type PluginOptions = {
@@ -44,6 +44,8 @@ export type InternalPushOptions = {
 
 export type UserOptions<T = NotifyProps> = Partial<ReceiverOptions> & MaybeRender<T>
 
+export type IncomingOptions = UserOptions & InternalPushOptions
+
 export type MergedOptions<T = NotifyProps> = ReceiverOptions & InternalPushOptions & MaybeRender<T>
 
 type AnimationHandler = ((event: AnimationEvent) => void) | undefined
@@ -72,12 +74,25 @@ type MaybeRender<T> = {
    }
 }
 
-export type Receiver = {
-   items: Notification[]
-   incoming: Ref<UserOptions & InternalPushOptions>
-   runClear: Ref<boolean>
-   push: () => PushFn
+export type StoreData = {
+   items: Ref<Notification[]>
+   incoming: ShallowRef<IncomingOptions>
+   clear: Ref<boolean>
 }
+
+export type StoreMethods = {
+   createPush: () => PushFn
+   createItem: (options: IncomingOptions) => void
+   getItem: (id: string) => Notification | undefined
+   updateItem: (id: string, options: Partial<Notification>) => void
+   removeItem: (id: string) => void
+   destroyAll: () => void
+   updateAll: (onUpdate: (item: Notification) => Notification) => void
+   animateItem: (id: string, className: string, onEnd: () => void) => void
+   resetClearAll: () => void
+}
+
+export type Receiver = StoreData & StoreMethods
 
 type NotifyProps = {
    notifyProps: {
