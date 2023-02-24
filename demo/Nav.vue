@@ -127,7 +127,11 @@ function pushThousand() {
             @click="
                () => {
                   counter++
-                  push({ message: counter + ' Your message has been successfully sent. Please.' })
+                  push({
+                     message: `Your message has been successfully sent.
+                     
+                     Please.`,
+                  })
                }
             "
          >

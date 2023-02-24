@@ -1,7 +1,7 @@
 import { h } from 'vue'
 import { close } from './icons'
 import { CLASS_PREFIX } from './constants'
-import { hIcon } from './utils'
+import { hIcon, hMessage } from './utils'
 import type { Notification } from './types'
 
 export function defaultComponent(item: Notification) {
@@ -17,7 +17,8 @@ export function defaultComponent(item: Notification) {
 
          h('div', { class: CLASS_PREFIX + 'content' }, [
             item.title && h('h3', { class: CLASS_PREFIX + 'content-title' }, item.title),
-            item.message && h('p', { class: CLASS_PREFIX + 'content-message' }, item.message),
+            item.message &&
+               h('p', { class: CLASS_PREFIX + 'content-message' }, hMessage(item.message)),
          ]),
 
          item.close &&
