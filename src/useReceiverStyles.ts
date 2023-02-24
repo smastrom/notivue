@@ -1,17 +1,20 @@
 import { computed, type Ref, type CSSProperties } from 'vue'
+import { useReducedMotion } from './useReducedMotion'
 import { EASING } from './constants'
 import type { ReceiverProps } from './types'
 
-type Params = {
+type Param = {
    rootPadding: Ref<ReceiverProps['rootPadding']>
    maxWidth: Ref<ReceiverProps['maxWidth']>
    position: Ref<ReceiverProps['position']>
 }
 
-const brBox: CSSProperties = { boxSizing: 'border-box' }
+const boxSizing: CSSProperties = { boxSizing: 'border-box' }
+
+const noDuration = '0ms !important'
 
 const wrapperStyles: CSSProperties = {
-   ...brBox,
+   ...boxSizing,
    zIndex: 2147483647,
    position: 'fixed',
    width: '100%',
@@ -21,7 +24,9 @@ const wrapperStyles: CSSProperties = {
    pointerEvents: 'none',
 }
 
-export function useReceiverStyles({ rootPadding, maxWidth, position }: Params) {
+export function useReceiverStyles({ rootPadding, maxWidth, position }: Param) {
+   const isReduced = useReducedMotion()
+
    const xSpacing = computed(() => rootPadding.value[1] + rootPadding.value[3])
 
    const xAlignment = computed(() => {
@@ -30,7 +35,7 @@ export function useReceiverStyles({ rootPadding, maxWidth, position }: Params) {
    })
 
    const containerStyles = computed<CSSProperties>(() => ({
-      ...brBox,
+      ...boxSizing,
       ...(maxWidth.value ? { maxWidth: `${maxWidth.value}px` } : {}),
       position: 'relative',
       height: '100vh',
@@ -39,14 +44,21 @@ export function useReceiverStyles({ rootPadding, maxWidth, position }: Params) {
       display: 'flex',
    }))
 
-   const itemStyles = computed<CSSProperties>(() => ({
-      ...brBox,
-      transition: `all 300ms ${EASING}`,
+   const rowStyles = computed<CSSProperties>(() => ({
+      ...boxSizing,
+      transitionProperty: 'all',
+      transitionTimingFunction: EASING,
+      transitionDuration: '300ms',
       position: 'absolute',
       display: 'flex',
       width: `calc(100% - ${xSpacing.value}px)`,
       justifyContent: xAlignment.value,
+      ...(isReduced.value ? { transitionDuration: noDuration } : {}),
    }))
 
-   return { wrapperStyles, containerStyles, itemStyles }
+   const boxStyles = computed<CSSProperties>(() =>
+      isReduced.value ? { animationDuration: noDuration } : {}
+   )
+
+   return { wrapperStyles, containerStyles, rowStyles, boxStyles }
 }

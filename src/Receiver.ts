@@ -117,9 +117,9 @@ export const Receiver = defineComponent({
 
       const haveNotifications = computed(() => items.value.length > 0)
 
-      // Reactivity - Composables
+      // Reactivity - Composables - Data
 
-      const { wrapperStyles, containerStyles, itemStyles } = useReceiverStyles({
+      const { wrapperStyles, containerStyles, rowStyles, boxStyles } = useReceiverStyles({
          rootPadding,
          maxWidth,
          position,
@@ -127,8 +127,10 @@ export const Receiver = defineComponent({
 
       const { refs, sortedIds, setRefs } = useRefsMap()
 
+      // Reactivity - Composables - Behavior
+
       const resizeObserver = useResizeObserver({
-         onSizeChange: (id) => setNextY(id, { actionType: 'RESIZE' }),
+         onSizeChange: (id) => updatePosition(id, { actionType: 'RESIZE' }),
       })
 
       // Watchers - Notifications
@@ -201,12 +203,12 @@ export const Receiver = defineComponent({
          return watch(
             incoming,
             (pushOptions) => {
+               const createdAt = performance.now()
+               const options = mergeOptions(props.options, pushOptions)
+
                let customRender: Partial<Pick<Notification, 'props' | 'component' | 'h'>> = {
                   h: undefined,
                }
-
-               const options = mergeOptions(props.options, pushOptions)
-               const createdAt = performance.now()
 
                if (
                   options.type.includes(NType.PROMISE_REJECT) ||
@@ -227,6 +229,8 @@ export const Receiver = defineComponent({
                            ),
                      }
                   }
+
+                  console.log(options.icon)
 
                   updateItem(options.id, {
                      ...options,
@@ -271,7 +275,7 @@ export const Receiver = defineComponent({
             updateItem(id, { animClass: '', onAnimationend: undefined })
          })
 
-         setNextY(id, { actionType: 'PUSH' })
+         updatePosition(id, { actionType: 'PUSH' })
       }
 
       function animateLeave(id: string) {
@@ -279,7 +283,7 @@ export const Receiver = defineComponent({
             removeItem(id)
          })
 
-         setNextY(id, { actionType: 'REMOVE' })
+         updatePosition(id, { actionType: 'REMOVE' })
       }
 
       function animateClearAll() {
@@ -299,7 +303,7 @@ export const Receiver = defineComponent({
 
       type ActionType = 'RESIZE' | 'REMOVE' | 'PUSH'
 
-      function setNextY(id: string, { actionType }: { actionType: ActionType }) {
+      function updatePosition(id: string, { actionType }: { actionType: ActionType }) {
          const isResize = actionType === 'RESIZE'
          const isPush = actionType === 'PUSH'
          const isRemove = actionType === 'REMOVE'
@@ -313,7 +317,7 @@ export const Receiver = defineComponent({
 
          /**
           * 1. Get the first, previous item which is not animating.
-          * Since items are ordered by creation time, iterate backwards to get the most recent one
+          * Since ids are ordered by creation time, iterate backwards to get the most recent one
           */
 
          let prevEl: HTMLElement | undefined = undefined as unknown as HTMLElement
@@ -327,7 +331,7 @@ export const Receiver = defineComponent({
             }
          }
 
-         // 2. Get the starting point from which starting accumulating heights of the items that are not leaving
+         // 2. Get the starting point from which to start accumulating heights of prev items that are not leaving
 
          let startY = yCssProp.value === 'top' ? padding.value.top : padding.value.bottom
 
@@ -349,27 +353,22 @@ export const Receiver = defineComponent({
          let startIndex = !isRemove ? currIndex : currIndex + 1
 
          ids.slice(startIndex).forEach((id) => {
-            const currItem = getItem(id)
-
             // On first iteration, nextY is equal to the starting point
-            if (currItem) {
-               // IMPROVE THIS
-               updateItem(id, {
-                  style: {
-                     transitionDuration: isResize ? '150ms' : '300ms',
-                     [yCssProp.value]: startY + accPrevHeights + 'px',
-                  },
-               })
+            updateItem(id, {
+               style: {
+                  transitionDuration: isResize ? '150ms' : '300ms',
+                  [yCssProp.value]: startY + accPrevHeights + 'px',
+               },
+            })
 
-               // Be 100% sure element is in the DOM
-               const currEl = refs.get(id)
+            // Be 100% sure again that element is in the DOM
+            const currEl = refs.get(id)
 
-               // If the item is leaving, do not accumulate its height nor its gap
-               if (!currEl || currItem.animClass === 'VNLeave') {
-                  accPrevHeights += 0
-               } else {
-                  accPrevHeights += currEl.getBoundingClientRect().height + gap.value
-               }
+            // If the item is leaving, do not accumulate its height nor its gap
+            if (!currEl || getItem(id)?.animClass === 'VNLeave') {
+               accPrevHeights += 0
+            } else {
+               accPrevHeights += currEl.getBoundingClientRect().height + gap.value
             }
          })
       }
@@ -429,7 +428,10 @@ export const Receiver = defineComponent({
             items.value.length > 0 &&
                h(
                   'div',
-                  { style: wrapperStyles, ref: wrapperRef },
+                  {
+                     style: wrapperStyles,
+                     ref: wrapperRef,
+                  },
                   h(
                      'div',
                      {
@@ -445,14 +447,15 @@ export const Receiver = defineComponent({
                               'data-id': item.id,
                               ref: (_ref) => setRefs(_ref as HTMLElement | null, item.id),
                               style: {
-                                 ...itemStyles.value,
                                  ...item.style,
+                                 ...rowStyles.value,
                               },
                            },
                            h(
                               'div',
                               {
                                  class: item.animClass,
+                                 style: boxStyles.value,
                                  onAnimationstart: item.onAnimationstart,
                                  onAnimationend: item.onAnimationend,
                               },

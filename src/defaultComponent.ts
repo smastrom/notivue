@@ -1,17 +1,19 @@
 import { h } from 'vue'
 import { close } from './icons'
 import { CLASS_PREFIX } from './constants'
+import { hIcon } from './utils'
 import type { Notification } from './types'
 
 export function defaultComponent(item: Notification) {
    return h(
       'div',
       {
-         class: [CLASS_PREFIX + 'notification'],
+         class: CLASS_PREFIX + 'notification',
          'data-vuenotify': item.type,
       },
       [
-         h(item.icon),
+         item.icon &&
+            hIcon(item.icon, { class: CLASS_PREFIX + 'icon', key: `${item.id}_${item.type}` }),
 
          h('div', { class: CLASS_PREFIX + 'content' }, [
             item.title && h('h3', { class: CLASS_PREFIX + 'content-title' }, item.title),

@@ -1,7 +1,6 @@
-import { type Plugin, type InjectionKey, reactive, computed } from 'vue'
-import { createPush as _createPush } from './createPush'
 import { createStore } from './createStore'
 import { defaultSymbol, userSymbols } from './symbols'
+import type { Plugin, InjectionKey } from 'vue'
 import type { PluginOptions, Receiver } from './types'
 
 export const notify: Plugin = {

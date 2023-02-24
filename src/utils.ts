@@ -1,6 +1,5 @@
-import { h, isVNode, type Ref } from 'vue'
+import { h, isVNode, type Raw, type VNode } from 'vue'
 import { defaultOptions } from './defaultOptions'
-import { CLASS_PREFIX } from './constants'
 import type { UserOptions, MergedOptions, ReceiverProps, InternalPushOptions } from './types'
 
 export const isSSR = typeof window === 'undefined'
@@ -9,12 +8,12 @@ export function createID() {
    return performance.now().toString()
 }
 
-export function hIcon(icon: unknown) {
+export function hIcon(icon: unknown, props = {}) {
    if (isVNode(icon)) {
-      return icon
+      return h(icon, props)
    }
    if (typeof icon === 'object') {
-      return h(icon as object, { class: CLASS_PREFIX + 'icon' })
+      return h(icon as Raw<VNode>, props)
    }
    return null
 }
