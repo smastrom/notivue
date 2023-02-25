@@ -72,8 +72,6 @@ export const Receiver = defineComponent({
    setup(props) {
       let isHovering = false
 
-      // Reactivity - Internal
-
       const wrapperRef = ref<HTMLElement>()
 
       // Reactivity - Props
@@ -87,12 +85,7 @@ export const Receiver = defineComponent({
 
       // Reactivity - Props - Computed
 
-      const padding = computed(() => {
-         const [top, , bottom] = rootPadding.value
-         return { top, bottom }
-      })
-
-      const yCssProp = computed(() => position.value.split('-')[0] as 'top' | 'bottom')
+      const isTop = computed(() => position.value.split('-')[0] === 'top')
 
       // Reactivity - Store
 
@@ -118,17 +111,15 @@ export const Receiver = defineComponent({
 
       const haveNotifications = computed(() => items.value.length > 0)
 
-      // Reactivity - Composables - Data
+      // Reactivity - Composables - Behavior and Style
+
+      const { refs, sortedIds, setRefs } = useRefsMap()
 
       const { wrapperStyles, containerStyles, rowStyles, boxStyles } = useReceiverStyles({
          rootPadding,
          maxWidth,
          position,
       })
-
-      const { refs, sortedIds, setRefs } = useRefsMap()
-
-      // Reactivity - Composables - Behavior
 
       const resizeObserver = useResizeObserver({
          onSizeChange: (id) => updatePosition(id, { actionType: 'RESIZE' }),
@@ -162,18 +153,8 @@ export const Receiver = defineComponent({
       )
 
       watch(
-         () => yCssProp.value,
-         (newPos, prevPos) => {
-            updateAll((item) => {
-               const currPos = parseFloat(item.style?.[prevPos] as string)
-               const _newPos = currPos - padding.value[prevPos] + padding.value[newPos]
-
-               return {
-                  ...item,
-                  style: { [newPos]: _newPos + 'px' },
-               }
-            })
-         },
+         () => isTop.value,
+         () => updatePosition(sortedIds.value[0], { actionType: 'SWITCH' }),
          { flush: 'post' }
       )
 
@@ -201,6 +182,10 @@ export const Receiver = defineComponent({
          return watch(
             incoming,
             (pushOptions) => {
+               if (items.value.length >= 10 && items.value[0].type !== NType.PROMISE) {
+                  animateLeave(items.value[0].id)
+               }
+
                const createdAt = performance.now()
                const options = mergeOptions(defaultOptions, props.options, pushOptions)
 
@@ -288,7 +273,7 @@ export const Receiver = defineComponent({
       // Functions - Animations
 
       function animateEnter(id: string) {
-         animateItem(id, 'VNEnter', () => {
+         animateItem(id, isTop.value ? 'VNEnterTop' : 'VNEnterBottom', () => {
             updateItem(id, { animClass: '', onAnimationend: undefined })
          })
 
@@ -296,7 +281,7 @@ export const Receiver = defineComponent({
       }
 
       function animateLeave(id: string) {
-         animateItem(id, 'VNLeave', () => {
+         animateItem(id, isTop.value ? 'VNLeaveTop' : 'VNLeaveBottom', () => {
             removeItem(id)
          })
 
@@ -315,79 +300,114 @@ export const Receiver = defineComponent({
 
       /**
        * Functions - Repositioning (Transitions)
-       * Reason for reinventing the wheel: https://github.com/vuejs/vue/issues/11654
+       *
+       * Why reinventing the wheel? https://github.com/vuejs/vue/issues/11654
        */
 
-      type ActionType = 'RESIZE' | 'REMOVE' | 'PUSH'
+      function getPrevEl(endIndex: number) {
+         let prevEl = undefined as HTMLElement | undefined
 
-      function updatePosition(id: string, { actionType }: { actionType: ActionType }) {
-         const isResize = actionType === 'RESIZE'
-         const isPush = actionType === 'PUSH'
-         const isRemove = actionType === 'REMOVE'
+         for (const id of sortedIds.value.slice(0, endIndex).reverse()) {
+            const item = getItem(id)
+            if (!item) continue
 
-         const ids = sortedIds.value
-         const currIndex = ids.indexOf(id)
+            if (
+               (item.animClass !== 'VNLeaveTop' && item.animClass !== 'VNLeaveBottom') ||
+               !('animClass' in item)
+            ) {
+               prevEl = refs.get(id)
+               break
+            }
+         }
 
-         const isLastRemoved = isRemove && ids.length > 1 && currIndex === ids.length - 1
+         return prevEl
+      }
 
-         if (currIndex === -1 || isLastRemoved) return
+      async function updatePosition(
+         id: string,
+         { actionType }: { actionType: 'RESIZE' | 'REMOVE' | 'PUSH' | 'SWITCH' }
+      ) {
+         const currIndex = sortedIds.value.indexOf(id)
+         const isLastMutated = actionType !== 'PUSH' && currIndex === sortedIds.value.length - 1
 
-         /**
-          * 1. Get the first, previous item which is not animating.
-          * Since ids are ordered by creation time, iterate backwards to get the most recent one
-          */
+         if (currIndex === -1 || isLastMutated) return
 
-         let prevEl: HTMLElement | undefined = undefined as unknown as HTMLElement
+         const factor = isTop.value ? 1 : -1
 
-         if (!isPush) {
-            for (const id of ids.slice(0, currIndex).reverse()) {
-               if (getItem(id)?.animClass !== 'VNLeave') {
-                  prevEl = refs.get(id)
-                  break
+         switch (actionType) {
+            case 'PUSH':
+            case 'SWITCH':
+               let accHeights = 0
+
+               for (const id of sortedIds.value) {
+                  const thisEl = refs.get(id)
+                  const thisItem = getItem(id)
+
+                  if (
+                     !thisEl ||
+                     !thisItem ||
+                     thisItem.animClass === 'VNLeaveTop' ||
+                     thisItem.animClass === 'VNLeaveBottom'
+                  ) {
+                     break
+                  }
+
+                  updateItem(id, {
+                     style: {
+                        ...(actionType === 'SWITCH' ? { transition: 'none' } : {}),
+                        transform: `translate3d(0, ${accHeights}px, 0)`,
+                     },
+                  })
+
+                  accHeights += factor * (thisEl.clientHeight + gap.value)
                }
-            }
+               break
+
+            case 'REMOVE':
+            case 'RESIZE':
+               const nextIds = sortedIds.value.slice(currIndex + 1)
+               if (nextIds.length === 0) return
+
+               let prevEl = actionType === 'REMOVE' ? getPrevEl(currIndex) : refs.get(id)
+               let prevPos = 0
+
+               if (prevEl)
+                  if (isTop.value) {
+                     prevPos =
+                        prevEl.getBoundingClientRect().bottom - rootPadding.value[0] + gap.value
+                  } else {
+                     prevPos = -(
+                        document.documentElement.clientHeight -
+                        prevEl.getBoundingClientRect().top -
+                        rootPadding.value[2] +
+                        gap.value
+                     )
+                  }
+
+               for (const id of nextIds) {
+                  const thisItem = getItem(id)
+                  const thisEl = refs.get(id)
+
+                  if (
+                     !thisEl ||
+                     !thisItem ||
+                     thisItem.animClass === 'VNLeaveTop' ||
+                     thisItem.animClass === 'VNLeaveBottom'
+                  ) {
+                     continue
+                  }
+
+                  updateItem(id, {
+                     style: {
+                        ...(actionType === 'RESIZE' ? { transitionDuration: '150ms' } : {}),
+                        transform: `translate3d(0, ${prevPos}px, 0)`,
+                     },
+                  })
+
+                  prevPos += factor * (thisEl.getBoundingClientRect().height + gap.value)
+               }
+               break
          }
-
-         // 2. Get the starting point from which to start accumulating heights of prev items that are not leaving
-
-         let startY = yCssProp.value === 'top' ? padding.value.top : padding.value.bottom
-
-         if (prevEl) {
-            if (yCssProp.value === 'top') {
-               startY = prevEl.getBoundingClientRect().bottom + gap.value
-            } else {
-               startY = window.innerHeight - prevEl.getBoundingClientRect().top + gap.value
-            }
-         }
-
-         /**
-          * 3. Iterate over next items and set their new top/bottom.
-          * Since they're ordered by creation date, if stream is aligned to bottom,
-          * it will iterate "upwards" and vice versa.
-          */
-
-         let accPrevHeights = 0
-         let startIndex = !isRemove ? currIndex : currIndex + 1
-
-         ids.slice(startIndex).forEach((id) => {
-            // On first iteration, nextY is equal to the starting point
-            updateItem(id, {
-               style: {
-                  transitionDuration: isResize ? '150ms' : '300ms',
-                  [yCssProp.value]: startY + accPrevHeights + 'px',
-               },
-            })
-
-            // Be 100% sure again that element is in the DOM
-            const currEl = refs.get(id)
-
-            // If the item is leaving, do not accumulate its height nor its gap
-            if (!currEl || getItem(id)?.animClass === 'VNLeave') {
-               accPrevHeights += 0
-            } else {
-               accPrevHeights += currEl.getBoundingClientRect().height + gap.value
-            }
-         })
       }
 
       // Functions - Utils
@@ -464,8 +484,8 @@ export const Receiver = defineComponent({
                               'data-id': item.id,
                               ref: (_ref) => setRefs(_ref as HTMLElement | null, item.id),
                               style: {
-                                 ...item.style,
                                  ...rowStyles.value,
+                                 ...item.style,
                               },
                            },
                            h(

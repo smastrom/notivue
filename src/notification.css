@@ -14,13 +14,12 @@
    pointer-events: auto;
    box-shadow: var(--VNBoxShadow);
    box-sizing: border-box;
-   will-change: transform;
 }
 
 /* Icon */
 
 .VueNotify__icon {
-   animation: KFPopIn 200ms cubic-bezier(0.22, 1, 0.36, 1) both 150ms;
+   animation: KFPopIn 250ms cubic-bezier(0.22, 1, 0.36, 1) both 150ms;
    display: flex;
    margin: 0 0.875rem 0 0;
 }

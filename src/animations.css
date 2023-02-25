@@ -1,13 +1,67 @@
-.VNEnter {
-   animation: KFVNEnter 300ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+.VNEnterTop {
+   animation: KFVNEnterTop 250ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
 
-.VNLeave {
-   animation: KFVNLeave 300ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+.VNEnterBottom {
+   animation: KFVNEnterBottom 250ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+.VNLeaveTop {
+   isolation: isolate;
+   animation: KFVNLeaveTop 250ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.VNLeaveBottom {
+   isolation: isolate;
+   animation: KFVNLeaveBottom 250ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .VNClear {
-   animation: KFVNClear 800ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+   animation: KFVNClear 600ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes KFVNEnterTop {
+   0% {
+      transform: scale(0.7) translate3d(0, -10vh, 0);
+      opacity: 0;
+   }
+   100% {
+      transform: scale(1) translate3d(0, 0px, 0);
+      opacity: 1;
+   }
+}
+
+@keyframes KFVNEnterBottom {
+   0% {
+      transform: scale(0.7) translate3d(0, 110vh, 0);
+      opacity: 0;
+   }
+   100% {
+      transform: scale(1) translate3d(0, 0px, 0);
+      opacity: 1;
+   }
+}
+
+@keyframes KFVNLeaveTop {
+   from {
+      transform: scale(1) translate3d(0, 0px, 0);
+      opacity: 1;
+   }
+   to {
+      transform: scale(0.5) translate3d(0, -50px, 0);
+      opacity: 0;
+   }
+}
+
+@keyframes KFVNLeaveBottom {
+   from {
+      transform: scale(1) translate3d(0, 0px, 0);
+      opacity: 1;
+   }
+   to {
+      transform: scale(0.5) translate3d(0, -50px, 0);
+      opacity: 0;
+   }
 }
 
 @keyframes KFVNClear {
@@ -17,28 +71,6 @@
    }
    100% {
       filter: blur(10px);
-      opacity: 0;
-   }
-}
-
-@keyframes KFVNEnter {
-   0% {
-      transform: scale(0.7) translate3d(0, -100px, 0);
-      opacity: 0;
-   }
-   100% {
-      transform: scale(1) translate3d(0, 0px, 0);
-      opacity: 1;
-   }
-}
-
-@keyframes KFVNLeave {
-   0% {
-      transform: scale(1) translate3d(0, 0px, 0);
-      opacity: 1;
-   }
-   100% {
-      transform: scale(0.5) translate3d(0, -50px, 0);
       opacity: 0;
    }
 }

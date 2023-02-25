@@ -78,6 +78,8 @@ export type Store = StoreRefs & StoreFunctions
 
 // Push - Incoming
 
+export type _PushOptions = Partial<ReceiverOptions>
+
 export type IncomingOptions<T = unknown> = Partial<ReceiverOptions> &
    InternalPushOptions &
    (MaybeRenderStatic<T> | MaybeRenderPromiseResult<T extends Record<string, unknown> ? T : never>)
@@ -119,8 +121,8 @@ export type PushStatic = <T extends Record<string, unknown>>(
 export type PushPromise = <T extends Record<string, unknown>>(
    options: StaticPushOptions<T>
 ) => {
-   resolve: (options: PromiseResultPushOptions<T>) => void
-   reject: (options: PromiseResultPushOptions<T>) => void
+   resolve: (options: PromiseResultPushOptions<T>) => ClearFn
+   reject: (options: PromiseResultPushOptions<T>) => ClearFn
    clear: ClearFn['clear']
 }
 

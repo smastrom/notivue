@@ -34,9 +34,11 @@ export function useReceiverStyles({ rootPadding, maxWidth, position }: Param) {
    const xSpacing = computed(() => rootPadding.value[1] + rootPadding.value[3])
 
    const xAlignment = computed(() => {
-      const [, y] = position.value.split('-')
-      return y === 'left' ? 'flex-start' : y === 'right' ? 'flex-end' : 'center'
+      const [, x] = position.value.split('-')
+      return x === 'left' ? 'flex-start' : x === 'right' ? 'flex-end' : 'center'
    })
+
+   const isTop = computed(() => position.value.split('-')[0] === 'top')
 
    const containerStyles = computed<CSSProperties>(() => ({
       ...boxSizing,
@@ -47,13 +49,16 @@ export function useReceiverStyles({ rootPadding, maxWidth, position }: Param) {
 
    const rowStyles = computed<CSSProperties>(() => ({
       ...boxSizing,
-      transitionProperty: 'all',
       transitionTimingFunction: EASING,
-      transitionDuration: '300ms',
+      transitionDuration: '250ms',
+      transitionProperty: 'all',
       position: 'absolute',
       display: 'flex',
       width: `calc(100% - ${xSpacing.value}px)`,
       justifyContent: xAlignment.value,
+      ...(isTop.value
+         ? { top: rootPadding.value[0] + 'px' }
+         : { bottom: rootPadding.value[2] + 'px' }),
       ...(isReduced.value ? { transitionDuration: noDuration } : {}),
    }))
 

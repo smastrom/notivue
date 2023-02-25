@@ -5,6 +5,8 @@ import { usePush } from '../src/usePush'
 import { settings } from './store'
 import Custom from './Custom.vue'
 
+import { _PushOptions } from '../src/types'
+
 const push = usePush()
 
 const pushToUser = usePush('user-1')
@@ -15,6 +17,22 @@ function getRandomInt(min: number, max: number) {
    return Math.floor(Math.random() * (max - min) + min) // The maximum is exclusive and the minimum is inclusive
 }
 
+function usePostSuccess<T extends _PushOptions & { props?: Record<string, any> }>() {
+   return ({ props = {}, ...options }: T) =>
+      push.success({
+         ...options,
+         render: {
+            component: markRaw(Custom),
+            props: ({ notifyProps }) => ({
+               ...notifyProps,
+               ...props,
+            }),
+         },
+      })
+}
+
+const pushX = usePostSuccess()
+
 async function asyncPush() {
    const ayncNotify = push.promise({
       message: "We're sending your message. This will take a moment or two...",
@@ -22,15 +40,24 @@ async function asyncPush() {
 
    await new Promise((resolve) => setTimeout(resolve, getRandomInt(2000, 4000)))
 
-   if (Math.random() > 0.5) {
+   if (Math.random() > 0.3) {
       ayncNotify.reject({ message: 'Promise rejected!' })
    } else {
-      ayncNotify.resolve({ message: 'Promise successfully resolved!' })
+      ayncNotify.resolve({ message: 'Promise successfully resolved!'.repeat(6) })
    }
 }
 
 function customPush() {
-   push({
+   pushX({
+      duration: 5000,
+      message: 'Your message has been successfully sent. Please.',
+      props: {
+         avatarUrl: 'https://i.pravatar.cc/150?img=2',
+         nameSurname: 'John Doe',
+      },
+   })
+
+   /*    push({
       message: 'Custom',
       render: {
          component: markRaw(Custom),
@@ -39,7 +66,7 @@ function customPush() {
             avatarUrl: 'https://i.pravatar.cc/150?img=1',
          }),
       },
-   })
+   }) */
 
    /*    push({
       message: 'Custom',
@@ -155,9 +182,7 @@ function pushThousand() {
                () => {
                   counter++
                   push({
-                     message: `Your message has been successfully sent.
-                     
-                     Please.`,
+                     message: `${counter} Your message has been successfully sent. Please.`,
                   })
                }
             "
