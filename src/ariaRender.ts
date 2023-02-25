@@ -1,5 +1,5 @@
 import { h, type CSSProperties } from 'vue'
-import type { Notification } from './types'
+import type { StoreItem } from './types'
 
 const style: CSSProperties = {
    clip: 'rect(0 0 0 0)',
@@ -11,7 +11,7 @@ const style: CSSProperties = {
    width: '1px',
 }
 
-export function ariaLive(item: Notification) {
+export function ariaRenderFn(item: StoreItem) {
    return h(
       'div',
       { 'aria-live': item.ariaLive, role: item.ariaRole, style },

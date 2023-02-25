@@ -1,6 +1,6 @@
-import { h, isVNode, type Raw, type VNode } from 'vue'
-import { defaultOptions } from './defaultOptions'
-import type { UserOptions, MergedOptions, ReceiverProps, InternalPushOptions } from './types'
+import { h, isVNode, type VNode } from 'vue'
+import { NType } from './constants'
+import type { ReceiverProps, IncomingOptions, ReceiverOptions, MergedOptions } from './types'
 
 export const isSSR = typeof window === 'undefined'
 
@@ -9,11 +9,8 @@ export function createID() {
 }
 
 export function hIcon(icon: unknown, props = {}) {
-   if (isVNode(icon)) {
-      return h(icon, props)
-   }
-   if (typeof icon === 'object') {
-      return h(icon as Raw<VNode>, props)
+   if (isVNode(icon) || typeof icon === 'object') {
+      return h(icon as VNode, props)
    }
    return null
 }
@@ -33,12 +30,13 @@ export function hMessage(message: string) {
 }
 
 export function mergeOptions(
-   receiverOptions: ReceiverProps['options'],
-   pushOptions: UserOptions & InternalPushOptions
+   defaultOptions: Required<Record<`${NType}`, ReceiverOptions>>,
+   receiverProps: ReceiverProps['options'],
+   pushOptions: IncomingOptions
 ): MergedOptions {
    return {
       ...defaultOptions[pushOptions.type],
-      ...receiverOptions[pushOptions.type],
+      ...receiverProps[pushOptions.type],
       ...pushOptions,
    }
 }

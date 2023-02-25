@@ -1,7 +1,7 @@
-import { inject, toRef } from 'vue'
+import { inject } from 'vue'
 import { defaultSymbol, userSymbols } from './symbols'
-import type { Receiver, StoreData, StoreMethods } from './types'
+import type { Store } from './types'
 
-export function useStore(key?: string): StoreData & StoreMethods {
-   return inject(key && key in userSymbols ? userSymbols[key] : defaultSymbol) as Receiver
+export function useStore(key?: string): Store {
+   return inject(key && key in userSymbols ? userSymbols[key] : defaultSymbol) as Store
 }

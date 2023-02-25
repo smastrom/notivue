@@ -2,9 +2,9 @@ import { h } from 'vue'
 import { close } from './icons'
 import { CLASS_PREFIX } from './constants'
 import { hIcon, hMessage } from './utils'
-import type { Notification } from './types'
+import type { StoreItem } from './types'
 
-export function defaultComponent(item: Notification) {
+export function defaultRenderFn(item: StoreItem) {
    return h(
       'div',
       {

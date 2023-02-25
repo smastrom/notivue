@@ -3,12 +3,12 @@ import { NType } from './constants'
 import { icons } from './icons'
 import type { ReceiverOptions } from './types'
 
-export const success: ReceiverOptions = {
+const success: ReceiverOptions = {
    title: 'Success!',
    message: '',
    icon: markRaw(icons.success),
    close: true,
-   duration: 4000 * 1000,
+   duration: 4000,
    ariaLive: 'polite',
    ariaRole: 'status',
 }
@@ -41,7 +41,7 @@ const info: ReceiverOptions = {
    title: 'Info!',
 }
 
-export const defaultOptions: Record<`${NType}`, ReceiverOptions> = {
+export const defaultOptions: Required<Record<`${NType}`, ReceiverOptions>> = {
    [NType.SUCCESS]: success,
    [NType.ERROR]: error,
    [NType.WARNING]: warning,

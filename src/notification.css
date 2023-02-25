@@ -17,77 +17,10 @@
    will-change: transform;
 }
 
-.Fade__enter-active,
-.Fade__leave-active {
-   transition: opacity 300ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.Fade__enter-from,
-.Fade__leave-to {
-   opacity: 0;
-}
-
-.VNEnter {
-   animation: KFVNEnter 300ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-.VNLeave {
-   animation: KFVNLeave 300ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-.VNClear {
-   animation: KFVNClear 800ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-@keyframes KFVNClear {
-   0% {
-      filter: blur(0);
-      opacity: 1;
-   }
-   100% {
-      filter: blur(10px);
-      opacity: 0;
-   }
-}
-
-@keyframes KFVNEnter {
-   0% {
-      transform: scale(0.7) translate3d(0, -100px, 0);
-      opacity: 0;
-   }
-   100% {
-      transform: scale(1) translate3d(0, 0px, 0);
-      opacity: 1;
-   }
-}
-
-@keyframes KFVNLeave {
-   0% {
-      transform: scale(1) translate3d(0, 0px, 0);
-      opacity: 1;
-   }
-   100% {
-      transform: scale(0.5) translate3d(0, -50px, 0);
-      opacity: 0;
-   }
-}
-
-@keyframes KFPopIn {
-   0% {
-      transform: scale(0.9);
-      opacity: 0.7;
-   }
-
-   100% {
-      transform: scale(1);
-      opacity: 1;
-   }
-}
-
 /* Icon */
 
 .VueNotify__icon {
-   animation: KFPopIn 150ms cubic-bezier(0.22, 1, 0.36, 1) both 150ms;
+   animation: KFPopIn 200ms cubic-bezier(0.22, 1, 0.36, 1) both 150ms;
    display: flex;
    margin: 0 0.875rem 0 0;
 }

@@ -40,6 +40,14 @@ function customPush() {
          }),
       },
    })
+
+   /*    push({
+      message: 'Custom',
+      render: {
+         component: markRaw(Custom),
+         props: ({ notifyProps }) => ({}),
+      },
+   }) */
 }
 
 async function customAsync() {
@@ -50,6 +58,7 @@ async function customAsync() {
          props: ({ notifyProps }) => ({
             ...notifyProps,
             avatarUrl: 'https://i.pravatar.cc/150?img=1',
+            nameSurname: 'John Doe',
          }),
       },
    })
@@ -63,10 +72,28 @@ async function customAsync() {
          props: ({ notifyProps, prevProps }) => ({
             ...notifyProps,
             ...prevProps,
-            name: 'Rubrante',
+            avatarUrl: 'https://i.pravatar.cc/150?img=1',
          }),
       },
    })
+
+   /*    promise.reject({
+      message: 'Async resolved',
+      render: {
+         component: markRaw(Custom),
+         props: ({ notifyProps }) => ({
+            ...notifyProps,
+         }),
+      },
+   })
+
+   promise.reject({
+      message: 'Async resolved',
+      render: {
+         component: markRaw(Custom),
+         props: ({ notifyProps }) => ({}),
+      },
+   }) */
 }
 
 function setPosition(position: ReceiverProps['position']) {

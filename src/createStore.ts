@@ -1,33 +1,25 @@
 import { ref, shallowRef } from 'vue'
 import { createPush as _createPush } from './createPush'
-import type { IncomingOptions, Notification } from './types'
+import type { IncomingOptions, StoreItem, Store } from './types'
 
-export function createStore() {
-   const items = ref([])
-   const incoming = shallowRef({})
+export function createStore(): Store {
+   const items = ref<StoreItem[]>([])
+   const incoming = shallowRef<IncomingOptions>({} as IncomingOptions)
    const clear = ref(false)
 
    function setIncoming(options: IncomingOptions) {
       incoming.value = options
    }
 
-   function createItem(item: Notification) {
+   function createItem(item: StoreItem) {
       items.value.push(item)
-   }
-
-   function clearItem(id: string) {
-      getItem(id)?.clear()
-   }
-
-   function destroyAll() {
-      items.value = []
    }
 
    function getItem(id: string) {
       return items.value.find(({ id: _id }) => _id === id)
    }
 
-   function updateItem(id: string, options: Partial<Notification>) {
+   function updateItem(id: string, options: Partial<StoreItem>) {
       const item = getItem(id)
 
       if (item) {
@@ -50,12 +42,20 @@ export function createStore() {
       })
    }
 
-   function updateAll(onUpdate: (prevItem: Notification) => Notification) {
-      items.value = items.value.map((prevItem) => onUpdate(prevItem))
+   function clearItem(id: string) {
+      const item = getItem(id)
+
+      if (item) {
+         item.clear()
+      }
    }
 
-   function createPush() {
-      return _createPush(setIncoming, clearItem, clearAll, destroyAll)
+   function updateAll(updateItem: (prevItem: StoreItem) => StoreItem) {
+      items.value = items.value.map((prevItem) => updateItem(prevItem))
+   }
+
+   function destroyAll() {
+      items.value = []
    }
 
    function clearAll() {
@@ -66,12 +66,15 @@ export function createStore() {
       clear.value = false
    }
 
+   function createPush() {
+      return _createPush({ setIncoming, clearItem, clearAll, destroyAll } as const)
+   }
+
    return {
       items,
       incoming,
       clear,
       createItem,
-      createPush,
       getItem,
       animateItem,
       updateItem,
@@ -79,5 +82,6 @@ export function createStore() {
       updateAll,
       destroyAll,
       resetClearAll,
+      createPush,
    }
 }

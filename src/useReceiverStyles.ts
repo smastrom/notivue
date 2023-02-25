@@ -13,14 +13,18 @@ const boxSizing: CSSProperties = { boxSizing: 'border-box' }
 
 const noDuration = '0ms !important'
 
-const wrapperStyles: CSSProperties = {
-   ...boxSizing,
-   zIndex: 2147483647,
-   position: 'fixed',
-   width: '100%',
-   height: '100%',
+const flexCenter: CSSProperties = {
    display: 'flex',
    justifyContent: 'center',
+   width: '100%',
+}
+
+const wrapperStyles: CSSProperties = {
+   ...boxSizing,
+   ...flexCenter,
+   zIndex: 2147483647,
+   position: 'fixed',
+   height: '100%',
    pointerEvents: 'none',
 }
 
@@ -36,12 +40,9 @@ export function useReceiverStyles({ rootPadding, maxWidth, position }: Param) {
 
    const containerStyles = computed<CSSProperties>(() => ({
       ...boxSizing,
+      ...flexCenter,
       ...(maxWidth.value ? { maxWidth: `${maxWidth.value}px` } : {}),
       position: 'relative',
-      height: '100vh',
-      justifyContent: 'center',
-      width: '100%',
-      display: 'flex',
    }))
 
    const rowStyles = computed<CSSProperties>(() => ({

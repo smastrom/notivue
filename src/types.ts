@@ -5,13 +5,7 @@ export type PluginOptions = {
    additionalReceivers?: string[]
 }
 
-export type Position =
-   | 'top-left'
-   | 'top-center'
-   | 'top-right'
-   | 'bottom-left'
-   | 'bottom-center'
-   | 'bottom-right'
+// Receiver Props
 
 export type ReceiverProps = {
    disabled: boolean
@@ -37,94 +31,112 @@ export type ReceiverOptions = {
    ariaRole: 'alert' | 'status'
 }
 
-export type InternalPushOptions = {
-   id: string
-   type: `${NType}`
+// Receiver Internal
+
+type InternalData = {
+   timeoutId: number | undefined
+   createdAt: number
+   clear: () => void
+   elapsed?: number
+   stoppedAt?: number
+   style?: CSSProperties
+   animClass?: string
+   onAnimationstart?: (event: AnimationEvent) => void
+   onAnimationend?: (event: AnimationEvent) => void
+   customRenderFn?: () => VNode
+   prevProps?: CtxProps & Record<string, unknown>
+   prevComponent?: Raw<Component>
 }
 
-export type UserOptions<T = NotifyProps> = Partial<ReceiverOptions> & MaybeRender<T>
+export type MergedOptions = Required<ReceiverOptions> & IncomingOptions
 
-export type IncomingOptions = UserOptions & InternalPushOptions
+export type InternalPushOptions = { id: string; type: `${NType}` }
 
-export type MergedOptions<T = NotifyProps> = ReceiverOptions & InternalPushOptions & MaybeRender<T>
+// Store
 
-type AnimationHandler = ((event: AnimationEvent) => void) | undefined
+export type StoreItem = InternalData & MergedOptions
 
-export type Notification = InternalPushOptions &
-   ReceiverOptions & {
-      timeoutId: number | undefined
-      id: string
-      createdAt: number
-      stoppedAt: number
-      elapsed: number
-      clear: () => void
-      style: CSSProperties
-      animClass: string | undefined
-      onAnimationstart: AnimationHandler
-      onAnimationend: AnimationHandler
-      props: Record<string, any>
-      component?: Component
-      h?: () => VNode
-   }
-
-type MaybeRender<T> = {
-   render?: {
-      component?: Raw<Component>
-      props?: (props: T) => Record<string, any>
-   }
-}
-
-export type StoreData = {
-   items: Ref<Notification[]>
+export type StoreRefs = {
+   items: Ref<StoreItem[]>
    incoming: ShallowRef<IncomingOptions>
    clear: Ref<boolean>
 }
 
-export type StoreMethods = {
+export type StoreFunctions = {
    createPush: () => PushFn
-   createItem: (options: IncomingOptions) => void
-   getItem: (id: string) => Notification | undefined
-   updateItem: (id: string, options: Partial<Notification>) => void
+   createItem: (options: StoreItem) => void
+   getItem: (id: string) => StoreItem | undefined
+   updateItem: (id: string, options: Partial<StoreItem>) => void
    removeItem: (id: string) => void
    destroyAll: () => void
-   updateAll: (onUpdate: (item: Notification) => Notification) => void
+   updateAll: (onUpdate: (item: StoreItem) => StoreItem) => void
    animateItem: (id: string, className: string, onEnd: () => void) => void
    resetClearAll: () => void
 }
 
-export type Receiver = StoreData & StoreMethods
+export type Store = StoreRefs & StoreFunctions
 
-type NotifyProps = {
-   notifyProps: {
-      type: InternalPushOptions['type']
-      close: () => void
-      title?: ReceiverOptions['title']
-      message?: ReceiverOptions['message']
+// Push - Incoming
+
+export type IncomingOptions<T = unknown> = Partial<ReceiverOptions> &
+   InternalPushOptions &
+   (MaybeRenderStatic<T> | MaybeRenderPromiseResult<T extends Record<string, unknown> ? T : never>)
+
+export type StaticPushOptions<T> = Partial<ReceiverOptions> & MaybeRenderStatic<T>
+
+export type MaybeRenderStatic<T> = {
+   render?: {
+      component?: Raw<Component>
+      props?: (props: { notifyProps: CtxProps }) => Partial<CtxProps & T>
    }
 }
 
-type WithPrevProps = Partial<
-   UserOptions<NotifyProps & { prevProps?: Record<string, any> | undefined }>
->
+export type PromiseResultPushOptions<T> = Partial<ReceiverOptions> & MaybeRenderPromiseResult<T>
 
-export type PushFn = {
-   (options: Partial<UserOptions>): ClearFns
-   promise: (options: Partial<UserOptions>) => {
-      resolve: (options: WithPrevProps) => void
-      reject: (options: WithPrevProps) => void
-      clear: ClearFns['clear']
-      clearAll: ClearFns['clearAll']
-      destroyAll: ClearFns['destroyAll']
+export type MaybeRenderPromiseResult<T = {}> = {
+   render?: {
+      component?: Raw<Component>
+      props?: (props: {
+         notifyProps: CtxProps
+         prevProps: Omit<T, keyof CtxProps>
+      }) => Record<string, unknown>
    }
-   error: (options: Partial<UserOptions>) => ClearFns
-   success: (options: Partial<UserOptions>) => ClearFns
-   warning: (options: Partial<UserOptions>) => ClearFns
-   info: (options: Partial<UserOptions>) => ClearFns
-   clearAll: ClearFns['clearAll']
-   destroyAll: ClearFns['destroyAll']
 }
 
-export type ClearFns = { clear: () => void; clearAll: () => void; destroyAll: () => void }
+// Push - Returned
+
+export type CtxProps = Omit<InternalPushOptions, 'id'> & {
+   duration: ReceiverOptions['duration']
+   title: ReceiverOptions['title']
+   message: ReceiverOptions['message']
+   close: () => void
+}
+
+export type PushStatic = <T extends Record<string, unknown>>(
+   options: StaticPushOptions<T>
+) => ClearFn
+
+export type PushPromise = <T extends Record<string, unknown>>(
+   options: StaticPushOptions<T>
+) => {
+   resolve: (options: PromiseResultPushOptions<T>) => void
+   reject: (options: PromiseResultPushOptions<T>) => void
+   clear: ClearFn['clear']
+}
+
+export type PushFn = PushStatic & {
+   error: PushStatic
+   success: PushStatic
+   warning: PushStatic
+   info: PushStatic
+   promise: PushPromise
+   clearAll: () => void
+   destroyAll: () => void
+}
+
+export type ClearFn = { clear: () => void }
+
+// CSS
 
 type Vars =
    | '--VNWidth'
@@ -145,5 +157,13 @@ type Vars =
    | '--VNPromiseColor'
    | '--VNPromiseBackground'
    | '--VNCloseColor'
+
+export type Position =
+   | 'top-left'
+   | 'top-center'
+   | 'top-right'
+   | 'bottom-left'
+   | 'bottom-center'
+   | 'bottom-right'
 
 export type Theme = Record<Vars, string>

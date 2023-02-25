@@ -8,23 +8,24 @@ import {
    nextTick,
    Teleport,
    type PropType,
-   type CSSProperties,
 } from 'vue'
 import { useStore } from './useStore'
 import { useReceiverStyles } from './useReceiverStyles'
 import { useRefsMap } from './useRefsMap'
 import { useResizeObserver } from './useResizeObserver'
-import { defaultComponent } from './defaultComponent'
+import { defaultRenderFn } from './defaultRender'
 import { defaultOptions } from './defaultOptions'
-import { ariaLive } from './ariaLive'
+import { ariaRenderFn } from './ariaRender'
 import { mergeOptions } from './utils'
 import { NType, FIXED_INCREMENT } from './constants'
 import { light } from './themes'
 import type {
    ReceiverProps as Props,
+   StoreItem,
    MergedOptions,
-   Notification,
-   Receiver as ReceiverT,
+   MaybeRenderStatic,
+   MaybeRenderPromiseResult,
+   CtxProps,
 } from './types'
 
 export const Receiver = defineComponent({
@@ -91,7 +92,7 @@ export const Receiver = defineComponent({
          return { top, bottom }
       })
 
-      const yCssProp = computed(() => position.value.split('-')[0] as keyof CSSProperties)
+      const yCssProp = computed(() => position.value.split('-')[0] as 'top' | 'bottom')
 
       // Reactivity - Store
 
@@ -160,14 +161,11 @@ export const Receiver = defineComponent({
          { flush: 'post' }
       )
 
-      // Watchers - Styles
-
       watch(
          () => yCssProp.value,
          (newPos, prevPos) => {
             updateAll((item) => {
-               const currPos = parseFloat(item.style[prevPos] as string)
-               // @ts-ignore
+               const currPos = parseFloat(item.style?.[prevPos] as string)
                const _newPos = currPos - padding.value[prevPos] + padding.value[newPos]
 
                return {
@@ -204,10 +202,12 @@ export const Receiver = defineComponent({
             incoming,
             (pushOptions) => {
                const createdAt = performance.now()
-               const options = mergeOptions(props.options, pushOptions)
+               const options = mergeOptions(defaultOptions, props.options, pushOptions)
 
-               let customRender: Partial<Pick<Notification, 'props' | 'component' | 'h'>> = {
-                  h: undefined,
+               let customComponent: Partial<
+                  Pick<StoreItem, 'prevProps' | 'prevComponent' | 'customRenderFn'>
+               > = {
+                  customRenderFn: undefined,
                }
 
                if (
@@ -215,26 +215,35 @@ export const Receiver = defineComponent({
                   options.type.includes(NType.PROMISE_RESOLVE)
                ) {
                   const currItem = getItem(options.id)
-                  const prevComponent = currItem?.component
+                  const prevComponent = currItem?.prevComponent
 
                   if (prevComponent) {
-                     const { title, message, type, close, ...prevProps } = currItem.props
+                     const prevProps: Record<string, unknown> = { ...(currItem.prevProps ?? {}) }
+
+                     delete prevProps.title
+                     delete prevProps.message
+                     delete prevProps.type
+                     delete prevProps.duration
+                     delete prevProps.close
+
                      const nextProps = { ...getCtxProps(options), prevProps }
 
-                     customRender = {
-                        h: () =>
+                     customComponent = {
+                        customRenderFn: () =>
                            h(
                               options.render?.component ?? prevComponent,
-                              options.render?.props?.(nextProps) ?? {}
+                              (
+                                 options.render?.props as NonNullable<
+                                    MaybeRenderPromiseResult['render']
+                                 >['props']
+                              )?.(nextProps) ?? {}
                            ),
                      }
                   }
 
-                  console.log(options.icon)
-
                   updateItem(options.id, {
                      ...options,
-                     ...customRender,
+                     ...customComponent,
                      timeoutId: isHovering
                         ? undefined
                         : createTimeout(options.id, options.duration),
@@ -244,22 +253,30 @@ export const Receiver = defineComponent({
                   const component = options.render?.component
 
                   if (component) {
-                     const props = options.render?.props?.(getCtxProps(options)) ?? {}
-                     customRender = {
-                        h: () => h(component, props),
-                        ...(options.type === NType.PROMISE ? { props, component } : {}),
+                     const props = ((
+                        options.render?.props as NonNullable<
+                           MaybeRenderStatic<CtxProps & Record<string, unknown>>['render']
+                        >['props']
+                     )?.(getCtxProps(options)) ?? {}) as CtxProps
+
+                     customComponent = {
+                        customRenderFn: () => h(component, props),
+                        ...(options.type === NType.PROMISE
+                           ? { prevProps: props, prevComponent: component }
+                           : {}),
                      }
                   }
 
                   createItem({
                      ...options,
-                     ...customRender,
+                     ...customComponent,
                      timeoutId:
-                        options.type !== NType.PROMISE &&
-                        createTimeout(options.id, options.duration),
+                        options.type !== NType.PROMISE
+                           ? createTimeout(options.id, options.duration)
+                           : undefined,
                      clear: () => animateLeave(options.id),
                      createdAt,
-                  } as Notification)
+                  })
 
                   nextTick(() => animateEnter(options.id))
                }
@@ -379,8 +396,8 @@ export const Receiver = defineComponent({
          return setTimeout(() => animateLeave(id), time)
       }
 
-      function getCtxProps({ title, message, type, id }: MergedOptions) {
-         return { notifyProps: { title, message, type, close: () => animateLeave(id) } }
+      function getCtxProps({ title, message, type, duration, id }: MergedOptions) {
+         return { notifyProps: { title, message, type, duration, close: () => animateLeave(id) } }
       }
 
       // Props
@@ -406,7 +423,7 @@ export const Receiver = defineComponent({
          onPointerleave() {
             if (haveNotifications.value && isHovering) {
                updateAll((prevItem) => {
-                  const newTimeout = prevItem.duration + FIXED_INCREMENT - prevItem.elapsed
+                  const newTimeout = prevItem.duration + FIXED_INCREMENT - (prevItem.elapsed ?? 0)
 
                   return {
                      ...prevItem,
@@ -459,7 +476,7 @@ export const Receiver = defineComponent({
                                  onAnimationstart: item.onAnimationstart,
                                  onAnimationend: item.onAnimationend,
                               },
-                              [item.h?.() ?? defaultComponent(item), ariaLive(item)]
+                              [item.customRenderFn?.() ?? defaultRenderFn(item), ariaRenderFn(item)]
                            )
                         )
                      )
