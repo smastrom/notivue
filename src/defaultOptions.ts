@@ -24,6 +24,7 @@ const error: ReceiverOptions = {
 
 const promise: ReceiverOptions = {
    ...success,
+   duration: Infinity,
    icon: markRaw(icons.promise),
    title: 'Loading...',
    close: false,

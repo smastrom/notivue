@@ -1,9 +1,9 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import { notify } from '../src/notify'
+import { notify } from '../src'
 
 import './style.css'
-import '../src/notification.css'
+import '../src/notifications.css'
 import '../src/animations.css'
 
 createApp(App)

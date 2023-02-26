@@ -1,5 +1,5 @@
 import { h } from 'vue'
-import { NType, CLASS_PREFIX } from './constants'
+import { NType } from './constants'
 
 const svgProps = {
    xmlns: 'http://www.w3.org/2000/svg',

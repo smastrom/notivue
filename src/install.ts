@@ -3,7 +3,7 @@ import { defaultSymbol, userSymbols } from './symbols'
 import type { Plugin, InjectionKey } from 'vue'
 import type { PluginOptions, Store } from './types'
 
-export const notify: Plugin = {
+export const install: Plugin = {
    install(
       app,
       { additionalReceivers = [] }: PluginOptions = {
@@ -18,9 +18,7 @@ export const notify: Plugin = {
 
       Object.values(userSymbols)
          .concat(defaultSymbol)
-         .forEach((sym) => {
-            receivers.set(sym, createStore())
-         })
+         .forEach((sym) => receivers.set(sym, createStore()))
 
       receivers.forEach((value, sym) => app.provide(sym, value))
    },

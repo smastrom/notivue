@@ -7,6 +7,7 @@ type Param = {
    rootPadding: Ref<ReceiverProps['rootPadding']>
    maxWidth: Ref<ReceiverProps['maxWidth']>
    position: Ref<ReceiverProps['position']>
+   gap: Ref<ReceiverProps['gap']>
 }
 
 const boxSizing: CSSProperties = { boxSizing: 'border-box' }
@@ -28,17 +29,13 @@ const wrapperStyles: CSSProperties = {
    pointerEvents: 'none',
 }
 
-export function useReceiverStyles({ rootPadding, maxWidth, position }: Param) {
+export function useReceiverStyles({ rootPadding, maxWidth, position, gap }: Param) {
    const isReduced = useReducedMotion()
-
-   const xSpacing = computed(() => rootPadding.value[1] + rootPadding.value[3])
 
    const xAlignment = computed(() => {
       const [, x] = position.value.split('-')
       return x === 'left' ? 'flex-start' : x === 'right' ? 'flex-end' : 'center'
    })
-
-   const isTop = computed(() => position.value.split('-')[0] === 'top')
 
    const containerStyles = computed<CSSProperties>(() => ({
       ...boxSizing,
@@ -51,20 +48,25 @@ export function useReceiverStyles({ rootPadding, maxWidth, position }: Param) {
       ...boxSizing,
       transitionTimingFunction: EASING,
       transitionDuration: '250ms',
-      transitionProperty: 'all',
+      transitionProperty: 'transform',
       position: 'absolute',
       display: 'flex',
-      width: `calc(100% - ${xSpacing.value}px)`,
+      padding: `0 ${rootPadding.value[1]}px 0 ${rootPadding.value[3]}px`,
+      width: '100%',
       justifyContent: xAlignment.value,
-      ...(isTop.value
+      ...(position.value.startsWith('top')
          ? { top: rootPadding.value[0] + 'px' }
          : { bottom: rootPadding.value[2] + 'px' }),
       ...(isReduced.value ? { transitionDuration: NO_DUR } : {}),
    }))
 
-   const boxStyles = computed<CSSProperties>(() =>
-      isReduced.value ? { animationDuration: NO_DUR } : {}
-   )
+   const boxStyles = computed<CSSProperties>(() => ({
+      ...boxSizing,
+      pointerEvents: 'auto',
+      maxWidth: '100%',
+      padding: `0 0 ${gap.value}px 0`,
+      ...(isReduced.value ? { animationDuration: NO_DUR } : {}),
+   }))
 
    return { wrapperStyles, containerStyles, rowStyles, boxStyles }
 }

@@ -1,6 +1,6 @@
 export const NOTIFICATIONS_LIMIT = 10
 
-export const FIXED_INCREMENT = 300
+export const FIXED_INCREMENT = 250
 
 export const EASING = 'cubic-bezier(0.22, 1, 0.36, 1)'
 
@@ -18,9 +18,8 @@ export enum NType {
    PROMISE_REJECT = 'promise-reject',
 }
 
-export enum TransitionType {
-   RESIZE,
-   REMOVE,
+export enum TType {
    PUSH,
-   SWITCH,
+   HEIGHT,
+   SILENT,
 }

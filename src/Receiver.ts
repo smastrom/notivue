@@ -17,13 +17,7 @@ import { defaultRenderFn } from './defaultRender'
 import { defaultAnimations, defaultOptions } from './defaultOptions'
 import { ariaRenderFn } from './ariaRender'
 import { mergeOptions } from './utils'
-import {
-   TransitionType,
-   NType,
-   FIXED_INCREMENT,
-   NOTIFICATIONS_LIMIT,
-   COMPONENT_NAME,
-} from './constants'
+import { TType, NType, FIXED_INCREMENT, NOTIFICATIONS_LIMIT, COMPONENT_NAME } from './constants'
 import { light } from './themes'
 import type {
    ReceiverProps as Props,
@@ -33,6 +27,7 @@ import type {
    MaybeRenderPromiseResult,
    CtxProps,
 } from './types'
+import { useWindowSize } from './useWindowSize'
 
 export const Receiver = defineComponent({
    name: COMPONENT_NAME,
@@ -96,7 +91,7 @@ export const Receiver = defineComponent({
 
       // Reactivity - Props - Computed
 
-      const isTop = computed(() => position.value.split('-')[0] === 'top')
+      const isTop = computed(() => position.value.startsWith('top'))
 
       const mergedAnims = computed(() => ({
          ...defaultAnimations,
@@ -121,11 +116,7 @@ export const Receiver = defineComponent({
 
       // Reactivity - Store - Computed
 
-      const promisesIds = computed(() =>
-         items.value.filter(({ type }) => type === NType.PROMISE).map(({ id }) => id)
-      )
-
-      const hasNotifications = computed(() => items.value.length > 0)
+      const hasItems = computed(() => items.value.length > 0)
 
       // Reactivity - Composables - Behavior and Style
 
@@ -135,11 +126,10 @@ export const Receiver = defineComponent({
          rootPadding,
          maxWidth,
          position,
+         gap,
       })
 
-      const resizeObserver = useResizeObserver({
-         onSizeChange: (id) => setPositions(id, { transitionType: TransitionType.RESIZE }),
-      })
+      const resizeObserver = useResizeObserver(() => setPositions(TType.HEIGHT))
 
       // Watchers - Notifications
 
@@ -149,7 +139,8 @@ export const Receiver = defineComponent({
          disabled,
          (isDisabled) => {
             if (isDisabled && unsubscribe) {
-               unsubscribe(), destroyAll()
+               unsubscribe()
+               destroyAll()
             } else {
                unsubscribe = subscribe()
             }
@@ -158,13 +149,7 @@ export const Receiver = defineComponent({
       )
 
       watch(
-         isTop,
-         () => setPositions(sortedIds.value[0], { transitionType: TransitionType.SWITCH }),
-         { flush: 'post' }
-      )
-
-      watch(
-         () => clearTrigger.value && hasNotifications.value,
+         () => clearTrigger.value && hasItems.value,
          (shouldClear) => {
             if (shouldClear) {
                animateClearAll()
@@ -173,22 +158,30 @@ export const Receiver = defineComponent({
          { flush: 'post' }
       )
 
-      // Watchers - Resize
+      // Watchers - Resize and Position
+
+      useWindowSize(() => setPositions(TType.SILENT))
+
+      watch(isTop, () => setPositions(TType.SILENT))
 
       watch(
-         promisesIds,
-         (newPromises) =>
-            newPromises.length > 0 &&
-            newPromises.forEach((id) => resizeObserver.value?.observe(refs.get(id) as HTMLElement)),
+         () => items.value.filter(({ type }) => type === NType.PROMISE).map(({ id }) => id),
+         (newPromises) => {
+            if (newPromises.length > 0) {
+               newPromises.forEach((id) =>
+                  resizeObserver.value?.observe(refs.get(id) as HTMLElement)
+               )
+            }
+         },
          { flush: 'post' }
       )
 
       // Watchers - Hover
 
       watch(
-         () => !hasNotifications.value,
-         (noNotifications) => {
-            if (noNotifications) {
+         () => !hasItems.value,
+         (noItems) => {
+            if (noItems) {
                isHovering = false
             }
          },
@@ -278,9 +271,9 @@ export const Receiver = defineComponent({
                      ...options,
                      ...customComponent,
                      timeoutId:
-                        options.type !== NType.PROMISE
-                           ? createTimeout(options.id, options.duration)
-                           : undefined,
+                        options.duration === Infinity
+                           ? undefined
+                           : createTimeout(options.id, options.duration),
                      clear: () => animateLeave(options.id),
                      createdAt,
                   })
@@ -307,7 +300,7 @@ export const Receiver = defineComponent({
             updateItem(id, { animClass: '', onAnimationend: undefined })
          })
 
-         setPositions(id, { transitionType: TransitionType.PUSH })
+         setPositions()
       }
 
       function animateLeave(id: string) {
@@ -315,7 +308,7 @@ export const Receiver = defineComponent({
             removeItem(id)
          })
 
-         setPositions(id, { transitionType: TransitionType.REMOVE })
+         setPositions()
       }
 
       function animateClearAll() {
@@ -328,107 +321,30 @@ export const Receiver = defineComponent({
          }
       }
 
-      /**
-       * Functions - Transitions
-       *
-       * Why this instead of Vue built-in Transition?
-       * https://github.com/vuejs/vue/issues/11654
-       */
+      // Functions - Transitions
 
-      function getPrevEl(endIndex: number) {
-         let prevEl = undefined as HTMLElement | undefined
-
-         for (const id of sortedIds.value.slice(0, endIndex).reverse()) {
-            const item = getItem(id)
-            if (!item) continue
-
-            if (item.animClass !== mergedAnims.value.leave || !('animClass' in item)) {
-               prevEl = refs.get(id)
-               break
-            }
-         }
-
-         return prevEl
-      }
-
-      async function setPositions(
-         id: string,
-         { transitionType }: { transitionType: TransitionType }
-      ) {
-         const currIndex = sortedIds.value.indexOf(id)
-         const isLastMutated =
-            transitionType !== TransitionType.PUSH && currIndex === sortedIds.value.length - 1
-
-         if (currIndex === -1 || isLastMutated) return
-
+      function setPositions(type: TType = TType.PUSH) {
          const factor = isTop.value ? 1 : -1
 
-         switch (transitionType) {
-            case TransitionType.PUSH:
-            case TransitionType.SWITCH:
-               let accHeights = 0
+         let accPrevHeights = 0
 
-               for (const id of sortedIds.value) {
-                  const thisEl = refs.get(id)
-                  const thisItem = getItem(id)
+         for (const id of sortedIds.value) {
+            const thisEl = refs.get(id)
+            const thisItem = getItem(id)
 
-                  if (!thisEl || !thisItem || thisItem.animClass === mergedAnims.value.leave) {
-                     break
-                  }
+            if (!thisEl || !thisItem || thisItem.animClass === mergedAnims.value.leave) {
+               continue
+            }
 
-                  updateItem(id, {
-                     style: {
-                        ...(transitionType === TransitionType.SWITCH ? { transition: 'none' } : {}),
-                        transform: `translate3d(0, ${accHeights}px, 0)`,
-                     },
-                  })
+            updateItem(id, {
+               style: {
+                  ...(type === TType.HEIGHT ? { transitionProperty: 'all' } : {}),
+                  ...(type === TType.SILENT ? { transition: 'none' } : {}),
+                  transform: `translate3d(0, ${accPrevHeights}px, 0)`,
+               },
+            })
 
-                  accHeights += factor * (thisEl.clientHeight + gap.value)
-               }
-               break
-
-            case TransitionType.REMOVE:
-            case TransitionType.RESIZE:
-               const nextIds = sortedIds.value.slice(currIndex + 1)
-               if (nextIds.length === 0) return
-
-               let prevEl =
-                  transitionType === TransitionType.REMOVE ? getPrevEl(currIndex) : refs.get(id)
-               let accPrevPos = 0
-
-               if (prevEl)
-                  if (isTop.value) {
-                     accPrevPos =
-                        prevEl.getBoundingClientRect().bottom - rootPadding.value[0] + gap.value
-                  } else {
-                     accPrevPos = -(
-                        document.documentElement.clientHeight -
-                        prevEl.getBoundingClientRect().top -
-                        rootPadding.value[2] +
-                        gap.value
-                     )
-                  }
-
-               for (const id of nextIds) {
-                  const thisItem = getItem(id)
-                  const thisEl = refs.get(id)
-
-                  if (!thisEl || !thisItem || thisItem.animClass === mergedAnims.value.leave) {
-                     continue
-                  }
-
-                  updateItem(id, {
-                     style: {
-                        ...(transitionType === TransitionType.RESIZE
-                           ? { transitionDuration: '100ms' }
-                           : {}),
-                        transform: `translate3d(0, ${accPrevPos}px, 0)`,
-                     },
-                  })
-
-                  accPrevPos += factor * (thisEl.getBoundingClientRect().height + gap.value)
-               }
-               break
+            accPrevHeights += factor * thisEl.clientHeight
          }
       }
 
@@ -436,34 +352,32 @@ export const Receiver = defineComponent({
 
       const pointerEvents = {
          onPointerenter() {
-            if (hasNotifications.value && !isHovering) {
+            if (hasItems.value && !isHovering) {
                isHovering = true
 
                const stoppedAt = performance.now()
 
-               updateAll((prevItem) => {
-                  clearTimeout(prevItem.timeoutId)
+               updateAll((item) => {
+                  clearTimeout(item.timeoutId)
 
                   return {
-                     ...prevItem,
+                     ...item,
                      stoppedAt,
-                     elapsed: stoppedAt - prevItem.createdAt + (prevItem.elapsed ?? 0),
+                     elapsed: stoppedAt - item.createdAt + (item.elapsed ?? 0),
                   }
                })
             }
          },
          onPointerleave() {
-            if (hasNotifications.value && isHovering) {
-               updateAll((prevItem) => {
-                  const newTimeout = prevItem.duration + FIXED_INCREMENT - (prevItem.elapsed ?? 0)
+            if (hasItems.value && isHovering) {
+               updateAll((item) => {
+                  const newTimeout = item.duration + FIXED_INCREMENT - (item.elapsed ?? 0)
 
                   return {
-                     ...prevItem,
+                     ...item,
                      createdAt: performance.now(),
                      timeoutId:
-                        prevItem.type !== NType.PROMISE
-                           ? createTimeout(prevItem.id, newTimeout)
-                           : undefined,
+                        item.duration === Infinity ? undefined : createTimeout(item.id, newTimeout),
                   }
                })
 
@@ -493,7 +407,6 @@ export const Receiver = defineComponent({
                            'div',
                            {
                               key: item.id,
-                              'data-id': item.id,
                               ref: (_ref) => setRefs(_ref as HTMLElement | null, item.id),
                               style: {
                                  ...rowStyles.value,

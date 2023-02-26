@@ -1,19 +1,18 @@
 import { shallowRef, onMounted, onBeforeUnmount } from 'vue'
 
-export function useResizeObserver({ onSizeChange }: { onSizeChange: (id: string) => void }) {
+export function useResizeObserver(onSizeChange: () => void) {
    const callSet = new Set()
    const resizeObserver = shallowRef<ResizeObserver>()
 
    onMounted(() => {
       resizeObserver.value = new ResizeObserver((entries, _observer) => {
          entries.forEach((entry) => {
-            const id = (entry.target as HTMLElement).dataset.id as string
-            if (!callSet.has(id)) {
-               callSet.add(id)
+            if (!callSet.has(entry.target)) {
+               callSet.add(entry.target)
             } else {
-               onSizeChange(id)
+               onSizeChange()
+               callSet.delete(entry.target)
                _observer.unobserve(entry.target)
-               callSet.delete(id)
             }
          })
       })
