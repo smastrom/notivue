@@ -11,7 +11,7 @@ type Param = {
 
 const boxSizing: CSSProperties = { boxSizing: 'border-box' }
 
-const noDuration = '0ms !important'
+const NO_DUR = '0ms !important'
 
 const flexCenter: CSSProperties = {
    display: 'flex',
@@ -59,11 +59,11 @@ export function useReceiverStyles({ rootPadding, maxWidth, position }: Param) {
       ...(isTop.value
          ? { top: rootPadding.value[0] + 'px' }
          : { bottom: rootPadding.value[2] + 'px' }),
-      ...(isReduced.value ? { transitionDuration: noDuration } : {}),
+      ...(isReduced.value ? { transitionDuration: NO_DUR } : {}),
    }))
 
    const boxStyles = computed<CSSProperties>(() =>
-      isReduced.value ? { animationDuration: noDuration } : {}
+      isReduced.value ? { animationDuration: NO_DUR } : {}
    )
 
    return { wrapperStyles, containerStyles, rowStyles, boxStyles }

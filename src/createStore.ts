@@ -5,7 +5,7 @@ import type { IncomingOptions, StoreItem, Store } from './types'
 export function createStore(): Store {
    const items = ref<StoreItem[]>([])
    const incoming = shallowRef<IncomingOptions>({} as IncomingOptions)
-   const clear = ref(false)
+   const clearTrigger = ref(false)
 
    function setIncoming(options: IncomingOptions) {
       incoming.value = options
@@ -21,6 +21,7 @@ export function createStore(): Store {
 
    function updateItem(id: string, options: Partial<StoreItem>) {
       const item = getItem(id)
+      // isReactive(item) -> true
 
       if (item) {
          Object.assign(item, options)
@@ -58,22 +59,22 @@ export function createStore(): Store {
       items.value = []
    }
 
-   function clearAll() {
-      clear.value = true
+   function setClearTrigger() {
+      clearTrigger.value = true
    }
 
-   function resetClearAll() {
-      clear.value = false
+   function resetClearTrigger() {
+      clearTrigger.value = false
    }
 
    function createPush() {
-      return _createPush({ setIncoming, clearItem, clearAll, destroyAll } as const)
+      return _createPush({ setIncoming, clearItem, setClearTrigger, destroyAll })
    }
 
    return {
       items,
       incoming,
-      clear,
+      clearTrigger,
       createItem,
       getItem,
       animateItem,
@@ -81,7 +82,7 @@ export function createStore(): Store {
       removeItem,
       updateAll,
       destroyAll,
-      resetClearAll,
+      resetClearTrigger,
       createPush,
    }
 }

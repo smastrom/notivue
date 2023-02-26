@@ -11,11 +11,11 @@ import type {
 type Param = {
    setIncoming: (options: IncomingOptions) => void
    clearItem: (id: string) => void
-   clearAll: () => void
+   setClearTrigger: () => void
    destroyAll: () => void
 }
 
-export function createPush({ setIncoming, clearItem, clearAll, destroyAll }: Param): PushFn {
+export function createPush({ setIncoming, clearItem, setClearTrigger, destroyAll }: Param): PushFn {
    function create<T>(
       options: StaticPushOptions<T> | PromiseResultPushOptions<T>,
       status = NType.SUCCESS,
@@ -30,7 +30,7 @@ export function createPush({ setIncoming, clearItem, clearAll, destroyAll }: Par
       return create<T>(options)
    }
 
-   push.clearAll = clearAll
+   push.clearAll = setClearTrigger
 
    push.destroyAll = destroyAll
 

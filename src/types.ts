@@ -19,6 +19,13 @@ export type ReceiverProps = {
    gap: number
    options: Partial<Record<`${NType}`, Partial<ReceiverOptions>>>
    theme: Record<`--${string}`, string>
+   animations: Partial<Animations>
+}
+
+type Animations = {
+   enter: string
+   leave: string
+   clearAll: string
 }
 
 export type ReceiverOptions = {
@@ -59,7 +66,7 @@ export type StoreItem = InternalData & MergedOptions
 export type StoreRefs = {
    items: Ref<StoreItem[]>
    incoming: ShallowRef<IncomingOptions>
-   clear: Ref<boolean>
+   clearTrigger: Ref<boolean>
 }
 
 export type StoreFunctions = {
@@ -71,7 +78,7 @@ export type StoreFunctions = {
    destroyAll: () => void
    updateAll: (onUpdate: (item: StoreItem) => StoreItem) => void
    animateItem: (id: string, className: string, onEnd: () => void) => void
-   resetClearAll: () => void
+   resetClearTrigger: () => void
 }
 
 export type Store = StoreRefs & StoreFunctions

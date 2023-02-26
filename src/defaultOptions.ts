@@ -1,5 +1,5 @@
 import { markRaw } from 'vue'
-import { NType } from './constants'
+import { CLASS_PREFIX as CX, NType } from './constants'
 import { icons } from './icons'
 import type { ReceiverOptions } from './types'
 
@@ -49,4 +49,10 @@ export const defaultOptions: Required<Record<`${NType}`, ReceiverOptions>> = {
    [NType.PROMISE]: promise,
    [NType.PROMISE_RESOLVE]: success,
    [NType.PROMISE_REJECT]: error,
+}
+
+export const defaultAnimations = {
+   enter: CX + 'enter',
+   leave: CX + 'leave',
+   clearAll: CX + 'clearAll',
 }

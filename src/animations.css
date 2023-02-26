@@ -1,26 +1,16 @@
-.VNEnterTop {
-   animation: KFVNEnterTop 250ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+.VueNotify__enter {
+   animation: VueNotify__enter-kf 250ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
 
-.VNEnterBottom {
-   animation: KFVNEnterBottom 250ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+.VueNotify__leave {
+   animation: VueNotify__leave-kf 250ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
 
-.VNLeaveTop {
-   isolation: isolate;
-   animation: KFVNLeaveTop 250ms cubic-bezier(0.22, 1, 0.36, 1) both;
+.VueNotify__clearAll {
+   animation: VueNotify__clearAll-kf 600ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-.VNLeaveBottom {
-   isolation: isolate;
-   animation: KFVNLeaveBottom 250ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.VNClear {
-   animation: KFVNClear 600ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-@keyframes KFVNEnterTop {
+@keyframes VueNotify__enter-kf {
    0% {
       transform: scale(0.7) translate3d(0, -10vh, 0);
       opacity: 0;
@@ -31,18 +21,7 @@
    }
 }
 
-@keyframes KFVNEnterBottom {
-   0% {
-      transform: scale(0.7) translate3d(0, 110vh, 0);
-      opacity: 0;
-   }
-   100% {
-      transform: scale(1) translate3d(0, 0px, 0);
-      opacity: 1;
-   }
-}
-
-@keyframes KFVNLeaveTop {
+@keyframes VueNotify__leave-kf {
    from {
       transform: scale(1) translate3d(0, 0px, 0);
       opacity: 1;
@@ -53,18 +32,7 @@
    }
 }
 
-@keyframes KFVNLeaveBottom {
-   from {
-      transform: scale(1) translate3d(0, 0px, 0);
-      opacity: 1;
-   }
-   to {
-      transform: scale(0.5) translate3d(0, -50px, 0);
-      opacity: 0;
-   }
-}
-
-@keyframes KFVNClear {
+@keyframes VueNotify__clearAll-kf {
    0% {
       filter: blur(0);
       opacity: 1;
@@ -72,17 +40,5 @@
    100% {
       filter: blur(10px);
       opacity: 0;
-   }
-}
-
-@keyframes KFPopIn {
-   0% {
-      transform: scale(0.75);
-      opacity: 0.7;
-   }
-
-   100% {
-      transform: scale(1);
-      opacity: 1;
    }
 }

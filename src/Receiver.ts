@@ -14,10 +14,16 @@ import { useReceiverStyles } from './useReceiverStyles'
 import { useRefsMap } from './useRefsMap'
 import { useResizeObserver } from './useResizeObserver'
 import { defaultRenderFn } from './defaultRender'
-import { defaultOptions } from './defaultOptions'
+import { defaultAnimations, defaultOptions } from './defaultOptions'
 import { ariaRenderFn } from './ariaRender'
 import { mergeOptions } from './utils'
-import { NType, FIXED_INCREMENT } from './constants'
+import {
+   TransitionType,
+   NType,
+   FIXED_INCREMENT,
+   NOTIFICATIONS_LIMIT,
+   COMPONENT_NAME,
+} from './constants'
 import { light } from './themes'
 import type {
    ReceiverProps as Props,
@@ -29,7 +35,7 @@ import type {
 } from './types'
 
 export const Receiver = defineComponent({
-   name: 'VueNotify',
+   name: COMPONENT_NAME,
    inheritAttrs: false,
    props: {
       id: {
@@ -46,11 +52,11 @@ export const Receiver = defineComponent({
       },
       rootPadding: {
          type: Array as PropType<Props['rootPadding']>,
-         default: () => [20, 20, 140, 20],
+         default: () => [20, 20, 20, 20],
       },
       maxWidth: {
          type: Number as PropType<Props['maxWidth']>,
-         default: 1280,
+         default: 0,
       },
       position: {
          type: String as PropType<Props['position']>,
@@ -68,6 +74,10 @@ export const Receiver = defineComponent({
          type: Object as PropType<Props['theme']>,
          default: () => light,
       },
+      animations: {
+         type: Object as PropType<Props['animations']>,
+         default: () => defaultAnimations,
+      },
    },
    setup(props) {
       let isHovering = false
@@ -82,17 +92,23 @@ export const Receiver = defineComponent({
       const gap = toRef(props, 'gap')
       const pauseOnHover = toRef(props, 'pauseOnHover')
       const disabled = toRef(props, 'disabled')
+      const animations = toRef(props, 'animations')
 
       // Reactivity - Props - Computed
 
       const isTop = computed(() => position.value.split('-')[0] === 'top')
+
+      const mergedAnims = computed(() => ({
+         ...defaultAnimations,
+         ...animations.value,
+      }))
 
       // Reactivity - Store
 
       const {
          items,
          incoming,
-         clear,
+         clearTrigger,
          createItem,
          getItem,
          updateItem,
@@ -100,16 +116,16 @@ export const Receiver = defineComponent({
          destroyAll,
          updateAll,
          animateItem,
-         resetClearAll,
+         resetClearTrigger,
       } = useStore(props.id)
 
       // Reactivity - Store - Computed
 
-      const newPromises = computed(() =>
+      const promisesIds = computed(() =>
          items.value.filter(({ type }) => type === NType.PROMISE).map(({ id }) => id)
       )
 
-      const haveNotifications = computed(() => items.value.length > 0)
+      const hasNotifications = computed(() => items.value.length > 0)
 
       // Reactivity - Composables - Behavior and Style
 
@@ -122,7 +138,7 @@ export const Receiver = defineComponent({
       })
 
       const resizeObserver = useResizeObserver({
-         onSizeChange: (id) => updatePosition(id, { actionType: 'RESIZE' }),
+         onSizeChange: (id) => setPositions(id, { transitionType: TransitionType.RESIZE }),
       })
 
       // Watchers - Notifications
@@ -133,8 +149,7 @@ export const Receiver = defineComponent({
          disabled,
          (isDisabled) => {
             if (isDisabled && unsubscribe) {
-               unsubscribe()
-               destroyAll()
+               unsubscribe(), destroyAll()
             } else {
                unsubscribe = subscribe()
             }
@@ -143,38 +158,42 @@ export const Receiver = defineComponent({
       )
 
       watch(
-         clear,
+         isTop,
+         () => setPositions(sortedIds.value[0], { transitionType: TransitionType.SWITCH }),
+         { flush: 'post' }
+      )
+
+      watch(
+         () => clearTrigger.value && hasNotifications.value,
          (shouldClear) => {
-            if (shouldClear && haveNotifications.value) {
+            if (shouldClear) {
                animateClearAll()
             }
          },
          { flush: 'post' }
       )
 
-      watch(
-         () => isTop.value,
-         () => updatePosition(sortedIds.value[0], { actionType: 'SWITCH' }),
-         { flush: 'post' }
-      )
-
       // Watchers - Resize
 
       watch(
-         newPromises,
-         (_newPromises) =>
-            _newPromises.length > 0 &&
-            _newPromises.forEach((id) =>
-               resizeObserver.value?.observe(refs.get(id) as HTMLElement)
-            ),
+         promisesIds,
+         (newPromises) =>
+            newPromises.length > 0 &&
+            newPromises.forEach((id) => resizeObserver.value?.observe(refs.get(id) as HTMLElement)),
          { flush: 'post' }
       )
 
       // Watchers - Hover
 
-      watch(haveNotifications, (noNotifications) => !noNotifications && (isHovering = false), {
-         flush: 'post',
-      })
+      watch(
+         () => !hasNotifications.value,
+         (noNotifications) => {
+            if (noNotifications) {
+               isHovering = false
+            }
+         },
+         { flush: 'post' }
+      )
 
       // Functions - Listener
 
@@ -182,7 +201,10 @@ export const Receiver = defineComponent({
          return watch(
             incoming,
             (pushOptions) => {
-               if (items.value.length >= 10 && items.value[0].type !== NType.PROMISE) {
+               if (
+                  items.value.length >= NOTIFICATIONS_LIMIT &&
+                  items.value[0].type !== NType.PROMISE
+               ) {
                   animateLeave(items.value[0].id)
                }
 
@@ -270,38 +292,47 @@ export const Receiver = defineComponent({
          )
       }
 
+      function createTimeout(id: string, time: number) {
+         return setTimeout(() => animateLeave(id), time)
+      }
+
+      function getCtxProps({ title, message, type, duration, id }: MergedOptions) {
+         return { notifyProps: { title, message, type, duration, close: () => animateLeave(id) } }
+      }
+
       // Functions - Animations
 
       function animateEnter(id: string) {
-         animateItem(id, isTop.value ? 'VNEnterTop' : 'VNEnterBottom', () => {
+         animateItem(id, mergedAnims.value.enter, () => {
             updateItem(id, { animClass: '', onAnimationend: undefined })
          })
 
-         updatePosition(id, { actionType: 'PUSH' })
+         setPositions(id, { transitionType: TransitionType.PUSH })
       }
 
       function animateLeave(id: string) {
-         animateItem(id, isTop.value ? 'VNLeaveTop' : 'VNLeaveBottom', () => {
+         animateItem(id, mergedAnims.value.leave, () => {
             removeItem(id)
          })
 
-         updatePosition(id, { actionType: 'REMOVE' })
+         setPositions(id, { transitionType: TransitionType.REMOVE })
       }
 
       function animateClearAll() {
          if (wrapperRef.value) {
-            wrapperRef.value.classList.add('VNClear')
+            wrapperRef.value.classList.add(mergedAnims.value.clearAll)
             wrapperRef.value.onanimationend = () => {
                destroyAll()
-               resetClearAll()
+               resetClearTrigger()
             }
          }
       }
 
       /**
-       * Functions - Repositioning (Transitions)
+       * Functions - Transitions
        *
-       * Why reinventing the wheel? https://github.com/vuejs/vue/issues/11654
+       * Why this instead of Vue built-in Transition?
+       * https://github.com/vuejs/vue/issues/11654
        */
 
       function getPrevEl(endIndex: number) {
@@ -311,10 +342,7 @@ export const Receiver = defineComponent({
             const item = getItem(id)
             if (!item) continue
 
-            if (
-               (item.animClass !== 'VNLeaveTop' && item.animClass !== 'VNLeaveBottom') ||
-               !('animClass' in item)
-            ) {
+            if (item.animClass !== mergedAnims.value.leave || !('animClass' in item)) {
                prevEl = refs.get(id)
                break
             }
@@ -323,38 +351,34 @@ export const Receiver = defineComponent({
          return prevEl
       }
 
-      async function updatePosition(
+      async function setPositions(
          id: string,
-         { actionType }: { actionType: 'RESIZE' | 'REMOVE' | 'PUSH' | 'SWITCH' }
+         { transitionType }: { transitionType: TransitionType }
       ) {
          const currIndex = sortedIds.value.indexOf(id)
-         const isLastMutated = actionType !== 'PUSH' && currIndex === sortedIds.value.length - 1
+         const isLastMutated =
+            transitionType !== TransitionType.PUSH && currIndex === sortedIds.value.length - 1
 
          if (currIndex === -1 || isLastMutated) return
 
          const factor = isTop.value ? 1 : -1
 
-         switch (actionType) {
-            case 'PUSH':
-            case 'SWITCH':
+         switch (transitionType) {
+            case TransitionType.PUSH:
+            case TransitionType.SWITCH:
                let accHeights = 0
 
                for (const id of sortedIds.value) {
                   const thisEl = refs.get(id)
                   const thisItem = getItem(id)
 
-                  if (
-                     !thisEl ||
-                     !thisItem ||
-                     thisItem.animClass === 'VNLeaveTop' ||
-                     thisItem.animClass === 'VNLeaveBottom'
-                  ) {
+                  if (!thisEl || !thisItem || thisItem.animClass === mergedAnims.value.leave) {
                      break
                   }
 
                   updateItem(id, {
                      style: {
-                        ...(actionType === 'SWITCH' ? { transition: 'none' } : {}),
+                        ...(transitionType === TransitionType.SWITCH ? { transition: 'none' } : {}),
                         transform: `translate3d(0, ${accHeights}px, 0)`,
                      },
                   })
@@ -363,20 +387,21 @@ export const Receiver = defineComponent({
                }
                break
 
-            case 'REMOVE':
-            case 'RESIZE':
+            case TransitionType.REMOVE:
+            case TransitionType.RESIZE:
                const nextIds = sortedIds.value.slice(currIndex + 1)
                if (nextIds.length === 0) return
 
-               let prevEl = actionType === 'REMOVE' ? getPrevEl(currIndex) : refs.get(id)
-               let prevPos = 0
+               let prevEl =
+                  transitionType === TransitionType.REMOVE ? getPrevEl(currIndex) : refs.get(id)
+               let accPrevPos = 0
 
                if (prevEl)
                   if (isTop.value) {
-                     prevPos =
+                     accPrevPos =
                         prevEl.getBoundingClientRect().bottom - rootPadding.value[0] + gap.value
                   } else {
-                     prevPos = -(
+                     accPrevPos = -(
                         document.documentElement.clientHeight -
                         prevEl.getBoundingClientRect().top -
                         rootPadding.value[2] +
@@ -388,43 +413,30 @@ export const Receiver = defineComponent({
                   const thisItem = getItem(id)
                   const thisEl = refs.get(id)
 
-                  if (
-                     !thisEl ||
-                     !thisItem ||
-                     thisItem.animClass === 'VNLeaveTop' ||
-                     thisItem.animClass === 'VNLeaveBottom'
-                  ) {
+                  if (!thisEl || !thisItem || thisItem.animClass === mergedAnims.value.leave) {
                      continue
                   }
 
                   updateItem(id, {
                      style: {
-                        ...(actionType === 'RESIZE' ? { transitionDuration: '150ms' } : {}),
-                        transform: `translate3d(0, ${prevPos}px, 0)`,
+                        ...(transitionType === TransitionType.RESIZE
+                           ? { transitionDuration: '100ms' }
+                           : {}),
+                        transform: `translate3d(0, ${accPrevPos}px, 0)`,
                      },
                   })
 
-                  prevPos += factor * (thisEl.getBoundingClientRect().height + gap.value)
+                  accPrevPos += factor * (thisEl.getBoundingClientRect().height + gap.value)
                }
                break
          }
-      }
-
-      // Functions - Utils
-
-      function createTimeout(id: string, time: number) {
-         return setTimeout(() => animateLeave(id), time)
-      }
-
-      function getCtxProps({ title, message, type, duration, id }: MergedOptions) {
-         return { notifyProps: { title, message, type, duration, close: () => animateLeave(id) } }
       }
 
       // Props
 
       const pointerEvents = {
          onPointerenter() {
-            if (haveNotifications.value && !isHovering) {
+            if (hasNotifications.value && !isHovering) {
                isHovering = true
 
                const stoppedAt = performance.now()
@@ -441,7 +453,7 @@ export const Receiver = defineComponent({
             }
          },
          onPointerleave() {
-            if (haveNotifications.value && isHovering) {
+            if (hasNotifications.value && isHovering) {
                updateAll((prevItem) => {
                   const newTimeout = prevItem.duration + FIXED_INCREMENT - (prevItem.elapsed ?? 0)
 

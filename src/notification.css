@@ -19,9 +19,21 @@
 /* Icon */
 
 .VueNotify__icon {
-   animation: KFPopIn 250ms cubic-bezier(0.22, 1, 0.36, 1) both 150ms;
+   animation: VueNotify__icon-kf 250ms cubic-bezier(0.22, 1, 0.36, 1) both 150ms;
    display: flex;
    margin: 0 0.875rem 0 0;
+}
+
+@keyframes VueNotify__icon-kf {
+   0% {
+      transform: scale(0.75);
+      opacity: 0.7;
+   }
+
+   100% {
+      transform: scale(1);
+      opacity: 1;
+   }
 }
 
 [data-vuenotify='success'] .VueNotify__icon,
