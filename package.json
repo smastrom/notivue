@@ -1,24 +1,41 @@
 {
-   "name": "toast",
+   "name": "vue-notify",
    "private": true,
-   "version": "0.0.0",
-   "type": "module",
+   "version": "0.9.0",
    "scripts": {
       "dev": "vite",
-      "build": "vue-tsc && vite build",
-      "build:dirty": "vite build",
+      "build": "rimraf dist && vue-tsc && vite build",
+      "postbuild": "postcss ./src/animations.css ./src/notifications.css -d ./dist/ --use cssnano --no-map",
       "preview": "vite preview"
    },
-   "dependencies": {
-      "mitt": "^3.0.0",
-      "vue": "^3.2.45"
+   "main": "dist/index.js",
+   "module": "dist/index.mjs",
+   "types": "dist/index.d.ts",
+   "exports": {
+      ".": {
+         "import": "./dist/index.mjs",
+         "require": "./dist/index.js"
+      },
+      "./animations.css": {
+         "import": "./dist/animations.css",
+         "require": "./dist/animations.css"
+      },
+      "./notifications.css": {
+         "import": "./dist/notifications.css",
+         "require": "./dist/notifications.css"
+      }
    },
    "devDependencies": {
       "@rollup/plugin-terser": "^0.4.0",
       "@vitejs/plugin-vue": "^4.0.0",
-      "prettier": "^2.8.3",
-      "typescript": "^4.9.3",
-      "vite": "^4.0.0",
-      "vue-tsc": "^1.0.11"
+      "cssnano": "^5.1.15",
+      "postcss": "^8.4.21",
+      "postcss-cli": "^10.1.0",
+      "prettier": "^2.8.4",
+      "rimraf": "^4.1.2",
+      "typescript": "^4.9.5",
+      "vite": "^4.1.4",
+      "vue": "^3.2.47",
+      "vue-tsc": "^1.2.0"
    }
 }
