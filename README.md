@@ -1,25 +1,41 @@
 # Vuenotify
 
-Lightweight, simple and powerful toast notifications for Vue 3.
+Fully-fledged, flexible notification system for Vue 3.
 
-[Documentation]() - [Live Demo](https://vuenotify.netlify.app/) - [StackBlitz]()
+---
+
+[Live Demo](https://vuenotify.netlify.app/) - [Documentation]() - [StackBlitz]()
 
 <br />
 
 ## Features
 
--  Ships with **everything** you need
--  Three-shakable and modular CSS (only bundle what you use)
--  Doesn't require a build step
--  4 cool themes included
--  Supports multiple receivers
--  Enable/disable notifications
--  Custom components API
--  Promise API
--  Uses Vue Transition API (customizable as per official docs)
--  ARIA compliant
--  Lightweight with no dependencies
--  Fully typed
+**🧬 100% JS and CSS modular**  
+_Granularly bundle only what you use_
+
+**🧚‍♂️ Zero deps and lightweight**  
+_From 2.8 to 5 KB including styles_
+
+**🔰 Ships with anything you need**  
+_Themes, icons, animations and much more_
+
+**💅 Theming API**  
+_Create your own theme with a breeze_
+
+**🌀 Promise API**  
+_Update peding notifications with ease_
+
+**🧩 Custom Components API**  
+_Use your own components while VueNotify handles the rest_
+
+**🎢 Slick transitions and animations**  
+_Customize enter/leave animations_
+
+**♿️ Accessible and WAI ARIA compliant**  
+_Notifications are accessible to screen readers_
+
+**🕉 Out-of-the box native RTL support**  
+_No need to write custom CSS_
 
 <br />
 
@@ -37,126 +53,41 @@ pnpm add vuenotify
 
 ```js
 import { notify } from 'vuenotify'
-import 'vuenotify/notifications.css'
 
-const app = createApp(App).mount('#app')
+import 'vuenotify/notification.css'
+import 'vuenotify/animations.css'
 
-app.use(notify)
+createApp(App).use(notify).mount('#app')
 ```
 
 ### 2. Anywhere in your app
 
-> :bulb: **App.vue** might be a good place for global notifications
-
 ```vue
 <script setup>
-import { VueNotify } from 'vuenotify'
+import { VueNotify, notification, icons } from 'vuenotify'
 </script>
 
 <template>
-   <div>
-      <VueNotify />
-      <RouterView />
-   </div>
+   <VueNotify :component="notification" :icons="icons" />
 </template>
 ```
 
-### 3. In any component
-
-> :bulb: Get the push function **once** and call it how many times you want
-
-**Composition API**
+### 3. Anywhere in your app
 
 ```vue
-<script setup>
-import { usePush } from 'vuenotify'
-
-const push = usePush()
-</script>
-
 <template>
-   <button @click="push('Something good has been pushed!')">Push</button>
-</template>
-```
-
-**Options API**
-
-```vue
-<script>
-import { usePush } from 'vuenotify'
-
-export default {
-   setup() {
-      const push = usePush()
-      return { push }
-   }
-}
-</script>
-
-<template>
-   <button @click="push('Something good has been pushed!')">Push</button>
+   <button @click="$push('Something good has been pushed!')">Push</button>
 </template>
 ```
 
 <br />
 
-## Usage
+## Links
 
-### Success
+[Live Demo](https://vuenotify.netlify.app/) - [Documentation]() - [StackBlitz]()
 
-```js
-const success = push({ message: 'This is a success message.' })
-// or push.success({ message: 'This is a success message.' })
+<br />
 
-success.clear()
-success.destroy()
-```
+## License
 
-### Error
-
-```js
-const error = push.error({ message: 'Something went wrong.' })
-
-error.clear()
-error.destroy()
-```
-
-### Warning
-
-```js
-const warning = push.warning({ message: 'This is a custom message.' })
-
-warning.clear()
-warning.destroy()
-```
-
-### Info
-
-```js
-const info = push.info({ message: 'This is a custom message.' })
-
-info.clear()
-info.destroy()
-```
-
-### Promise
-
-```js
-try {
-   const promise = push.promise({ message: 'Loading...' })
-   await new Promise((resolve) => setTimeout(resolve, 1000))
-   promise.resolve({ message: 'Resolved!' })
-} catch (error) {
-   promise.reject({ message: 'Rejected!' }) // or promise.clear() to manually clear
-}
-
-promise.clear()
-promise.destroy()
-```
-
-### Clear all / Destroy all
-
-```js
-push.clearAll()
-push.destroyAll()
-```
+MIT Licensed - Simone Mastromattei © 2023
