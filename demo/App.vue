@@ -32,7 +32,7 @@ const options = {
       :options="options"
    />
 
-   <!--    <VueNotify id="user-1" position="bottom-right" :disabled="false" /> -->
+   <VueNotify id="user-1" position="bottom-right" :disabled="false" />
 
    <h1>
       Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
@@ -42,3 +42,9 @@ const options = {
    <p>{{ text }}</p>
    <Nav />
 </template>
+
+<style scoped>
+.rootRossi {
+   color: red;
+}
+</style>

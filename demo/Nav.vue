@@ -190,6 +190,11 @@ function pushThousand() {
             Success
          </button>
          <button
+            @click="$push.success({ message: 'Your message has been successfully sent. Please.' })"
+         >
+            Push $
+         </button>
+         <button
             @click="push.error({ message: 'Your message has been successfully sent. Please.' })"
          >
             Error

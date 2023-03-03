@@ -1,7 +1,13 @@
 import { createStore } from './createStore'
 import { defaultSymbol, userSymbols } from './symbols'
 import type { Plugin, InjectionKey } from 'vue'
-import type { PluginOptions, Store } from './types'
+import type { PluginOptions, Store, PushFn } from './types'
+
+declare module 'vue' {
+   interface ComponentCustomProperties {
+      $push: PushFn
+   }
+}
 
 export const install: Plugin = {
    install(
@@ -21,5 +27,13 @@ export const install: Plugin = {
          .forEach((sym) => receivers.set(sym, createStore()))
 
       receivers.forEach((value, sym) => app.provide(sym, value))
+
+      if (!app.config.globalProperties.$push && receivers.get(defaultSymbol)) {
+         app.config.globalProperties.$push = receivers.get(defaultSymbol)!.createPush()
+      } else {
+         console.warn(
+            'You already have a $push property in your Vue instance. Get the push function from `useNotify` instead.'
+         )
+      }
    },
 }

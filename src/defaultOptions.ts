@@ -8,7 +8,7 @@ const success: ReceiverOptions = {
    message: '',
    icon: markRaw(icons.success),
    close: true,
-   duration: 3000,
+   duration: 3000 * 1000,
    ariaLive: 'polite',
    ariaRole: 'status',
 }
