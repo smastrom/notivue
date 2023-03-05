@@ -5,7 +5,7 @@ export function useRefsMap() {
 
    const sortedIds = computed(() =>
       Array.from(refs.entries())
-         .sort(([prevId], [nextId]) => Number(nextId) - Number(prevId))
+         .sort(([prevId], [nextId]) => +nextId - +prevId)
          .map(([id]) => id)
    )
 

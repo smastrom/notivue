@@ -182,7 +182,9 @@ function pushThousand() {
                () => {
                   counter++
                   push({
-                     message: `${counter} Your message has been successfully sent. Please.`,
+                     message: `
+                     ${counter} Your message has
+                     been successfully **sent**. Please.`,
                   })
                }
             "
@@ -195,7 +197,7 @@ function pushThousand() {
             Push $
          </button>
          <button
-            @click="push.error({ message: 'Your message has been successfully sent. Please.' })"
+            @click="push.error({ message: 'Your **message** has been successfully sent. Please.' })"
          >
             Error
          </button>
