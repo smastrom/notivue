@@ -15,18 +15,48 @@ export function hIcon(icon: unknown, props = {}) {
    return null
 }
 
-export function hMessage(message: string) {
-   const lines = message.split('\n')
+const newLineRegex = /(\n)/g
+const strongRegex = /\*\*([^*]+)\*\*/g
 
-   if (lines.length > 1) {
-      return lines.map((line, index) =>
-         index === 0
-            ? h('span', line)
-            : [h('br'), line.replace(/\s/g, '').length > 0 && h('span', line)]
-      )
+function hLine(text: string) {
+   let match
+   let currentIndex = 0
+
+   const nodes: VNode[] = []
+
+   while ((match = strongRegex.exec(text))) {
+      const [_match, innerText] = match
+      const startIndex = match.index
+      const endIndex = startIndex + _match.length
+
+      if (startIndex > currentIndex) {
+         nodes.push(h('span', text.slice(currentIndex, startIndex)))
+      }
+
+      nodes.push(h('strong', innerText))
+
+      currentIndex = endIndex
    }
 
-   return message
+   if (currentIndex < text.length) {
+      nodes.push(h('span', text.slice(currentIndex)))
+   }
+
+   return nodes
+}
+
+export function hMessage(message: string) {
+   const nodes: VNode[] = []
+
+   message.split(newLineRegex).forEach((line) => {
+      if (newLineRegex.test(line)) {
+         nodes.push(h('br'))
+      } else {
+         nodes.push(...hLine(line))
+      }
+   })
+
+   return nodes
 }
 
 export function mergeOptions(
