@@ -23,8 +23,8 @@ function usePostSuccess<T extends _PushOptions & { props?: Record<string, any> }
          ...options,
          render: {
             component: markRaw(Custom),
-            props: ({ notifyProps }) => ({
-               ...notifyProps,
+            props: ({ notsyProps }) => ({
+               ...notsyProps,
                ...props,
             }),
          },
@@ -61,8 +61,8 @@ function customPush() {
       message: 'Custom',
       render: {
          component: markRaw(Custom),
-         props: ({ notifyProps }) => ({
-            ...notifyProps,
+         props: ({ notsyProps }) => ({
+            ...notsyProps,
             avatarUrl: 'https://i.pravatar.cc/150?img=1',
          }),
       },
@@ -72,7 +72,7 @@ function customPush() {
       message: 'Custom',
       render: {
          component: markRaw(Custom),
-         props: ({ notifyProps }) => ({}),
+         props: ({ notsyProps }) => ({}),
       },
    }) */
 }
@@ -82,8 +82,8 @@ async function customAsync() {
       message: 'Async',
       render: {
          component: markRaw(Custom),
-         props: ({ notifyProps }) => ({
-            ...notifyProps,
+         props: ({ notsyProps }) => ({
+            ...notsyProps,
             avatarUrl: 'https://i.pravatar.cc/150?img=1',
             nameSurname: 'John Doe',
          }),
@@ -96,8 +96,8 @@ async function customAsync() {
       message: 'Async resolved',
       render: {
          component: markRaw(Custom),
-         props: ({ notifyProps, prevProps }) => ({
-            ...notifyProps,
+         props: ({ notsyProps, prevProps }) => ({
+            ...notsyProps,
             ...prevProps,
             avatarUrl: 'https://i.pravatar.cc/150?img=1',
          }),
@@ -108,8 +108,8 @@ async function customAsync() {
       message: 'Async resolved',
       render: {
          component: markRaw(Custom),
-         props: ({ notifyProps }) => ({
-            ...notifyProps,
+         props: ({ notsyProps }) => ({
+            ...notsyProps,
          }),
       },
    })
@@ -118,7 +118,7 @@ async function customAsync() {
       message: 'Async resolved',
       render: {
          component: markRaw(Custom),
-         props: ({ notifyProps }) => ({}),
+         props: ({ notsyProps }) => ({}),
       },
    }) */
 }

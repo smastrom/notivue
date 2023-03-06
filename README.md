@@ -1,10 +1,10 @@
-# Vuenotify
+# Notsy
 
-Fully-fledged, flexible notification system for Vue 3.
+Fully-fledged flexible **not**ification **sy**stem for Vue 3.
 
 ---
 
-[Live Demo](https://vuenotify.netlify.app/) - [Documentation]() - [StackBlitz]()
+[Live Demo](https://notsy.netlify.app/) - [Documentation]() - [StackBlitz]()
 
 <br />
 
@@ -26,7 +26,7 @@ _Create your own theme with a breeze_
 _Update peding notifications with ease_
 
 **🧩 Custom Components API**  
-_Use your own components while VueNotify handles the rest_
+_Use your own components while Notsy handles the rest_
 
 **🎢 Slick transitions and animations**  
 _Customize enter/leave animations_
@@ -42,7 +42,7 @@ _No need to write custom CSS_
 ## Installation
 
 ```bash
-pnpm add vuenotify
+pnpm add notsy
 ```
 
 <br />
@@ -52,23 +52,23 @@ pnpm add vuenotify
 ### 1. main.js
 
 ```js
-import { notify } from 'vuenotify'
+import { notsy } from 'notsy'
 
-import 'vuenotify/notification.css'
-import 'vuenotify/animations.css'
+import 'notsy/component.css'
+import 'notsy/animations.css'
 
-createApp(App).use(notify).mount('#app')
+createApp(App).use(notsy).mount('#app')
 ```
 
 ### 2. Anywhere in your app
 
 ```vue
 <script setup>
-import { VueNotify, notification, icons } from 'vuenotify'
+import { Notsy, component, icons } from 'notsy'
 </script>
 
 <template>
-   <VueNotify :component="notification" :icons="icons" />
+   <Notsy :render="component" :icons="icons" />
 </template>
 ```
 
@@ -84,7 +84,7 @@ import { VueNotify, notification, icons } from 'vuenotify'
 
 ## Links
 
-[Live Demo](https://vuenotify.netlify.app/) - [Documentation]() - [StackBlitz]()
+[Live Demo](https://notsy.netlify.app/) - [Documentation]() - [StackBlitz]()
 
 <br />
 

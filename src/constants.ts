@@ -4,7 +4,7 @@ export const FIXED_INCREMENT = 250
 
 export const EASING = 'cubic-bezier(0.22, 1, 0.36, 1)'
 
-export const COMPONENT_NAME = 'VueNotify'
+export const COMPONENT_NAME = 'Notsy'
 
 export const CLASS_PREFIX = COMPONENT_NAME + '__'
 

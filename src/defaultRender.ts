@@ -9,7 +9,7 @@ export function defaultRenderFn(item: StoreItem) {
       'div',
       {
          class: CX + 'notification',
-         'data-vuenotify': item.type,
+         'data-notsy': item.type,
       },
       [
          item.icon && hIcon(item.icon, { class: CX + 'icon', key: `${item.id}_${item.type}` }),

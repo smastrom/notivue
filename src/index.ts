@@ -1,3 +1,3 @@
-export { Receiver as VueNotify } from './Receiver'
-export { usePush as useNotify } from './usePush'
-export { install as notify } from './install'
+export { Receiver as Notsy } from './Receiver'
+export { usePush as useNotsy } from './usePush'
+export { install as notsy } from './install'

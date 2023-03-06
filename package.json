@@ -1,11 +1,11 @@
 {
-   "name": "vue-notify",
+   "name": "notsy",
    "private": true,
    "version": "0.9.0",
    "scripts": {
       "dev": "vite",
       "build": "rimraf dist && vue-tsc && vite build",
-      "postbuild": "postcss ./src/animations.css ./src/notifications.css -d ./dist/ --use cssnano --no-map",
+      "postbuild": "postcss ./src/animations.css ./src/component.css -d ./dist/ --use cssnano --no-map",
       "preview": "vite preview"
    },
    "main": "dist/index.js",
@@ -16,13 +16,13 @@
          "import": "./dist/index.mjs",
          "require": "./dist/index.js"
       },
+      "./component.css": {
+         "import": "./dist/component.css",
+         "require": "./dist/component.css"
+      },
       "./animations.css": {
          "import": "./dist/animations.css",
          "require": "./dist/animations.css"
-      },
-      "./notifications.css": {
-         "import": "./dist/notifications.css",
-         "require": "./dist/notifications.css"
       }
    },
    "devDependencies": {
