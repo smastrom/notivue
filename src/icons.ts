@@ -1,5 +1,6 @@
 import { h } from 'vue'
 import { NType } from './constants'
+import { ReceiverProps } from './types'
 
 const svgProps = {
    xmlns: 'http://www.w3.org/2000/svg',
@@ -61,19 +62,18 @@ const promise = h('svg', { ...svgProps, width: 28, height: 28, fill: 'currentCol
    ),
 ])
 
-export const close = [
-   h('svg', featherProps, [
-      h('line', { x1: 18, y1: 6, x2: 6, y2: 18 }),
-      h('line', { x1: 6, y1: 6, x2: 18, y2: 18 }),
-   ]),
-]
+export const close = h('svg', featherProps, [
+   h('line', { x1: 18, y1: 6, x2: 6, y2: 18 }),
+   h('line', { x1: 6, y1: 6, x2: 18, y2: 18 }),
+])
 
-export const icons = {
-   [NType.SUCCESS]: success,
-   [NType.ERROR]: error,
-   [NType.INFO]: info,
-   [NType.WARNING]: error,
-   [NType.PROMISE]: promise,
-   [NType.PROMISE_RESOLVE]: success,
-   [NType.PROMISE_REJECT]: error,
+export const icons: ReceiverProps['icons'] = {
+   [NType.SUCCESS]: () => success,
+   [NType.ERROR]: () => error,
+   [NType.INFO]: () => info,
+   [NType.WARNING]: () => error,
+   [NType.PROMISE]: () => promise,
+   [NType.PROMISE_RESOLVE]: () => success,
+   [NType.PROMISE_REJECT]: () => error,
+   close: () => close,
 }

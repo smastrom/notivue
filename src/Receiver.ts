@@ -73,6 +73,10 @@ export const Receiver = defineComponent({
          type: Object as PropType<Props['animations']>,
          default: () => defaultAnimations,
       },
+      icons: {
+         type: Object as PropType<Props['icons']>,
+         default: () => ({}),
+      },
    },
    setup(props) {
       let isHovering = false
@@ -219,6 +223,7 @@ export const Receiver = defineComponent({
 
                   if (prevComponent) {
                      const prevProps: Record<string, unknown> = { ...(currItem.prevProps ?? {}) }
+                     const newComponent = options.render?.component
 
                      delete prevProps.title
                      delete prevProps.message
@@ -231,7 +236,7 @@ export const Receiver = defineComponent({
                      customComponent = {
                         customRenderFn: () =>
                            h(
-                              options.render?.component ?? prevComponent,
+                              newComponent ? newComponent() : prevComponent(),
                               (
                                  options.render?.props as NonNullable<
                                     MaybeRenderPromiseResult['render']
@@ -250,9 +255,9 @@ export const Receiver = defineComponent({
                      createdAt,
                   })
                } else {
-                  const component = options.render?.component
+                  const _customComponent = options.render?.component
 
-                  if (component) {
+                  if (_customComponent) {
                      const props = ((
                         options.render?.props as NonNullable<
                            MaybeRenderStatic<CtxProps & Record<string, unknown>>['render']
@@ -260,9 +265,9 @@ export const Receiver = defineComponent({
                      )?.(getCtxProps(options)) ?? {}) as CtxProps
 
                      customComponent = {
-                        customRenderFn: () => h(component, props),
+                        customRenderFn: () => h(_customComponent(), props),
                         ...(options.type === NType.PROMISE
-                           ? { prevProps: props, prevComponent: component }
+                           ? { prevProps: props, prevComponent: _customComponent }
                            : {}),
                      }
                   }
@@ -397,7 +402,6 @@ export const Receiver = defineComponent({
                      'div',
                      {
                         style: { ...containerStyles.value, ...props.theme },
-                        ...(props.id ? { 'data-notsy-id': props.id } : {}),
                         ...(pauseOnHover.value ? pointerEvents : {}),
                      },
                      items.value.map((item) =>
@@ -419,7 +423,15 @@ export const Receiver = defineComponent({
                                  onAnimationstart: item.onAnimationstart,
                                  onAnimationend: item.onAnimationend,
                               },
-                              [item.customRenderFn?.() ?? defaultRenderFn(item), ariaRenderFn(item)]
+                              [
+                                 item.customRenderFn?.() ??
+                                    defaultRenderFn({
+                                       item,
+                                       iconSrc: props.icons[item.type],
+                                       closeIconSrc: props.icons.close,
+                                    }),
+                                 ariaRenderFn(item),
+                              ]
                            )
                         )
                      )

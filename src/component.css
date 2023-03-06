@@ -1,25 +1,68 @@
-/* Container */
-
-.Notsy__notification {
-   background: var(--VNBackground);
-   padding: 0.625rem;
-   width: var(--VNWidth);
-   max-width: 100%;
-   border-radius: 0.75rem;
-   display: grid;
-   grid-template-columns: auto 1fr auto;
-   border: var(--VNBorderRadius);
-   justify-items: start;
-   align-items: center;
-   box-shadow: var(--VNBoxShadow);
-   box-sizing: border-box;
+[data-notsy='success'],
+[data-notsy='promise-resolve'] {
+   --ny-background: var(--ny-success-background);
+   --ny-foreground: var(--ny-success-foreground);
+   --ny-accent: var(--ny-success-accent);
+   --ny-border: var(--ny-success-border);
 }
 
-/* Icon */
+[data-notsy='error'],
+[data-notsy='promise-reject'] {
+   --ny-background: var(--ny-error-background);
+   --ny-foreground: var(--ny-error-foreground);
+   --ny-accent: var(--ny-error-accent);
+   --ny-border: var(--ny-error-border);
+}
+
+[data-notsy='warning'] {
+   --ny-background: var(--ny-warning-background);
+   --ny-foreground: var(--ny-warning-foreground);
+   --ny-accent: var(--ny-warning-accent);
+   --ny-border: var(--ny-warning-border);
+}
+
+[data-notsy='info'] {
+   --ny-background: var(--ny-info-background);
+   --ny-foreground: var(--ny-info-foreground);
+   --ny-accent: var(--ny-info-accent);
+   --ny-border: var(--ny-info-border);
+}
+
+[data-notsy='promise'] {
+   --ny-background: var(--ny-promise-background);
+   --ny-foreground: var(--ny-promise-foreground);
+   --ny-accent: var(--ny-promise-accent);
+   --ny-border: var(--ny-promise-border);
+}
+
+.Notsy__notification {
+   width: var(--ny-width);
+   max-width: 100%;
+   padding: var(--ny-spacing);
+   background-color: var(--ny-background, var(--ny-global-background));
+
+   display: grid;
+   justify-items: var(--ny-y-align);
+   align-items: center;
+   grid-template-columns: auto 1fr auto;
+
+   border-style: solid;
+   border-width: var(--ny-border-width, 0);
+   border-radius: var(--ny-radius, 0);
+   border-color: var(--ny-border, var(--ny-global-border));
+
+   box-sizing: border-box;
+   box-shadow: var(--ny-shadow);
+
+   & * {
+      box-sizing: border-box;
+   }
+}
 
 .Notsy__icon {
    animation: Notsy__icon-kf 250ms cubic-bezier(0.22, 1, 0.36, 1) both 150ms;
    display: flex;
+   color: var(--ny-accent, var(--ny-global-accent));
    margin: 0 0.875rem 0 0;
 }
 
@@ -35,73 +78,49 @@
    }
 }
 
-[data-notsy='success'] .Notsy__icon,
-[data-notsy='promise-resolve'] .Notsy__icon {
-   color: var(--VNSuccessColor);
-}
-
-[data-notsy='error'] .Notsy__icon,
-[data-notsy='promise-reject'] .Notsy__icon {
-   color: var(--VNErrorColor);
-}
-
-[data-notsy='promise'] .Notsy__icon {
-   color: var(--VNPromiseColor);
-}
-
-[data-notsy='info'] .Notsy__icon {
-   color: var(--VNInfoColor);
-}
-
-[data-notsy='warning'] .Notsy__icon {
-   color: var(--VNWarningColor);
-}
-
-/* Content */
-
-.Notsy__content {
-   display: grid;
-   gap: calc(1rem / 4);
-}
-
 .Notsy__content-title {
-   color: var(--VNTitleColor);
+   line-height: 1.15;
    font-weight: 700;
-   font-size: 1rem;
+   color: var(--ny-foreground, var(--ny-global-foreground));
+   font-size: var(--ny-title-size);
+   margin: 0 0 0.33em 0;
    padding: 0;
-   margin: 0;
-   text-align: left;
+   text-align: inherit;
 }
 
 .Notsy__content-message {
-   color: var(--VNMessageColor);
    font-weight: 600;
+   opacity: 0.8;
    line-height: 1.35;
-   text-align: left;
+   color: var(--ny-foreground, var(--ny-global-foreground));
+   text-align: inherit;
    margin: 0;
    padding: 0;
-   font-size: 0.875rem;
+   font-size: var(--ny-message-size);
 }
 
-/* Close */
-
 .Notsy__close {
-   left: 0.625rem;
    position: relative;
-   border: none;
-   margin: 0;
-   border-left: var(--VNBorder);
-   border-radius: 0;
-   background: none;
-   padding: 0.875rem;
-   opacity: 0.5;
    height: 100%;
+   left: var(--ny-spacing);
+   margin: 0;
+   padding: var(--ny-spacing);
+
+   border: none;
+   border-left-style: solid;
+   border-left-width: var(--ny-border-width, 0);
+   border-left-color: var(--ny-border, var(--ny-global-border));
+   border-radius: 0;
+
+   background: none;
+   opacity: 0.5;
 }
 
 .Notsy__close-icon {
    display: flex;
    opacity: 0.5;
-   color: var(--VNCloseColor);
+   transition: 100ms opacity ease-out;
+   color: var(--ny-foreground, var(--ny-global-foreground));
 }
 
 .Notsy__close:hover .Notsy__close-icon {

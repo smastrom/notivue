@@ -1,4 +1,4 @@
-import type { VNode, Component, Raw, CSSProperties, Ref, ShallowRef } from 'vue'
+import type { VNode, Component, CSSProperties, Ref, ShallowRef } from 'vue'
 import { NType } from './constants'
 
 export type PluginOptions = {
@@ -6,6 +6,8 @@ export type PluginOptions = {
 }
 
 // Receiver Props
+
+export type IconSrc = (() => Component) | string
 
 export type ReceiverProps = {
    disabled: boolean
@@ -20,6 +22,7 @@ export type ReceiverProps = {
    options: Partial<Record<`${NType}`, Partial<ReceiverOptions>>>
    theme: Record<`--${string}`, string>
    animations: Partial<Animations>
+   icons: Partial<Record<`${NType}` | 'close', IconSrc>>
 }
 
 type Animations = {
@@ -29,13 +32,14 @@ type Animations = {
 }
 
 export type ReceiverOptions = {
-   icon: Raw<Component> | false
+   icon: boolean
    title: string | false
    message: string | false
    close: boolean
    duration: number
    ariaLive: 'polite' | 'assertive'
    ariaRole: 'alert' | 'status'
+   closeAriaLabel: string
 }
 
 // Receiver Internal
@@ -52,7 +56,7 @@ type InternalData = {
    onAnimationend?: (event: AnimationEvent) => void
    customRenderFn?: () => VNode
    prevProps?: CtxProps & Record<string, unknown>
-   prevComponent?: Raw<Component>
+   prevComponent?: () => Component
 }
 
 export type MergedOptions = Required<ReceiverOptions> & IncomingOptions
@@ -95,7 +99,7 @@ export type StaticPushOptions<T> = Partial<ReceiverOptions> & MaybeRenderStatic<
 
 export type MaybeRenderStatic<T> = {
    render?: {
-      component?: Raw<Component>
+      component?: () => Component
       props?: (props: { notsyProps: CtxProps }) => Partial<CtxProps & T>
    }
 }
@@ -104,7 +108,7 @@ export type PromiseResultPushOptions<T> = Partial<ReceiverOptions> & MaybeRender
 
 export type MaybeRenderPromiseResult<T = {}> = {
    render?: {
-      component?: Raw<Component>
+      component?: () => Component
       props?: (props: {
          notsyProps: CtxProps
          prevProps: Omit<T, keyof CtxProps>
@@ -147,26 +151,6 @@ export type ClearFn = { clear: () => void }
 
 // CSS
 
-type Vars =
-   | '--VNWidth'
-   | '--VNBackground'
-   | '--VNBorder'
-   | '--VNBorderRadius'
-   | '--VNBoxShadow'
-   | '--VNTitleColor'
-   | '--VNMessageColor'
-   | '--VNSuccessColor'
-   | '--VNSuccessBackground'
-   | '--VNErrorColor'
-   | '--VNErrorBackground'
-   | '--VNWarningColor'
-   | '--VNWarningBackground'
-   | '--VNInfoColor'
-   | '--VNInfoBackground'
-   | '--VNPromiseColor'
-   | '--VNPromiseBackground'
-   | '--VNCloseColor'
-
 export type Position =
    | 'top-left'
    | 'top-center'
@@ -175,4 +159,64 @@ export type Position =
    | 'bottom-center'
    | 'bottom-right'
 
-export type Theme = Record<Vars, string>
+// Theme
+
+type ThemeLayoutVars =
+   | '--ny-width'
+   | '--ny-spacing'
+   | '--ny-radius'
+   | '--ny-y-align'
+   | '--ny-border-width'
+   | '--ny-tip-width'
+   | '--ny-icon-size'
+   | '--ny-title-size'
+   | '--ny-message-size'
+   | '--ny-close-size'
+   | '--ny-shadow'
+
+type ThemeGlobalColorsVars =
+   | '--ny-global-background'
+   | '--ny-global-foreground'
+   | '--ny-global-accent'
+   | '--ny-global-border'
+
+type SuccessColorsVars =
+   | '--ny-success-foreground'
+   | '--ny-success-background'
+   | '--ny-success-border'
+   | '--ny-success-accent'
+
+type ErrorColorsVars =
+   | '--ny-error-foreground'
+   | '--ny-error-background'
+   | '--ny-error-border'
+   | '--ny-error-accent'
+
+type WarningColorsVars =
+   | '--ny-warning-foreground'
+   | '--ny-warning-background'
+   | '--ny-warning-border'
+   | '--ny-warning-accent'
+
+type InfoColorsVars =
+   | '--ny-info-foreground'
+   | '--ny-info-background'
+   | '--ny-info-border'
+   | '--ny-info-accent'
+
+type PromiseColorsVars =
+   | '--ny-promise-foreground'
+   | '--ny-promise-background'
+   | '--ny-promise-border'
+   | '--ny-promise-accent'
+
+type ThemeVars =
+   | ThemeLayoutVars
+   | ThemeGlobalColorsVars
+   | SuccessColorsVars
+   | ErrorColorsVars
+   | WarningColorsVars
+   | InfoColorsVars
+   | PromiseColorsVars
+
+export type Theme = Partial<Record<ThemeVars, string>>

@@ -1,4 +1,4 @@
-import { h, isVNode, type VNode } from 'vue'
+import { h, type VNode, type Component } from 'vue'
 import { NType } from './constants'
 import type { ReceiverProps, IncomingOptions, ReceiverOptions, MergedOptions } from './types'
 
@@ -8,11 +8,15 @@ export function createID() {
    return performance.now().toString()
 }
 
-export function hIcon(icon: unknown, props = {}) {
-   if (isVNode(icon) || typeof icon === 'object') {
-      return h(icon as VNode, props)
+export function hIcon(icon: (() => Component) | string, props = {}) {
+   switch (typeof icon) {
+      case 'function':
+         return h(icon(), props)
+      case 'string':
+         return h('span', props, icon)
+      default:
+         return null
    }
-   return null
 }
 
 const newLineRegex = /(\n)/g
