@@ -290,7 +290,7 @@ export const Receiver = defineComponent({
       }
 
       function getCtxProps({ title, message, type, duration, id }: MergedOptions) {
-         return { notifyProps: { title, message, type, duration, close: () => animateLeave(id) } }
+         return { notsyProps: { title, message, type, duration, close: () => animateLeave(id) } }
       }
 
       // Functions - Animations
@@ -397,7 +397,7 @@ export const Receiver = defineComponent({
                      'div',
                      {
                         style: { ...containerStyles.value, ...props.theme },
-                        ...(props.id ? { 'data-vuenotify-id': props.id } : {}),
+                        ...(props.id ? { 'data-notsy-id': props.id } : {}),
                         ...(pauseOnHover.value ? pointerEvents : {}),
                      },
                      items.value.map((item) =>

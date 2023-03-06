@@ -96,7 +96,7 @@ export type StaticPushOptions<T> = Partial<ReceiverOptions> & MaybeRenderStatic<
 export type MaybeRenderStatic<T> = {
    render?: {
       component?: Raw<Component>
-      props?: (props: { notifyProps: CtxProps }) => Partial<CtxProps & T>
+      props?: (props: { notsyProps: CtxProps }) => Partial<CtxProps & T>
    }
 }
 
@@ -106,7 +106,7 @@ export type MaybeRenderPromiseResult<T = {}> = {
    render?: {
       component?: Raw<Component>
       props?: (props: {
-         notifyProps: CtxProps
+         notsyProps: CtxProps
          prevProps: Omit<T, keyof CtxProps>
       }) => Record<string, unknown>
    }

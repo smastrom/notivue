@@ -1,6 +1,6 @@
 /* Container */
 
-.VueNotify__notification {
+.Notsy__notification {
    background: var(--VNBackground);
    padding: 0.625rem;
    width: var(--VNWidth);
@@ -17,13 +17,13 @@
 
 /* Icon */
 
-.VueNotify__icon {
-   animation: VueNotify__icon-kf 250ms cubic-bezier(0.22, 1, 0.36, 1) both 150ms;
+.Notsy__icon {
+   animation: Notsy__icon-kf 250ms cubic-bezier(0.22, 1, 0.36, 1) both 150ms;
    display: flex;
    margin: 0 0.875rem 0 0;
 }
 
-@keyframes VueNotify__icon-kf {
+@keyframes Notsy__icon-kf {
    0% {
       transform: scale(0.75);
       opacity: 0.7;
@@ -35,36 +35,36 @@
    }
 }
 
-[data-vuenotify='success'] .VueNotify__icon,
-[data-vuenotify='promise-resolve'] .VueNotify__icon {
+[data-notsy='success'] .Notsy__icon,
+[data-notsy='promise-resolve'] .Notsy__icon {
    color: var(--VNSuccessColor);
 }
 
-[data-vuenotify='error'] .VueNotify__icon,
-[data-vuenotify='promise-reject'] .VueNotify__icon {
+[data-notsy='error'] .Notsy__icon,
+[data-notsy='promise-reject'] .Notsy__icon {
    color: var(--VNErrorColor);
 }
 
-[data-vuenotify='promise'] .VueNotify__icon {
+[data-notsy='promise'] .Notsy__icon {
    color: var(--VNPromiseColor);
 }
 
-[data-vuenotify='info'] .VueNotify__icon {
+[data-notsy='info'] .Notsy__icon {
    color: var(--VNInfoColor);
 }
 
-[data-vuenotify='warning'] .VueNotify__icon {
+[data-notsy='warning'] .Notsy__icon {
    color: var(--VNWarningColor);
 }
 
 /* Content */
 
-.VueNotify__content {
+.Notsy__content {
    display: grid;
    gap: calc(1rem / 4);
 }
 
-.VueNotify__content-title {
+.Notsy__content-title {
    color: var(--VNTitleColor);
    font-weight: 700;
    font-size: 1rem;
@@ -73,7 +73,7 @@
    text-align: left;
 }
 
-.VueNotify__content-message {
+.Notsy__content-message {
    color: var(--VNMessageColor);
    font-weight: 600;
    line-height: 1.35;
@@ -85,7 +85,7 @@
 
 /* Close */
 
-.VueNotify__close {
+.Notsy__close {
    left: 0.625rem;
    position: relative;
    border: none;
@@ -98,12 +98,12 @@
    height: 100%;
 }
 
-.VueNotify__close-icon {
+.Notsy__close-icon {
    display: flex;
    opacity: 0.5;
    color: var(--VNCloseColor);
 }
 
-.VueNotify__close:hover .VueNotify__close-icon {
+.Notsy__close:hover .Notsy__close-icon {
    opacity: 1;
 }

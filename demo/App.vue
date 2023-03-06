@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Nav from './Nav.vue'
 import { settings } from './store'
-import { VueNotify } from '../src'
+import { Notsy } from '../src'
 import CustomIcon from './CustomIcon.vue'
 import { markRaw } from 'vue'
 
@@ -25,14 +25,14 @@ const options = {
 </script>
 
 <template>
-   <VueNotify
+   <Notsy
       :position="settings.position"
       :maxWidth="settings.maxWidth"
       :disabled="settings.disabled"
       :options="options"
    />
 
-   <VueNotify id="user-1" position="bottom-right" :disabled="false" />
+   <Notsy id="user-1" position="bottom-right" :disabled="false" />
 
    <h1>
       Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
