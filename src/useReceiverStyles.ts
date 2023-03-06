@@ -23,7 +23,7 @@ const flexCenter: CSSProperties = {
 const wrapperStyles: CSSProperties = {
    ...boxSizing,
    ...flexCenter,
-   zIndex: 2147483647,
+   zIndex: 500,
    position: 'fixed',
    height: '100%',
    pointerEvents: 'none',

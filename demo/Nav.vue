@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { markRaw, ref } from 'vue'
+import { ref } from 'vue'
 import { ReceiverProps } from '../src/types'
 import { usePush } from '../src/usePush'
 import { settings } from './store'
@@ -22,7 +22,7 @@ function usePostSuccess<T extends _PushOptions & { props?: Record<string, any> }
       push.success({
          ...options,
          render: {
-            component: markRaw(Custom),
+            component: () => Custom,
             props: ({ notsyProps }) => ({
                ...notsyProps,
                ...props,
@@ -81,7 +81,7 @@ async function customAsync() {
    const promise = push.promise({
       message: 'Async',
       render: {
-         component: markRaw(Custom),
+         component: () => Custom,
          props: ({ notsyProps }) => ({
             ...notsyProps,
             avatarUrl: 'https://i.pravatar.cc/150?img=1',
@@ -95,7 +95,7 @@ async function customAsync() {
    promise.resolve({
       message: 'Async resolved',
       render: {
-         component: markRaw(Custom),
+         component: () => Custom,
          props: ({ notsyProps, prevProps }) => ({
             ...notsyProps,
             ...prevProps,
@@ -182,8 +182,7 @@ function pushThousand() {
                () => {
                   counter++
                   push({
-                     message: `
-                     ${counter} Your message has
+                     message: `${counter} Your message has
                      been successfully **sent**. Please.`,
                   })
                }
@@ -232,9 +231,10 @@ nav {
    display: flex;
    flex-direction: column;
    width: 100%;
+   background-color: #444254;
    gap: 20px;
    justify-content: center;
-   z-index: 9999999;
+   z-index: 2147483647;
    bottom: 0;
    left: 0;
    padding: 30px;

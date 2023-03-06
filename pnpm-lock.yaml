@@ -6,6 +6,7 @@ specifiers:
   cssnano: ^5.1.15
   postcss: ^8.4.21
   postcss-cli: ^10.1.0
+  postcss-nesting: ^11.2.1
   prettier: ^2.8.4
   rimraf: ^4.2.0
   typescript: ^4.9.5
@@ -19,6 +20,7 @@ devDependencies:
   cssnano: 5.1.15_postcss@8.4.21
   postcss: 8.4.21
   postcss-cli: 10.1.0_postcss@8.4.21
+  postcss-nesting: 11.2.1_postcss@8.4.21
   prettier: 2.8.4
   rimraf: 4.2.0
   typescript: 4.9.5
@@ -53,6 +55,17 @@ packages:
       '@babel/helper-string-parser': 7.19.4
       '@babel/helper-validator-identifier': 7.19.1
       to-fast-properties: 2.0.0
+    dev: true
+
+  /@csstools/selector-specificity/2.1.1_wajs5nedgkikc5pcuwett7legi:
+    resolution: {integrity: sha512-jwx+WCqszn53YHOfvFMJJRd/B2GqkCBt+1MJSG6o5/s8+ytHMvDZXsJgUEWLk12UnLd7HYKac4BYU5i/Ron1Cw==}
+    engines: {node: ^14 || ^16 || >=18}
+    peerDependencies:
+      postcss: ^8.4
+      postcss-selector-parser: ^6.0.10
+    dependencies:
+      postcss: 8.4.21
+      postcss-selector-parser: 6.0.11
     dev: true
 
   /@esbuild/android-arm/0.16.17:
@@ -1240,6 +1253,17 @@ packages:
     peerDependencies:
       postcss: ^8.2.15
     dependencies:
+      postcss: 8.4.21
+      postcss-selector-parser: 6.0.11
+    dev: true
+
+  /postcss-nesting/11.2.1_postcss@8.4.21:
+    resolution: {integrity: sha512-E6Jq74Jo/PbRAtZioON54NPhUNJYxVWhwxbweYl1vAoBYuGlDIts5yhtKiZFLvkvwT73e/9nFrW3oMqAtgG+GQ==}
+    engines: {node: ^14 || ^16 || >=18}
+    peerDependencies:
+      postcss: ^8.4
+    dependencies:
+      '@csstools/selector-specificity': 2.1.1_wajs5nedgkikc5pcuwett7legi
       postcss: 8.4.21
       postcss-selector-parser: 6.0.11
     dev: true

@@ -23,3 +23,13 @@ export enum TType {
    HEIGHT,
    SILENT,
 }
+
+export const Classes = {
+   NOTIFICATION: CLASS_PREFIX + 'notification',
+   ICON: CLASS_PREFIX + 'icon',
+   CONTENT: CLASS_PREFIX + 'content',
+   TITLE: CLASS_PREFIX + 'content-title',
+   MESSAGE: CLASS_PREFIX + 'content-message',
+   CLOSE: CLASS_PREFIX + 'close',
+   CLOSE_ICON: CLASS_PREFIX + 'close-icon',
+}

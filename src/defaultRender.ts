@@ -1,26 +1,36 @@
 import { h } from 'vue'
-import { close } from './icons'
-import { CLASS_PREFIX as CX } from './constants'
+import { Classes as Cx } from './constants'
 import { hIcon, hMessage } from './utils'
-import type { StoreItem } from './types'
+import type { StoreItem, IconSrc } from './types'
 
-export function defaultRenderFn(item: StoreItem) {
+type Param = {
+   item: StoreItem
+   iconSrc: unknown
+   closeIconSrc: unknown
+}
+
+export function defaultRenderFn({ item, iconSrc, closeIconSrc }: Param) {
    return h(
       'div',
       {
-         class: CX + 'notification',
+         class: Cx.NOTIFICATION,
          'data-notsy': item.type,
       },
       [
-         item.icon && hIcon(item.icon, { class: CX + 'icon', key: `${item.id}_${item.type}` }),
+         item.icon &&
+            (iconSrc as any) &&
+            hIcon(iconSrc as IconSrc, { class: Cx.ICON, key: `${item.id}_${item.type}` }),
 
-         h('div', { class: CX + 'content' }, [
-            item.title && h('h3', { class: CX + 'content-title' }, item.title),
-            item.message && h('p', { class: CX + 'content-message' }, hMessage(item.message)),
+         h('div', { class: Cx.CONTENT }, [
+            item.title && h('h3', { class: Cx.TITLE }, item.title),
+            item.message && h('p', { class: Cx.MESSAGE }, hMessage(item.message)),
          ]),
 
          item.close &&
-            h('button', { class: CX + 'close', ariaLabel: 'Close', onClick: item.clear }, close),
+            (closeIconSrc as any) &&
+            h('button', { class: Cx.CLOSE, ariaLabel: item.closeAriaLabel, onClick: item.clear }, [
+               hIcon(closeIconSrc as IconSrc, { class: Cx.CLOSE_ICON }),
+            ]),
       ]
    )
 }

@@ -1,21 +1,19 @@
-import { markRaw } from 'vue'
 import { CLASS_PREFIX as CX, NType } from './constants'
-import { icons } from './icons'
 import type { ReceiverOptions } from './types'
 
 const success: ReceiverOptions = {
    title: 'Success!',
    message: '',
-   icon: markRaw(icons.success),
+   icon: true,
    close: true,
    duration: 3000 * 1000,
    ariaLive: 'polite',
    ariaRole: 'status',
+   closeAriaLabel: 'Close',
 }
 
 const error: ReceiverOptions = {
    ...success,
-   icon: markRaw(icons.error),
    duration: 6000,
    title: 'Error!',
    ariaLive: 'assertive',
@@ -25,20 +23,17 @@ const error: ReceiverOptions = {
 const promise: ReceiverOptions = {
    ...success,
    duration: Infinity,
-   icon: markRaw(icons.promise),
    title: 'Loading...',
    close: false,
 }
 
 const warning: ReceiverOptions = {
    ...error,
-   icon: markRaw(icons.warning),
    title: 'Warning!',
 }
 
 const info: ReceiverOptions = {
    ...success,
-   icon: markRaw(icons.info),
    title: 'Info!',
 }
 
