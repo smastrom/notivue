@@ -1,6 +1,11 @@
 import { h, type VNode, type Component } from 'vue'
-import { NType } from './constants'
-import type { ReceiverProps, IncomingOptions, ReceiverOptions, MergedOptions } from './types'
+import type {
+   ReceiverProps,
+   IncomingOptions,
+   MergedOptions,
+   NotificationTypes as NTypeU,
+   DefaultOptions,
+} from './types'
 
 export const isSSR = typeof window === 'undefined'
 
@@ -52,7 +57,7 @@ function hLine(text: string) {
 export function hMessage(message: string) {
    const nodes: VNode[] = []
 
-   message.split(newLineRegex).forEach((line) => {
+   message.split(newLineRegex).forEach((line, index) => {
       if (newLineRegex.test(line)) {
          nodes.push(h('br'))
       } else {
@@ -64,7 +69,7 @@ export function hMessage(message: string) {
 }
 
 export function mergeOptions(
-   defaultOptions: Required<Record<`${NType}`, ReceiverOptions>>,
+   defaultOptions: DefaultOptions,
    receiverProps: ReceiverProps['options'],
    pushOptions: IncomingOptions
 ): MergedOptions {

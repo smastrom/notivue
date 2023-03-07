@@ -1,5 +1,4 @@
 import type { VNode, Component, CSSProperties, Ref, ShallowRef } from 'vue'
-import { NType } from './constants'
 
 export type PluginOptions = {
    additionalReceivers?: string[]
@@ -8,6 +7,15 @@ export type PluginOptions = {
 // Receiver Props
 
 export type IconSrc = (() => Component) | string
+
+export type NotificationTypes =
+   | 'success'
+   | 'error'
+   | 'info'
+   | 'warning'
+   | 'promise'
+   | 'promise-resolve'
+   | 'promise-reject'
 
 export type ReceiverProps = {
    disabled: boolean
@@ -19,10 +27,10 @@ export type ReceiverProps = {
    id: string
    rootPadding: number[]
    gap: number
-   options: Partial<Record<`${NType}`, Partial<ReceiverOptions>>>
+   options: Partial<Record<NotificationTypes, Partial<ReceiverOptions>>>
    theme: Record<`--${string}`, string>
    animations: Partial<Animations>
-   icons: Partial<Record<`${NType}` | 'close', IconSrc>>
+   icons: Partial<Record<NotificationTypes | 'close', IconSrc>>
 }
 
 type Animations = {
@@ -40,6 +48,12 @@ export type ReceiverOptions = {
    ariaLive: 'polite' | 'assertive'
    ariaRole: 'alert' | 'status'
    closeAriaLabel: string
+}
+
+export type DefaultOptions = {
+   [K in NotificationTypes]: ReceiverOptions
+} & {
+   [key: string]: never
 }
 
 // Receiver Internal
@@ -61,7 +75,7 @@ type InternalData = {
 
 export type MergedOptions = Required<ReceiverOptions> & IncomingOptions
 
-export type InternalPushOptions = { id: string; type: `${NType}` }
+export type InternalPushOptions = { id: string; type: NotificationTypes }
 
 // Store
 

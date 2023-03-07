@@ -1,12 +1,13 @@
 import type { Theme } from './types'
 
+// TODO: Remove useless props once all themes are implemented
 export const light: Theme = {
    // Layout
    '--ny-width': '375px',
    '--ny-y-align': 'top',
    '--ny-spacing': '0.75rem',
    '--ny-radius': '0.75rem',
-   '--ny-border-width': '1px',
+   '--ny-border-width': '0px',
    '--ny-tip-width': '0px',
    '--ny-icon-size': '1.5rem',
    '--ny-title-size': '1rem',

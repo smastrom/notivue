@@ -16,9 +16,7 @@ export const install: Plugin = {
          additionalReceivers: [],
       }
    ) {
-      additionalReceivers.forEach((key) => {
-         userSymbols[key.toString()] = Symbol(key.toString())
-      })
+      additionalReceivers.forEach((key) => (userSymbols[key.toString()] = Symbol(key.toString())))
 
       const receivers = new Map<InjectionKey<Store>, Store>()
 

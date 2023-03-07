@@ -1,5 +1,5 @@
 import { createID } from './utils'
-import { NType } from './constants'
+import { NotificationTypes as NType } from './constants'
 import type {
    IncomingOptions,
    StaticPushOptions,

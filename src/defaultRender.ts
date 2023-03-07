@@ -17,20 +17,22 @@ export function defaultRenderFn({ item, iconSrc, closeIconSrc }: Param) {
          'data-notsy': item.type,
       },
       [
-         item.icon &&
-            (iconSrc as any) &&
-            hIcon(iconSrc as IconSrc, { class: Cx.ICON, key: `${item.id}_${item.type}` }),
+         item.icon && (iconSrc as any)
+            ? hIcon(iconSrc as IconSrc, { class: Cx.ICON, key: `${item.id}_${item.type}` })
+            : h('span'),
 
          h('div', { class: Cx.CONTENT }, [
             item.title && h('h3', { class: Cx.TITLE }, item.title),
             item.message && h('p', { class: Cx.MESSAGE }, hMessage(item.message)),
          ]),
 
-         item.close &&
-            (closeIconSrc as any) &&
-            h('button', { class: Cx.CLOSE, ariaLabel: item.closeAriaLabel, onClick: item.clear }, [
-               hIcon(closeIconSrc as IconSrc, { class: Cx.CLOSE_ICON }),
-            ]),
+         item.close && (closeIconSrc as any)
+            ? h(
+                 'button',
+                 { class: Cx.CLOSE, ariaLabel: item.closeAriaLabel, onClick: item.clear },
+                 [hIcon(closeIconSrc as IconSrc, { class: Cx.CLOSE_ICON })]
+              )
+            : h('span'),
       ]
    )
 }

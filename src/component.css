@@ -1,13 +1,11 @@
-[data-notsy='success'],
-[data-notsy='promise-resolve'] {
+[data-notsy='success'] {
    --ny-background: var(--ny-success-background);
    --ny-foreground: var(--ny-success-foreground);
    --ny-accent: var(--ny-success-accent);
    --ny-border: var(--ny-success-border);
 }
 
-[data-notsy='error'],
-[data-notsy='promise-reject'] {
+[data-notsy='error'] {
    --ny-background: var(--ny-error-background);
    --ny-foreground: var(--ny-error-foreground);
    --ny-accent: var(--ny-error-accent);
@@ -35,6 +33,20 @@
    --ny-border: var(--ny-promise-border);
 }
 
+[data-notsy='promise-resolve'] {
+   --ny-background: var(--ny-promise-resolve-background, var(--ny-success-background));
+   --ny-foreground: var(--ny-promise-resolve-foreground, var(--ny-success-foreground));
+   --ny-accent: var(--ny-promise-resolve-accent, var(--ny-success-accent));
+   --ny-border: var(--ny-promise-resolve-border, var(--ny-success-border));
+}
+
+[data-notsy='promise-reject'] {
+   --ny-background: var(--ny-promise-reject-background, var(--ny-error-background));
+   --ny-foreground: var(--ny-promise-reject-foreground, var(--ny-error-foreground));
+   --ny-accent: var(--ny-promise-reject-accent, var(--ny-error-accent));
+   --ny-border: var(--ny-promise-reject-border, var(--ny-error-border));
+}
+
 .Notsy__notification {
    width: var(--ny-width);
    max-width: 100%;
@@ -60,22 +72,11 @@
 }
 
 .Notsy__icon {
-   animation: Notsy__icon-kf 250ms cubic-bezier(0.22, 1, 0.36, 1) both 150ms;
    display: flex;
    color: var(--ny-accent, var(--ny-global-accent));
-   margin: 0 0.875rem 0 0;
-}
-
-@keyframes Notsy__icon-kf {
-   0% {
-      transform: scale(0.75);
-      opacity: 0.7;
-   }
-
-   100% {
-      transform: scale(1);
-      opacity: 1;
-   }
+   margin: 0;
+   margin-inline-end: var(--ny-spacing);
+   border-radius: 100%;
 }
 
 .Notsy__content-title {
@@ -91,7 +92,9 @@
 .Notsy__content-message {
    font-weight: 600;
    opacity: 0.8;
-   line-height: 1.35;
+   max-height: 250px;
+   overflow: auto;
+   line-height: 1.375;
    color: var(--ny-foreground, var(--ny-global-foreground));
    text-align: inherit;
    margin: 0;
@@ -101,16 +104,14 @@
 
 .Notsy__close {
    position: relative;
+   inset-inline-start: var(--ny-spacing);
    height: 100%;
-   left: var(--ny-spacing);
    margin: 0;
    padding: var(--ny-spacing);
 
    border: none;
-   border-left-style: solid;
-   border-left-width: var(--ny-border-width, 0);
-   border-left-color: var(--ny-border, var(--ny-global-border));
    border-radius: 0;
+   border-inline-start: 1px solid var(--ny-border, var(--ny-global-border));
 
    background: none;
    opacity: 0.5;

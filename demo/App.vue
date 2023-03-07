@@ -13,6 +13,7 @@ const options = {
    info: {
       title: 'Did you know that...',
       icon: false,
+      close: false,
    },
    error: {
       title: false,

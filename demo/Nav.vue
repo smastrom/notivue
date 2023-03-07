@@ -151,10 +151,14 @@ function pushThousand() {
       clearInterval(interval)
    }, 60 * 100)
 }
+
+function toggleRtl() {
+   document.documentElement.dir = 'rtl'
+}
 </script>
 
 <template>
-   <nav>
+   <nav dir="ltr">
       <div>
          <button @click="setWidth">
             {{ settings.maxWidth === 1280 ? 'Full Width' : 'Container Width' }}
@@ -169,7 +173,14 @@ function pushThousand() {
 
       <div>
          <button
-            @click="pushToUser({ message: 'Your message has been successfully sent. Please.' })"
+            @click="
+               pushToUser({
+                  message:
+                     'Your message has been successfully sent. Please. Your message has been successfully sent. Please. Your message has been successfully sent. Please. Your message has been successfully sent. Please.'.repeat(
+                        5
+                     ),
+               })
+            "
          >
             To User
          </button>
@@ -194,6 +205,21 @@ function pushThousand() {
             @click="$push.success({ message: 'Your message has been successfully sent. Please.' })"
          >
             Push $
+         </button>
+         <button
+            @click="
+               () => {
+                  toggleRtl()
+                  $push.success({
+                     title: 'إستعمل استعملت من على',
+
+                     message:
+                        'وتم وسفن الخاسر الشتاء، هو. عرض أثره، أعمال تم, حدى قد كنقطة الإمداد بمحاولة.',
+                  })
+               }
+            "
+         >
+            Push RTL
          </button>
          <button
             @click="push.error({ message: 'Your **message** has been successfully sent. Please.' })"

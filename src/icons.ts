@@ -1,5 +1,5 @@
 import { h } from 'vue'
-import { NType } from './constants'
+import { NotificationTypes as NType } from './constants'
 import { ReceiverProps } from './types'
 
 const svgProps = {

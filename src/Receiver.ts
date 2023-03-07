@@ -1,12 +1,14 @@
 import {
+   Teleport,
    defineComponent,
    ref,
    computed,
    watch,
+   watchEffect,
+   watchPostEffect,
    h,
    toRef,
    nextTick,
-   Teleport,
    type PropType,
 } from 'vue'
 import { useStore } from './useStore'
@@ -17,7 +19,13 @@ import { defaultRenderFn } from './defaultRender'
 import { defaultAnimations, defaultOptions } from './defaultOptions'
 import { ariaRenderFn } from './ariaRender'
 import { mergeOptions } from './utils'
-import { TType, NType, FIXED_INCREMENT, NOTIFICATIONS_LIMIT, COMPONENT_NAME } from './constants'
+import {
+   FIXED_INCREMENT,
+   NOTIFICATIONS_LIMIT,
+   COMPONENT_NAME,
+   NotificationTypes as NType,
+   TransitionTypes as TType,
+} from './constants'
 import { light } from './themes'
 import type {
    ReceiverProps as Props,
@@ -90,7 +98,7 @@ export const Receiver = defineComponent({
       const maxWidth = toRef(props, 'maxWidth')
       const gap = toRef(props, 'gap')
       const pauseOnHover = toRef(props, 'pauseOnHover')
-      const disabled = toRef(props, 'disabled')
+      const isDisabled = toRef(props, 'disabled')
       const animations = toRef(props, 'animations')
 
       // Reactivity - Props - Computed
@@ -137,30 +145,22 @@ export const Receiver = defineComponent({
 
       // Watchers - Notifications
 
-      let unsubscribe: ReturnType<typeof subscribe>
+      let detachListener: ReturnType<typeof attachListener>
 
-      watch(
-         disabled,
-         (isDisabled) => {
-            if (isDisabled && unsubscribe) {
-               unsubscribe()
-               destroyAll()
-            } else {
-               unsubscribe = subscribe()
-            }
-         },
-         { immediate: true }
-      )
+      watchEffect(() => {
+         if (isDisabled.value && detachListener) {
+            detachListener()
+            destroyAll()
+         } else {
+            detachListener = attachListener()
+         }
+      })
 
-      watch(
-         () => clearTrigger.value && hasItems.value,
-         (shouldClear) => {
-            if (shouldClear) {
-               animateClearAll()
-            }
-         },
-         { flush: 'post' }
-      )
+      watchPostEffect(() => {
+         if (clearTrigger.value && hasItems.value) {
+            animateClearAll()
+         }
+      })
 
       // Watchers - Resize and Position
 
@@ -182,19 +182,15 @@ export const Receiver = defineComponent({
 
       // Watchers - Hover
 
-      watch(
-         () => !hasItems.value,
-         (noItems) => {
-            if (noItems) {
-               isHovering = false
-            }
-         },
-         { flush: 'post' }
-      )
+      watchPostEffect(() => {
+         if (!hasItems.value) {
+            isHovering = false
+         }
+      })
 
       // Functions - Listener
 
-      function subscribe() {
+      function attachListener() {
          return watch(
             incoming,
             (pushOptions) => {
@@ -222,8 +218,7 @@ export const Receiver = defineComponent({
                   const prevComponent = currItem?.prevComponent
 
                   if (prevComponent) {
-                     const prevProps: Record<string, unknown> = { ...(currItem.prevProps ?? {}) }
-                     const newComponent = options.render?.component
+                     const prevProps = { ...(currItem.prevProps ?? {}) }
 
                      delete prevProps.title
                      delete prevProps.message
@@ -231,7 +226,8 @@ export const Receiver = defineComponent({
                      delete prevProps.duration
                      delete prevProps.close
 
-                     const nextProps = { ...getCtxProps(options), prevProps }
+                     const newComponent = options.render?.component
+                     const newProps = { ...getCtxProps(options), prevProps }
 
                      customComponent = {
                         customRenderFn: () =>
@@ -241,7 +237,7 @@ export const Receiver = defineComponent({
                                  options.render?.props as NonNullable<
                                     MaybeRenderPromiseResult['render']
                                  >['props']
-                              )?.(nextProps) ?? {}
+                              )?.(newProps) ?? {}
                            ),
                      }
                   }

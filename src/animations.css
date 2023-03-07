@@ -12,7 +12,7 @@
 
 @keyframes Notsy__enter-kf {
    0% {
-      transform: scale(0.7) translate3d(0, 10vh, 0);
+      transform: scale(0.6) translate3d(0, -10vh, 0);
       opacity: 0;
    }
    100% {
