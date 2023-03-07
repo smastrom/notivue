@@ -27,7 +27,10 @@ export default defineConfig({
          plugins: [
             terser({
                compress: {
+                  drop_console: false,
                   defaults: true,
+                  passes: 2,
+                  ecma: 2020,
                },
             }),
          ],

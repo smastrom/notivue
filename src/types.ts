@@ -6,8 +6,6 @@ export type PluginOptions = {
 
 // Receiver Props
 
-export type IconSrc = (() => Component) | string
-
 export type NotificationTypes =
    | 'success'
    | 'error'
@@ -16,6 +14,16 @@ export type NotificationTypes =
    | 'promise'
    | 'promise-resolve'
    | 'promise-reject'
+
+export type IconSrc = (() => Component) | string
+
+export type DefaultRenderFnParam = {
+   item: StoreItem
+   theme: Theme | undefined
+   icons: Record<string, IconSrc> | undefined
+}
+
+export type DefaultRenderFn = (param: DefaultRenderFnParam) => VNode
 
 export type ReceiverProps = {
    disabled: boolean
@@ -28,15 +36,10 @@ export type ReceiverProps = {
    gap: string
    class: string
    options: Partial<Record<NotificationTypes, Partial<ReceiverOptions>>>
-   theme: Record<`--${string}`, string>
-   animations: Partial<Animations>
-   icons: Partial<Record<NotificationTypes | 'close', IconSrc>>
-}
-
-type Animations = {
-   enter: string
-   leave: string
-   clearAll: string
+   render: DefaultRenderFn
+   theme?: Record<`--${string}`, string>
+   icons?: Partial<Record<NotificationTypes | 'close', IconSrc>>
+   animations: Partial<{ enter: string; leave: string; clearAll: string }>
 }
 
 export type ReceiverOptions = {

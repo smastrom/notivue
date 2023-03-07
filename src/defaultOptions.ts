@@ -1,5 +1,5 @@
 import { CLASS_PREFIX as CX, NotificationTypes as NType } from './constants'
-import { DefaultOptions, NotificationTypes as NTypeU } from './types'
+import { DefaultOptions } from './types'
 import type { ReceiverOptions } from './types'
 
 const success: ReceiverOptions = {
@@ -7,7 +7,7 @@ const success: ReceiverOptions = {
    message: '',
    icon: true,
    close: true,
-   duration: 3000 * 1000,
+   duration: 3000,
    ariaLive: 'polite',
    ariaRole: 'status',
    closeAriaLabel: 'Close',
