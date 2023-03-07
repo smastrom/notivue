@@ -76,7 +76,6 @@
    color: var(--ny-accent, var(--ny-global-accent));
    margin: 0;
    margin-inline-end: var(--ny-spacing);
-   border-radius: 100%;
 }
 
 .Notsy__content-title {

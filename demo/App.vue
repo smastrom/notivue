@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { watchEffect } from 'vue'
 import Nav from './Nav.vue'
 import { settings } from './store'
 import { Notsy } from '../src'
@@ -25,19 +26,23 @@ const icons = {
    ..._icons,
    warning: () => CustomIcon,
 }
+
+watchEffect(() =>
+   document.documentElement.style.setProperty('--vn-root-container', settings.maxWidth)
+)
 </script>
 
 <template>
    <Notsy
       :position="settings.position"
-      :maxWidth="settings.maxWidth"
       :disabled="settings.disabled"
       :options="options"
       :icons="icons"
+      class="CustomClass"
    />
 
-   <Notsy id="user-1" position="bottom-right" :disabled="false" />
-
+   <Notsy id="user-1" position="bottomRight" :disabled="false" />
+   {{ settings.maxWidth }}
    <h1>
       Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
       Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus
@@ -47,8 +52,14 @@ const icons = {
    <Nav />
 </template>
 
-<style scoped>
+<style>
 .rootRossi {
    color: red;
+}
+
+@media (max-width: 768px) {
+   .CustomClass {
+      --vn-root-x-align: center;
+   }
 }
 </style>

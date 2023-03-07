@@ -23,10 +23,10 @@ export type ReceiverProps = {
    limit: number
    pauseOnHover: boolean
    position: Position
-   maxWidth: number
    id: string
-   rootPadding: number[]
-   gap: number
+   zIndex: number
+   gap: string
+   class: string
    options: Partial<Record<NotificationTypes, Partial<ReceiverOptions>>>
    theme: Record<`--${string}`, string>
    animations: Partial<Animations>
@@ -65,8 +65,8 @@ type InternalData = {
    destroy: () => void
    elapsed?: number
    stoppedAt?: number
-   style?: CSSProperties
-   animClass?: string
+   transitionStyles?: CSSProperties
+   animationClass?: string
    onAnimationstart?: (event: AnimationEvent) => void
    onAnimationend?: (event: AnimationEvent) => void
    customRenderFn?: () => VNode
@@ -166,12 +166,12 @@ export type ClearFn = { clear: () => void }
 // CSS
 
 export type Position =
-   | 'top-left'
-   | 'top-center'
-   | 'top-right'
-   | 'bottom-left'
-   | 'bottom-center'
-   | 'bottom-right'
+   | 'topLeft'
+   | 'topCenter'
+   | 'topRight'
+   | 'bottomLeft'
+   | 'bottomCenter'
+   | 'bottomRight'
 
 // Theme
 

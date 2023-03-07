@@ -12,7 +12,7 @@ import {
    type PropType,
 } from 'vue'
 import { useStore } from './useStore'
-import { useReceiverStyles } from './useReceiverStyles'
+import { staticStyles, useDynamicStyles } from './useStyles'
 import { useRefsMap } from './useRefsMap'
 import { useResizeObserver } from './useResizeObserver'
 import { defaultRenderFn } from './defaultRender'
@@ -45,6 +45,10 @@ export const Receiver = defineComponent({
          type: String as PropType<Props['id']>,
          default: '',
       },
+      class: {
+         type: String as PropType<Props['class']>,
+         default: '',
+      },
       pauseOnHover: {
          type: Boolean as PropType<Props['pauseOnHover']>,
          default: true,
@@ -53,21 +57,17 @@ export const Receiver = defineComponent({
          type: Boolean as PropType<Props['disabled']>,
          default: false,
       },
-      rootPadding: {
-         type: Array as PropType<Props['rootPadding']>,
-         default: () => [20, 20, 20, 20],
-      },
-      maxWidth: {
-         type: Number as PropType<Props['maxWidth']>,
-         default: 0,
-      },
       position: {
          type: String as PropType<Props['position']>,
-         default: 'top-center',
+         default: 'topCenter',
+      },
+      zIndex: {
+         type: Number as PropType<Props['zIndex']>,
+         default: 500,
       },
       gap: {
-         type: Number as PropType<Props['gap']>,
-         default: 10,
+         type: String as PropType<Props['gap']>,
+         default: '0.75rem',
       },
       options: {
          type: Object as PropType<Props['options']>,
@@ -87,16 +87,9 @@ export const Receiver = defineComponent({
       },
    },
    setup(props) {
-      let isHovering = false
-
-      const wrapperRef = ref<HTMLElement>()
-
       // Reactivity - Props
 
       const position = toRef(props, 'position')
-      const rootPadding = toRef(props, 'rootPadding')
-      const maxWidth = toRef(props, 'maxWidth')
-      const gap = toRef(props, 'gap')
       const pauseOnHover = toRef(props, 'pauseOnHover')
       const isDisabled = toRef(props, 'disabled')
       const animations = toRef(props, 'animations')
@@ -129,18 +122,17 @@ export const Receiver = defineComponent({
 
       const hasItems = computed(() => items.value.length > 0)
 
-      // Reactivity - Composables - Behavior and Style
+      // Reactivity - Elements and styles
+
+      const wrapperRef = ref<HTMLElement>()
 
       const { refs, sortedIds, setRefs } = useRefsMap()
 
-      const { wrapperStyles, containerStyles, rowStyles, boxStyles } = useReceiverStyles({
-         rootPadding,
-         maxWidth,
-         position,
-         gap,
-      })
+      const dynamicStyles = useDynamicStyles(position)
 
-      const resizeObserver = useResizeObserver(() => setPositions(TType.HEIGHT))
+      // Non-reactive
+
+      let isHovering = false
 
       // Watchers - Notifications
 
@@ -155,11 +147,13 @@ export const Receiver = defineComponent({
          }
       })
 
-      // Watchers - Resize and Position
+      // Watchers - Resize and positioning
+
+      watch(isTop, () => setPositions(TType.SILENT))
 
       useWindowSize(() => setPositions(TType.SILENT))
 
-      watch(isTop, () => setPositions(TType.SILENT))
+      const resizeObserver = useResizeObserver(() => setPositions(TType.HEIGHT))
 
       watch(
          () => items.value.filter(({ type }) => type === NType.PROMISE).map(({ id }) => id),
@@ -311,12 +305,12 @@ export const Receiver = defineComponent({
             const thisEl = refs.get(id)
             const thisItem = getItem(id)
 
-            if (!thisEl || !thisItem || thisItem.animClass === mergedAnims.value.leave) {
+            if (!thisEl || !thisItem || thisItem.animationClass === mergedAnims.value.leave) {
                continue
             }
 
             updateItem(id, {
-               style: {
+               transitionStyles: {
                   ...(type === TType.HEIGHT ? { transitionProperty: 'all' } : {}),
                   ...(type === TType.SILENT ? { transition: 'none' } : {}),
                   transform: `translate3d(0, ${accPrevHeights}px, 0)`,
@@ -331,7 +325,7 @@ export const Receiver = defineComponent({
 
       function animateEnter(id: string) {
          animateItem(id, mergedAnims.value.enter, () =>
-            updateItem(id, { animClass: '', onAnimationend: undefined })
+            updateItem(id, { animationClass: '', onAnimationend: undefined })
          )
 
          setPositions()
@@ -396,13 +390,17 @@ export const Receiver = defineComponent({
                h(
                   'div',
                   {
-                     style: wrapperStyles,
+                     style: { zIndex: props.zIndex, ...staticStyles.wrapper },
                      ref: wrapperRef,
+                     class: props.class,
                   },
                   h(
                      'div',
                      {
-                        style: { ...containerStyles.value, ...props.theme },
+                        style: {
+                           ...staticStyles.container,
+                           ...props.theme,
+                        },
                         ...(pauseOnHover.value ? pointerEvents : {}),
                      },
                      items.value.map((item) =>
@@ -412,15 +410,20 @@ export const Receiver = defineComponent({
                               key: item.id,
                               ref: (_ref) => setRefs(_ref as HTMLElement | null, item.id),
                               style: {
-                                 ...rowStyles.value,
-                                 ...item.style,
+                                 ...staticStyles.row,
+                                 ...dynamicStyles.value.row,
+                                 ...item.transitionStyles,
                               },
                            },
                            h(
                               'div',
                               {
-                                 class: item.animClass,
-                                 style: boxStyles.value,
+                                 class: item.animationClass,
+                                 style: {
+                                    padding: `0 0 ${props.gap} 0`,
+                                    ...staticStyles.box,
+                                    ...dynamicStyles.value.box,
+                                 },
                                  onAnimationstart: item.onAnimationstart,
                                  onAnimationend: item.onAnimationend,
                               },

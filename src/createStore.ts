@@ -31,7 +31,7 @@ export function createStore(): Store {
 
    function animateItem(id: string, className: string, onEnd: () => void) {
       updateItem(id, {
-         animClass: className,
+         animationClass: className,
          onAnimationstart: (event: AnimationEvent) => event.stopPropagation(),
          onAnimationend: (event: AnimationEvent) => {
             event.stopPropagation()

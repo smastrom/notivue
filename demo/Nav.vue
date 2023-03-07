@@ -128,7 +128,7 @@ function setPosition(position: ReceiverProps['position']) {
 }
 
 function setWidth() {
-   settings.maxWidth = settings.maxWidth === 1280 ? 0 : 1280
+   settings.maxWidth = settings.maxWidth === '1280px' ? '100%' : '1280px'
 }
 
 function toggleEnable() {
@@ -161,14 +161,14 @@ function toggleRtl() {
    <nav dir="ltr">
       <div>
          <button @click="setWidth">
-            {{ settings.maxWidth === 1280 ? 'Full Width' : 'Container Width' }}
+            {{ settings.maxWidth === '1280px' ? 'Full Width' : 'Container Width' }}
          </button>
-         <button @click="setPosition('top-left')">Top Left</button>
-         <button @click="setPosition('top-center')">Top Center</button>
-         <button @click="setPosition('top-right')">Top Right</button>
-         <button @click="setPosition('bottom-left')">Bottom Left</button>
-         <button @click="setPosition('bottom-center')">Bottom Center</button>
-         <button @click="setPosition('bottom-right')">Bottom Right</button>
+         <button @click="setPosition('topLeft')">Top Left</button>
+         <button @click="setPosition('topCenter')">Top Center</button>
+         <button @click="setPosition('topRight')">Top Right</button>
+         <button @click="setPosition('bottomLeft')">Bottom Left</button>
+         <button @click="setPosition('bottomCenter')">Bottom Center</button>
+         <button @click="setPosition('bottomRight')">Bottom Right</button>
       </div>
 
       <div>
