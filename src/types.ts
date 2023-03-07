@@ -62,6 +62,7 @@ type InternalData = {
    timeoutId: number | undefined
    createdAt: number
    clear: () => void
+   destroy: () => void
    elapsed?: number
    stoppedAt?: number
    style?: CSSProperties
@@ -84,11 +85,11 @@ export type StoreItem = InternalData & MergedOptions
 export type StoreRefs = {
    items: Ref<StoreItem[]>
    incoming: ShallowRef<IncomingOptions>
-   clearTrigger: Ref<boolean>
+   clearAllScheduler: Ref<number>
+   push: PushFn
 }
 
 export type StoreFunctions = {
-   createPush: () => PushFn
    createItem: (options: StoreItem) => void
    getItem: (id: string) => StoreItem | undefined
    updateItem: (id: string, options: Partial<StoreItem>) => void
@@ -96,7 +97,6 @@ export type StoreFunctions = {
    destroyAll: () => void
    updateAll: (onUpdate: (item: StoreItem) => StoreItem) => void
    animateItem: (id: string, className: string, onEnd: () => void) => void
-   resetClearTrigger: () => void
 }
 
 export type Store = StoreRefs & StoreFunctions

@@ -1,18 +1,16 @@
 import { ref, shallowRef } from 'vue'
-import { createPush as _createPush } from './createPush'
-import type { IncomingOptions, StoreItem, Store } from './types'
+import { createPushFn } from './createPush'
+import type { IncomingOptions, StoreItem, Store, PushFn } from './types'
 
 export function createStore(): Store {
    const items = ref<StoreItem[]>([])
    const incoming = shallowRef<IncomingOptions>({} as IncomingOptions)
-   const clearTrigger = ref(false)
+   const clearAllScheduler = ref(0)
 
-   function setIncoming(options: IncomingOptions) {
-      incoming.value = options
-   }
+   // Exported, used by Receiver
 
    function createItem(item: StoreItem) {
-      items.value.push(item)
+      items.value.unshift(item)
    }
 
    function getItem(id: string) {
@@ -20,8 +18,7 @@ export function createStore(): Store {
    }
 
    function updateItem(id: string, options: Partial<StoreItem>) {
-      const item = getItem(id)
-      // isReactive(item) -> true
+      const item = getItem(id) // isReactive(item) -> true
 
       if (item) {
          Object.assign(item, options)
@@ -43,14 +40,6 @@ export function createStore(): Store {
       })
    }
 
-   function clearItem(id: string) {
-      const item = getItem(id)
-
-      if (item) {
-         item.clear()
-      }
-   }
-
    function updateAll(updateItem: (prevItem: StoreItem) => StoreItem) {
       items.value = items.value.map((prevItem) => updateItem(prevItem))
    }
@@ -59,22 +48,32 @@ export function createStore(): Store {
       items.value = []
    }
 
-   function setClearTrigger() {
-      clearTrigger.value = true
+   const push: PushFn = createPushFn({
+      setIncoming,
+      callItemMethod,
+      scheduleClearAll,
+      destroyAll,
+   })
+
+   // Not exported, used by push()
+
+   function setIncoming(options: IncomingOptions) {
+      incoming.value = options
    }
 
-   function resetClearTrigger() {
-      clearTrigger.value = false
+   function callItemMethod(id: string, method: 'clear' | 'destroy') {
+      getItem(id)?.[method]()
    }
 
-   function createPush() {
-      return _createPush({ setIncoming, clearItem, setClearTrigger, destroyAll })
+   function scheduleClearAll() {
+      clearAllScheduler.value++
    }
 
    return {
+      push,
       items,
       incoming,
-      clearTrigger,
+      clearAllScheduler,
       createItem,
       getItem,
       animateItem,
@@ -82,7 +81,5 @@ export function createStore(): Store {
       removeItem,
       updateAll,
       destroyAll,
-      resetClearTrigger,
-      createPush,
    }
 }
