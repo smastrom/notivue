@@ -6,7 +6,8 @@ import type {
    PushPromise,
    PushFn,
    PromiseResultPushOptions,
-   StoreItem,
+   PushStaticParam,
+   PushPromiseParam,
 } from './types'
 
 type StoreFns = {
@@ -23,11 +24,19 @@ export function createPushFn({
    destroyAll,
 }: StoreFns): PushFn {
    function create<T>(
-      options: StaticPushOptions<T> | PromiseResultPushOptions<T>,
+      options: PushStaticParam<T> | PushPromiseParam<T>,
       status = NType.SUCCESS,
       id = createID()
    ) {
-      setIncoming({ ...options, id, type: status })
+      if (typeof options === 'string') {
+         options = { message: options }
+      }
+
+      setIncoming({
+         ...(options as StaticPushOptions<T> | PromiseResultPushOptions<T>),
+         id,
+         type: status,
+      })
 
       return {
          id,
@@ -36,7 +45,7 @@ export function createPushFn({
       }
    }
 
-   function push<T>(options: StaticPushOptions<T>) {
+   function push<T>(options: PushStaticParam<T>) {
       return create<T>(options)
    }
 
@@ -44,13 +53,13 @@ export function createPushFn({
 
    push.destroyAll = destroyAll
 
-   push.success = <T>(options: StaticPushOptions<T>) => create(options)
+   push.success = <T>(options: PushStaticParam<T>) => create(options)
 
-   push.error = <T>(options: StaticPushOptions<T>) => create(options, NType.ERROR)
+   push.error = <T>(options: PushStaticParam<T>) => create(options, NType.ERROR)
 
-   push.warning = <T>(options: StaticPushOptions<T>) => create(options, NType.WARNING)
+   push.warning = <T>(options: PushStaticParam<T>) => create(options, NType.WARNING)
 
-   push.info = <T>(options: StaticPushOptions<T>) => create(options, NType.INFO)
+   push.info = <T>(options: PushStaticParam<T>) => create(options, NType.INFO)
 
    push.promise = ((options) => {
       const { id, clear, destroy } = create(options, NType.PROMISE)

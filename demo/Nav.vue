@@ -202,7 +202,7 @@ function toggleRtl() {
             Success
          </button>
          <button
-            @click="$push.success({ message: 'Your message has been successfully sent. Please.' })"
+            @click="$push.success('Your message has been successfully sent. Please sign out.')"
          >
             Push $
          </button>
@@ -232,7 +232,7 @@ function toggleRtl() {
             @click="
                push.info({
                   message: 'Your message has been successfully sent. Please.',
-                  className: 'custom-class',
+                  class: 'custom-class',
                })
             "
          >

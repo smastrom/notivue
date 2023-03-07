@@ -48,14 +48,14 @@ export function createStore(): Store {
       items.value = []
    }
 
+   // push() scoped. not used by Receiver
+
    const push: PushFn = createPushFn({
       setIncoming,
       callItemMethod,
       scheduleClearAll,
       destroyAll,
    })
-
-   // Not exported, used by push()
 
    function setIncoming(options: IncomingOptions) {
       incoming.value = options
