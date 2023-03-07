@@ -15,7 +15,7 @@ import { useStore } from './useStore'
 import { staticStyles, useDynamicStyles } from './useStyles'
 import { useRefsMap } from './useRefsMap'
 import { useResizeObserver } from './useResizeObserver'
-import { defaultComponent } from './defaultComponent'
+import { useWindowSize } from './useWindowSize'
 import { defaultAnimations, defaultOptions } from './defaultOptions'
 import { ariaLive } from './ariaLive'
 import { mergeOptions } from './utils'
@@ -35,7 +35,6 @@ import type {
    MaybeRenderPromiseResult,
    CtxProps,
 } from './types'
-import { useWindowSize } from './useWindowSize'
 
 export const Receiver = defineComponent({
    name: COMPONENT_NAME,
@@ -73,17 +72,21 @@ export const Receiver = defineComponent({
          type: Object as PropType<Props['options']>,
          default: () => defaultOptions,
       },
+      render: {
+         type: Function as PropType<Props['render']>,
+         default: () => null,
+      },
       theme: {
          type: Object as PropType<Props['theme']>,
-         default: () => light,
+         default: undefined,
+      },
+      icons: {
+         type: Object as PropType<Props['icons']>,
+         default: undefined,
       },
       animations: {
          type: Object as PropType<Props['animations']>,
          default: () => defaultAnimations,
-      },
-      icons: {
-         type: Object as PropType<Props['icons']>,
-         default: () => ({}),
       },
    },
    setup(props) {
@@ -271,7 +274,7 @@ export const Receiver = defineComponent({
                         options.duration === Infinity
                            ? undefined
                            : createTimeout(options.id, options.duration),
-                     // Called by push fn in the store
+                     // Called by push fn located in store
                      clear: () => animateLeave(options.id),
                      destroy: () => {
                         removeItem(options.id)
@@ -399,7 +402,6 @@ export const Receiver = defineComponent({
                      {
                         style: {
                            ...staticStyles.container,
-                           ...props.theme,
                         },
                         ...(pauseOnHover.value ? pointerEvents : {}),
                      },
@@ -429,10 +431,10 @@ export const Receiver = defineComponent({
                               },
                               [
                                  item.customComponent?.() ??
-                                    defaultComponent({
+                                    props.render({
                                        item,
-                                       iconSrc: props.icons[item.type],
-                                       closeIconSrc: props.icons.close,
+                                       theme: props.theme,
+                                       icons: props.icons,
                                     }),
                                  ariaLive(item),
                               ]

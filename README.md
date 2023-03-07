@@ -10,11 +10,11 @@ Fully-fledged flexible **not**ification **sy**stem for Vue 3.
 
 ## Features
 
-**🧬 100% JS and CSS modular**  
-_Granularly bundle only what you use_
+**🧬 JS and CSS modular**  
+_Bundle only what you use_
 
 **🧚‍♂️ Zero deps and lightweight**  
-_From 2.8 to 5 KB including styles_
+_From 3.8 to 6 KB (gzipped)_
 
 **🔰 Ships with anything you need**  
 _Themes, icons, animations and much more_
@@ -23,7 +23,7 @@ _Themes, icons, animations and much more_
 _Create your own theme with a breeze_
 
 **🌀 Promise API**  
-_Update peding notifications with ease_
+_Update pending notifications with ease_
 
 **🧩 Custom Components API**  
 _Use your own components while Notsy handles the rest_
@@ -32,10 +32,10 @@ _Use your own components while Notsy handles the rest_
 _Customize enter/leave animations_
 
 **♿️ Accessible and WAI ARIA compliant**  
-_Notifications are accessible to screen readers_
+_Notifications accessible to everyone_
 
 **🕉 Out-of-the box native RTL support**  
-_No need to write custom CSS_
+_Pure CSS RTL support_
 
 <br />
 
@@ -60,15 +60,16 @@ import 'notsy/animations.css'
 createApp(App).use(notsy).mount('#app')
 ```
 
-### 2. Anywhere in your app
+### 2. App.vue (or anywhere else)
 
 ```vue
 <script setup>
-import { Notsy, component, icons } from 'notsy'
+import { Notsy, component } from 'notsy'
 </script>
 
 <template>
-   <Notsy :render="component" :icons="icons" />
+   <Notsy :render="component" />
+   <RouterView />
 </template>
 ```
 
@@ -90,4 +91,4 @@ import { Notsy, component, icons } from 'notsy'
 
 ## License
 
-MIT Licensed - Simone Mastromattei © 2023
+MIT Licensed - Simone Mastromattei © 2023 - Present
