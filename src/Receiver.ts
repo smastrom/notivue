@@ -15,9 +15,9 @@ import { useStore } from './useStore'
 import { staticStyles, useDynamicStyles } from './useStyles'
 import { useRefsMap } from './useRefsMap'
 import { useResizeObserver } from './useResizeObserver'
-import { defaultRenderFn } from './defaultRender'
+import { defaultComponent } from './defaultComponent'
 import { defaultAnimations, defaultOptions } from './defaultOptions'
-import { ariaRenderFn } from './ariaRender'
+import { ariaLive } from './ariaLive'
 import { mergeOptions } from './utils'
 import {
    FIXED_INCREMENT,
@@ -199,10 +199,10 @@ export const Receiver = defineComponent({
                const createdAt = performance.now()
                const options = mergeOptions(defaultOptions, props.options, pushOptions)
 
-               let customComponent: Partial<
-                  Pick<StoreItem, 'prevProps' | 'prevComponent' | 'customRenderFn'>
+               let customRenderer: Partial<
+                  Pick<StoreItem, 'prevProps' | 'prevComponent' | 'customComponent'>
                > = {
-                  customRenderFn: undefined,
+                  customComponent: undefined,
                }
 
                if (
@@ -224,8 +224,8 @@ export const Receiver = defineComponent({
                      const newComponent = options.render?.component
                      const newProps = { ...getCtxProps(options), prevProps }
 
-                     customComponent = {
-                        customRenderFn: () =>
+                     customRenderer = {
+                        customComponent: () =>
                            h(
                               newComponent ? newComponent() : prevComponent(),
                               (
@@ -239,7 +239,7 @@ export const Receiver = defineComponent({
 
                   updateItem(options.id, {
                      ...options,
-                     ...customComponent,
+                     ...customRenderer,
                      createdAt,
                      timeoutId: isHovering
                         ? undefined
@@ -255,8 +255,8 @@ export const Receiver = defineComponent({
                         >['props']
                      )?.(getCtxProps(options)) ?? {}) as CtxProps
 
-                     customComponent = {
-                        customRenderFn: () => h(_customComponent(), props),
+                     customRenderer = {
+                        customComponent: () => h(_customComponent(), props),
                         ...(options.type === NType.PROMISE
                            ? { prevProps: props, prevComponent: _customComponent }
                            : {}),
@@ -265,7 +265,7 @@ export const Receiver = defineComponent({
 
                   createItem({
                      ...options,
-                     ...customComponent,
+                     ...customRenderer,
                      createdAt,
                      timeoutId:
                         options.duration === Infinity
@@ -390,8 +390,8 @@ export const Receiver = defineComponent({
                h(
                   'div',
                   {
-                     style: { zIndex: props.zIndex, ...staticStyles.wrapper },
                      ref: wrapperRef,
+                     style: { zIndex: props.zIndex, ...staticStyles.wrapper },
                      class: props.class,
                   },
                   h(
@@ -418,23 +418,23 @@ export const Receiver = defineComponent({
                            h(
                               'div',
                               {
-                                 class: item.animationClass,
                                  style: {
                                     padding: `0 0 ${props.gap} 0`,
                                     ...staticStyles.box,
                                     ...dynamicStyles.value.box,
                                  },
+                                 class: item.animationClass,
                                  onAnimationstart: item.onAnimationstart,
                                  onAnimationend: item.onAnimationend,
                               },
                               [
-                                 item.customRenderFn?.() ??
-                                    defaultRenderFn({
+                                 item.customComponent?.() ??
+                                    defaultComponent({
                                        item,
                                        iconSrc: props.icons[item.type],
                                        closeIconSrc: props.icons.close,
                                     }),
-                                 ariaRenderFn(item),
+                                 ariaLive(item),
                               ]
                            )
                         )

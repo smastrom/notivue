@@ -69,7 +69,7 @@ type InternalData = {
    animationClass?: string
    onAnimationstart?: (event: AnimationEvent) => void
    onAnimationend?: (event: AnimationEvent) => void
-   customRenderFn?: () => VNode
+   customComponent?: () => VNode
    prevProps?: CtxProps & Record<string, unknown>
    prevComponent?: () => Component
 }
