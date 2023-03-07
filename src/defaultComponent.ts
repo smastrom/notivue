@@ -13,11 +13,12 @@ export function defaultComponent({ item, iconSrc, closeIconSrc }: Param) {
    return h(
       'div',
       {
-         class: Cx.NOTIFICATION,
+         class: `${Cx.NOTIFICATION} ${item.class ?? ''}`,
+         style: item.style,
          'data-notsy': item.type,
       },
       [
-         item.icon && (iconSrc as any)
+         item.icon && iconSrc
             ? hIcon(iconSrc as IconSrc, { class: Cx.ICON, key: `${item.id}_${item.type}` })
             : h('span'),
 
@@ -26,7 +27,7 @@ export function defaultComponent({ item, iconSrc, closeIconSrc }: Param) {
             item.message && h('p', { class: Cx.MESSAGE }, hMessage(item.message)),
          ]),
 
-         item.close && (closeIconSrc as any)
+         item.close && closeIconSrc
             ? h(
                  'button',
                  { class: Cx.CLOSE, ariaLabel: item.closeAriaLabel, onClick: item.clear },

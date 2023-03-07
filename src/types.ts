@@ -50,6 +50,11 @@ export type ReceiverOptions = {
    closeAriaLabel: string
 }
 
+export type ScopedPushStyles = {
+   style?: CSSProperties
+   class?: string
+}
+
 export type DefaultOptions = {
    [K in NotificationTypes]: ReceiverOptions
 } & {
@@ -89,7 +94,7 @@ export type StoreRefs = {
    push: PushFn
 }
 
-export type StoreFunctions = {
+export type StoreFns = {
    createItem: (options: StoreItem) => void
    getItem: (id: string) => StoreItem | undefined
    updateItem: (id: string, options: Partial<StoreItem>) => void
@@ -99,17 +104,19 @@ export type StoreFunctions = {
    animateItem: (id: string, className: string, onEnd: () => void) => void
 }
 
-export type Store = StoreRefs & StoreFunctions
+export type Store = StoreRefs & StoreFns
 
 // Push - Incoming
 
-export type _PushOptions = Partial<ReceiverOptions>
+export type _PushOptions = Partial<ReceiverOptions & ScopedPushStyles>
 
 export type IncomingOptions<T = unknown> = Partial<ReceiverOptions> &
    InternalPushOptions &
+   ScopedPushStyles &
    (MaybeRenderStatic<T> | MaybeRenderPromiseResult<T extends Record<string, unknown> ? T : never>)
 
-export type StaticPushOptions<T> = Partial<ReceiverOptions> & MaybeRenderStatic<T>
+export type StaticPushOptions<T> = Partial<ReceiverOptions & ScopedPushStyles> &
+   MaybeRenderStatic<T>
 
 export type MaybeRenderStatic<T> = {
    render?: {
