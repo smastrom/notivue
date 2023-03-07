@@ -42,7 +42,7 @@ type Animations = {
 export type ReceiverOptions = {
    icon: boolean
    title: string | false
-   message: string | false
+   message: string
    close: boolean
    duration: number
    ariaLive: 'polite' | 'assertive'
@@ -108,7 +108,7 @@ export type Store = StoreRefs & StoreFns
 
 // Push - Incoming
 
-export type _PushOptions = Partial<ReceiverOptions & ScopedPushStyles>
+export type _PushOptions = Partial<ReceiverOptions & ScopedPushStyles> // To be removed
 
 export type IncomingOptions<T = unknown> = Partial<ReceiverOptions> &
    InternalPushOptions &
@@ -118,14 +118,18 @@ export type IncomingOptions<T = unknown> = Partial<ReceiverOptions> &
 export type StaticPushOptions<T> = Partial<ReceiverOptions & ScopedPushStyles> &
    MaybeRenderStatic<T>
 
+export type PromiseResultPushOptions<T> = Partial<ReceiverOptions> & MaybeRenderPromiseResult<T>
+
+export type PushStaticParam<T> = StaticPushOptions<T> | ReceiverOptions['message']
+
+export type PushPromiseParam<T> = PromiseResultPushOptions<T> | ReceiverOptions['message']
+
 export type MaybeRenderStatic<T> = {
    render?: {
       component?: () => Component
       props?: (props: { notsyProps: CtxProps }) => Partial<CtxProps & T>
    }
 }
-
-export type PromiseResultPushOptions<T> = Partial<ReceiverOptions> & MaybeRenderPromiseResult<T>
 
 export type MaybeRenderPromiseResult<T = {}> = {
    render?: {
@@ -147,14 +151,14 @@ export type CtxProps = Omit<InternalPushOptions, 'id'> & {
 }
 
 export type PushStatic = <T extends Record<string, unknown>>(
-   options: StaticPushOptions<T>
+   options: StaticPushOptions<T> | ReceiverOptions['message']
 ) => ClearFn
 
 export type PushPromise = <T extends Record<string, unknown>>(
-   options: StaticPushOptions<T>
+   options: StaticPushOptions<T> | ReceiverOptions['message']
 ) => {
-   resolve: (options: PromiseResultPushOptions<T>) => ClearFn
-   reject: (options: PromiseResultPushOptions<T>) => ClearFn
+   resolve: (options: PromiseResultPushOptions<T> | ReceiverOptions['message']) => ClearFn
+   reject: (options: PromiseResultPushOptions<T> | ReceiverOptions['message']) => ClearFn
    clear: ClearFn['clear']
 }
 
