@@ -115,7 +115,7 @@ export const Receiver = defineComponent({
       const {
          items,
          incoming,
-         clearTrigger,
+         clearAllScheduler,
          createItem,
          getItem,
          updateItem,
@@ -123,7 +123,6 @@ export const Receiver = defineComponent({
          destroyAll,
          updateAll,
          animateItem,
-         resetClearTrigger,
       } = useStore(props.id)
 
       // Reactivity - Store - Computed
@@ -156,12 +155,6 @@ export const Receiver = defineComponent({
          }
       })
 
-      watchPostEffect(() => {
-         if (clearTrigger.value && hasItems.value) {
-            animateClearAll()
-         }
-      })
-
       // Watchers - Resize and Position
 
       useWindowSize(() => setPositions(TType.SILENT))
@@ -188,6 +181,14 @@ export const Receiver = defineComponent({
          }
       })
 
+      // Watcher - Clear All
+
+      watch(clearAllScheduler, () => {
+         if (hasItems.value) {
+            animateClearAll()
+         }
+      })
+
       // Functions - Listener
 
       function attachListener() {
@@ -198,7 +199,7 @@ export const Receiver = defineComponent({
                   items.value.length >= NOTIFICATIONS_LIMIT &&
                   items.value[0].type !== NType.PROMISE
                ) {
-                  animateLeave(items.value[0].id)
+                  animateLeave(items.value[items.value.length - 1].id)
                }
 
                const createdAt = performance.now()
@@ -245,10 +246,10 @@ export const Receiver = defineComponent({
                   updateItem(options.id, {
                      ...options,
                      ...customComponent,
+                     createdAt,
                      timeoutId: isHovering
                         ? undefined
                         : createTimeout(options.id, options.duration),
-                     createdAt,
                   })
                } else {
                   const _customComponent = options.render?.component
@@ -271,12 +272,17 @@ export const Receiver = defineComponent({
                   createItem({
                      ...options,
                      ...customComponent,
+                     createdAt,
                      timeoutId:
                         options.duration === Infinity
                            ? undefined
                            : createTimeout(options.id, options.duration),
+                     // Called by push fn in the store
                      clear: () => animateLeave(options.id),
-                     createdAt,
+                     destroy: () => {
+                        removeItem(options.id)
+                        setPositions()
+                     },
                   })
 
                   nextTick(() => animateEnter(options.id))
@@ -292,32 +298,6 @@ export const Receiver = defineComponent({
 
       function getCtxProps({ title, message, type, duration, id }: MergedOptions) {
          return { notsyProps: { title, message, type, duration, close: () => animateLeave(id) } }
-      }
-
-      // Functions - Animations
-
-      function animateEnter(id: string) {
-         animateItem(id, mergedAnims.value.enter, () =>
-            updateItem(id, { animClass: '', onAnimationend: undefined })
-         )
-
-         setPositions()
-      }
-
-      function animateLeave(id: string) {
-         animateItem(id, mergedAnims.value.leave, () => removeItem(id))
-
-         setPositions()
-      }
-
-      function animateClearAll() {
-         if (wrapperRef.value) {
-            wrapperRef.value.classList.add(mergedAnims.value.clearAll)
-            wrapperRef.value.onanimationend = () => {
-               destroyAll()
-               resetClearTrigger()
-            }
-         }
       }
 
       // Functions - Transitions
@@ -344,6 +324,31 @@ export const Receiver = defineComponent({
             })
 
             accPrevHeights += factor * thisEl.clientHeight
+         }
+      }
+
+      // Functions - Animations
+
+      function animateEnter(id: string) {
+         animateItem(id, mergedAnims.value.enter, () =>
+            updateItem(id, { animClass: '', onAnimationend: undefined })
+         )
+
+         setPositions()
+      }
+
+      function animateLeave(id: string) {
+         animateItem(id, mergedAnims.value.leave, () => removeItem(id))
+
+         setPositions()
+      }
+
+      function animateClearAll() {
+         if (wrapperRef.value) {
+            wrapperRef.value.classList.add(mergedAnims.value.clearAll)
+            wrapperRef.value.onanimationend = () => {
+               destroyAll()
+            }
          }
       }
 

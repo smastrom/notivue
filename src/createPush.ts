@@ -6,16 +6,22 @@ import type {
    PushPromise,
    PushFn,
    PromiseResultPushOptions,
+   StoreItem,
 } from './types'
 
-type Param = {
+type StoreFns = {
    setIncoming: (options: IncomingOptions) => void
-   clearItem: (id: string) => void
-   setClearTrigger: () => void
+   callItemMethod: (id: string, method: 'clear' | 'destroy') => void
+   scheduleClearAll: () => void
    destroyAll: () => void
 }
 
-export function createPush({ setIncoming, clearItem, setClearTrigger, destroyAll }: Param): PushFn {
+export function createPushFn({
+   setIncoming,
+   callItemMethod,
+   scheduleClearAll,
+   destroyAll,
+}: StoreFns): PushFn {
    function create<T>(
       options: StaticPushOptions<T> | PromiseResultPushOptions<T>,
       status = NType.SUCCESS,
@@ -23,14 +29,18 @@ export function createPush({ setIncoming, clearItem, setClearTrigger, destroyAll
    ) {
       setIncoming({ ...options, id, type: status })
 
-      return { id, clear: () => clearItem(id) }
+      return {
+         id,
+         clear: () => callItemMethod(id, 'clear'),
+         destroy: () => callItemMethod(id, 'destroy'),
+      }
    }
 
    function push<T>(options: StaticPushOptions<T>) {
       return create<T>(options)
    }
 
-   push.clearAll = setClearTrigger
+   push.clearAll = scheduleClearAll
 
    push.destroyAll = destroyAll
 
@@ -43,12 +53,13 @@ export function createPush({ setIncoming, clearItem, setClearTrigger, destroyAll
    push.info = <T>(options: StaticPushOptions<T>) => create(options, NType.INFO)
 
    push.promise = ((options) => {
-      const { clear, id } = create(options, NType.PROMISE)
+      const { id, clear, destroy } = create(options, NType.PROMISE)
 
       return {
          resolve: (options) => create(options, NType.PROMISE_RESOLVE, id),
          reject: (options) => create(options, NType.PROMISE_REJECT, id),
          clear,
+         destroy,
       }
    }) satisfies PushPromise
 
