@@ -3,12 +3,12 @@ import type { Position } from '../src/types'
 
 type Settings = {
    position: Position
-   maxWidth: number
+   maxWidth: string
    disabled: boolean
 }
 
 export const settings = reactive<Settings>({
-   position: 'top-center',
-   maxWidth: 0,
+   position: 'topCenter',
+   maxWidth: '1280px',
    disabled: false,
 })
