@@ -9,7 +9,7 @@ type Param = {
    closeIconSrc: unknown
 }
 
-export function defaultRenderFn({ item, iconSrc, closeIconSrc }: Param) {
+export function defaultComponent({ item, iconSrc, closeIconSrc }: Param) {
    return h(
       'div',
       {

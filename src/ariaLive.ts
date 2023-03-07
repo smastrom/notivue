@@ -11,7 +11,7 @@ const style: CSSProperties = {
    width: '1px',
 }
 
-export function ariaRenderFn(item: StoreItem) {
+export function ariaLive(item: StoreItem) {
    return h(
       'div',
       { 'aria-live': item.ariaLive, role: item.ariaRole, style },
