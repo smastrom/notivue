@@ -1,4 +1,5 @@
-import { CLASS_PREFIX as CX, NType } from './constants'
+import { CLASS_PREFIX as CX, NotificationTypes as NType } from './constants'
+import { DefaultOptions, NotificationTypes as NTypeU } from './types'
 import type { ReceiverOptions } from './types'
 
 const success: ReceiverOptions = {
@@ -37,7 +38,7 @@ const info: ReceiverOptions = {
    title: 'Info!',
 }
 
-export const defaultOptions: Required<Record<`${NType}`, ReceiverOptions>> = {
+export const defaultOptions: DefaultOptions = {
    [NType.SUCCESS]: success,
    [NType.ERROR]: error,
    [NType.WARNING]: warning,
@@ -45,7 +46,7 @@ export const defaultOptions: Required<Record<`${NType}`, ReceiverOptions>> = {
    [NType.PROMISE]: promise,
    [NType.PROMISE_RESOLVE]: success,
    [NType.PROMISE_REJECT]: error,
-}
+} as DefaultOptions
 
 export const defaultAnimations = {
    enter: CX + 'enter',
