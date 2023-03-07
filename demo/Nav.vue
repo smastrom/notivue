@@ -229,7 +229,12 @@ function toggleRtl() {
 
          <button @click="push.destroyAll()">Destroy</button>
          <button
-            @click="push.info({ message: 'Your message has been successfully sent. Please.' })"
+            @click="
+               push.info({
+                  message: 'Your message has been successfully sent. Please.',
+                  className: 'custom-class',
+               })
+            "
          >
             Info
          </button>
