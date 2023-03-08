@@ -1,5 +1,21 @@
+@font-face {
+   font-display: swap;
+   font-family: 'PT Sans Narrow';
+   font-style: normal;
+   font-weight: 400;
+   src: url('./assets/pt-sans-narrow-v17-latin-regular.woff2') format('woff2');
+}
+
+@font-face {
+   font-display: swap;
+   font-family: 'PT Sans Narrow';
+   font-style: normal;
+   font-weight: 700;
+   src: url('./assets/pt-sans-narrow-v17-latin-700.woff2') format('woff2');
+}
+
 :root {
-   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+   font-family: 'Inter', Avenir, Helvetica, Arial, sans-serif;
    font-size: 16px;
    line-height: 24px;
    font-weight: 400;
@@ -12,31 +28,43 @@
    color: #7f7f7f;
 }
 
+html {
+   background: rgb(255, 255, 255);
+   background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(150, 219, 248, 1) 100%);
+}
+
 body {
    margin: 0;
-   display: flex;
-   place-items: top;
-   min-width: 320px;
+   padding: 0;
    min-height: 100vh;
 }
 
-h1 {
-   font-size: 3.2em;
-   line-height: 1.1;
-}
-
-button {
-   border-radius: 8px;
-   border: none;
-   padding: 0.4em 0.8em;
-   font-size: 1rem;
-   font-family: inherit;
-   cursor: pointer;
-}
-
 #app {
-   max-width: 1280px;
-   margin: 0 auto;
-   padding: 2rem;
-   text-align: center;
+   font-family: 'PT Sans Narrow', Avenir, Helvetica, Arial, sans-serif;
+}
+
+* {
+   box-sizing: border-box;
+}
+
+.ButtonBase {
+   background-color: white;
+   border-radius: 5px;
+   padding: 0.25em 0.5em;
+   border: none;
+   font-size: 1.125rem;
+   display: flex;
+   gap: 5px;
+   align-items: center;
+   cursor: pointer;
+   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.03);
+   transition: all 100ms ease-in-out;
+   font-family: 'PT Sans Narrow', Avenir, Helvetica, Arial, sans-serif;
+   font-weight: 700;
+   color: #6b7a90;
+   white-space: nowrap;
+
+   &:hover {
+      transform: scale(1.1);
+   }
 }

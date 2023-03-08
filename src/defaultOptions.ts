@@ -7,7 +7,7 @@ const success: ReceiverOptions = {
    message: '',
    icon: true,
    close: true,
-   duration: 3000,
+   duration: 3000 * 1000,
    ariaLive: 'polite',
    ariaRole: 'status',
    closeAriaLabel: 'Close',

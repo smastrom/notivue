@@ -130,7 +130,7 @@ export type PushPromiseParam<T> = PromiseResultPushOptions<T> | ReceiverOptions[
 export type MaybeRenderStatic<T> = {
    render?: {
       component?: () => Component
-      props?: (props: { notsyProps: CtxProps }) => Partial<CtxProps & T>
+      props?: (props: { notivueProps: CtxProps }) => Partial<CtxProps & T>
    }
 }
 
@@ -138,7 +138,7 @@ export type MaybeRenderPromiseResult<T = {}> = {
    render?: {
       component?: () => Component
       props?: (props: {
-         notsyProps: CtxProps
+         notivueProps: CtxProps
          prevProps: Omit<T, keyof CtxProps>
       }) => Record<string, unknown>
    }

@@ -15,7 +15,7 @@ export function defaultComponent({
       {
          class: `${Cx.NOTIFICATION} ${item.class ?? ''}`,
          style: { ...theme, ...(item.style ?? {}) },
-         'data-notsy': item.type,
+         'data-notivue': item.type,
       },
       [
          item.icon && icons?.[item.type]
