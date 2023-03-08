@@ -13,7 +13,7 @@ export default defineConfig({
    build: {
       lib: {
          entry: 'src/index.ts',
-         name: 'Notsy',
+         name: 'Notivue',
          fileName: 'index',
          formats: ['es', 'cjs'],
       },

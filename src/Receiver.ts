@@ -294,7 +294,7 @@ export const Receiver = defineComponent({
       }
 
       function getCtxProps({ title, message, type, duration, id }: MergedOptions) {
-         return { notsyProps: { title, message, type, duration, close: () => animateLeave(id) } }
+         return { notivueProps: { title, message, type, duration, close: () => animateLeave(id) } }
       }
 
       // Functions - Transitions

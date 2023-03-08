@@ -1,37 +1,23 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { ReceiverProps } from '../src/types'
+import { onMounted, onBeforeUnmount, ref } from 'vue'
 import { usePush } from '../src/usePush'
-import { settings } from './store'
-import Custom from './Custom.vue'
+import { getRandomInt } from './utils'
+import ButtonGroup from './ButtonGroup.vue'
+import PositionControls from './PositionControls.vue'
+import Button from './Button.vue'
+import SuccessIcon from './icons/Success.vue'
+import VueIcon from './icons/Vue.vue'
+import PromiseIcon from './icons/Promise.vue'
+import Info from './icons/Info.vue'
+import Warn from './icons/Warn.vue'
+import Dismiss from './icons/Dismiss.vue'
+import Destroy from './icons/Destroy.vue'
+import Controls from './Controls.vue'
+import type { _PushOptions } from '../src/types'
 
-import { _PushOptions } from '../src/types'
+const navRef = ref<HTMLElement | null>(null)
 
 const push = usePush()
-
-const pushToUser = usePush('user-1')
-
-function getRandomInt(min: number, max: number) {
-   min = Math.ceil(min)
-   max = Math.floor(max)
-   return Math.floor(Math.random() * (max - min) + min) // The maximum is exclusive and the minimum is inclusive
-}
-
-function usePostSuccess<T extends _PushOptions & { props?: Record<string, any> }>() {
-   return ({ props = {}, ...options }: T) =>
-      push.success({
-         ...options,
-         render: {
-            component: () => Custom,
-            props: ({ notsyProps }) => ({
-               ...notsyProps,
-               ...props,
-            }),
-         },
-      })
-}
-
-const pushX = usePostSuccess()
 
 async function asyncPush() {
    const ayncNotify = push.promise({
@@ -40,39 +26,46 @@ async function asyncPush() {
 
    await new Promise((resolve) => setTimeout(resolve, getRandomInt(2000, 4000)))
 
-   if (Math.random() > 0.3) {
+   if (Math.random() > 0.5) {
       ayncNotify.reject({ message: 'Promise rejected!' })
    } else {
-      ayncNotify.resolve({ message: 'Promise successfully resolved!'.repeat(6) })
+      ayncNotify.resolve({ message: 'Promise successfully resolved! '.repeat(4) })
    }
 }
 
-function customPush() {
-   pushX({
-      duration: 5000,
-      message: 'Your message has been successfully sent. Please.',
-      props: {
-         avatarUrl: 'https://i.pravatar.cc/150?img=2',
-         nameSurname: 'John Doe',
-      },
-   })
+function getNavHeight() {
+   document.documentElement.style.setProperty(
+      '--vn-root-bottom',
+      `${(navRef.value?.clientHeight ?? 0) + 10}px`
+   )
+}
 
+onMounted(() => {
+   getNavHeight()
+
+   window.addEventListener('resize', getNavHeight, { passive: true })
+})
+
+onBeforeUnmount(() => {
+   window.removeEventListener('resize', getNavHeight)
+})
+
+function customPush() {
    /*    push({
       message: 'Custom',
       render: {
          component: markRaw(Custom),
-         props: ({ notsyProps }) => ({
-            ...notsyProps,
+         props: ({ notivueProps }) => ({
+            ...notivueProps,
             avatarUrl: 'https://i.pravatar.cc/150?img=1',
          }),
       },
    }) */
-
    /*    push({
       message: 'Custom',
       render: {
          component: markRaw(Custom),
-         props: ({ notsyProps }) => ({}),
+         props: ({ notivueProps }) => ({}),
       },
    }) */
 }
@@ -82,8 +75,8 @@ async function customAsync() {
       message: 'Async',
       render: {
          component: () => Custom,
-         props: ({ notsyProps }) => ({
-            ...notsyProps,
+         props: ({ notivueProps }) => ({
+            ...notivueProps,
             avatarUrl: 'https://i.pravatar.cc/150?img=1',
             nameSurname: 'John Doe',
          }),
@@ -96,8 +89,8 @@ async function customAsync() {
       message: 'Async resolved',
       render: {
          component: () => Custom,
-         props: ({ notsyProps, prevProps }) => ({
-            ...notsyProps,
+         props: ({ notivueProps, prevProps }) => ({
+            ...notivueProps,
             ...prevProps,
             avatarUrl: 'https://i.pravatar.cc/150?img=1',
          }),
@@ -108,8 +101,8 @@ async function customAsync() {
       message: 'Async resolved',
       render: {
          component: markRaw(Custom),
-         props: ({ notsyProps }) => ({
-            ...notsyProps,
+         props: ({ notivueProps }) => ({
+            ...notivueProps,
          }),
       },
    })
@@ -118,170 +111,141 @@ async function customAsync() {
       message: 'Async resolved',
       render: {
          component: markRaw(Custom),
-         props: ({ notsyProps }) => ({}),
+         props: ({ notivueProps }) => ({}),
       },
    }) */
-}
-
-function setPosition(position: ReceiverProps['position']) {
-   settings.position = position
-}
-
-function setWidth() {
-   settings.maxWidth = settings.maxWidth === '1280px' ? '100%' : '1280px'
-}
-
-function toggleEnable() {
-   settings.disabled = !settings.disabled
-}
-
-const counter = ref(0)
-
-function pushThousand() {
-   let start = 1
-
-   let interval = setInterval(() => {
-      push({
-         message: `Message Message Message Message ${start}`,
-      })
-      start++
-   }, 60)
-
-   setTimeout(() => {
-      clearInterval(interval)
-   }, 60 * 100)
-}
-
-function toggleRtl() {
-   document.documentElement.dir = 'rtl'
 }
 </script>
 
 <template>
-   <nav dir="ltr">
-      <div>
-         <button @click="setWidth">
-            {{ settings.maxWidth === '1280px' ? 'Full Width' : 'Container Width' }}
-         </button>
-         <button @click="setPosition('topLeft')">Top Left</button>
-         <button @click="setPosition('topCenter')">Top Center</button>
-         <button @click="setPosition('topRight')">Top Right</button>
-         <button @click="setPosition('bottomLeft')">Bottom Left</button>
-         <button @click="setPosition('bottomCenter')">Bottom Center</button>
-         <button @click="setPosition('bottomRight')">Bottom Right</button>
-      </div>
+   <nav dir="ltr" ref="navRef">
+      <div class="Container">
+         <ButtonGroup name="Position">
+            <PositionControls />
+         </ButtonGroup>
 
-      <div>
-         <button
-            @click="
-               pushToUser({
-                  message:
-                     'Your message has been successfully sent. Please. Your message has been successfully sent. Please. Your message has been successfully sent. Please. Your message has been successfully sent. Please.'.repeat(
-                        5
-                     ),
-               })
-            "
-         >
-            To User
-         </button>
-         <button @click="toggleEnable">
-            {{ settings.disabled ? 'Enable' : 'Disable' }}
-         </button>
-         <button @click="pushThousand">Push 1000</button>
-         <button
-            @click="
-               () => {
-                  counter++
-                  push({
-                     message: `${counter} Your message has
-                     been successfully **sent**. Please.`,
-                  })
-               }
-            "
-         >
-            Success
-         </button>
-         <button
-            @click="$push.success('Your message has been successfully sent. Please sign out.')"
-         >
-            Push $
-         </button>
-         <button
-            @click="
-               () => {
-                  toggleRtl()
-                  $push.success({
-                     title: 'إستعمل استعملت من على',
+         <ButtonGroup name="Controls">
+            <Controls />
+         </ButtonGroup>
 
-                     message:
-                        'وتم وسفن الخاسر الشتاء، هو. عرض أثره، أعمال تم, حدى قد كنقطة الإمداد بمحاولة.',
-                  })
-               }
-            "
-         >
-            Push RTL
-         </button>
-         <button
-            @click="push.error({ message: 'Your **message** has been successfully sent. Please.' })"
-         >
-            Error
-         </button>
+         <div class="DefaultComponent">
+            <ButtonGroup name="Default Component">
+               <Button
+                  @click="$push('Your message has been successfully sent. Please.')"
+                  text="Success"
+               >
+                  <SuccessIcon />
+               </Button>
+               <Button
+                  @click="$push.error('Your message has been successfully sent. Please.')"
+                  text="Error"
+               >
+                  <Warn :isWarn="false" />
+               </Button>
+               <Button
+                  @click="$push.warning('Your message has been successfully sent. Please.')"
+                  text="Warn"
+               >
+                  <Warn :isWarn="true" />
+               </Button>
+               <Button
+                  @click="$push.info('Your message has been successfully sent. Please.')"
+                  text="Info"
+               >
+                  <Info />
+               </Button>
+               <Button @click="asyncPush" text="Promise">
+                  <PromiseIcon />
+               </Button>
+            </ButtonGroup>
 
-         <button @click="push.destroyAll()">Destroy</button>
-         <button
-            @click="
-               push.info({
-                  message: 'Your message has been successfully sent. Please.',
-                  class: 'custom-class',
-               })
-            "
-         >
-            Info
-         </button>
-         <button
-            @click="
-               push.warning({
-                  message: 'Your message has been successfully sent. Please.',
-               })
-            "
-         >
-            Warning
-         </button>
-         <button @click="asyncPush">Promise</button>
-         <button @click="customPush">Custom</button>
-         <button @click="customAsync">Custom Promise</button>
-         <button @click="push.clearAll()">Clear All</button>
+            <ButtonGroup name="Theme">
+               <Button
+                  @click="$push('Your message has been successfully sent. Please.')"
+                  text="Light"
+               />
+               <Button
+                  @click="$push('Your message has been successfully sent. Please.')"
+                  text="Pastel"
+               />
+               <Button
+                  @click="$push('Your message has been successfully sent. Please.')"
+                  text="Material"
+               />
+               <Button
+                  @click="$push('Your message has been successfully sent. Please.')"
+                  text="Dark"
+               />
+               <Button
+                  @click="$push('Your message has been successfully sent. Please.')"
+                  text="Pastel Dark"
+               />
+               <Button
+                  @click="$push('Your message has been successfully sent. Please.')"
+                  text="Slate Dark"
+               />
+            </ButtonGroup>
+         </div>
+
+         <ButtonGroup name="Custom Components">
+            <Button
+               @click="$push.promise('Your message has been successfully sent. Please.')"
+               text="Static"
+            >
+               <VueIcon />
+            </Button>
+            <Button
+               @click="$push.promise('Your message has been successfully sent. Please.')"
+               text="Promise"
+            >
+               <VueIcon />
+            </Button>
+            <Button
+               @click="$push.promise('Your message has been successfully sent. Please.')"
+               text="Promise Multi"
+            >
+               <VueIcon />
+            </Button>
+         </ButtonGroup>
+
+         <ButtonGroup name="Actions">
+            <Button @click="$push.clearAll()" text="Dismiss All"> <Dismiss /> </Button>
+            <Button @click="$push.destroyAll()" text="Destroy All">
+               <Destroy />
+            </Button>
+         </ButtonGroup>
       </div>
    </nav>
 </template>
 
 <style scoped>
 nav {
-   box-sizing: border-box;
-   pointer-events: none;
+   padding: 10px;
+   background-color: rgba(255, 255, 255, 0.35);
+   backdrop-filter: blur(6px);
+   border-top: 1px solid white;
    display: flex;
-   flex-direction: column;
-   width: 100%;
-   background-color: #444254;
-   gap: 20px;
    justify-content: center;
+   width: 100%;
    z-index: 2147483647;
    bottom: 0;
    left: 0;
-   padding: 30px;
    position: fixed;
+   overflow: hidden;
 }
 
-nav div {
-   justify-content: center;
-   display: flex;
-   flex-wrap: wrap;
-   gap: 20px;
-}
-
-nav button {
-   pointer-events: all;
+.Container {
+   overflow: auto;
+   padding: 10px;
    width: max-content;
-   white-space: nowrap;
+   display: grid;
+   grid-auto-flow: column;
+   gap: 50px;
+}
+
+.DefaultComponent {
+   display: grid;
+   grid-auto-flow: column;
+   gap: 10px;
 }
 </style>

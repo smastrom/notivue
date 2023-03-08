@@ -1,10 +1,16 @@
-# Notsy
+<div align="center">
 
-Fully-fledged flexible **not**ification **sy**stem for Vue 3.
+![notivue](https://i.ibb.co/4Mq5cnX/cover.png)
+
+# Notivue
+
+Fully-fledged flexible notification system for Vue 3.
 
 ---
 
-[Live Demo](https://notsy.netlify.app/) - [Documentation]() - [StackBlitz]()
+[Live Demo](https://notivue.netlify.app/) - [Documentation]() - [StackBlitz]()
+
+</div>
 
 <br />
 
@@ -26,7 +32,7 @@ _Create your own theme with a breeze_
 _Update pending notifications with ease_
 
 **🧩 Custom Components API**  
-_Use your own components while Notsy handles the rest_
+_Use your own components while Notivue handles the rest_
 
 **🎢 Slick transitions and animations**  
 _Customize enter/leave animations_
@@ -42,7 +48,7 @@ _Pure CSS RTL support_
 ## Installation
 
 ```bash
-pnpm add notsy
+pnpm add notivue
 ```
 
 <br />
@@ -52,24 +58,23 @@ pnpm add notsy
 ### 1. main.js
 
 ```js
-import { notsy } from 'notsy'
+import { notivue } from 'notivue'
 
-import 'notsy/component.css'
-import 'notsy/animations.css'
+import 'notivue/component.css'
+import 'notivue/animations.css'
 
-createApp(App).use(notsy).mount('#app')
+createApp(App).use(notivue).mount('#app')
 ```
 
 ### 2. App.vue (or anywhere else)
 
 ```vue
 <script setup>
-import { Notsy, component } from 'notsy'
+import { Notivue, component } from 'notivue'
 </script>
 
 <template>
-   <Notsy :render="component" />
-   <RouterView />
+   <Notivue :render="component" />
 </template>
 ```
 
@@ -85,7 +90,7 @@ import { Notsy, component } from 'notsy'
 
 ## Links
 
-[Live Demo](https://notsy.netlify.app/) - [Documentation]() - [StackBlitz]()
+[Live Demo](https://notivue.netlify.app/) - [Documentation]() - [StackBlitz]()
 
 <br />
 

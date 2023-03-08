@@ -1,53 +1,53 @@
-[data-notsy='success'] {
+[data-notivue='success'] {
    --ny-background: var(--ny-success-background);
    --ny-foreground: var(--ny-success-foreground);
    --ny-accent: var(--ny-success-accent);
    --ny-border: var(--ny-success-border);
 }
 
-[data-notsy='error'] {
+[data-notivue='error'] {
    --ny-background: var(--ny-error-background);
    --ny-foreground: var(--ny-error-foreground);
    --ny-accent: var(--ny-error-accent);
    --ny-border: var(--ny-error-border);
 }
 
-[data-notsy='warning'] {
+[data-notivue='warning'] {
    --ny-background: var(--ny-warning-background);
    --ny-foreground: var(--ny-warning-foreground);
    --ny-accent: var(--ny-warning-accent);
    --ny-border: var(--ny-warning-border);
 }
 
-[data-notsy='info'] {
+[data-notivue='info'] {
    --ny-background: var(--ny-info-background);
    --ny-foreground: var(--ny-info-foreground);
    --ny-accent: var(--ny-info-accent);
    --ny-border: var(--ny-info-border);
 }
 
-[data-notsy='promise'] {
+[data-notivue='promise'] {
    --ny-background: var(--ny-promise-background);
    --ny-foreground: var(--ny-promise-foreground);
    --ny-accent: var(--ny-promise-accent);
    --ny-border: var(--ny-promise-border);
 }
 
-[data-notsy='promise-resolve'] {
+[data-notivue='promise-resolve'] {
    --ny-background: var(--ny-promise-resolve-background, var(--ny-success-background));
    --ny-foreground: var(--ny-promise-resolve-foreground, var(--ny-success-foreground));
    --ny-accent: var(--ny-promise-resolve-accent, var(--ny-success-accent));
    --ny-border: var(--ny-promise-resolve-border, var(--ny-success-border));
 }
 
-[data-notsy='promise-reject'] {
+[data-notivue='promise-reject'] {
    --ny-background: var(--ny-promise-reject-background, var(--ny-error-background));
    --ny-foreground: var(--ny-promise-reject-foreground, var(--ny-error-foreground));
    --ny-accent: var(--ny-promise-reject-accent, var(--ny-error-accent));
    --ny-border: var(--ny-promise-reject-border, var(--ny-error-border));
 }
 
-.Notsy__notification {
+.Notivue__notification {
    width: var(--ny-width);
    max-width: 100%;
    padding: var(--ny-spacing);
@@ -71,14 +71,14 @@
    }
 }
 
-.Notsy__icon {
+.Notivue__icon {
    display: flex;
    color: var(--ny-accent, var(--ny-global-accent));
    margin: 0;
    margin-inline-end: var(--ny-spacing);
 }
 
-.Notsy__content-title {
+.Notivue__content-title {
    line-height: 1.15;
    font-weight: 700;
    color: var(--ny-foreground, var(--ny-global-foreground));
@@ -88,7 +88,7 @@
    text-align: inherit;
 }
 
-.Notsy__content-message {
+.Notivue__content-message {
    font-weight: 600;
    opacity: 0.8;
    max-height: 250px;
@@ -101,11 +101,12 @@
    font-size: var(--ny-message-size);
 }
 
-.Notsy__close {
+.Notivue__close {
    position: relative;
    inset-inline-start: var(--ny-spacing);
    height: 100%;
    margin: 0;
+   cursor: pointer;
    padding: var(--ny-spacing);
 
    border: none;
@@ -116,13 +117,13 @@
    opacity: 0.5;
 }
 
-.Notsy__close-icon {
+.Notivue__close-icon {
    display: flex;
    opacity: 0.5;
    transition: 100ms opacity ease-out;
    color: var(--ny-foreground, var(--ny-global-foreground));
 }
 
-.Notsy__close:hover .Notsy__close-icon {
+.Notivue__close:hover .Notivue__close-icon {
    opacity: 1;
 }

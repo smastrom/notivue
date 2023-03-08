@@ -20,6 +20,7 @@ export const staticStyles: Record<string, CSSProperties> = {
       position: 'fixed',
       height: '100%',
       pointerEvents: 'none',
+      top: '0px',
    },
    container: {
       ...boxSizing,

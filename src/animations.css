@@ -1,16 +1,16 @@
-.Notsy__enter {
-   animation: Notsy__enter-kf 250ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+.Notivue__enter {
+   animation: Notivue__enter-kf 250ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
 
-.Notsy__leave {
-   animation: Notsy__leave-kf 250ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+.Notivue__leave {
+   animation: Notivue__leave-kf 250ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
 
-.Notsy__clearAll {
-   animation: Notsy__clearAll-kf 600ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+.Notivue__clearAll {
+   animation: Notivue__clearAll-kf 600ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-@keyframes Notsy__enter-kf {
+@keyframes Notivue__enter-kf {
    0% {
       transform: scale(0.6) translate3d(0, -10vh, 0);
       opacity: 0;
@@ -21,7 +21,7 @@
    }
 }
 
-@keyframes Notsy__leave-kf {
+@keyframes Notivue__leave-kf {
    from {
       transform: scale(1) translate3d(0, 0, 0);
       opacity: 1;
@@ -32,7 +32,7 @@
    }
 }
 
-@keyframes Notsy__clearAll-kf {
+@keyframes Notivue__clearAll-kf {
    0% {
       filter: blur(0);
       opacity: 1;
