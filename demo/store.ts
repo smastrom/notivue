@@ -1,24 +1,15 @@
 import { reactive } from 'vue'
 import type { Position } from '../src/types'
 
-type Store = {
-   position: Position
-   maxWidth: string
-   disabled: boolean
-   theme: 'light' | 'dark'
-   pauseOnHover: boolean
-   renderTitles: boolean
-   isDisabled: boolean
-}
-
-export const store = reactive<Store>({
-   position: 'topCenter',
+export const store = reactive({
+   position: 'topCenter' as Position,
    maxWidth: '100%',
    disabled: false,
    theme: 'light',
    pauseOnHover: true,
    renderTitles: true,
    isDisabled: false,
+   customIcons: false,
 })
 
 export function setPosition(position: Position) {
@@ -39,4 +30,8 @@ export function setRenderTiles() {
 
 export function setDisabled() {
    store.isDisabled = !store.isDisabled
+}
+
+export function setCustomIcons() {
+   store.customIcons = !store.customIcons
 }

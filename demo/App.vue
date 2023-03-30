@@ -19,6 +19,41 @@ const options = {
    }, */
 } as const
 
+const _options = {
+   success: {
+      title: false,
+   },
+   warning: {
+      title: false,
+   },
+   info: {
+      title: false,
+   },
+   error: {
+      title: false,
+   },
+   promise: {
+      title: false,
+   },
+   'promise-resolve': {
+      title: false,
+   },
+   'promise-reject': {
+      title: false,
+   },
+}
+
+const emojis = {
+   success: '✅',
+   error: '⛔️',
+   warning: '🤌',
+   info: '❔',
+   promise: '🌀',
+   'promise-resolve': '✅',
+   'promise-reject': '⛔️',
+   close: 'Close',
+}
+
 const icons = {
    ..._icons,
    /*    warning: () => CustomIcon, */
@@ -30,9 +65,11 @@ watchEffect(() => document.documentElement.style.setProperty('--vn-root-containe
 <template>
    <Notivue
       :render="defaultComponent"
-      :options="options"
-      :icons="icons"
+      :options="store.renderTitles ? options : _options"
+      :icons="store.customIcons ? emojis : icons"
+      :pauseOnHover="store.pauseOnHover"
       :position="store.position"
+      :disabled="store.isDisabled"
       class="CustomClass"
    />
    <Notivue id="user-1" position="bottomRight" :disabled="false" />
