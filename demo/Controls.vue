@@ -1,12 +1,18 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { store, setDisabled, setFullWidth, setPauseOnHover, setRenderTiles } from './store'
-
-const isFullWidth = computed(() => store.maxWidth === '100%')
+import { store, setDisabled, setPauseOnHover, setRenderTiles, setCustomIcons } from './store'
 </script>
 
 <template>
    <div class="Controls">
+      <div
+         class="ButtonBase Switch"
+         role="switch"
+         :aria-checked="store.isDisabled"
+         aria-label="Disable Receiver"
+         @click="setDisabled"
+      >
+         Disable Receiver
+      </div>
       <div
          class="ButtonBase Switch"
          role="switch"
@@ -28,20 +34,11 @@ const isFullWidth = computed(() => store.maxWidth === '100%')
       <div
          class="ButtonBase Switch"
          role="switch"
-         :aria-checked="store.isDisabled"
-         aria-label="Disable Receiver"
-         @click="setDisabled"
+         :aria-checked="store.customIcons"
+         aria-label="Use Emojis"
+         @click="setCustomIcons"
       >
-         Disable Receiver
-      </div>
-      <div
-         class="ButtonBase Switch"
-         role="switch"
-         :aria-checked="isFullWidth"
-         aria-label="Full Width"
-         @click="setFullWidth"
-      >
-         Enable RTL
+         Use Emojis
       </div>
    </div>
 </template>
