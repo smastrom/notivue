@@ -5,14 +5,14 @@ export function useResizeObserver(onSizeChange: () => void) {
    const resizeObserver = shallowRef<ResizeObserver>()
 
    onMounted(() => {
-      resizeObserver.value = new ResizeObserver((entries, _observer) => {
+      resizeObserver.value = new ResizeObserver((entries, observer) => {
          entries.forEach((entry) => {
             if (!calls.has(entry.target)) {
                calls.add(entry.target)
             } else {
                onSizeChange()
                calls.delete(entry.target)
-               _observer.unobserve(entry.target)
+               observer.unobserve(entry.target)
             }
          })
       })

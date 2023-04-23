@@ -12,11 +12,11 @@ declare module 'vue' {
 export const install: Plugin = {
    install(
       app,
-      { additionalReceivers = [] }: PluginOptions = {
-         additionalReceivers: [],
+      { register = [] }: PluginOptions = {
+         register: [],
       }
    ) {
-      additionalReceivers.forEach((key) => (userSymbols[key.toString()] = Symbol(key.toString())))
+      register.forEach((key) => (userSymbols[key.toString()] = Symbol(key.toString())))
 
       const receivers = new Map<InjectionKey<Store>, Store>()
 

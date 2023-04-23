@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { store, setPosition, setFullWidth } from './store'
-import Arrow from './icons/Arrow.vue'
-import type { Position } from '../src/types'
+import { store, setPosition, setFullWidth, setCenterOnMobile } from '../store'
+import Arrow from '../icons/Arrow.vue'
+import type { Position } from '../../src/types'
 
 const isFullWidth = computed(() => store.maxWidth === '100%')
 
@@ -67,9 +67,9 @@ const positions = [
       <div
          class="ButtonBase SwitchButton Switch"
          role="switch"
-         :aria-checked="isFullWidth"
-         aria-label="Full Width"
-         @click="setFullWidth"
+         :aria-checked="store.centerOnMobile"
+         aria-label="Center on Mobile"
+         @click="setCenterOnMobile"
       >
          Center on Mobile
       </div>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { store, setTheme } from './store'
+import { store, setTheme } from '../store'
 
 const themes = ['light', 'pastel', 'material', 'dark', 'slate'] as const
 

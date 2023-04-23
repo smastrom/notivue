@@ -48,7 +48,7 @@ export function createStore(): Store {
       items.value = []
    }
 
-   // push() scoped. not used by Receiver
+   // push() scoped, not used by Receiver
 
    function setIncoming(options: IncomingOptions) {
       incoming.value = options

@@ -1,4 +1,4 @@
-import { nextTick, reactive } from 'vue'
+import { getCurrentInstance, reactive } from 'vue'
 import type { Position, Themes } from '../src/types'
 
 export const store = reactive({
@@ -10,6 +10,8 @@ export const store = reactive({
    isDisabled: false,
    customIcons: false,
    outlineIcons: false,
+   rtl: false,
+   centerOnMobile: false,
 })
 
 export function setPosition(position: Position) {
@@ -39,4 +41,13 @@ export function setTheme(theme: Themes) {
 
 export function setOutlineIcons() {
    store.outlineIcons = !store.outlineIcons
+}
+
+export function setRTL() {
+   store.rtl = !store.rtl
+   document.documentElement.setAttribute('dir', store.rtl ? 'rtl' : 'ltr')
+}
+
+export function setCenterOnMobile() {
+   store.centerOnMobile = !store.centerOnMobile
 }

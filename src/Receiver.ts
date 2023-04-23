@@ -16,7 +16,7 @@ import { staticStyles, useDynamicStyles } from './useStyles'
 import { useRefsMap } from './useRefsMap'
 import { useResizeObserver } from './useResizeObserver'
 import { useWindowSize } from './useWindowSize'
-import { defaultAnimations, defaultOptions } from './defaultOptions'
+import { defaultAnimations, options as defaultOptions } from './options'
 import { ariaLive } from './ariaLive'
 import { mergeOptions } from './utils'
 import {

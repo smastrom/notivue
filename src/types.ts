@@ -1,7 +1,7 @@
 import type { VNode, Component, CSSProperties, Ref, ShallowRef } from 'vue'
 
 export type PluginOptions = {
-   additionalReceivers?: string[]
+   register?: string[]
 }
 
 // Receiver Props
@@ -23,6 +23,8 @@ export type DefaultRenderFnParam = {
    icons: Record<string, IconSrc> | undefined
 }
 
+CSSConditionRule
+
 export type DefaultRenderFn = (param: DefaultRenderFnParam) => VNode
 
 export type ReceiverProps = {
@@ -34,7 +36,7 @@ export type ReceiverProps = {
    id: string
    zIndex: number
    gap: string
-   class: string
+   class: string | { [key: string]: boolean } | string[]
    options: Partial<Record<NotificationTypes, Partial<ReceiverOptions>>>
    use: DefaultRenderFn
    animations: Partial<{ enter: string; leave: string; clearAll: string }>
@@ -155,14 +157,15 @@ export type CtxProps = Omit<InternalPushOptions, 'id'> & {
 
 export type PushStatic = <T extends Record<string, unknown>>(
    options: StaticPushOptions<T> | ReceiverOptions['message']
-) => ClearFn
+) => ClearFns
 
 export type PushPromise = <T extends Record<string, unknown>>(
    options: StaticPushOptions<T> | ReceiverOptions['message']
 ) => {
-   resolve: (options: PromiseResultPushOptions<T> | ReceiverOptions['message']) => ClearFn
-   reject: (options: PromiseResultPushOptions<T> | ReceiverOptions['message']) => ClearFn
-   clear: ClearFn['clear']
+   resolve: (options: PromiseResultPushOptions<T> | ReceiverOptions['message']) => ClearFns
+   reject: (options: PromiseResultPushOptions<T> | ReceiverOptions['message']) => ClearFns
+   clear: ClearFns['clear']
+   destroy: ClearFns['destroy']
 }
 
 export type PushFn = PushStatic & {
@@ -175,7 +178,7 @@ export type PushFn = PushStatic & {
    destroyAll: () => void
 }
 
-export type ClearFn = { clear: () => void }
+export type ClearFns = { clear: () => void; destroy: () => void }
 
 // CSS
 

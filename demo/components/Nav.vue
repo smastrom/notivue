@@ -1,47 +1,36 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref } from 'vue'
-import { usePush } from '../src/usePush'
-import { getRandomInt } from './utils'
+import { onMounted, onBeforeUnmount, ref, computed } from 'vue'
+import { store } from '../store'
+import { usePush } from '../../src'
+
 import ButtonGroup from './ButtonGroup.vue'
 import PositionControls from './PositionControls.vue'
 import Button from './Button.vue'
-import SuccessIcon from './icons/Success.vue'
-import VueIcon from './icons/Vue.vue'
-import PromiseIcon from './icons/Promise.vue'
-import Info from './icons/Info.vue'
-import Warn from './icons/Warn.vue'
-import Dismiss from './icons/Dismiss.vue'
-import Destroy from './icons/Destroy.vue'
+import SuccessIcon from '../icons/Success.vue'
+import VueIcon from '../icons/Vue.vue'
+import PromiseIcon from '../icons/Promise.vue'
+import Info from '../icons/Info.vue'
+import Warn from '../icons/Warn.vue'
+import Dismiss from '../icons/Dismiss.vue'
+import Destroy from '../icons/Destroy.vue'
 import Controls from './ComponentControls.vue'
-import type { _PushOptions } from '../src/types'
 import ThemesControls from './ThemesControls.vue'
+
+import type { _PushOptions } from '../../src/types'
 
 const navRef = ref<HTMLElement | null>(null)
 
 const push = usePush()
 
-async function asyncPush() {
-   const ayncNotify = push.promise("We're sending your message. This will take a moment or two...")
-
-   await new Promise((resolve) => setTimeout(resolve, getRandomInt(2000, 4000)))
-
-   if (Math.random() > 0.5) {
-      ayncNotify.reject({ message: 'Promise rejected!' })
-   } else {
-      ayncNotify.resolve({ message: 'Promise successfully resolved! '.repeat(4) })
-   }
-}
-
 function getNavHeight() {
    document.documentElement.style.setProperty(
-      '--vn-root-bottom',
+      '--nv-root-bottom',
       `${(navRef.value?.clientHeight ?? 0) + 10}px`
    )
 }
 
 onMounted(() => {
    getNavHeight()
-
    window.addEventListener('resize', getNavHeight, { passive: true })
 })
 
@@ -70,7 +59,7 @@ function customPush() {
 }
 
 async function customAsync() {
-   const promise = push.promise({
+   /*    const promise = $push.promise({
       message: 'Async',
       render: {
          component: () => Custom,
@@ -96,7 +85,7 @@ async function customAsync() {
       },
    })
 
-   /*    promise.reject({
+   promise.reject({
       message: 'Async resolved',
       render: {
          component: markRaw(Custom),
@@ -114,6 +103,72 @@ async function customAsync() {
       },
    }) */
 }
+
+const copy = computed(() => {
+   function getTitle(rtl: string, ltr: string) {
+      return !store.renderTitles ? false : store.rtl ? rtl : ltr
+   }
+
+   return {
+      success: {
+         title: getTitle('نجاح', 'Success'),
+         message: store.rtl
+            ? 'تم إرسال رسالتك بنجاح. لو سمحت.'
+            : 'Your message has been successfully sent. Please.',
+      } as const,
+      error: {
+         title: getTitle('فشل', 'Error'),
+         message: store.rtl
+            ? 'لقد حدث خطأ أثناء إرسال رسالتك. لو سمحت.'
+            : 'An error occurred while sending your message. Please.',
+      } as const,
+      warning: {
+         title: getTitle('تحذير', 'Warning'),
+         message: store.rtl
+            ? 'لديك 290 رسالة فقط متبقية على حسابك. يرجى شحن الرصيد.'
+            : 'You have only 290 messages left on your account. Please top up.',
+      } as const,
+      info: {
+         title: getTitle('معلومات', 'Info'),
+         message: store.rtl
+            ? 'هل تعلم أنك يمكنك إرسال رسالة باستخدام لوحة المفاتيح؟ اضغط على Enter للإرسال.'
+            : 'Did you know you can send a message using the keyboard?',
+      } as const,
+      promise: {
+         title: getTitle('ارسال رسالة', 'Sending message...'),
+         message: store.rtl
+            ? 'نحن نرسل رسالتك. سيستغرق ذلك لحظة أو اثنتين ...'
+            : 'Please wait while we send your message...',
+      } as const,
+   }
+})
+
+async function asyncPush() {
+   const promise = push.promise({
+      title: copy.value.promise.title,
+      message: copy.value.promise.message,
+   })
+
+   await new Promise((resolve) => setTimeout(resolve, getRandomInt(2000, 4000)))
+
+   if (Math.random() > 0.5) {
+      promise.resolve({
+         title: copy.value.success.title,
+         message: copy.value.success.message,
+      })
+   } else {
+      promise.reject({
+         title: copy.value.error.title,
+         message: copy.value.error.message,
+      })
+   }
+}
+
+function getRandomInt(min: number, max: number) {
+   min = Math.ceil(min)
+   max = Math.floor(max)
+   return Math.floor(Math.random() * (max - min) + min)
+}
 </script>
 
 <template>
@@ -130,25 +185,29 @@ async function customAsync() {
          <div class="DefaultComponent">
             <ButtonGroup name="Notification">
                <Button
-                  @click="$push('Your message has been successfully sent. Please.')"
+                  @click="
+                     $push.success({ title: copy.success.title, message: copy.success.message })
+                  "
                   text="Success"
                >
                   <SuccessIcon />
                </Button>
                <Button
-                  @click="$push.error('Your message has been successfully sent. Please.')"
+                  @click="$push.error({ title: copy.error.title, message: copy.error.message })"
                   text="Error"
                >
                   <Warn :isWarn="false" />
                </Button>
                <Button
-                  @click="$push.warning('Your message has been successfully sent. Please.')"
+                  @click="
+                     $push.warning({ title: copy.warning.title, message: copy.warning.message })
+                  "
                   text="Warn"
                >
                   <Warn :isWarn="true" />
                </Button>
                <Button
-                  @click="$push.info('Your message has been successfully sent. Please.')"
+                  @click="$push.info({ title: copy.info.title, message: copy.info.message })"
                   text="Info"
                >
                   <Info />

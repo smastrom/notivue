@@ -1,5 +1,5 @@
 <template>
-   <div class="Wrapper">
+   <div class="Wrapper" dir="ltr">
       <div class="Container">
          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 290.941 60.748" class="Logo">
             <g transform="translate(0.5 0.5)">

@@ -3,11 +3,11 @@ import { DefaultOptions } from './types'
 import type { ReceiverOptions } from './types'
 
 const success: ReceiverOptions = {
-   title: 'Success!',
+   title: 'Success',
    message: '',
    icon: true,
    close: true,
-   duration: 3000 * 100,
+   duration: 3000,
    ariaLive: 'polite',
    ariaRole: 'status',
    closeAriaLabel: 'Close',
@@ -15,8 +15,8 @@ const success: ReceiverOptions = {
 
 const error: ReceiverOptions = {
    ...success,
-   duration: 6000 * 100,
-   title: 'Error!',
+   duration: 6000,
+   title: 'Error',
    ariaLive: 'assertive',
    ariaRole: 'alert',
 }
@@ -30,16 +30,15 @@ const promise: ReceiverOptions = {
 
 const warning: ReceiverOptions = {
    ...error,
-   duration: Infinity,
-   title: 'Warning!',
+   title: 'Warning',
 }
 
 const info: ReceiverOptions = {
    ...success,
-   title: 'Info!',
+   title: 'Info',
 }
 
-export const defaultOptions: DefaultOptions = {
+export const options: DefaultOptions = {
    [NType.SUCCESS]: success,
    [NType.ERROR]: error,
    [NType.WARNING]: warning,

@@ -1,12 +1,20 @@
 <script setup lang="ts">
 import { watchEffect } from 'vue'
-import { Notivue } from '../src'
-import { icons as _icons, outlineIcons } from '../src/icons'
-import { defaultComponent } from '../src/defaultComponent'
+import {
+   Notivue,
+   notification,
+   icons as _icons,
+   outlineIcons,
+   light,
+   pastel,
+   material,
+   dark,
+   slate,
+} from '../src'
 import { store } from './store'
-import Nav from './Nav.vue'
-import Logo from './Main.vue'
-import { light, pastel, material, dark, slate } from '../src/themes'
+import Nav from './components/Nav.vue'
+import Logo from './components/Background.vue'
+import { computed } from 'vue'
 
 const options = {
    /*    info: {
@@ -19,6 +27,11 @@ const options = {
       close: false,
    }, */
 } as const
+
+const icons = {
+   ..._icons,
+   /*    warning: () => CustomIcon, */
+}
 
 const _options = {
    success: {
@@ -44,21 +57,16 @@ const _options = {
    },
 }
 
-const emojis = {
+const emojis = computed(() => ({
    success: '✅',
    error: '⛔️',
    warning: '🤌',
-   info: '❔',
+   info: '💡',
    promise: '🌀',
    'promise-resolve': '✅',
    'promise-reject': '⛔️',
-   close: 'Close',
-}
-
-const icons = {
-   ..._icons,
-   /*    warning: () => CustomIcon, */
-}
+   close: store.rtl ? 'إغلاق' : 'Close',
+}))
 
 const themes = {
    light,
@@ -68,19 +76,19 @@ const themes = {
    slate,
 } as const
 
-watchEffect(() => document.documentElement.style.setProperty('--vn-root-container', store.maxWidth))
+watchEffect(() => document.documentElement.style.setProperty('--nv-root-container', store.maxWidth))
 </script>
 
 <template>
    <Notivue
-      :use="defaultComponent"
+      :use="notification"
       :options="store.renderTitles ? options : _options"
       :icons="store.customIcons ? emojis : store.outlineIcons ? outlineIcons : icons"
       :pauseOnHover="store.pauseOnHover"
       :position="store.position"
       :theme="themes[store.theme]"
       :disabled="store.isDisabled"
-      class="CustomClass"
+      :class="{ CustomClass: store.centerOnMobile }"
    />
    <Notivue id="user-1" position="bottom-right" :disabled="false" />
    <Logo />
@@ -90,7 +98,7 @@ watchEffect(() => document.documentElement.style.setProperty('--vn-root-containe
 <style>
 @media (max-width: 768px) {
    .CustomClass {
-      --vn-root-x-align: center;
+      --nv-root-x-align: center;
    }
 }
 </style>

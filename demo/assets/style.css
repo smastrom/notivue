@@ -3,7 +3,7 @@
    font-family: 'PT Sans Narrow';
    font-style: normal;
    font-weight: 400;
-   src: url('./assets/pt-sans-narrow-v17-latin-regular.woff2') format('woff2');
+   src: url('pt-sans-narrow-v17-latin-regular.woff2') format('woff2');
 }
 
 @font-face {
@@ -11,7 +11,7 @@
    font-family: 'PT Sans Narrow';
    font-style: normal;
    font-weight: 700;
-   src: url('./assets/pt-sans-narrow-v17-latin-700.woff2') format('woff2');
+   src: url('pt-sans-narrow-v17-latin-700.woff2') format('woff2');
 }
 
 :root {

@@ -5,11 +5,7 @@ import { icons as filledIcons } from './icons'
 import { light } from './themes'
 import type { IconSrc, DefaultRenderFnParam } from './types'
 
-export function defaultComponent({
-   item,
-   theme = light,
-   icons = filledIcons,
-}: DefaultRenderFnParam) {
+export function notification({ item, theme = light, icons = filledIcons }: DefaultRenderFnParam) {
    return h(
       'div',
       {
@@ -19,7 +15,7 @@ export function defaultComponent({
       },
       [
          item.icon && icons?.[item.type]
-            ? hIcon(icons[item.type], { class: Cx.ICON, key: createID() })
+            ? hIcon(icons[item.type], { class: Cx.ICON, key: `icon_${item.type}_${item.id}` })
             : h('span'),
 
          h('div', { class: Cx.CONTENT }, [

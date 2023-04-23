@@ -26,11 +26,11 @@ export const staticStyles: Record<string, CSSProperties> = {
       ...boxSizing,
       ...flexCenter,
       position: 'relative',
-      maxWidth: 'var(--vn-root-container, 100%)',
+      maxWidth: 'var(--nv-root-container, 100%)',
    },
    row: {
       ...boxSizing,
-      padding: '0 var(--vn-root-right, 1.25rem) 0 var(--vn-root-left, 1.25rem)',
+      padding: '0 var(--nv-root-right, 1.25rem) 0 var(--nv-root-left, 1.25rem)',
       transitionTimingFunction: EASING,
       transitionDuration: '250ms',
       transitionProperty: 'transform',
@@ -52,15 +52,15 @@ export function useDynamicStyles(
 
    const yCoords = computed<CSSProperties>(() =>
       position.value.startsWith('top')
-         ? { top: 'var(--vn-root-top, 1.25rem)' }
-         : { bottom: 'var(--vn-root-bottom, 1.25rem)' }
+         ? { top: 'var(--nv-root-top, 1.25rem)' }
+         : { bottom: 'var(--nv-root-bottom, 1.25rem)' }
    )
 
    const xAlignment = computed<CSSProperties>(() => {
       const is = (value: string) => position.value.endsWith(value)
 
       return {
-         justifyContent: `var(--vn-root-x-align, ${
+         justifyContent: `var(--nv-root-x-align, ${
             is('left') ? 'start' : is('right') ? 'end' : 'center'
          })`,
       }

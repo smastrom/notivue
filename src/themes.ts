@@ -44,8 +44,8 @@ export const pastel: Theme = {
    '--nv-error-accent': '#E6523C',
    '--nv-error-foreground': '#E6523C',
    // Warning
-   '--nv-warning-background': '#FFEA9F',
-   '--nv-warning-accent': '#E78722',
+   '--nv-warning-background': '#f1f5f9',
+   '--nv-warning-accent': '#E79122',
    '--nv-warning-foreground': '#664522',
    // Info
    '--nv-info-background': '#DEF0FA',
@@ -102,7 +102,7 @@ export const slate: Theme = {
    '--nv-border-width': '1px',
    // Global Colors
    '--nv-global-background': '#20252E',
-   '--nv-global-border': '#334155',
+   '--nv-global-border': '#353b45',
    '--nv-global-foreground': '#F7F7F7',
    // Scoped Colors
    '--nv-success-accent': '#34D399',
