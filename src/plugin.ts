@@ -28,10 +28,6 @@ export const install: Plugin = {
 
       if (!app.config.globalProperties.$push && receivers.get(defaultSymbol)) {
          app.config.globalProperties.$push = receivers.get(defaultSymbol)!.push
-      } else {
-         console.warn(
-            'You already have a $push property in your Vue instance. Get the push function from `usePush` instead.'
-         )
       }
    },
 }

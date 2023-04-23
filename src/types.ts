@@ -1,5 +1,11 @@
 import type { VNode, Component, CSSProperties, Ref, ShallowRef } from 'vue'
 
+declare module 'vue' {
+   interface ComponentCustomProperties {
+      $push: PushFn
+   }
+}
+
 export type PluginOptions = {
    register?: string[]
 }
@@ -22,8 +28,6 @@ export type DefaultRenderFnParam = {
    theme: Theme | undefined
    icons: Record<string, IconSrc> | undefined
 }
-
-CSSConditionRule
 
 export type DefaultRenderFn = (param: DefaultRenderFnParam) => VNode
 
