@@ -1,70 +1,70 @@
 [data-notivue='success'] {
-   --ny-background: var(--ny-success-background);
-   --ny-foreground: var(--ny-success-foreground);
-   --ny-accent: var(--ny-success-accent);
-   --ny-border: var(--ny-success-border);
+   --nv-background: var(--nv-success-background);
+   --nv-foreground: var(--nv-success-foreground);
+   --nv-accent: var(--nv-success-accent);
+   --nv-border: var(--nv-success-border);
 }
 
 [data-notivue='error'] {
-   --ny-background: var(--ny-error-background);
-   --ny-foreground: var(--ny-error-foreground);
-   --ny-accent: var(--ny-error-accent);
-   --ny-border: var(--ny-error-border);
+   --nv-background: var(--nv-error-background);
+   --nv-foreground: var(--nv-error-foreground);
+   --nv-accent: var(--nv-error-accent);
+   --nv-border: var(--nv-error-border);
 }
 
 [data-notivue='warning'] {
-   --ny-background: var(--ny-warning-background);
-   --ny-foreground: var(--ny-warning-foreground);
-   --ny-accent: var(--ny-warning-accent);
-   --ny-border: var(--ny-warning-border);
+   --nv-background: var(--nv-warning-background);
+   --nv-foreground: var(--nv-warning-foreground);
+   --nv-accent: var(--nv-warning-accent);
+   --nv-border: var(--nv-warning-border);
 }
 
 [data-notivue='info'] {
-   --ny-background: var(--ny-info-background);
-   --ny-foreground: var(--ny-info-foreground);
-   --ny-accent: var(--ny-info-accent);
-   --ny-border: var(--ny-info-border);
+   --nv-background: var(--nv-info-background);
+   --nv-foreground: var(--nv-info-foreground);
+   --nv-accent: var(--nv-info-accent);
+   --nv-border: var(--nv-info-border);
 }
 
 [data-notivue='promise'] {
-   --ny-background: var(--ny-promise-background);
-   --ny-foreground: var(--ny-promise-foreground);
-   --ny-accent: var(--ny-promise-accent);
-   --ny-border: var(--ny-promise-border);
+   --nv-background: var(--nv-promise-background);
+   --nv-foreground: var(--nv-promise-foreground);
+   --nv-accent: var(--nv-promise-accent);
+   --nv-border: var(--nv-promise-border);
 }
 
 [data-notivue='promise-resolve'] {
-   --ny-background: var(--ny-promise-resolve-background, var(--ny-success-background));
-   --ny-foreground: var(--ny-promise-resolve-foreground, var(--ny-success-foreground));
-   --ny-accent: var(--ny-promise-resolve-accent, var(--ny-success-accent));
-   --ny-border: var(--ny-promise-resolve-border, var(--ny-success-border));
+   --nv-background: var(--nv-promise-resolve-background, var(--nv-success-background));
+   --nv-foreground: var(--nv-promise-resolve-foreground, var(--nv-success-foreground));
+   --nv-accent: var(--nv-promise-resolve-accent, var(--nv-success-accent));
+   --nv-border: var(--nv-promise-resolve-border, var(--nv-success-border));
 }
 
 [data-notivue='promise-reject'] {
-   --ny-background: var(--ny-promise-reject-background, var(--ny-error-background));
-   --ny-foreground: var(--ny-promise-reject-foreground, var(--ny-error-foreground));
-   --ny-accent: var(--ny-promise-reject-accent, var(--ny-error-accent));
-   --ny-border: var(--ny-promise-reject-border, var(--ny-error-border));
+   --nv-background: var(--nv-promise-reject-background, var(--nv-error-background));
+   --nv-foreground: var(--nv-promise-reject-foreground, var(--nv-error-foreground));
+   --nv-accent: var(--nv-promise-reject-accent, var(--nv-error-accent));
+   --nv-border: var(--nv-promise-reject-border, var(--nv-error-border));
 }
 
 .Notivue__notification {
-   width: var(--ny-width);
+   width: var(--nv-width);
    max-width: 100%;
-   padding: var(--ny-spacing);
-   background-color: var(--ny-background, var(--ny-global-background));
+   padding: var(--nv-spacing);
+   background-color: var(--nv-background, var(--nv-global-background));
 
    display: grid;
-   justify-items: var(--ny-y-align);
+   justify-items: var(--nv-y-align);
    align-items: center;
    grid-template-columns: auto 1fr auto;
 
    border-style: solid;
-   border-width: var(--ny-border-width, 0);
-   border-radius: var(--ny-radius, 0);
-   border-color: var(--ny-border, var(--ny-global-border));
+   border-width: var(--nv-border-width, 0);
+   border-radius: var(--nv-radius, 0);
+   border-color: var(--nv-border, var(--nv-global-border));
 
    box-sizing: border-box;
-   box-shadow: var(--ny-shadow);
+   box-shadow: var(--nv-shadow);
 
    & * {
       box-sizing: border-box;
@@ -73,16 +73,16 @@
 
 .Notivue__icon {
    display: flex;
-   color: var(--ny-accent, var(--ny-global-accent));
+   color: var(--nv-accent, var(--nv-global-accent));
    margin: 0;
-   margin-inline-end: var(--ny-spacing);
+   margin-inline-end: var(--nv-spacing);
 }
 
 .Notivue__content-title {
    line-height: 1.15;
    font-weight: 700;
-   color: var(--ny-foreground, var(--ny-global-foreground));
-   font-size: var(--ny-title-size);
+   color: var(--nv-foreground, var(--nv-global-foreground));
+   font-size: var(--nv-title-size);
    margin: 0 0 0.33em 0;
    padding: 0;
    text-align: inherit;
@@ -90,31 +90,45 @@
 
 .Notivue__content-message {
    font-weight: 600;
-   opacity: 0.8;
+   opacity: 0.9;
    max-height: 250px;
    overflow: auto;
    line-height: 1.375;
-   color: var(--ny-foreground, var(--ny-global-foreground));
+   color: var(--nv-foreground, var(--nv-global-foreground));
    text-align: inherit;
    margin: 0;
    padding: 0;
-   font-size: var(--ny-message-size);
+   font-size: var(--nv-message-size);
 }
 
 .Notivue__close {
    position: relative;
-   inset-inline-start: var(--ny-spacing);
-   height: 100%;
+   inset-inline-start: var(--nv-spacing);
    margin: 0;
    cursor: pointer;
-   padding: var(--ny-spacing);
-
+   padding: var(--nv-spacing);
+   height: 100%;
+   max-height: 60px;
    border: none;
    border-radius: 0;
-   border-inline-start: 1px solid var(--ny-border, var(--ny-global-border));
-
    background: none;
    opacity: 0.5;
+
+   &::before {
+      content: '';
+      position: absolute;
+      height: 100%;
+      left: 0;
+      top: 0;
+      width: 1px;
+      opacity: 30%;
+      background-color: var(--nv-foreground, var(--nv-global-foreground));
+   }
+}
+
+[dir='rtl'] .Notivue__close::before {
+   right: 0;
+   left: auto;
 }
 
 .Notivue__close-icon {
@@ -122,7 +136,7 @@
    opacity: 0.5;
    font-weight: 700;
    transition: 100ms opacity ease-out;
-   color: var(--ny-foreground, var(--ny-global-foreground));
+   color: var(--nv-foreground, var(--nv-global-foreground));
 }
 
 .Notivue__close:hover .Notivue__close-icon {

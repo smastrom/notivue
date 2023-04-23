@@ -61,7 +61,7 @@ export function useDynamicStyles(
 
       return {
          justifyContent: `var(--vn-root-x-align, ${
-            is('Left') ? 'start' : is('Right') ? 'end' : 'center'
+            is('left') ? 'start' : is('right') ? 'end' : 'center'
          })`,
       }
    })

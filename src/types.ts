@@ -190,53 +190,53 @@ export type Position =
 // Theme
 
 type ThemeLayoutVars =
-   | '--ny-width'
-   | '--ny-spacing'
-   | '--ny-radius'
-   | '--ny-y-align'
-   | '--ny-border-width'
-   | '--ny-tip-width'
-   | '--ny-icon-size'
-   | '--ny-title-size'
-   | '--ny-message-size'
-   | '--ny-close-size'
-   | '--ny-shadow'
+   | '--nv-width'
+   | '--nv-spacing'
+   | '--nv-radius'
+   | '--nv-y-align'
+   | '--nv-border-width'
+   | '--nv-tip-width'
+   | '--nv-icon-size'
+   | '--nv-title-size'
+   | '--nv-message-size'
+   | '--nv-close-size'
+   | '--nv-shadow'
 
 type ThemeGlobalColorsVars =
-   | '--ny-global-background'
-   | '--ny-global-foreground'
-   | '--ny-global-accent'
-   | '--ny-global-border'
+   | '--nv-global-background'
+   | '--nv-global-foreground'
+   | '--nv-global-accent'
+   | '--nv-global-border'
 
 type SuccessColorsVars =
-   | '--ny-success-foreground'
-   | '--ny-success-background'
-   | '--ny-success-border'
-   | '--ny-success-accent'
+   | '--nv-success-foreground'
+   | '--nv-success-background'
+   | '--nv-success-border'
+   | '--nv-success-accent'
 
 type ErrorColorsVars =
-   | '--ny-error-foreground'
-   | '--ny-error-background'
-   | '--ny-error-border'
-   | '--ny-error-accent'
+   | '--nv-error-foreground'
+   | '--nv-error-background'
+   | '--nv-error-border'
+   | '--nv-error-accent'
 
 type WarningColorsVars =
-   | '--ny-warning-foreground'
-   | '--ny-warning-background'
-   | '--ny-warning-border'
-   | '--ny-warning-accent'
+   | '--nv-warning-foreground'
+   | '--nv-warning-background'
+   | '--nv-warning-border'
+   | '--nv-warning-accent'
 
 type InfoColorsVars =
-   | '--ny-info-foreground'
-   | '--ny-info-background'
-   | '--ny-info-border'
-   | '--ny-info-accent'
+   | '--nv-info-foreground'
+   | '--nv-info-background'
+   | '--nv-info-border'
+   | '--nv-info-accent'
 
 type PromiseColorsVars =
-   | '--ny-promise-foreground'
-   | '--ny-promise-background'
-   | '--ny-promise-border'
-   | '--ny-promise-accent'
+   | '--nv-promise-foreground'
+   | '--nv-promise-background'
+   | '--nv-promise-border'
+   | '--nv-promise-accent'
 
 type ThemeVars =
    | ThemeLayoutVars
@@ -248,3 +248,5 @@ type ThemeVars =
    | PromiseColorsVars
 
 export type Theme = Partial<Record<ThemeVars, string>>
+
+export type Themes = 'light' | 'pastel' | 'material' | 'dark' | 'slate'

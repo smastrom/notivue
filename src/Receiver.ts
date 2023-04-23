@@ -56,7 +56,7 @@ export const Receiver = defineComponent({
       },
       position: {
          type: String as PropType<Props['position']>,
-         default: 'topCenter',
+         default: 'top-center',
       },
       zIndex: {
          type: Number as PropType<Props['zIndex']>,

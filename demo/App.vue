@@ -6,6 +6,7 @@ import { defaultComponent } from '../src/defaultComponent'
 import { store } from './store'
 import Nav from './Nav.vue'
 import Logo from './Main.vue'
+import { light, pastel, material, dark, slate } from '../src/themes'
 
 const options = {
    /*    info: {
@@ -59,6 +60,14 @@ const icons = {
    /*    warning: () => CustomIcon, */
 }
 
+const themes = {
+   light,
+   pastel,
+   material,
+   dark,
+   slate,
+} as const
+
 watchEffect(() => document.documentElement.style.setProperty('--vn-root-container', store.maxWidth))
 </script>
 
@@ -69,6 +78,7 @@ watchEffect(() => document.documentElement.style.setProperty('--vn-root-containe
       :icons="store.customIcons ? emojis : icons"
       :pauseOnHover="store.pauseOnHover"
       :position="store.position"
+      :theme="themes[store.theme]"
       :disabled="store.isDisabled"
       class="CustomClass"
    />

@@ -1,10 +1,10 @@
 import { reactive } from 'vue'
-import type { Position } from '../src/types'
+import type { Position, Themes } from '../src/types'
 
 export const store = reactive({
-   position: 'topCenter' as Position,
+   position: 'top-center' as Position,
    maxWidth: '100%',
-   theme: 'light',
+   theme: 'light' as Themes,
    pauseOnHover: true,
    renderTitles: true,
    isDisabled: false,
@@ -29,4 +29,9 @@ export function setRenderTiles() {
 
 export function setCustomIcons() {
    store.customIcons = !store.customIcons
+}
+
+export function setTheme(theme: Themes) {
+   store.theme = theme
+   document.documentElement.setAttribute('data-theme', theme)
 }

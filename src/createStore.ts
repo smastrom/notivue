@@ -50,13 +50,6 @@ export function createStore(): Store {
 
    // push() scoped. not used by Receiver
 
-   const push: PushFn = createPushFn({
-      setIncoming,
-      callItemMethod,
-      scheduleClearAll,
-      destroyAll,
-   })
-
    function setIncoming(options: IncomingOptions) {
       incoming.value = options
    }
@@ -68,6 +61,13 @@ export function createStore(): Store {
    function scheduleClearAll() {
       clearAllScheduler.value++
    }
+
+   const push: PushFn = createPushFn({
+      setIncoming,
+      callItemMethod,
+      scheduleClearAll,
+      destroyAll,
+   })
 
    return {
       push,

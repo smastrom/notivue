@@ -15,7 +15,7 @@ const success: ReceiverOptions = {
 
 const error: ReceiverOptions = {
    ...success,
-   duration: 6000,
+   duration: 6000 * 100,
    title: 'Error!',
    ariaLive: 'assertive',
    ariaRole: 'alert',
@@ -30,6 +30,7 @@ const promise: ReceiverOptions = {
 
 const warning: ReceiverOptions = {
    ...error,
+   duration: Infinity,
    title: 'Warning!',
 }
 

@@ -14,6 +14,7 @@ import Dismiss from './icons/Dismiss.vue'
 import Destroy from './icons/Destroy.vue'
 import Controls from './Controls.vue'
 import type { _PushOptions } from '../src/types'
+import ThemesControls from './ThemesControls.vue'
 
 const navRef = ref<HTMLElement | null>(null)
 
@@ -127,7 +128,7 @@ async function customAsync() {
          </ButtonGroup>
 
          <div class="DefaultComponent">
-            <ButtonGroup name="Default Component">
+            <ButtonGroup name="Notification">
                <Button
                   @click="$push('Your message has been successfully sent. Please.')"
                   text="Success"
@@ -158,30 +159,7 @@ async function customAsync() {
             </ButtonGroup>
 
             <ButtonGroup name="Theme">
-               <Button
-                  @click="$push('Your message has been successfully sent. Please.')"
-                  text="Light"
-               />
-               <Button
-                  @click="$push('Your message has been successfully sent. Please.')"
-                  text="Pastel"
-               />
-               <Button
-                  @click="$push('Your message has been successfully sent. Please.')"
-                  text="Material"
-               />
-               <Button
-                  @click="$push('Your message has been successfully sent. Please.')"
-                  text="Dark"
-               />
-               <Button
-                  @click="$push('Your message has been successfully sent. Please.')"
-                  text="Pastel Dark"
-               />
-               <Button
-                  @click="$push('Your message has been successfully sent. Please.')"
-                  text="Slate Dark"
-               />
+               <ThemesControls />
             </ButtonGroup>
          </div>
 
@@ -219,9 +197,9 @@ async function customAsync() {
 <style scoped>
 nav {
    padding: 10px;
-   background-color: rgba(255, 255, 255, 0.35);
+   background-color: var(--nav-bg-color);
    backdrop-filter: blur(6px);
-   border-top: 1px solid white;
+   border-top: 1px solid var(--nav-border-color);
    display: flex;
    justify-content: center;
    width: 100%;

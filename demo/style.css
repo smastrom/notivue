@@ -24,13 +24,62 @@
    -webkit-font-smoothing: antialiased;
    -moz-osx-font-smoothing: grayscale;
    -webkit-text-size-adjust: 100%;
-   background-color: #9e9e9e;
-   color: #7f7f7f;
 }
 
 html {
-   background: rgb(255, 255, 255);
-   background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(150, 219, 248, 1) 100%);
+   --background-gradient: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 1) 0%,
+      rgba(150, 219, 248, 1) 100%
+   );
+   --background-color: #fff;
+   --button-bg-color: #fff;
+   --button-color: #6b7a90;
+   --button-active-bg-color: #6b7a90;
+   --button-active-color: #fff;
+   --nav-border-color: #fff;
+   --nav-bg-color: hsla(0, 0%, 100%, 0.35);
+   --legend-title-color: #6b7a90;
+   --logo-fill: #455162;
+   --logo-stroke: #1e2226;
+   --links-color: #424850;
+
+   background: var(--background-color);
+   background: var(--background-gradient);
+}
+
+html[data-theme='dark'] {
+   --background-color: #343434;
+   --button-bg-color: #2f2f2f;
+   --button-color: #7f7f7f;
+   --button-active-bg-color: #545454;
+   --button-active-color: #fff;
+   --nav-border-color: #595959;
+   --nav-bg-color: rgba(86, 86, 86, 0.35);
+   --legend-title-color: #fff;
+   --logo-fill: #7b7b7b;
+   --logo-stroke: #141414;
+   --links-color: #d7d7d7;
+
+   background: var(--background-color);
+   background-color: var(--background-color);
+}
+
+html[data-theme='slate'] {
+   --background-color: #191d24;
+   --button-bg-color: #191d24;
+   --button-color: #878b92;
+   --button-active-bg-color: #4c5665;
+   --button-active-color: #fff;
+   --nav-border-color: #334155;
+   --nav-bg-color: hsl(216.7, 17%, 20.8%);
+   --legend-title-color: #fff;
+   --logo-fill: #878b92;
+   --logo-stroke: #141414;
+   --links-color: #d7d7d7;
+
+   background: var(--background-color);
+   background-color: var(--background-color);
 }
 
 body {
@@ -48,7 +97,8 @@ body {
 }
 
 .ButtonBase {
-   background-color: white;
+   line-height: normal;
+   background-color: var(--button-bg-color);
    border-radius: 5px;
    padding: 0.25em 0.5em;
    border: none;
@@ -58,13 +108,23 @@ body {
    align-items: center;
    cursor: pointer;
    box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.03);
-   transition: all 100ms ease-in-out;
+   transition: transform 100ms ease-in-out;
    font-family: 'PT Sans Narrow', Avenir, Helvetica, Arial, sans-serif;
    font-weight: 700;
-   color: #6b7a90;
+   color: var(--button-color);
    white-space: nowrap;
 
    &:hover {
       transform: scale(1.1);
+   }
+}
+
+.SwitchButton {
+   font-weight: 700;
+   justify-items: center;
+
+   &[aria-checked='true'] {
+      background-color: var(--button-active-bg-color);
+      color: var(--button-active-color);
    }
 }

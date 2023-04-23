@@ -26,7 +26,7 @@ legend {
    font-size: 0.925rem;
    text-transform: uppercase;
    font-weight: 700;
-   color: #6b7a90;
+   color: var(--legend-title-color);
    font-family: 'PT Sans Narrow', Avenir, Helvetica, Arial, sans-serif;
    margin-bottom: 10px;
 }

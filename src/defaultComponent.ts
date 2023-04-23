@@ -30,7 +30,7 @@ export function defaultComponent({
          item.close && icons?.close
             ? h(
                  'button',
-                 { class: Cx.CLOSE, ariaLabel: item.closeAriaLabel, onClick: item.clear },
+                 { class: Cx.CLOSE, 'aria-label': item.closeAriaLabel, onClick: item.clear },
                  [hIcon(icons.close as IconSrc, { class: Cx.CLOSE_ICON })]
               )
             : h('span'),

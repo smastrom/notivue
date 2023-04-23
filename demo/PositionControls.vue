@@ -8,32 +8,32 @@ const isFullWidth = computed(() => store.maxWidth === '100%')
 
 const positions = [
    {
-      value: 'topLeft',
+      value: 'top-left',
       label: 'Top Left',
       rotate: 0,
    },
    {
-      value: 'topCenter',
+      value: 'top-center',
       label: 'Top Center',
       rotate: 45,
    },
    {
-      value: 'topRight',
+      value: 'top-right',
       label: 'Top Right',
       rotate: 90,
    },
    {
-      value: 'bottomLeft',
+      value: 'bottom-left',
       label: 'Bottom Left',
       rotate: -90,
    },
    {
-      value: 'bottomCenter',
+      value: 'bottom-center',
       label: 'Bottom Center',
       rotate: -135,
    },
    {
-      value: 'bottomRight',
+      value: 'bottom-right',
       label: 'Bottom Right',
       rotate: -180,
    },
@@ -43,7 +43,7 @@ const positions = [
 <template>
    <div role="radiogroup" aria-label="Position">
       <div
-         class="ButtonBase"
+         class="ButtonBase SwitchButton"
          v-for="position in positions"
          :key="position.label"
          role="radio"
@@ -56,7 +56,7 @@ const positions = [
       </div>
 
       <div
-         class="ButtonBase Switch"
+         class="ButtonBase SwitchButton Switch"
          role="switch"
          :aria-checked="isFullWidth"
          aria-label="Full Width"
@@ -65,7 +65,7 @@ const positions = [
          Full Width
       </div>
       <div
-         class="ButtonBase Switch"
+         class="ButtonBase SwitchButton Switch"
          role="switch"
          :aria-checked="isFullWidth"
          aria-label="Full Width"
@@ -86,11 +86,7 @@ div[role='radiogroup'] {
 }
 
 div[role='radio'] {
-   &[aria-checked='true'] {
-      background-color: #6b7a90;
-      color: white;
-      aspect-ratio: 1;
-   }
+   aspect-ratio: 1;
 }
 
 .Switch {
@@ -101,11 +97,6 @@ div[role='radio'] {
    grid-column: 1 / span 3;
    aspect-ratio: unset !important;
    height: max-content;
-
-   &[aria-checked='true'] {
-      background-color: #6b7a90;
-      color: white;
-   }
 }
 
 svg {
