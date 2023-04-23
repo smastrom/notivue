@@ -81,8 +81,14 @@ import { Notivue, notification } from 'notivue'
 ### 3. Anywhere in your app
 
 ```vue
+<script setup>
+import { usePush } from 'notivue'
+
+const push = usePush()
+</script>
+
 <template>
-   <button @click="$push('Something good has been pushed!')">Push</button>
+   <button @click="push.success('Something good has been pushed!')">Push</button>
 </template>
 ```
 

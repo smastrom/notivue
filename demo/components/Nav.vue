@@ -114,13 +114,13 @@ const copy = computed(() => {
          title: getTitle('نجاح', 'Success'),
          message: store.rtl
             ? 'تم إرسال رسالتك بنجاح. لو سمحت.'
-            : 'Your message has been successfully sent. Please.',
+            : 'Your message has been successfully sent.',
       } as const,
       error: {
          title: getTitle('فشل', 'Error'),
          message: store.rtl
             ? 'لقد حدث خطأ أثناء إرسال رسالتك. لو سمحت.'
-            : 'An error occurred while sending your message. Please.',
+            : 'An error occurred while sending your message.',
       } as const,
       warning: {
          title: getTitle('تحذير', 'Warning'),
@@ -183,7 +183,7 @@ function getRandomInt(min: number, max: number) {
          </ButtonGroup>
 
          <div class="DefaultComponent">
-            <ButtonGroup name="Notification">
+            <ButtonGroup name="Push 👇">
                <Button
                   @click="
                      $push.success({ title: copy.success.title, message: copy.success.message })

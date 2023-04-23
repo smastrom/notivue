@@ -196,7 +196,6 @@ type ThemeLayoutVars =
    | '--nv-width'
    | '--nv-spacing'
    | '--nv-radius'
-   | '--nv-y-align'
    | '--nv-border-width'
    | '--nv-tip-width'
    | '--nv-icon-size'

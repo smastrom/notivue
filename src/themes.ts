@@ -2,8 +2,7 @@ import type { Theme } from './types'
 
 const layout: Theme = {
    '--nv-width': '375px',
-   '--nv-y-align': 'top',
-   '--nv-spacing': '0.75rem',
+   '--nv-spacing': '0.65rem',
    '--nv-radius': '0.75rem',
    '--nv-tip-width': '0px',
    '--nv-icon-size': '1.5rem',
@@ -69,12 +68,10 @@ export const material: Theme = {
    '--nv-success-background': '#209E74',
    '--nv-error-background': '#E6523C',
    '--nv-info-background': '#0B9DE6',
-   //
    '--nv-warning-background': '#ffe556',
    '--nv-warning-accent': '#4f5358',
    '--nv-warning-foreground': '#4f5358',
    '--nv-warning-border': '#4f5358',
-   //
    '--nv-promise-accent': '#64748b',
    '--nv-promise-background': '#f1f5f9',
    '--nv-promise-foreground': '#334155',

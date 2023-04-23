@@ -20,7 +20,7 @@ function pushSuccess() {
    } else {
       push({
          title: store.renderTitles ? 'Success' : false,
-         message: 'Your message has been successfully sent. Please.',
+         message: 'Your message has been successfully sent.',
       })
    }
 }
@@ -64,20 +64,20 @@ function setCustomIcons() {
       <div
          class="ButtonBase SwitchButton"
          role="switch"
-         :aria-checked="store.outlineIcons"
-         aria-label="Outline Icons"
-         @click="setOutlineIcons"
-      >
-         Outline Icons
-      </div>
-      <div
-         class="ButtonBase SwitchButton"
-         role="switch"
          :aria-checked="store.renderTitles"
          aria-label="Render Titles"
          @click="setRenderTiles"
       >
          Render Titles
+      </div>
+      <div
+         class="ButtonBase SwitchButton"
+         role="switch"
+         :aria-checked="store.outlineIcons"
+         aria-label="Outline Icons"
+         @click="setOutlineIcons"
+      >
+         Outline Icons
       </div>
       <div
          class="ButtonBase SwitchButton"
