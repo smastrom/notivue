@@ -1,6 +1,6 @@
 import { h } from 'vue'
 import { Classes as Cx } from './constants'
-import { hIcon, hMessage } from './utils'
+import { createID, hIcon, hMessage } from './utils'
 import { icons as filledIcons } from './icons'
 import { light } from './themes'
 import type { IconSrc, DefaultRenderFnParam } from './types'
@@ -19,7 +19,7 @@ export function defaultComponent({
       },
       [
          item.icon && icons?.[item.type]
-            ? hIcon(icons[item.type], { class: Cx.ICON, key: `${item.id}_${item.type}` })
+            ? hIcon(icons[item.type], { class: Cx.ICON, key: createID() })
             : h('span'),
 
          h('div', { class: Cx.CONTENT }, [

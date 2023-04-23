@@ -113,6 +113,7 @@ body {
    font-weight: 700;
    color: var(--button-color);
    white-space: nowrap;
+   user-select: none;
 
    &:hover {
       transform: scale(1.1);

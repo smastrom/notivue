@@ -12,7 +12,7 @@ import Info from './icons/Info.vue'
 import Warn from './icons/Warn.vue'
 import Dismiss from './icons/Dismiss.vue'
 import Destroy from './icons/Destroy.vue'
-import Controls from './Controls.vue'
+import Controls from './ComponentControls.vue'
 import type { _PushOptions } from '../src/types'
 import ThemesControls from './ThemesControls.vue'
 
@@ -196,7 +196,7 @@ async function customAsync() {
 
 <style scoped>
 nav {
-   padding: 10px;
+   padding: 10px 10px 20px 0;
    background-color: var(--nav-bg-color);
    backdrop-filter: blur(6px);
    border-top: 1px solid var(--nav-border-color);

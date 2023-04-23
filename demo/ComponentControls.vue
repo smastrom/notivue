@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { store, setPauseOnHover, setRenderTiles, setCustomIcons } from './store'
+import { store, setPauseOnHover, setRenderTiles, setCustomIcons, setOutlineIcons } from './store'
 </script>
 
 <template>
@@ -12,6 +12,15 @@ import { store, setPauseOnHover, setRenderTiles, setCustomIcons } from './store'
          @click="setPauseOnHover"
       >
          Pause on Hover
+      </div>
+      <div
+         class="ButtonBase SwitchButton"
+         role="switch"
+         :aria-checked="store.outlineIcons"
+         aria-label="Outline Icons"
+         @click="setOutlineIcons"
+      >
+         Outline Icons
       </div>
       <div
          class="ButtonBase SwitchButton"

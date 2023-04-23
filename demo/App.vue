@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { watchEffect } from 'vue'
 import { Notivue } from '../src'
-import { icons as _icons } from '../src/icons'
+import { icons as _icons, outlineIcons } from '../src/icons'
 import { defaultComponent } from '../src/defaultComponent'
 import { store } from './store'
 import Nav from './Nav.vue'
@@ -75,7 +75,7 @@ watchEffect(() => document.documentElement.style.setProperty('--vn-root-containe
    <Notivue
       :use="defaultComponent"
       :options="store.renderTitles ? options : _options"
-      :icons="store.customIcons ? emojis : icons"
+      :icons="store.customIcons ? emojis : store.outlineIcons ? outlineIcons : icons"
       :pauseOnHover="store.pauseOnHover"
       :position="store.position"
       :theme="themes[store.theme]"

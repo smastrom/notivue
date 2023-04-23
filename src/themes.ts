@@ -61,7 +61,7 @@ export const material: Theme = {
    // Layout
    ...layout,
    ...shadow,
-   // Global Colors
+   // Global Color
    '--nv-global-accent': '#fff',
    '--nv-global-border': '#dedede',
    '--nv-global-foreground': '#fff',

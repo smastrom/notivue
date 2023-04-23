@@ -1,4 +1,4 @@
-import { reactive } from 'vue'
+import { nextTick, reactive } from 'vue'
 import type { Position, Themes } from '../src/types'
 
 export const store = reactive({
@@ -9,6 +9,7 @@ export const store = reactive({
    renderTitles: true,
    isDisabled: false,
    customIcons: false,
+   outlineIcons: false,
 })
 
 export function setPosition(position: Position) {
@@ -34,4 +35,8 @@ export function setCustomIcons() {
 export function setTheme(theme: Themes) {
    store.theme = theme
    document.documentElement.setAttribute('data-theme', theme)
+}
+
+export function setOutlineIcons() {
+   store.outlineIcons = !store.outlineIcons
 }
