@@ -129,3 +129,19 @@ body {
       color: var(--button-active-color);
    }
 }
+
+.BounceAnim {
+   animation: BounceKF 1s infinite;
+}
+
+@keyframes BounceKF {
+   0% {
+      transform: translateY(0);
+   }
+   50% {
+      transform: translateY(-5px);
+   }
+   100% {
+      transform: translateY(0);
+   }
+}

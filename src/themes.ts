@@ -43,9 +43,9 @@ export const pastel: Theme = {
    '--nv-error-accent': '#E6523C',
    '--nv-error-foreground': '#E6523C',
    // Warning
-   '--nv-warning-background': '#f1f5f9',
-   '--nv-warning-accent': '#E79122',
-   '--nv-warning-foreground': '#664522',
+   '--nv-warning-background': '#fff0d8',
+   '--nv-warning-accent': '#F48533',
+   '--nv-warning-foreground': '#81471D',
    // Info
    '--nv-info-background': '#DEF0FA',
    '--nv-info-accent': '#1F70AC',

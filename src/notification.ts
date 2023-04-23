@@ -11,12 +11,13 @@ export function notification({ item, theme = light, icons = filledIcons }: Defau
       {
          class: `${Cx.NOTIFICATION} ${item.class ?? ''}`,
          style: { ...theme, ...(item.style ?? {}) },
+         ...(item.icon ? { 'data-icon': '' } : {}),
          'data-notivue': item.type,
       },
       [
-         item.icon && icons?.[item.type]
-            ? hIcon(icons[item.type], { class: Cx.ICON, key: `icon_${item.type}_${item.id}` })
-            : h('span'),
+         item.icon &&
+            icons?.[item.type] &&
+            hIcon(icons[item.type], { class: Cx.ICON, key: `icon_${item.type}_${item.id}` }),
 
          h('div', { class: Cx.CONTENT }, [
             item.title && h('h3', { class: Cx.TITLE }, item.title),

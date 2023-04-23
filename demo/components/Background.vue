@@ -45,9 +45,9 @@
             </g>
          </svg>
          <nav>
-            <a href="https://vuenotifydocs.netlify.app/" target="_blank">GitHub</a>
+            <a href="https://github.com/smastrom/notivue" target="_blank">GitHub</a>
             <span>—</span>
-            <a href="https://vuenotifydocs.netlify.app/" target="_blank">Documentation</a>
+            <a href="https://notivuedocs.netlify.app/" target="_blank">Docs</a>
          </nav>
       </div>
    </div>

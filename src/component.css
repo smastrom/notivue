@@ -53,9 +53,8 @@
    padding: var(--nv-spacing);
    background-color: var(--nv-background, var(--nv-global-background));
    display: grid;
-   justify-items: center;
    align-items: center;
-   grid-template-columns: auto 1fr auto;
+   grid-template-columns: 1fr auto;
    border-style: solid;
    border-width: var(--nv-border-width, 0);
    border-radius: var(--nv-radius, 0);
@@ -66,6 +65,10 @@
 
    & * {
       box-sizing: border-box;
+   }
+
+   &[data-icon] {
+      grid-template-columns: auto 1fr auto;
    }
 }
 
@@ -111,6 +114,7 @@
    border-radius: 0;
    background: none;
    opacity: 0.5;
+   max-width: max-content;
 
    &::before {
       content: '';

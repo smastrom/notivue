@@ -1,12 +1,18 @@
 <script setup lang="ts">
-const props = defineProps<{
-   name: string
-}>()
+const props = withDefaults(
+   defineProps<{
+      name: string
+      isPush: boolean
+   }>(),
+   {
+      isPush: false,
+   }
+)
 </script>
 
 <template>
    <fieldset>
-      <legend>{{ props.name }}</legend>
+      <legend :class="{ BounceAnim: props.isPush }">{{ props.name }}</legend>
 
       <div class="Nav">
          <slot />

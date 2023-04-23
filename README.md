@@ -92,6 +92,25 @@ const push = usePush()
 </template>
 ```
 
+#### Options API
+
+```vue
+<script>
+import { usePush } from 'notivue'
+
+export default {
+   setup() {
+      const push = usePush()
+      return { push }
+   }
+}
+</script>
+
+<template>
+   <button @click="push.success('Something good has been pushed!')">Push</button>
+</template>
+```
+
 <br />
 
 ## Links

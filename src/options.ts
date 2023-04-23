@@ -7,7 +7,7 @@ const success: ReceiverOptions = {
    message: '',
    icon: true,
    close: true,
-   duration: 3000 * 100,
+   duration: 3000,
    ariaLive: 'polite',
    ariaRole: 'status',
    closeAriaLabel: 'Close',
@@ -30,6 +30,7 @@ const promise: ReceiverOptions = {
 
 const warning: ReceiverOptions = {
    ...error,
+   duration: 6000,
    title: 'Warning',
 }
 

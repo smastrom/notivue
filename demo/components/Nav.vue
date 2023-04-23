@@ -183,10 +183,13 @@ function getRandomInt(min: number, max: number) {
          </ButtonGroup>
 
          <div class="DefaultComponent">
-            <ButtonGroup name="Push 👇">
+            <ButtonGroup name="Push 👇" isPush>
                <Button
                   @click="
-                     $push.success({ title: copy.success.title, message: copy.success.message })
+                     $push.success({
+                        title: copy.success.title,
+                        message: copy.success.message,
+                     })
                   "
                   text="Success"
                >
@@ -222,7 +225,7 @@ function getRandomInt(min: number, max: number) {
             </ButtonGroup>
          </div>
 
-         <ButtonGroup name="Custom Components">
+         <ButtonGroup name="Custom Comp. 👇">
             <Button
                @click="$push.promise('Your message has been successfully sent. Please.')"
                text="Static"
