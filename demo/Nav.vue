@@ -20,9 +20,7 @@ const navRef = ref<HTMLElement | null>(null)
 const push = usePush()
 
 async function asyncPush() {
-   const ayncNotify = push.promise({
-      message: "We're sending your message. This will take a moment or two...",
-   })
+   const ayncNotify = push.promise("We're sending your message. This will take a moment or two...")
 
    await new Promise((resolve) => setTimeout(resolve, getRandomInt(2000, 4000)))
 

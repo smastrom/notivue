@@ -1,7 +1,5 @@
 import { NotificationTypes as NTypeU } from './types'
 
-export const NOTIFICATIONS_LIMIT = 10
-
 export const FIXED_INCREMENT = 250
 
 export const EASING = 'cubic-bezier(0.22, 1, 0.36, 1)'

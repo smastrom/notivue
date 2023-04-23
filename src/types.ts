@@ -36,10 +36,10 @@ export type ReceiverProps = {
    gap: string
    class: string
    options: Partial<Record<NotificationTypes, Partial<ReceiverOptions>>>
-   render: DefaultRenderFn
+   use: DefaultRenderFn
+   animations: Partial<{ enter: string; leave: string; clearAll: string }>
    theme?: Record<`--${string}`, string>
    icons?: Partial<Record<NotificationTypes | 'close', IconSrc>>
-   animations: Partial<{ enter: string; leave: string; clearAll: string }>
 }
 
 export type ReceiverOptions = {
@@ -180,12 +180,12 @@ export type ClearFn = { clear: () => void }
 // CSS
 
 export type Position =
-   | 'topLeft'
-   | 'topCenter'
-   | 'topRight'
-   | 'bottomLeft'
-   | 'bottomCenter'
-   | 'bottomRight'
+   | 'top-left'
+   | 'top-center'
+   | 'top-right'
+   | 'bottom-left'
+   | 'bottom-center'
+   | 'bottom-right'
 
 // Theme
 

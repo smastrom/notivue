@@ -120,6 +120,7 @@
 .Notivue__close-icon {
    display: flex;
    opacity: 0.5;
+   font-weight: 700;
    transition: 100ms opacity ease-out;
    color: var(--ny-foreground, var(--ny-global-foreground));
 }

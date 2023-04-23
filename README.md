@@ -60,7 +60,7 @@ pnpm add notivue
 ```js
 import { notivue } from 'notivue'
 
-import 'notivue/component.css'
+import 'notivue/notifications.css'
 import 'notivue/animations.css'
 
 createApp(App).use(notivue).mount('#app')
@@ -70,11 +70,11 @@ createApp(App).use(notivue).mount('#app')
 
 ```vue
 <script setup>
-import { Notivue, component } from 'notivue'
+import { Notivue, notification } from 'notivue'
 </script>
 
 <template>
-   <Notivue :render="component" />
+   <Notivue :use="notification" />
 </template>
 ```
 

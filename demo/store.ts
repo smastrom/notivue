@@ -4,7 +4,6 @@ import type { Position } from '../src/types'
 export const store = reactive({
    position: 'topCenter' as Position,
    maxWidth: '100%',
-   disabled: false,
    theme: 'light',
    pauseOnHover: true,
    renderTitles: true,
@@ -26,10 +25,6 @@ export function setPauseOnHover() {
 
 export function setRenderTiles() {
    store.renderTitles = !store.renderTitles
-}
-
-export function setDisabled() {
-   store.isDisabled = !store.isDisabled
 }
 
 export function setCustomIcons() {

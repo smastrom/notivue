@@ -64,7 +64,7 @@ watchEffect(() => document.documentElement.style.setProperty('--vn-root-containe
 
 <template>
    <Notivue
-      :render="defaultComponent"
+      :use="defaultComponent"
       :options="store.renderTitles ? options : _options"
       :icons="store.customIcons ? emojis : icons"
       :pauseOnHover="store.pauseOnHover"
@@ -72,7 +72,7 @@ watchEffect(() => document.documentElement.style.setProperty('--vn-root-containe
       :disabled="store.isDisabled"
       class="CustomClass"
    />
-   <Notivue id="user-1" position="bottomRight" :disabled="false" />
+   <Notivue id="user-1" position="bottom-right" :disabled="false" />
    <Logo />
    <Nav />
 </template>

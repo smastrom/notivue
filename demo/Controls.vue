@@ -1,18 +1,9 @@
 <script setup lang="ts">
-import { store, setDisabled, setPauseOnHover, setRenderTiles, setCustomIcons } from './store'
+import { store, setPauseOnHover, setRenderTiles, setCustomIcons } from './store'
 </script>
 
 <template>
    <div class="Controls">
-      <div
-         class="ButtonBase Switch"
-         role="switch"
-         :aria-checked="store.isDisabled"
-         aria-label="Disable Receiver"
-         @click="setDisabled"
-      >
-         Disable Receiver
-      </div>
       <div
          class="ButtonBase Switch"
          role="switch"

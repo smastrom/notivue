@@ -21,12 +21,10 @@ import { ariaLive } from './ariaLive'
 import { mergeOptions } from './utils'
 import {
    FIXED_INCREMENT,
-   NOTIFICATIONS_LIMIT,
    COMPONENT_NAME,
    NotificationTypes as NType,
    TransitionTypes as TType,
 } from './constants'
-import { light } from './themes'
 import type {
    ReceiverProps as Props,
    StoreItem,
@@ -72,8 +70,8 @@ export const Receiver = defineComponent({
          type: Object as PropType<Props['options']>,
          default: () => defaultOptions,
       },
-      render: {
-         type: Function as PropType<Props['render']>,
+      use: {
+         type: Function as PropType<Props['use']>,
          default: () => null,
       },
       theme: {
@@ -189,104 +187,90 @@ export const Receiver = defineComponent({
       // Functions - Listener
 
       function attachListener() {
-         return watch(
-            incoming,
-            (pushOptions) => {
-               if (
-                  items.value.length >= NOTIFICATIONS_LIMIT &&
-                  items.value[0].type !== NType.PROMISE
-               ) {
-                  animateLeave(items.value[items.value.length - 1].id)
-               }
+         return watch(incoming, (pushOptions) => {
+            const createdAt = performance.now()
+            const options = mergeOptions(defaultOptions, props.options, pushOptions)
 
-               const createdAt = performance.now()
-               const options = mergeOptions(defaultOptions, props.options, pushOptions)
+            let customRenderer: Partial<
+               Pick<StoreItem, 'prevProps' | 'prevComponent' | 'customComponent'>
+            > = {
+               customComponent: undefined,
+            }
 
-               let customRenderer: Partial<
-                  Pick<StoreItem, 'prevProps' | 'prevComponent' | 'customComponent'>
-               > = {
-                  customComponent: undefined,
-               }
+            if (
+               options.type.includes(NType.PROMISE_REJECT) ||
+               options.type.includes(NType.PROMISE_RESOLVE)
+            ) {
+               const currItem = getItem(options.id)
+               const prevComponent = currItem?.prevComponent
 
-               if (
-                  options.type.includes(NType.PROMISE_REJECT) ||
-                  options.type.includes(NType.PROMISE_RESOLVE)
-               ) {
-                  const currItem = getItem(options.id)
-                  const prevComponent = currItem?.prevComponent
+               if (prevComponent) {
+                  const prevProps = { ...(currItem.prevProps ?? {}) }
 
-                  if (prevComponent) {
-                     const prevProps = { ...(currItem.prevProps ?? {}) }
+                  delete prevProps.title
+                  delete prevProps.message
+                  delete prevProps.type
+                  delete prevProps.duration
+                  delete prevProps.close
 
-                     delete prevProps.title
-                     delete prevProps.message
-                     delete prevProps.type
-                     delete prevProps.duration
-                     delete prevProps.close
+                  const newComponent = options.render?.component
+                  const newProps = { ...getCtxProps(options), prevProps }
 
-                     const newComponent = options.render?.component
-                     const newProps = { ...getCtxProps(options), prevProps }
-
-                     customRenderer = {
-                        customComponent: () =>
-                           h(
-                              newComponent ? newComponent() : prevComponent(),
-                              (
-                                 options.render?.props as NonNullable<
-                                    MaybeRenderPromiseResult['render']
-                                 >['props']
-                              )?.(newProps) ?? {}
-                           ),
-                     }
+                  customRenderer = {
+                     customComponent: () =>
+                        h(
+                           newComponent ? newComponent() : prevComponent(),
+                           (
+                              options.render?.props as NonNullable<
+                                 MaybeRenderPromiseResult['render']
+                              >['props']
+                           )?.(newProps) ?? {}
+                        ),
                   }
+               }
 
-                  updateItem(options.id, {
-                     ...options,
-                     ...customRenderer,
-                     createdAt,
-                     timeoutId: isHovering
+               updateItem(options.id, {
+                  ...options,
+                  ...customRenderer,
+                  createdAt,
+                  timeoutId: isHovering ? undefined : createTimeout(options.id, options.duration),
+               })
+            } else {
+               const _customComponent = options.render?.component
+
+               if (_customComponent) {
+                  const props = ((
+                     options.render?.props as NonNullable<
+                        MaybeRenderStatic<CtxProps & Record<string, unknown>>['render']
+                     >['props']
+                  )?.(getCtxProps(options)) ?? {}) as CtxProps
+
+                  customRenderer = {
+                     customComponent: () => h(_customComponent(), props),
+                     ...(options.type === NType.PROMISE
+                        ? { prevProps: props, prevComponent: _customComponent }
+                        : {}),
+                  }
+               }
+
+               createItem({
+                  ...options,
+                  ...customRenderer,
+                  createdAt,
+                  timeoutId:
+                     options.duration === Infinity
                         ? undefined
                         : createTimeout(options.id, options.duration),
-                  })
-               } else {
-                  const _customComponent = options.render?.component
+                  clear: () => animateLeave(options.id),
+                  destroy: () => {
+                     removeItem(options.id)
+                     setPositions()
+                  },
+               })
 
-                  if (_customComponent) {
-                     const props = ((
-                        options.render?.props as NonNullable<
-                           MaybeRenderStatic<CtxProps & Record<string, unknown>>['render']
-                        >['props']
-                     )?.(getCtxProps(options)) ?? {}) as CtxProps
-
-                     customRenderer = {
-                        customComponent: () => h(_customComponent(), props),
-                        ...(options.type === NType.PROMISE
-                           ? { prevProps: props, prevComponent: _customComponent }
-                           : {}),
-                     }
-                  }
-
-                  createItem({
-                     ...options,
-                     ...customRenderer,
-                     createdAt,
-                     timeoutId:
-                        options.duration === Infinity
-                           ? undefined
-                           : createTimeout(options.id, options.duration),
-                     // Called by push fn located in store
-                     clear: () => animateLeave(options.id),
-                     destroy: () => {
-                        removeItem(options.id)
-                        setPositions()
-                     },
-                  })
-
-                  nextTick(() => animateEnter(options.id))
-               }
-            },
-            { flush: 'post' }
-         )
+               nextTick(() => animateEnter(options.id))
+            }
+         })
       }
 
       function createTimeout(id: string, time: number) {
@@ -431,7 +415,7 @@ export const Receiver = defineComponent({
                               },
                               [
                                  item.customComponent?.() ??
-                                    props.render({
+                                    props.use({
                                        item,
                                        theme: props.theme,
                                        icons: props.icons,
