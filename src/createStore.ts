@@ -1,4 +1,4 @@
-import { ref, shallowRef } from 'vue'
+import { computed, ref, shallowRef } from 'vue'
 import { createPushFn } from './createPush'
 import type { IncomingOptions, StoreItem, Store, PushFn } from './types'
 
@@ -6,6 +6,8 @@ export function createStore(): Store {
    const items = ref<StoreItem[]>([])
    const incoming = shallowRef<IncomingOptions>({} as IncomingOptions)
    const clearAllScheduler = ref(0)
+   const isEnabled = ref(true)
+   const notificationCount = computed(() => items.value.length)
 
    // Exported, used by Receiver
 
@@ -48,7 +50,7 @@ export function createStore(): Store {
       items.value = []
    }
 
-   // push() scoped, not used by Receiver
+   // push() scoped
 
    function setIncoming(options: IncomingOptions) {
       incoming.value = options

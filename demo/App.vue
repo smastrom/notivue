@@ -16,16 +16,15 @@ import Nav from './components/Nav.vue'
 import Logo from './components/Background.vue'
 import { computed } from 'vue'
 
-const options = {
-   /*    info: {
-      title: 'Did you know that...',
+const globalOptions = {
+   global: {
+      duration: 20000,
       icon: false,
-      close: false,
    },
-   error: {
-      title: false,
-      close: false,
-   }, */
+}
+
+const options = {
+   ...globalOptions,
 } as const
 
 const icons = {
@@ -34,6 +33,7 @@ const icons = {
 }
 
 const _options = {
+   ...globalOptions,
    success: {
       title: false,
    },

@@ -41,7 +41,7 @@ export type ReceiverProps = {
    zIndex: number
    gap: string
    class: string | { [key: string]: boolean } | string[]
-   options: Partial<Record<NotificationTypes, Partial<ReceiverOptions>>>
+   options: Partial<Record<NotificationTypes | 'global', Partial<ReceiverOptions>>>
    use: DefaultRenderFn
    animations: Partial<{ enter: string; leave: string; clearAll: string }>
    theme?: Record<`--${string}`, string>

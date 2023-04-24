@@ -1,7 +1,7 @@
 import type { Theme } from './types'
 
 const layout: Theme = {
-   '--nv-width': '375px',
+   '--nv-width': '360px',
    '--nv-spacing': '0.65rem',
    '--nv-radius': '0.75rem',
    '--nv-tip-width': '0px',

@@ -73,9 +73,11 @@ export function mergeOptions(
    receiverProps: ReceiverProps['options'],
    pushOptions: IncomingOptions
 ): MergedOptions {
+   const mergedGlobals = { ...receiverProps.global, ...receiverProps[pushOptions.type] }
+
    return {
       ...defaultOptions[pushOptions.type],
-      ...receiverProps[pushOptions.type],
+      ...mergedGlobals,
       ...pushOptions,
    }
 }

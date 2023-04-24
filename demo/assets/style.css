@@ -107,7 +107,7 @@ body {
    gap: 5px;
    align-items: center;
    cursor: pointer;
-   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.03);
+   box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.03);
    transition: transform 100ms ease-in-out;
    font-family: 'PT Sans Narrow', Avenir, Helvetica, Arial, sans-serif;
    font-weight: 700;
