@@ -1,30 +1,47 @@
 {
    "name": "notivue",
-   "private": true,
    "version": "0.9.0",
-   "scripts": {
-      "dev": "vite",
-      "build": "rimraf dist && vue-tsc && vite build",
-      "build:demo": "rimraf dist && vite build --mode demo",
-      "postbuild": "postcss ./src/animations.css ./src/notifications.css -d ./dist/ --use cssnano postcss-nesting --no-map",
-      "preview": "vite preview"
+   "private": false,
+   "description": "Fully-fledged notification system for Vue 3.",
+   "homepage": "https://notivue.netlify.app/",
+   "bugs": {
+      "url": "https://github.com/smastrom/notivue/issues"
    },
-   "main": "dist/index.js",
-   "module": "dist/index.mjs",
-   "types": "dist/index.d.ts",
+   "repository": {
+      "type": "git",
+      "url": "https://github.com/smastrom/notivue.git"
+   },
+   "license": "MIT",
+   "author": {
+      "name": "Simone Mastromattei",
+      "email": "smastrom@proton.me"
+   },
    "exports": {
       ".": {
          "import": "./dist/index.mjs",
          "require": "./dist/index.js"
       },
-      "./component.css": {
-         "import": "./dist/component.css",
-         "require": "./dist/component.css"
+      "./notifications.css": {
+         "import": "./dist/notifications.css",
+         "require": "./dist/notifications.css"
       },
       "./animations.css": {
          "import": "./dist/animations.css",
          "require": "./dist/animations.css"
       }
+   },
+   "main": "dist/index.js",
+   "module": "dist/index.mjs",
+   "types": "dist/index.d.ts",
+   "files": [
+      "dist/*"
+   ],
+   "scripts": {
+      "build": "rimraf dist && vue-tsc && vite build",
+      "postbuild": "postcss ./src/animations.css ./src/notifications.css -d ./dist/ --use cssnano postcss-nesting --no-map",
+      "build:demo": "rimraf dist && vite build --mode demo",
+      "dev": "vite",
+      "preview": "vite preview"
    },
    "devDependencies": {
       "@rollup/plugin-terser": "^0.4.1",

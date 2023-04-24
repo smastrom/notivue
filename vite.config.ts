@@ -5,23 +5,21 @@ import terser from '@rollup/plugin-terser'
 import cssNesting from 'postcss-nesting'
 import cssNano from 'cssnano'
 
+const css = {
+   postcss: {
+      plugins: [cssNesting, cssNano],
+   },
+}
+
 export default defineConfig(({ mode }) => {
    if (mode === 'demo') {
       return {
-         css: {
-            postcss: {
-               plugins: [cssNesting, cssNano],
-            },
-         },
+         css,
          plugins: [vue()],
       }
    }
    return {
-      css: {
-         postcss: {
-            plugins: [cssNesting, cssNano],
-         },
-      },
+      css,
       build: {
          lib: {
             entry: 'src/index.ts',
