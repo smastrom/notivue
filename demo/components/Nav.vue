@@ -18,8 +18,6 @@ import ThemesControls from './ThemesControls.vue'
 import CustomSocial from './CustomSocial.vue'
 import CustomPromise from './CustomPromise.vue'
 
-import type { _PushOptions } from '../../src/types'
-
 const navRef = ref<HTMLElement | null>(null)
 
 const push = usePush()

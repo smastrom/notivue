@@ -6,7 +6,7 @@ export type PluginOptions = {
 
 // Receiver Props
 
-export type NotificationTypes =
+export type NotificationType =
    | 'success'
    | 'error'
    | 'info'
@@ -33,11 +33,11 @@ export type ReceiverProps = {
    zIndex: number
    gap: string
    class: string | { [key: string]: boolean } | string[]
-   options: Partial<Record<NotificationTypes | 'global', Partial<ReceiverOptions>>>
+   options: Partial<Record<NotificationType | 'global', Partial<ReceiverOptions>>>
    animations: Partial<{ enter: string; leave: string; clearAll: string }>
    use: DefaultRenderFn
    theme?: Record<`--${string}`, string>
-   icons?: Partial<Record<NotificationTypes | 'close', IconSrc>>
+   icons?: Partial<Record<NotificationType | 'close', IconSrc>>
 }
 
 export type ReceiverOptions = {
@@ -57,7 +57,7 @@ export type ScopedPushStyles = {
 }
 
 export type DefaultOptions = {
-   [K in NotificationTypes]: ReceiverOptions
+   [K in NotificationType]: ReceiverOptions
 } & {
    [key: string]: never
 }
@@ -82,7 +82,7 @@ type InternalData = {
 
 export type MergedOptions = Required<ReceiverOptions> & IncomingOptions
 
-export type InternalPushOptions = { id: string; type: NotificationTypes }
+export type InternalPushOptions = { id: string; type: NotificationType }
 
 // Store
 
@@ -106,11 +106,19 @@ export type StoreFns = {
    animateItem: (id: string, className: string, onEnd: () => void) => void
 }
 
+export type CreatePushParam = {
+   setIncoming: (options: IncomingOptions) => void
+   callItemMethod: (id: string, method: 'clear' | 'destroy') => void
+   scheduleClearAll: () => void
+   enable: () => void
+   disable: () => void
+   count: ComputedRef<number>
+} & Pick<StoreFns, 'destroyAll'> &
+   Pick<StoreRefs, 'isEnabled' | 'hasItems'>
+
 export type Store = { push: Push } & StoreRefs & StoreFns
 
 // Push - Incoming
-
-export type _PushOptions = Partial<ReceiverOptions & ScopedPushStyles> // To be exported to user
 
 export type IncomingOptions<T = unknown> = Partial<ReceiverOptions> &
    InternalPushOptions &
@@ -120,7 +128,8 @@ export type IncomingOptions<T = unknown> = Partial<ReceiverOptions> &
 export type StaticPushOptions<T> = Partial<ReceiverOptions & ScopedPushStyles> &
    MaybeRenderStatic<T>
 
-export type PromiseResultPushOptions<T> = Partial<ReceiverOptions> & MaybeRenderPromiseResult<T>
+export type PromiseResultPushOptions<T> = Partial<ReceiverOptions & ScopedPushStyles> &
+   MaybeRenderPromiseResult<T>
 
 export type PushStaticParam<T> = StaticPushOptions<T> | ReceiverOptions['message']
 
@@ -143,9 +152,14 @@ export type MaybeRenderPromiseResult<T = {}> = {
    }
 }
 
+// Aliases, documentation
+export type PushOptions<T = {}> = StaticPushOptions<T>
+export type PushPromiseResultOptions<T = {}> = PromiseResultPushOptions<T>
+
 // Push - Returned
 
 export type CtxProps = Omit<InternalPushOptions, 'id'> & {
+   type: NotificationType
    duration: ReceiverOptions['duration']
    title: ReceiverOptions['title']
    message: ReceiverOptions['message']

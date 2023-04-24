@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { _PushOptions } from '../../src/types'
 import { store } from '../store'
 
 const props = defineProps<{

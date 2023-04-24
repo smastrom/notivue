@@ -1,4 +1,4 @@
-import { CLASS_PREFIX as CX, NotificationTypes as NType } from './constants'
+import { CLASS_PREFIX as CX, NotificationType as NType } from './constants'
 import { DefaultOptions } from './types'
 import type { ReceiverOptions } from './types'
 

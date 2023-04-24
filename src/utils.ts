@@ -3,7 +3,7 @@ import type {
    ReceiverProps,
    IncomingOptions,
    MergedOptions,
-   NotificationTypes as NTypeU,
+   NotificationType as NTypeU,
    DefaultOptions,
 } from './types'
 import { CLASS_PREFIX as CX } from './constants'

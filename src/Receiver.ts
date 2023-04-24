@@ -22,7 +22,7 @@ import { mergeOptions, getDefaultAnims } from './utils'
 import {
    FIXED_INCREMENT,
    COMPONENT_NAME,
-   NotificationTypes as NType,
+   NotificationType as NType,
    TransitionTypes as TType,
 } from './constants'
 import type {
@@ -254,6 +254,11 @@ export const Receiver = defineComponent({
                      options.duration === Infinity
                         ? undefined
                         : createTimeout(options.id, options.duration),
+                  /**
+                   * These methods are an exception and the only ones created
+                   * here and not in the store as they rely too much on the
+                   * component instance.
+                   */
                   clear: () => animateLeave(options.id),
                   destroy: () => {
                      removeItem(options.id)

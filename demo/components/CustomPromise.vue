@@ -5,10 +5,10 @@ import Upload from '../icons/Upload.vue'
 import Success from '../icons/Success.vue'
 import Close from '../icons/Close.vue'
 
-import type { NotificationTypes } from '../../src/types'
+import type { NotificationType } from '../../src/types'
 
 const props = defineProps<{
-   type: NotificationTypes
+   type: NotificationType
    fileName: string
    message: string
    timeAgo: string

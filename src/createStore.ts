@@ -1,11 +1,10 @@
 import { computed, ref, shallowRef } from 'vue'
 import { createPushFn } from './createPush'
-import type { IncomingOptions, StoreItem, Store, Push } from './types'
+import type { IncomingOptions, StoreItem, Store, Push, CreatePushParam } from './types'
 
 export function createStore(): Store {
    const items = ref<StoreItem[]>([])
    const incoming = shallowRef<IncomingOptions>({} as IncomingOptions)
-
    const clearAllScheduler = ref(0)
    const isEnabled = ref(true)
    const count = computed(() => items.value.length)
@@ -52,7 +51,7 @@ export function createStore(): Store {
       items.value = []
    }
 
-   // push() scoped, not exported
+   // push-specific, not exported
 
    function enable() {
       isEnabled.value = true
@@ -83,7 +82,8 @@ export function createStore(): Store {
       disable,
       isEnabled,
       count,
-   })
+      hasItems,
+   } satisfies CreatePushParam)
 
    return {
       push,

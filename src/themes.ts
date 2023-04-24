@@ -13,15 +13,14 @@ const layout: Theme = {
 const shadow = { '--nv-shadow': '0 0.5rem 1rem rgba(0, 0, 0, 0.15)' }
 
 export const light: Theme = {
-   // Layout
    ...layout,
    ...shadow,
    '--nv-border-width': '0px',
-   // Global Colors
+   // Global
    '--nv-global-background': '#fff',
    '--nv-global-border': '#dedede',
    '--nv-global-foreground': '#334155',
-   // Scoped Colors
+   // Scoped
    '--nv-success-accent': '#28b780',
    '--nv-error-accent': '#e74c3c',
    '--nv-warning-accent': '#f59e0b',
@@ -56,14 +55,13 @@ export const pastel: Theme = {
 }
 
 export const material: Theme = {
-   // Layout
    ...layout,
    ...shadow,
-   // Global Color
+   // Global
    '--nv-global-accent': '#fff',
    '--nv-global-border': '#dedede',
    '--nv-global-foreground': '#fff',
-   // Scoped Colors
+   // Scoped
    '--nv-success-background': '#209E74',
    '--nv-error-background': '#E6523C',
    '--nv-info-background': '#0B9DE6',
@@ -77,14 +75,13 @@ export const material: Theme = {
 }
 
 export const dark: Theme = {
-   // Layout
    ...layout,
    '--nv-border-width': '1px',
-   // Global Colors
+   // Global
    '--nv-global-background': '#464646',
    '--nv-global-border': '#696969',
    '--nv-global-foreground': '#D0D0D0',
-   // Scoped Colors
+   // Scoped
    '--nv-success-accent': '#8EF997',
    '--nv-error-accent': '#FF7777',
    '--nv-warning-accent': '#FFE554',
@@ -93,14 +90,13 @@ export const dark: Theme = {
 }
 
 export const slate: Theme = {
-   // Layout
    ...layout,
    '--nv-border-width': '1px',
-   // Global Colors
+   // Global
    '--nv-global-background': '#20252E',
    '--nv-global-border': '#353b45',
    '--nv-global-foreground': '#F7F7F7',
-   // Scoped Colors
+   // Scoped
    '--nv-success-accent': '#34D399',
    '--nv-error-accent': '#FF7777',
    '--nv-warning-accent': '#FFE554',
