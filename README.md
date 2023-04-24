@@ -70,11 +70,11 @@ createApp(App).use(notivue).mount('#app')
 
 ```vue
 <script setup>
-import { Notivue, notification } from 'notivue'
+import { Notivue, notifications } from 'notivue'
 </script>
 
 <template>
-   <Notivue :use="notification" />
+  <Notivue :use="notifications" />
 </template>
 ```
 
@@ -88,7 +88,7 @@ const push = usePush()
 </script>
 
 <template>
-   <button @click="push.success('Something good has been pushed!')">Push</button>
+  <button @click="push.success('Something good has been pushed!')">Push</button>
 </template>
 ```
 
@@ -99,15 +99,15 @@ const push = usePush()
 import { usePush } from 'notivue'
 
 export default {
-   setup() {
-      const push = usePush()
-      return { push }
-   }
+  setup() {
+    const push = usePush()
+    return { push }
+  }
 }
 </script>
 
 <template>
-   <button @click="push.success('Something good has been pushed!')">Push</button>
+  <button @click="push.success('Something good has been pushed!')">Push</button>
 </template>
 ```
 

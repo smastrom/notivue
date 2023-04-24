@@ -2,7 +2,7 @@
 const props = withDefaults(
    defineProps<{
       name: string
-      isPush: boolean
+      isPush?: boolean
    }>(),
    {
       isPush: false,

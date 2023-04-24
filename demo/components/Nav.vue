@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref, computed } from 'vue'
+import { onMounted, onBeforeUnmount, ref, computed, watchEffect } from 'vue'
 import { store } from '../store'
 import { usePush } from '../../src'
 
@@ -15,9 +15,9 @@ import Dismiss from '../icons/Dismiss.vue'
 import Destroy from '../icons/Destroy.vue'
 import Controls from './ComponentControls.vue'
 import ThemesControls from './ThemesControls.vue'
+import CustomSocial from './CustomSocial.vue'
 
 import type { _PushOptions } from '../../src/types'
-import { watchEffect } from 'vue'
 
 const navRef = ref<HTMLElement | null>(null)
 
@@ -40,23 +40,22 @@ onBeforeUnmount(() => {
 })
 
 function customPush() {
-   /*    push({
-      message: 'Custom',
+   push.info({
+      title: false,
+      message: store.rtl
+         ? 'Stephanie LaGarde تريد إرسال رسالة لك.'
+         : 'Stephanie LaGarde wants to send you a message.',
       render: {
-         component: markRaw(Custom),
+         component: () => CustomSocial,
+
          props: ({ notivueProps }) => ({
-            ...notivueProps,
-            avatarUrl: 'https://i.pravatar.cc/150?img=1',
+            close: notivueProps.close,
+            timeAgo: store.rtl ? 'منذ 5 دقائق' : '5 mins ago',
+            name: 'Stephanie LaGarde',
+            message: store.rtl ? 'تريد إرسال رسالة لك.' : 'wants to send you a message.',
          }),
       },
-   }) */
-   /*    push({
-      message: 'Custom',
-      render: {
-         component: markRaw(Custom),
-         props: ({ notivueProps }) => ({}),
-      },
-   }) */
+   })
 }
 
 async function customAsync() {
@@ -235,22 +234,13 @@ watchEffect(() => {
             </ButtonGroup>
          </div>
 
-         <ButtonGroup name="Custom Comp. 👇">
-            <Button
-               @click="$push.promise('Your message has been successfully sent. Please.')"
-               text="Static"
-            >
+         <ButtonGroup name="Custom 👇" isPush>
+            <Button @click="customPush" text="Static">
                <VueIcon />
             </Button>
             <Button
                @click="$push.promise('Your message has been successfully sent. Please.')"
                text="Promise"
-            >
-               <VueIcon />
-            </Button>
-            <Button
-               @click="$push.promise('Your message has been successfully sent. Please.')"
-               text="Promise Multi"
             >
                <VueIcon />
             </Button>

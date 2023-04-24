@@ -1,48 +1,48 @@
 [data-notivue='success'] {
-   --nv-background: var(--nv-success-background);
-   --nv-foreground: var(--nv-success-foreground);
+   --nv-bg: var(--nv-success-background);
+   --nv-fg: var(--nv-success-foreground);
    --nv-accent: var(--nv-success-accent);
    --nv-border: var(--nv-success-border);
 }
 
 [data-notivue='error'] {
-   --nv-background: var(--nv-error-background);
-   --nv-foreground: var(--nv-error-foreground);
+   --nv-bg: var(--nv-error-background);
+   --nv-fg: var(--nv-error-foreground);
    --nv-accent: var(--nv-error-accent);
    --nv-border: var(--nv-error-border);
 }
 
 [data-notivue='warning'] {
-   --nv-background: var(--nv-warning-background);
-   --nv-foreground: var(--nv-warning-foreground);
+   --nv-bg: var(--nv-warning-background);
+   --nv-fg: var(--nv-warning-foreground);
    --nv-accent: var(--nv-warning-accent);
    --nv-border: var(--nv-warning-border);
 }
 
 [data-notivue='info'] {
-   --nv-background: var(--nv-info-background);
-   --nv-foreground: var(--nv-info-foreground);
+   --nv-bg: var(--nv-info-background);
+   --nv-fg: var(--nv-info-foreground);
    --nv-accent: var(--nv-info-accent);
    --nv-border: var(--nv-info-border);
 }
 
 [data-notivue='promise'] {
-   --nv-background: var(--nv-promise-background);
-   --nv-foreground: var(--nv-promise-foreground);
+   --nv-bg: var(--nv-promise-background);
+   --nv-fg: var(--nv-promise-foreground);
    --nv-accent: var(--nv-promise-accent);
    --nv-border: var(--nv-promise-border);
 }
 
 [data-notivue='promise-resolve'] {
-   --nv-background: var(--nv-promise-resolve-background, var(--nv-success-background));
-   --nv-foreground: var(--nv-promise-resolve-foreground, var(--nv-success-foreground));
+   --nv-bg: var(--nv-promise-resolve-background, var(--nv-success-background));
+   --nv-fg: var(--nv-promise-resolve-foreground, var(--nv-success-foreground));
    --nv-accent: var(--nv-promise-resolve-accent, var(--nv-success-accent));
    --nv-border: var(--nv-promise-resolve-border, var(--nv-success-border));
 }
 
 [data-notivue='promise-reject'] {
-   --nv-background: var(--nv-promise-reject-background, var(--nv-error-background));
-   --nv-foreground: var(--nv-promise-reject-foreground, var(--nv-error-foreground));
+   --nv-bg: var(--nv-promise-reject-background, var(--nv-error-background));
+   --nv-fg: var(--nv-promise-reject-foreground, var(--nv-error-foreground));
    --nv-accent: var(--nv-promise-reject-accent, var(--nv-error-accent));
    --nv-border: var(--nv-promise-reject-border, var(--nv-error-border));
 }
@@ -52,14 +52,12 @@
    width: var(--nv-width);
    max-width: 100%;
    padding: var(--nv-spacing);
-   background-color: var(--nv-background, var(--nv-global-background));
+   background-color: var(--nv-bg, var(--nv-global-background));
    display: grid;
-   align-items: center;
    grid-template-columns: 1fr auto;
-   border-style: solid;
-   border-width: var(--nv-border-width, 0);
+   align-items: center;
+   border: var(--nv-border-width, 0) solid var(--nv-border, var(--nv-global-border));
    border-radius: var(--nv-radius, 0);
-   border-color: var(--nv-border, var(--nv-global-border));
    box-sizing: border-box;
    box-shadow: var(--nv-shadow),
       inset calc(var(--nv-tip-width, 0px) * var(--nv-factor)) 0 0 0
@@ -89,7 +87,7 @@
 .Notivue__content-title {
    line-height: 1.15;
    font-weight: 700;
-   color: var(--nv-foreground, var(--nv-global-foreground));
+   color: var(--nv-fg, var(--nv-global-foreground));
    font-size: var(--nv-title-size);
    margin: 0 0 0.33em 0;
    padding: 0;
@@ -102,7 +100,7 @@
    max-height: 250px;
    overflow: auto;
    line-height: 1.375;
-   color: var(--nv-foreground, var(--nv-global-foreground));
+   color: var(--nv-fg, var(--nv-global-foreground));
    text-align: inherit;
    margin: 0;
    padding: 0;
@@ -131,7 +129,7 @@
       top: 0;
       width: 1px;
       opacity: 30%;
-      background-color: var(--nv-foreground, var(--nv-global-foreground));
+      background-color: var(--nv-fg, var(--nv-global-foreground));
    }
 }
 
@@ -145,7 +143,7 @@
    opacity: 0.5;
    font-weight: 700;
    transition: 100ms opacity ease-out;
-   color: var(--nv-foreground, var(--nv-global-foreground));
+   color: var(--nv-fg, var(--nv-global-foreground));
 }
 
 .Notivue__close:hover .Notivue__close-icon {
