@@ -5,9 +5,11 @@ import type { IncomingOptions, StoreItem, Store, PushFn } from './types'
 export function createStore(): Store {
    const items = ref<StoreItem[]>([])
    const incoming = shallowRef<IncomingOptions>({} as IncomingOptions)
+
    const clearAllScheduler = ref(0)
    const isEnabled = ref(true)
-   const notificationCount = computed(() => items.value.length)
+   const count = computed(() => items.value.length)
+   const hasItems = computed(() => count.value > 0)
 
    // Exported, used by Receiver
 
@@ -50,7 +52,15 @@ export function createStore(): Store {
       items.value = []
    }
 
-   // push() scoped
+   // push() scoped, not exported
+
+   function enable() {
+      isEnabled.value = true
+   }
+
+   function disable() {
+      isEnabled.value = false
+   }
 
    function setIncoming(options: IncomingOptions) {
       incoming.value = options
@@ -69,13 +79,19 @@ export function createStore(): Store {
       callItemMethod,
       scheduleClearAll,
       destroyAll,
+      enable,
+      disable,
+      isEnabled,
+      count,
    })
 
    return {
       push,
       items,
       incoming,
+      isEnabled,
       clearAllScheduler,
+      hasItems,
       createItem,
       getItem,
       animateItem,

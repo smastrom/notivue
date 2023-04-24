@@ -1,3 +1,4 @@
+import { computed, type Ref } from 'vue'
 import { createID } from './utils'
 import { NotificationTypes as NType } from './constants'
 import type {
@@ -15,6 +16,10 @@ type StoreFns = {
    callItemMethod: (id: string, method: 'clear' | 'destroy') => void
    scheduleClearAll: () => void
    destroyAll: () => void
+   enable: () => void
+   disable: () => void
+   isEnabled: Ref<boolean>
+   count: Ref<number>
 }
 
 export function createPushFn({
@@ -22,6 +27,10 @@ export function createPushFn({
    callItemMethod,
    scheduleClearAll,
    destroyAll,
+   isEnabled,
+   enable,
+   disable,
+   count,
 }: StoreFns): PushFn {
    function create<T>(
       options: PushStaticParam<T> | PushPromiseParam<T>,
@@ -60,6 +69,16 @@ export function createPushFn({
    push.warning = <T>(options: PushStaticParam<T>) => create(options, NType.WARNING)
 
    push.info = <T>(options: PushStaticParam<T>) => create(options, NType.INFO)
+
+   push.enable = enable
+
+   push.disable = disable
+
+   push.isEnabled = isEnabled
+
+   push.count = count
+
+   push.hasItems = computed(() => count.value > 0)
 
    push.promise = ((options) => {
       const { id, clear, destroy } = create(options, NType.PROMISE)

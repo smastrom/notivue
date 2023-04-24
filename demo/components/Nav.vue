@@ -17,6 +17,7 @@ import Controls from './ComponentControls.vue'
 import ThemesControls from './ThemesControls.vue'
 
 import type { _PushOptions } from '../../src/types'
+import { watchEffect } from 'vue'
 
 const navRef = ref<HTMLElement | null>(null)
 
@@ -169,6 +170,10 @@ function getRandomInt(min: number, max: number) {
    max = Math.floor(max)
    return Math.floor(Math.random() * (max - min) + min)
 }
+
+watchEffect(() => {
+   console.log(push.count.value)
+})
 </script>
 
 <template>

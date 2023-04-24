@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { watchEffect } from 'vue'
+import { watchEffect, computed } from 'vue'
 import {
    Notivue,
    notification,
@@ -14,46 +14,28 @@ import {
 import { store } from './store'
 import Nav from './components/Nav.vue'
 import Logo from './components/Background.vue'
-import { computed } from 'vue'
+import CustomIcon from './icons/CustomIcon.vue'
 
 const globalOptions = {
-   global: {
-      duration: 20000,
-      icon: false,
-   },
+   duration: 20000,
+   icon: true,
 }
 
 const options = {
-   ...globalOptions,
+   global: {
+      ...globalOptions,
+   },
 } as const
 
 const icons = {
    ..._icons,
-   /*    warning: () => CustomIcon, */
+   warning: () => CustomIcon,
 }
 
 const _options = {
-   ...globalOptions,
-   success: {
+   global: {
       title: false,
-   },
-   warning: {
-      title: false,
-   },
-   info: {
-      title: false,
-   },
-   error: {
-      title: false,
-   },
-   promise: {
-      title: false,
-   },
-   'promise-resolve': {
-      title: false,
-   },
-   'promise-reject': {
-      title: false,
+      ...globalOptions,
    },
 }
 
@@ -87,10 +69,9 @@ watchEffect(() => document.documentElement.style.setProperty('--nv-root-containe
       :pauseOnHover="store.pauseOnHover"
       :position="store.position"
       :theme="themes[store.theme]"
-      :disabled="store.isDisabled"
       :class="{ CustomClass: store.centerOnMobile }"
    />
-   <Notivue id="user-1" position="bottom-right" :disabled="false" />
+   <Notivue id="user-1" position="bottom-right" />
    <Logo />
    <Nav />
 </template>

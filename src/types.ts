@@ -1,4 +1,4 @@
-import type { VNode, Component, CSSProperties, Ref, ShallowRef } from 'vue'
+import type { VNode, Component, CSSProperties, Ref, ShallowRef, ComputedRef } from 'vue'
 
 declare module 'vue' {
    interface ComponentCustomProperties {
@@ -32,9 +32,7 @@ export type DefaultRenderFnParam = {
 export type DefaultRenderFn = (param: DefaultRenderFnParam) => VNode
 
 export type ReceiverProps = {
-   disabled: boolean
    method: 'unshift' | 'push'
-   limit: number
    pauseOnHover: boolean
    position: Position
    id: string
@@ -100,7 +98,8 @@ export type StoreRefs = {
    items: Ref<StoreItem[]>
    incoming: ShallowRef<IncomingOptions>
    clearAllScheduler: Ref<number>
-   push: PushFn
+   isEnabled: Ref<boolean>
+   hasItems: ComputedRef<boolean>
 }
 
 export type StoreFns = {
@@ -113,11 +112,11 @@ export type StoreFns = {
    animateItem: (id: string, className: string, onEnd: () => void) => void
 }
 
-export type Store = StoreRefs & StoreFns
+export type Store = { push: PushFn } & StoreRefs & StoreFns
 
 // Push - Incoming
 
-export type _PushOptions = Partial<ReceiverOptions & ScopedPushStyles> // To be removed
+export type _PushOptions = Partial<ReceiverOptions & ScopedPushStyles> // To be exported to user
 
 export type IncomingOptions<T = unknown> = Partial<ReceiverOptions> &
    InternalPushOptions &
@@ -180,6 +179,11 @@ export type PushFn = PushStatic & {
    promise: PushPromise
    clearAll: () => void
    destroyAll: () => void
+   enable: () => void
+   disable: () => void
+   isEnabled: Ref<boolean>
+   hasItems: ComputedRef<boolean>
+   count: Ref<number>
 }
 
 export type ClearFns = { clear: () => void; destroy: () => void }

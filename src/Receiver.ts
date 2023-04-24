@@ -50,10 +50,6 @@ export const Receiver = defineComponent({
          type: Boolean as PropType<Props['pauseOnHover']>,
          default: true,
       },
-      disabled: {
-         type: Boolean as PropType<Props['disabled']>,
-         default: false,
-      },
       position: {
          type: String as PropType<Props['position']>,
          default: 'top-center',
@@ -92,7 +88,6 @@ export const Receiver = defineComponent({
 
       const position = toRef(props, 'position')
       const pauseOnHover = toRef(props, 'pauseOnHover')
-      const isDisabled = toRef(props, 'disabled')
       const animations = toRef(props, 'animations')
 
       // Reactivity - Props - Computed
@@ -110,6 +105,8 @@ export const Receiver = defineComponent({
          items,
          incoming,
          clearAllScheduler,
+         isEnabled,
+         hasItems,
          createItem,
          getItem,
          updateItem,
@@ -118,10 +115,6 @@ export const Receiver = defineComponent({
          updateAll,
          animateItem,
       } = useStore(props.id)
-
-      // Reactivity - Store - Computed
-
-      const hasItems = computed(() => items.value.length > 0)
 
       // Reactivity - Elements and styles
 
@@ -140,7 +133,7 @@ export const Receiver = defineComponent({
       let detachListener: ReturnType<typeof attachListener>
 
       watchEffect(() => {
-         if (isDisabled.value && detachListener) {
+         if (!isEnabled.value && detachListener) {
             detachListener()
             destroyAll()
          } else {
