@@ -51,7 +51,7 @@ async function customAsync() {
          component: () => CustomPromise,
          props: ({ notivueProps }) => ({
             ...notivueProps,
-            fileName: 'report_xmas_2022.xslx',
+            fileName: 'report_2022.xlsx',
          }),
       },
    })

@@ -103,6 +103,7 @@ const isPromise = computed(() => props.type === 'promise')
 
    & h3 {
       letter-spacing: -0.025em;
+      line-height: 1.25;
       color: #525252;
       margin: 0;
       font-size: 1rem;
