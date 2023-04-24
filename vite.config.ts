@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import dts from 'vite-plugin-dts'
 import terser from '@rollup/plugin-terser'
 import cssNesting from 'postcss-nesting'
 import cssNano from 'cssnano'
@@ -47,6 +48,6 @@ export default defineConfig(({ mode }) => {
             ],
          },
       },
-      plugins: [vue()],
+      plugins: [dts({ staticImport: true, insertTypesEntry: true }), vue()],
    }
 })
