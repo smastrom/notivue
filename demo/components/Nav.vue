@@ -178,7 +178,7 @@ function getRandomInt(min: number, max: number) {
             <ButtonGroup name="Push 👇" isPush>
                <Button
                   @click="
-                     $push.success({
+                     push.success({
                         title: copy.success.title,
                         message: copy.success.message,
                      })
@@ -189,7 +189,7 @@ function getRandomInt(min: number, max: number) {
                </Button>
                <Button
                   @click="
-                     $push.error({
+                     push.error({
                         title: copy.error.title,
                         message: copy.error.message,
                      })
@@ -200,14 +200,14 @@ function getRandomInt(min: number, max: number) {
                </Button>
                <Button
                   @click="
-                     $push.warning({ title: copy.warning.title, message: copy.warning.message })
+                     push.warning({ title: copy.warning.title, message: copy.warning.message })
                   "
                   text="Warn"
                >
                   <Warn :isWarn="true" />
                </Button>
                <Button
-                  @click="$push.info({ title: copy.info.title, message: copy.info.message })"
+                  @click="push.info({ title: copy.info.title, message: copy.info.message })"
                   text="Info"
                >
                   <Info />
@@ -232,8 +232,8 @@ function getRandomInt(min: number, max: number) {
          </ButtonGroup>
 
          <ButtonGroup name="Actions">
-            <Button @click="$push.clearAll()" text="Dismiss All"> <Dismiss /> </Button>
-            <Button @click="$push.destroyAll()" text="Destroy All">
+            <Button @click="push.clearAll()" text="Dismiss All"> <Dismiss /> </Button>
+            <Button @click="push.destroyAll()" text="Destroy All">
                <Destroy />
             </Button>
          </ButtonGroup>

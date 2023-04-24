@@ -1,11 +1,5 @@
 import type { VNode, Component, CSSProperties, Ref, ShallowRef, ComputedRef } from 'vue'
 
-declare module 'vue' {
-   interface ComponentCustomProperties {
-      $push: Push
-   }
-}
-
 export type PluginOptions = {
    register?: string[]
 }
