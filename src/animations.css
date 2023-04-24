@@ -41,23 +41,25 @@
 }
 
 @keyframes Notivue__leave-kf {
-   0% {
-      transform: scale(1) translate3d(0, 0, 0);
+   100% {
+      transform-origin: top;
+      transform: scale(1);
       opacity: 1;
    }
    100% {
-      transform: scale(0.5) translate3d(0, -100px, 0);
+      transform: scale(0.7);
       opacity: 0;
    }
 }
 
 @keyframes Notivue__leave-bottom-kf {
    0% {
-      transform: scale(1) translate3d(0, 0, 0);
+      transform-origin: bottom;
+      transform: scale(1);
       opacity: 1;
    }
    100% {
-      transform: scale(0.5) translate3d(0, 100px, 0);
+      transform: scale(0.7);
       opacity: 0;
    }
 }
