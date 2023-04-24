@@ -17,7 +17,7 @@ import Logo from './components/Background.vue'
 import CustomIcon from './icons/CustomIcon.vue'
 
 const globalOptions = {
-   duration: 20000,
+   duration: 2000,
    icon: true,
 }
 

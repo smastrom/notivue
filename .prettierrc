@@ -1,17 +1,18 @@
 {
-   "trailingComma": "es5",
-   "singleQuote": true,
    "printWidth": 100,
-   "tabWidth": 3,
    "semi": false,
+   "singleQuote": true,
+   "tabWidth": 3,
+   "trailingComma": "es5",
    "useTabs": false,
    "overrides": [
       {
          "files": "README.md",
          "options": {
+            "semi": false,
+            "tabWidth": 2,
             "trailingComma": "none",
-            "useTabs": false,
-            "semi": false
+            "useTabs": false
          }
       }
    ]

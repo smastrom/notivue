@@ -201,7 +201,12 @@ watchEffect(() => {
                   <SuccessIcon />
                </Button>
                <Button
-                  @click="$push.error({ title: copy.error.title, message: copy.error.message })"
+                  @click="
+                     $push.error({
+                        title: copy.error.title,
+                        message: copy.error.message,
+                     })
+                  "
                   text="Error"
                >
                   <Warn :isWarn="false" />

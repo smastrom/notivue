@@ -40,8 +40,8 @@ export type ReceiverProps = {
    gap: string
    class: string | { [key: string]: boolean } | string[]
    options: Partial<Record<NotificationTypes | 'global', Partial<ReceiverOptions>>>
-   use: DefaultRenderFn
    animations: Partial<{ enter: string; leave: string; clearAll: string }>
+   use: DefaultRenderFn
    theme?: Record<`--${string}`, string>
    icons?: Partial<Record<NotificationTypes | 'close', IconSrc>>
 }

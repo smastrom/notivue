@@ -66,6 +66,10 @@ export const Receiver = defineComponent({
          type: Object as PropType<Props['options']>,
          default: () => defaultOptions,
       },
+      animations: {
+         type: Object as PropType<Props['animations']>,
+         default: () => defaultAnimations,
+      },
       use: {
          type: Function as PropType<Props['use']>,
          default: () => null,
@@ -77,10 +81,6 @@ export const Receiver = defineComponent({
       icons: {
          type: Object as PropType<Props['icons']>,
          default: undefined,
-      },
-      animations: {
-         type: Object as PropType<Props['animations']>,
-         default: () => defaultAnimations,
       },
    },
    setup(props) {
