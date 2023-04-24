@@ -9,7 +9,7 @@ const props = defineProps<{
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 18.993 18.993"
       :style="{
-         transform: `rotate(${rotate}deg)`,
+         transform: `rotate(${props.rotate}deg)`,
       }"
    >
       <path

@@ -156,10 +156,6 @@ onBeforeUnmount(() => {
    window.removeEventListener('resize', getNavHeight)
 })
 
-watchEffect(() => {
-   console.log(push.count.value)
-})
-
 function getRandomInt(min: number, max: number) {
    min = Math.ceil(min)
    max = Math.floor(max)

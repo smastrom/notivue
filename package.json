@@ -6,7 +6,7 @@
       "dev": "vite",
       "build": "rimraf dist && vue-tsc && vite build",
       "build:demo": "rimraf dist && vite build --mode demo",
-      "postbuild": "postcss ./src/animations.css ./src/component.css -d ./dist/ --use cssnano postcss-nesting --no-map",
+      "postbuild": "postcss ./src/animations.css ./src/notifications.css -d ./dist/ --use cssnano postcss-nesting --no-map",
       "preview": "vite preview"
    },
    "main": "dist/index.js",
