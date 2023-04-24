@@ -48,9 +48,3 @@ export const options: DefaultOptions = {
    [NType.PROMISE_RESOLVE]: success,
    [NType.PROMISE_REJECT]: error,
 } as DefaultOptions
-
-export const defaultAnimations = {
-   enter: CX + 'enter',
-   leave: CX + 'leave',
-   clearAll: CX + 'clearAll',
-}

@@ -2,7 +2,7 @@ import type { VNode, Component, CSSProperties, Ref, ShallowRef, ComputedRef } fr
 
 declare module 'vue' {
    interface ComponentCustomProperties {
-      $push: PushFn
+      $push: Push
    }
 }
 
@@ -112,7 +112,7 @@ export type StoreFns = {
    animateItem: (id: string, className: string, onEnd: () => void) => void
 }
 
-export type Store = { push: PushFn } & StoreRefs & StoreFns
+export type Store = { push: Push } & StoreRefs & StoreFns
 
 // Push - Incoming
 
@@ -171,7 +171,7 @@ export type PushPromise = <T extends Record<string, unknown>>(
    destroy: ClearFns['destroy']
 }
 
-export type PushFn = PushStatic & {
+export type Push = PushStatic & {
    error: PushStatic
    success: PushStatic
    warning: PushStatic

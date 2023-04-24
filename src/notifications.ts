@@ -5,7 +5,7 @@ import { icons as filledIcons } from './icons'
 import { light } from './themes'
 import type { IconSrc, DefaultRenderFnParam } from './types'
 
-export function notification({ item, theme = light, icons = filledIcons }: DefaultRenderFnParam) {
+export function notifications({ item, theme = light, icons = filledIcons }: DefaultRenderFnParam) {
    return h(
       'div',
       {

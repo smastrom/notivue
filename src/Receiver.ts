@@ -16,9 +16,9 @@ import { staticStyles, useDynamicStyles } from './useStyles'
 import { useRefsMap } from './useRefsMap'
 import { useResizeObserver } from './useResizeObserver'
 import { useWindowSize } from './useWindowSize'
-import { defaultAnimations, options as defaultOptions } from './options'
+import { options as defaultOptions } from './options'
 import { ariaLive } from './ariaLive'
-import { mergeOptions } from './utils'
+import { mergeOptions, getDefaultAnims } from './utils'
 import {
    FIXED_INCREMENT,
    COMPONENT_NAME,
@@ -68,7 +68,7 @@ export const Receiver = defineComponent({
       },
       animations: {
          type: Object as PropType<Props['animations']>,
-         default: () => defaultAnimations,
+         default: () => ({}),
       },
       use: {
          type: Function as PropType<Props['use']>,
@@ -95,7 +95,7 @@ export const Receiver = defineComponent({
       const isTop = computed(() => position.value.startsWith('top'))
 
       const mergedAnims = computed(() => ({
-         ...defaultAnimations,
+         ...getDefaultAnims(isTop.value),
          ...animations.value,
       }))
 

@@ -1,11 +1,11 @@
-import { computed, type Ref } from 'vue'
+import { computed, type Ref, type ComputedRef } from 'vue'
 import { createID } from './utils'
 import { NotificationTypes as NType } from './constants'
 import type {
    IncomingOptions,
    StaticPushOptions,
    PushPromise,
-   PushFn,
+   Push,
    PromiseResultPushOptions,
    PushStaticParam,
    PushPromiseParam,
@@ -19,7 +19,7 @@ type StoreFns = {
    enable: () => void
    disable: () => void
    isEnabled: Ref<boolean>
-   count: Ref<number>
+   count: ComputedRef<number>
 }
 
 export function createPushFn({
@@ -31,7 +31,7 @@ export function createPushFn({
    enable,
    disable,
    count,
-}: StoreFns): PushFn {
+}: StoreFns): Push {
    function create<T>(
       options: PushStaticParam<T> | PushPromiseParam<T>,
       status = NType.SUCCESS,

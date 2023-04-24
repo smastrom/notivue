@@ -1,6 +1,6 @@
 import { computed, ref, shallowRef } from 'vue'
 import { createPushFn } from './createPush'
-import type { IncomingOptions, StoreItem, Store, PushFn } from './types'
+import type { IncomingOptions, StoreItem, Store, Push } from './types'
 
 export function createStore(): Store {
    const items = ref<StoreItem[]>([])
@@ -74,7 +74,7 @@ export function createStore(): Store {
       clearAllScheduler.value++
    }
 
-   const push: PushFn = createPushFn({
+   const push: Push = createPushFn({
       setIncoming,
       callItemMethod,
       scheduleClearAll,

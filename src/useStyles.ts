@@ -32,7 +32,7 @@ export const staticStyles: Record<string, CSSProperties> = {
       ...boxSizing,
       padding: '0 var(--nv-root-right, 1.25rem) 0 var(--nv-root-left, 1.25rem)',
       transitionTimingFunction: EASING,
-      transitionDuration: '250ms',
+      transitionDuration: '300ms',
       transitionProperty: 'transform',
       position: 'absolute',
       display: 'flex',

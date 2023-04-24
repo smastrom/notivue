@@ -2,7 +2,7 @@
 import { watchEffect, computed } from 'vue'
 import {
    Notivue,
-   notification,
+   notifications,
    icons as _icons,
    outlineIcons,
    light,
@@ -17,7 +17,7 @@ import Logo from './components/Background.vue'
 import CustomIcon from './icons/CustomIcon.vue'
 
 const globalOptions = {
-   duration: 2000,
+   // duration: 2000,
    icon: true,
 }
 
@@ -63,7 +63,7 @@ watchEffect(() => document.documentElement.style.setProperty('--nv-root-containe
 
 <template>
    <Notivue
-      :use="notification"
+      :use="notifications"
       :options="store.renderTitles ? options : _options"
       :icons="store.customIcons ? emojis : store.outlineIcons ? outlineIcons : icons"
       :pauseOnHover="store.pauseOnHover"

@@ -6,6 +6,7 @@ import type {
    NotificationTypes as NTypeU,
    DefaultOptions,
 } from './types'
+import { CLASS_PREFIX as CX } from './constants'
 
 export const isSSR = typeof window === 'undefined'
 
@@ -79,5 +80,13 @@ export function mergeOptions(
       ...defaultOptions[pushOptions.type],
       ...mergedGlobals,
       ...pushOptions,
+   }
+}
+
+export function getDefaultAnims(isTop: boolean) {
+   return {
+      ...{ enter: CX + 'enter' + (isTop ? '' : '-bottom') },
+      ...{ leave: CX + 'leave' + (isTop ? '' : '-bottom') },
+      clearAll: CX + 'clearAll',
    }
 }

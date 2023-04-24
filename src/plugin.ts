@@ -1,15 +1,15 @@
 import { createStore } from './createStore'
 import { defaultSymbol, userSymbols } from './symbols'
 import type { Plugin, InjectionKey } from 'vue'
-import type { PluginOptions, Store, PushFn } from './types'
+import type { PluginOptions, Store, Push } from './types'
 
 declare module 'vue' {
    interface ComponentCustomProperties {
-      $push: PushFn
+      $push: Push
    }
 }
 
-export const install: Plugin = {
+export const plugin: Plugin = {
    install(
       app,
       { register = [] }: PluginOptions = {
