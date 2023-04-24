@@ -186,17 +186,17 @@ const isPromise = computed(() => props.type === 'promise')
    width: 50%;
 
    /* Move the bar infinitely */
-   animation-duration: 1s;
+   animation-duration: 1.5s;
    animation-iteration-count: infinite;
    animation-name: indeterminate-progress-bar;
 }
 
 @keyframes indeterminate-progress-bar {
    from {
-      left: -50%;
+      transform: translateX(-300px);
    }
    to {
-      left: 100%;
+      transform: translateX(400px);
    }
 }
 </style>

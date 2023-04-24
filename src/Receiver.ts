@@ -313,7 +313,6 @@ export const Receiver = defineComponent({
 
       function animateLeave(id: string) {
          animateItem(id, mergedAnims.value.leave, () => removeItem(id))
-
          setPositions()
       }
 

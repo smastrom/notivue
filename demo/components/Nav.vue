@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref, computed, watchEffect } from 'vue'
-import { store } from '../store'
+import { setTheme, store } from '../store'
 import { usePush } from '../../src'
 
 import ButtonGroup from './ButtonGroup.vue'
@@ -25,6 +25,10 @@ const navRef = ref<HTMLElement | null>(null)
 const push = usePush()
 
 function customPush() {
+   if (store.theme === 'dark' || store.theme === 'slate') {
+      setTheme('light')
+   }
+
    push.info({
       title: false,
       message: store.rtl
@@ -44,6 +48,10 @@ function customPush() {
 }
 
 async function customAsync() {
+   if (store.theme === 'dark' || store.theme === 'slate') {
+      setTheme('light')
+   }
+
    const promise = push.promise({
       message: store.rtl ? 'جاري تحميل الملف…' : 'Uploading file…',
       title: false,
@@ -264,7 +272,7 @@ nav {
 
 .DefaultComponent {
    display: grid;
-   grid-auto-flow: column;
    gap: 10px;
+   grid-auto-flow: column;
 }
 </style>
