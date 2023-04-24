@@ -106,10 +106,6 @@ const props = defineProps<{
          color: var(--blue-color);
       }
    }
-
-   & p {
-      margin: 0;
-   }
 }
 
 .Buttons {

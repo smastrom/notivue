@@ -16,28 +16,13 @@ import Destroy from '../icons/Destroy.vue'
 import Controls from './ComponentControls.vue'
 import ThemesControls from './ThemesControls.vue'
 import CustomSocial from './CustomSocial.vue'
+import CustomPromise from './CustomPromise.vue'
 
 import type { _PushOptions } from '../../src/types'
 
 const navRef = ref<HTMLElement | null>(null)
 
 const push = usePush()
-
-function getNavHeight() {
-   document.documentElement.style.setProperty(
-      '--nv-root-bottom',
-      `${(navRef.value?.clientHeight ?? 0) + 10}px`
-   )
-}
-
-onMounted(() => {
-   getNavHeight()
-   window.addEventListener('resize', getNavHeight, { passive: true })
-})
-
-onBeforeUnmount(() => {
-   window.removeEventListener('resize', getNavHeight)
-})
 
 function customPush() {
    push.info({
@@ -59,49 +44,32 @@ function customPush() {
 }
 
 async function customAsync() {
-   /*    const promise = $push.promise({
-      message: 'Async',
+   const promise = push.promise({
+      message: store.rtl ? 'جاري تحميل الملف…' : 'Uploading file…',
+      title: false,
       render: {
-         component: () => Custom,
+         component: () => CustomPromise,
          props: ({ notivueProps }) => ({
             ...notivueProps,
-            avatarUrl: 'https://i.pravatar.cc/150?img=1',
-            nameSurname: 'John Doe',
+            fileName: 'report_xmas_2022.xslx',
          }),
       },
    })
 
-   await new Promise((resolve) => setTimeout(resolve, 3000))
+   await new Promise((resolve) => setTimeout(resolve, getRandomInt(2000, 4000)))
 
    promise.resolve({
-      message: 'Async resolved',
+      message: store.rtl ? 'تم تحميل الملف بنجاح!' : 'File successfully uploaded!',
+      title: false,
       render: {
-         component: () => Custom,
          props: ({ notivueProps, prevProps }) => ({
             ...notivueProps,
             ...prevProps,
-            avatarUrl: 'https://i.pravatar.cc/150?img=1',
+            remainingSpace: 129.01,
+            timeAgo: store.rtl ? 'منذ دقيقة' : '1 min ago',
          }),
       },
    })
-
-   promise.reject({
-      message: 'Async resolved',
-      render: {
-         component: markRaw(Custom),
-         props: ({ notivueProps }) => ({
-            ...notivueProps,
-         }),
-      },
-   })
-
-   promise.reject({
-      message: 'Async resolved',
-      render: {
-         component: markRaw(Custom),
-         props: ({ notivueProps }) => ({}),
-      },
-   }) */
 }
 
 const copy = computed(() => {
@@ -164,15 +132,31 @@ async function asyncPush() {
    }
 }
 
+function getNavHeight() {
+   document.documentElement.style.setProperty(
+      '--nv-root-bottom',
+      `${(navRef.value?.clientHeight ?? 0) + 10}px`
+   )
+}
+
+onMounted(() => {
+   getNavHeight()
+   window.addEventListener('resize', getNavHeight, { passive: true })
+})
+
+onBeforeUnmount(() => {
+   window.removeEventListener('resize', getNavHeight)
+})
+
+watchEffect(() => {
+   console.log(push.count.value)
+})
+
 function getRandomInt(min: number, max: number) {
    min = Math.ceil(min)
    max = Math.floor(max)
    return Math.floor(Math.random() * (max - min) + min)
 }
-
-watchEffect(() => {
-   console.log(push.count.value)
-})
 </script>
 
 <template>
@@ -238,10 +222,7 @@ watchEffect(() => {
             <Button @click="customPush" text="Static">
                <VueIcon />
             </Button>
-            <Button
-               @click="$push.promise('Your message has been successfully sent. Please.')"
-               text="Promise"
-            >
+            <Button @click="customAsync" text="Promise">
                <VueIcon />
             </Button>
          </ButtonGroup>

@@ -145,3 +145,7 @@ body {
       transform: translateY(0);
    }
 }
+
+p {
+   margin: 0;
+}

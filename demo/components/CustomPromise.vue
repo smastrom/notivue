@@ -1,0 +1,201 @@
+<script setup lang="ts">
+import { computed } from 'vue'
+
+import Upload from '../icons/Upload.vue'
+import Success from '../icons/Success.vue'
+import Close from '../icons/Close.vue'
+
+import type { NotificationTypes } from '../../src/types'
+
+const props = defineProps<{
+   type: NotificationTypes
+   fileName: string
+   message: string
+   timeAgo: string
+   remainingSpace: number
+   close: () => void
+}>()
+
+const isPromise = computed(() => props.type === 'promise')
+</script>
+
+<template>
+   <div class="Notification">
+      <div class="Header">
+         <div class="IconContainer">
+            <Upload v-if="isPromise" />
+            <Success v-else />
+         </div>
+         <div class="Title">
+            <h3>{{ message }}</h3>
+            <button class="Close" @click="props.close" v-if="!isPromise">
+               <Close />
+            </button>
+         </div>
+      </div>
+
+      <div class="Content">
+         <div class="Extension">
+            {{ fileName.split('.').pop() }}
+         </div>
+         <p class="FileName">{{ fileName }}</p>
+      </div>
+
+      <div class="Progress" v-if="isPromise">
+         <div class="indeterminate-progress-bar">
+            <div class="indeterminate-progress-bar__progress"></div>
+         </div>
+      </div>
+
+      <div class="Footer" v-else>
+         <time class="Time">{{ props.timeAgo }}</time>
+         <p><strong>Remaining space:</strong> {{ remainingSpace }} GB</p>
+      </div>
+   </div>
+</template>
+
+<style scoped>
+.Notification {
+   display: flex;
+   flex-direction: column;
+   background-color: #fff;
+   padding: 10px;
+   border: 2px solid #d6d6d6;
+   border-radius: 10px;
+   width: 360px;
+   max-width: 100%;
+   gap: 10px;
+}
+
+.Header {
+   display: flex;
+   align-items: center;
+   justify-content: flex-start;
+   gap: 10px;
+   border-bottom: 1px solid #d8d8d8;
+   padding-bottom: 5px;
+}
+
+.Close {
+   background-color: transparent;
+   border: none;
+   cursor: pointer;
+   padding: 0;
+   margin: 0;
+   outline: none;
+   transition: opacity 100ms ease-out;
+   padding: 5px;
+
+   &:hover {
+      opacity: 0.5;
+   }
+
+   & svg {
+      width: 15px;
+   }
+}
+
+.Title {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   width: 100%;
+
+   & h3 {
+      letter-spacing: -0.025em;
+      color: #525252;
+      margin: 0;
+      font-size: 1rem;
+   }
+}
+
+.IconContainer {
+   display: flex;
+
+   & svg {
+      width: 20px;
+   }
+}
+
+.Extension {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   border-radius: 5px;
+   background-color: #e2f7e8;
+   color: #00b300;
+   font-weight: 600;
+   font-size: 0.7rem;
+   padding: 0.5em;
+   line-height: 1;
+   text-transform: uppercase;
+}
+
+.FileName {
+   color: #6a6a6a;
+   font-size: 0.9rem;
+}
+
+.Content {
+   display: flex;
+   align-items: center;
+   gap: 10px;
+}
+
+.Footer {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   gap: 10px;
+   font-size: 0.8rem;
+   color: #525252;
+
+   & time {
+      color: #a3a3a3;
+   }
+}
+
+/* Forked from: https://csslayout.io/indeterminate-progress-bar/ */
+
+.indeterminate-progress-bar {
+   /* Color */
+   background-color: #e2efff;
+
+   /* Rounded border */
+   border-radius: 9999px;
+
+   /* Size */
+   height: 0.3rem;
+
+   position: relative;
+   overflow: hidden;
+}
+
+.indeterminate-progress-bar__progress {
+   /* Color */
+   background-color: #0076ff;
+
+   /* Rounded border */
+   border-radius: 9999px;
+
+   /* Absolute position */
+   position: absolute;
+   bottom: 0;
+   top: 0;
+   width: 50%;
+
+   /* Move the bar infinitely */
+   animation-duration: 1s;
+   animation-iteration-count: infinite;
+   animation-name: indeterminate-progress-bar;
+}
+
+@keyframes indeterminate-progress-bar {
+   from {
+      left: -50%;
+   }
+   to {
+      left: 100%;
+   }
+}
+</style>
