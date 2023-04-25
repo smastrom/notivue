@@ -200,7 +200,6 @@ export const Receiver = defineComponent({
                if (prevComponent) {
                   const prevProps = { ...(currItem.prevProps ?? {}) }
 
-                  delete prevProps.title
                   delete prevProps.message
                   delete prevProps.type
                   delete prevProps.duration
@@ -275,8 +274,8 @@ export const Receiver = defineComponent({
          return setTimeout(() => animateLeave(id), time)
       }
 
-      function getCtxProps({ title, message, type, duration, id }: MergedOptions) {
-         return { notivueProps: { title, message, type, duration, close: () => animateLeave(id) } }
+      function getCtxProps({ message, type, duration, id }: MergedOptions) {
+         return { notivueProps: { message, type, duration, close: () => animateLeave(id) } }
       }
 
       // Functions - Transitions

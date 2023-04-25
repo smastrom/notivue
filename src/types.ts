@@ -34,7 +34,7 @@ export type ReceiverProps = {
    gap: string
    class: string | { [key: string]: boolean } | string[]
    options: Partial<Record<NotificationType | 'global', Partial<ReceiverOptions>>>
-   animations: Partial<{ enter: string; leave: string; clearAll: string }>
+   animations: NotificationOptions
    use: DefaultRenderFn
    theme?: Record<`--${string}`, string>
    icons?: Partial<Record<NotificationType | 'close', IconSrc>>
@@ -153,15 +153,17 @@ export type MaybeRenderPromiseResult<T = {}> = {
 }
 
 // Aliases, documentation
+export type NotivueTheme = Theme
 export type PushOptions<T = {}> = StaticPushOptions<T>
 export type PushPromiseResultOptions<T = {}> = PromiseResultPushOptions<T>
+export type NotificationOptions = Partial<
+   Record<NotificationType | 'global', Partial<ReceiverOptions>>
+>
 
 // Push - Returned
 
-export type CtxProps = Omit<InternalPushOptions, 'id'> & {
-   type: NotificationType
+export type CtxProps = Pick<InternalPushOptions, 'type'> & {
    duration: ReceiverOptions['duration']
-   title: ReceiverOptions['title']
    message: ReceiverOptions['message']
    close: () => void
 }
