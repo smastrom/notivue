@@ -5,7 +5,6 @@ import {
    computed,
    watch,
    watchEffect,
-   watchPostEffect,
    h,
    toRef,
    nextTick,
@@ -163,11 +162,15 @@ export const Receiver = defineComponent({
 
       // Watchers - Hover
 
-      watchPostEffect(() => {
-         if (!hasItems.value) {
-            isHovering = false
-         }
-      })
+      watch(
+         () => !hasItems.value,
+         (isEmpty) => {
+            if (isEmpty) {
+               isHovering = false
+            }
+         },
+         { flush: 'post' } // watchPostEffect not supported < 3.2.0
+      )
 
       // Watcher - Clear All
 
