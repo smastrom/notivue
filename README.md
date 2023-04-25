@@ -8,7 +8,7 @@ Fully-fledged flexible notification system for Vue 3.
 
 ---
 
-[Live Demo](https://notivue.netlify.app/) - [Documentation]() - [StackBlitz]()
+[Live Demo](https://notivue.netlify.app/) - [Documentation](https://notivuedocs.netlify.app/) - [StackBlitz]()
 
 </div>
 
@@ -17,7 +17,7 @@ Fully-fledged flexible notification system for Vue 3.
 ## Features
 
 **🧬 JS and CSS modular**  
-_Bundle only what you use_
+_Granularly bundle only what you use_
 
 **🧚‍♂️ Zero deps and lightweight**  
 _From 3.8 to 6 KB (gzipped)_
@@ -38,7 +38,7 @@ _Use your own components while Notivue handles the rest_
 _Customize enter/leave animations_
 
 **♿️ Accessible and WAI ARIA compliant**  
-_Notifications accessible to everyone_
+_Accessible notifications to everyone_
 
 **🕉 Out-of-the box native RTL support**  
 _Pure CSS RTL support_
@@ -85,25 +85,6 @@ import { Notivue, notifications } from 'notivue'
 import { usePush } from 'notivue'
 
 const push = usePush()
-</script>
-
-<template>
-  <button @click="push.success('Something good has been pushed!')">Push</button>
-</template>
-```
-
-#### Options API
-
-```vue
-<script>
-import { usePush } from 'notivue'
-
-export default {
-  setup() {
-    const push = usePush()
-    return { push }
-  }
-}
 </script>
 
 <template>
