@@ -13,7 +13,7 @@ const props = defineProps<{
    message: string
    timeAgo?: string
    remainingSpace?: number
-   close: () => void
+   clear: () => void
 }>()
 
 const isPromise = computed(() => props.type === 'promise')
@@ -28,7 +28,7 @@ const isPromise = computed(() => props.type === 'promise')
          </div>
          <div class="Title">
             <h3>{{ message }}</h3>
-            <button class="Close" @click="props.close" v-if="!isPromise">
+            <button class="Close" @click="props.clear" v-if="!isPromise">
                <Close />
             </button>
          </div>

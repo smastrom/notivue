@@ -36,7 +36,7 @@ function customPush() {
          component: () => CustomSocial,
 
          props: ({ notivueProps }) => ({
-            close: notivueProps.close,
+            clear: notivueProps.clear,
             timeAgo: store.rtl ? 'منذ 5 دقائق' : '5 mins ago',
             name: 'Stephanie LaGarde',
             message: store.rtl ? 'تريد إرسال رسالة لك.' : 'wants to send you a message.',

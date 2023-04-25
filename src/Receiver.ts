@@ -203,7 +203,7 @@ export const Receiver = defineComponent({
                   delete prevProps.message
                   delete prevProps.type
                   delete prevProps.duration
-                  delete prevProps.close
+                  delete prevProps.clear
 
                   const newComponent = options.render?.component
                   const newProps = { ...getCtxProps(options), prevProps }
@@ -275,7 +275,7 @@ export const Receiver = defineComponent({
       }
 
       function getCtxProps({ message, type, duration, id }: MergedOptions) {
-         return { notivueProps: { message, type, duration, close: () => animateLeave(id) } }
+         return { notivueProps: { message, type, duration, clear: () => animateLeave(id) } }
       }
 
       // Functions - Transitions

@@ -5,7 +5,7 @@ const props = defineProps<{
    name: string
    message: string
    timeAgo: string
-   close: () => void
+   clear: () => void
 }>()
 </script>
 
@@ -23,10 +23,10 @@ const props = defineProps<{
             </p>
          </div>
          <nav class="Buttons">
-            <button @click="props.close" class="Button ButtonReverse">
+            <button @click="props.clear" class="Button ButtonReverse">
                {{ store.rtl ? 'ينكر' : 'Deny' }}
             </button>
-            <button @click="props.close" class="Button">
+            <button @click="props.clear" class="Button">
                {{ store.rtl ? 'يقبل' : 'Accept' }}
             </button>
          </nav>

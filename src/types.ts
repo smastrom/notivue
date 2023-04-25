@@ -4,7 +4,7 @@ export type PluginOptions = {
    register?: string[]
 }
 
-// Receiver Props
+// Props
 
 export type NotificationType =
    | 'success'
@@ -15,30 +15,15 @@ export type NotificationType =
    | 'promise-resolve'
    | 'promise-reject'
 
-export type IconSrc = (() => Component) | string
+export type Position =
+   | 'top-left'
+   | 'top-center'
+   | 'top-right'
+   | 'bottom-left'
+   | 'bottom-center'
+   | 'bottom-right'
 
-export type DefaultRenderFnParam = {
-   item: StoreItem
-   theme: Theme | undefined
-   icons: Record<string, IconSrc> | undefined
-}
-
-export type DefaultRenderFn = (param: DefaultRenderFnParam) => VNode
-
-export type ReceiverProps = {
-   method: 'unshift' | 'push'
-   pauseOnHover: boolean
-   position: Position
-   id: string
-   zIndex: number
-   gap: string
-   class: string | { [key: string]: boolean } | string[]
-   options: Partial<Record<NotificationType | 'global', Partial<ReceiverOptions>>>
-   animations: NotificationOptions
-   use: DefaultRenderFn
-   theme?: Record<`--${string}`, string>
-   icons?: Partial<Record<NotificationType | 'close', IconSrc>>
-}
+export type NotivueOptions = Partial<Record<NotificationType | 'global', Partial<ReceiverOptions>>>
 
 export type ReceiverOptions = {
    icon: boolean
@@ -51,18 +36,33 @@ export type ReceiverOptions = {
    closeAriaLabel: string
 }
 
+export type ReceiverProps = {
+   method: 'unshift' | 'push'
+   pauseOnHover: boolean
+   position: Position
+   id: string
+   zIndex: number
+   gap: string
+   class: string | { [key: string]: boolean } | string[]
+   options: NotivueOptions
+   animations: Partial<{ enter: string; leave: string; clearAll: string }>
+   use: DefaultRenderFn
+   theme?: Theme
+   icons?: Partial<Record<NotificationType | 'close', IconSrc>>
+}
+
 export type ScopedPushStyles = {
    style?: CSSProperties
    class?: string
 }
+
+// Receiver Internal
 
 export type DefaultOptions = {
    [K in NotificationType]: ReceiverOptions
 } & {
    [key: string]: never
 }
-
-// Receiver Internal
 
 type InternalData = {
    timeoutId: number | undefined
@@ -118,55 +118,7 @@ export type CreatePushParam = {
 
 export type Store = { push: Push } & StoreRefs & StoreFns
 
-// Push - Incoming
-
-export type IncomingOptions<T = unknown> = Partial<ReceiverOptions> &
-   InternalPushOptions &
-   ScopedPushStyles &
-   (MaybeRenderStatic<T> | MaybeRenderPromiseResult<T extends Record<string, unknown> ? T : never>)
-
-export type StaticPushOptions<T> = Partial<ReceiverOptions & ScopedPushStyles> &
-   MaybeRenderStatic<T>
-
-export type PromiseResultPushOptions<T> = Partial<ReceiverOptions & ScopedPushStyles> &
-   MaybeRenderPromiseResult<T>
-
-export type PushStaticParam<T> = StaticPushOptions<T> | ReceiverOptions['message']
-
-export type PushPromiseParam<T> = PromiseResultPushOptions<T> | ReceiverOptions['message']
-
-export type MaybeRenderStatic<T> = {
-   render?: {
-      component?: () => Component
-      props?: (props: { notivueProps: CtxProps }) => Partial<CtxProps & T>
-   }
-}
-
-export type MaybeRenderPromiseResult<T = {}> = {
-   render?: {
-      component?: () => Component
-      props?: (props: {
-         notivueProps: CtxProps
-         prevProps: Omit<T, keyof CtxProps>
-      }) => Record<string, unknown>
-   }
-}
-
-// Aliases, documentation
-export type NotivueTheme = Theme
-export type PushOptions<T = {}> = StaticPushOptions<T>
-export type PushPromiseResultOptions<T = {}> = PromiseResultPushOptions<T>
-export type NotificationOptions = Partial<
-   Record<NotificationType | 'global', Partial<ReceiverOptions>>
->
-
-// Push - Returned
-
-export type CtxProps = Pick<InternalPushOptions, 'type'> & {
-   duration: ReceiverOptions['duration']
-   message: ReceiverOptions['message']
-   close: () => void
-}
+// Push - Function
 
 export type PushStatic = <T extends Record<string, unknown>>(
    options: StaticPushOptions<T> | ReceiverOptions['message']
@@ -196,17 +148,63 @@ export type Push = PushStatic & {
    count: Ref<number>
 }
 
+// Push - Param
+
+export type PushStaticParam<T> = StaticPushOptions<T> | ReceiverOptions['message']
+
+export type PushPromiseParam<T> = PromiseResultPushOptions<T> | ReceiverOptions['message']
+
+// Push - Param - Options
+
+export type IncomingOptions<T = unknown> = Partial<ReceiverOptions> &
+   InternalPushOptions &
+   ScopedPushStyles &
+   (MaybeRenderStatic<T> | MaybeRenderPromiseResult<T extends Record<string, unknown> ? T : never>)
+
+export type StaticPushOptions<T> = Partial<ReceiverOptions & ScopedPushStyles> &
+   MaybeRenderStatic<T>
+
+export type PromiseResultPushOptions<T> = Partial<ReceiverOptions & ScopedPushStyles> &
+   MaybeRenderPromiseResult<T>
+
+// Push - Param - Options - Custom Render
+
+export type MaybeRenderStatic<T> = {
+   render?: {
+      component?: () => Component
+      props?: (props: { notivueProps: CtxProps }) => Partial<CtxProps & T>
+   }
+}
+
+export type MaybeRenderPromiseResult<T = {}> = {
+   render?: {
+      component?: () => Component
+      props?: (props: {
+         notivueProps: CtxProps
+         prevProps: Omit<T, keyof CtxProps>
+      }) => Record<string, unknown>
+   }
+}
+
+export type CtxProps = Pick<InternalPushOptions, 'type'> & {
+   duration: ReceiverOptions['duration']
+   message: ReceiverOptions['message']
+   clear: () => void
+}
+
+// Push - Return
+
 export type ClearFns = { clear: () => void; destroy: () => void }
 
-// CSS
+// Default Component
 
-export type Position =
-   | 'top-left'
-   | 'top-center'
-   | 'top-right'
-   | 'bottom-left'
-   | 'bottom-center'
-   | 'bottom-right'
+export type DefaultRenderFnParam = {
+   item: StoreItem
+   theme: Theme | undefined
+   icons: Record<string, IconSrc> | undefined
+}
+
+export type DefaultRenderFn = (param: DefaultRenderFnParam) => VNode
 
 // Theme
 
@@ -215,7 +213,6 @@ type ThemeLayoutVars =
    | '--nv-spacing'
    | '--nv-radius'
    | '--nv-border-width'
-   | '--nv-tip-width'
    | '--nv-icon-size'
    | '--nv-title-size'
    | '--nv-message-size'
@@ -270,3 +267,18 @@ type ThemeVars =
 export type Theme = Partial<Record<ThemeVars, string>>
 
 export type Themes = 'light' | 'pastel' | 'material' | 'dark' | 'slate'
+
+// Icons
+
+export type IconSrc = (() => Component) | string
+
+export type Icons = Partial<Record<NotificationType | 'close', IconSrc>>
+
+// Aliases, mentioned in the docs, not used internally
+
+export type NotivueIcons = Icons
+export type NotivueTheme = Theme
+export type PushOptions<T = {}> = StaticPushOptions<T>
+export type PushPromiseResultOptions<T = {}> = PromiseResultPushOptions<T>
+export type PushReturn = ClearFns
+export type NotivueNotificationOptions = Partial<ReceiverOptions>
