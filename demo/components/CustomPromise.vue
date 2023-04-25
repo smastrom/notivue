@@ -11,8 +11,8 @@ const props = defineProps<{
    type: NotificationType
    fileName: string
    message: string
-   timeAgo: string
-   remainingSpace: number
+   timeAgo?: string
+   remainingSpace?: number
    close: () => void
 }>()
 

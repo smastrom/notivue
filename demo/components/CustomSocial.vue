@@ -3,7 +3,6 @@ import { store } from '../store'
 
 const props = defineProps<{
    name: string
-   profileUrl: string
    message: string
    timeAgo: string
    close: () => void
