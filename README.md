@@ -103,7 +103,7 @@ const push = usePush()
 ## Thanks
 
 - [Ionic Team](https://ionic.io/) for the icons sets
-- [Uktash Verna](https://github.com/n3r4zzurr0) for the SVG Spinner
+- [Uktash Verna](https://github.com/n3r4zzurr0) for the SVG spinner
 
 <br />
 
