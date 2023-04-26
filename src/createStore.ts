@@ -51,9 +51,9 @@ export function createStore(): Store {
    } satisfies CreatePushParam)
 
    return {
-      // Not used internally, used by users
+      // usePush()
       push,
-      // Used internally by Receiver
+      // useStore(), internal
       items,
       incoming,
       isEnabled,

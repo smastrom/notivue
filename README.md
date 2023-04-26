@@ -109,4 +109,4 @@ const push = usePush()
 
 ## License
 
-MIT Licensed - Simone Mastromattei © 2023 - Present
+MIT Licensed - Simone Mastromattei © 2023
