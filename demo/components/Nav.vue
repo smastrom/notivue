@@ -218,7 +218,7 @@ function getRandomInt(min: number, max: number) {
          </div>
 
          <ButtonGroup name="Custom 👇" isPush>
-            <Button @click="customPush" text="Static">
+            <Button @click="customPush" text="Classic">
                <VueIcon />
             </Button>
             <Button @click="customAsync" text="Promise">
