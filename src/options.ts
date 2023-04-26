@@ -5,9 +5,9 @@ import type { ReceiverOptions } from './types'
 const success: ReceiverOptions = {
    title: 'Success',
    message: '',
+   duration: 4000,
    icon: true,
    close: true,
-   duration: 4000,
    ariaLive: 'polite',
    ariaRole: 'status',
    closeAriaLabel: 'Close',
@@ -30,7 +30,7 @@ const promise: ReceiverOptions = {
 
 const warning: ReceiverOptions = {
    ...error,
-   duration: 6000,
+   ariaLive: 'polite',
    title: 'Warning',
 }
 
@@ -39,7 +39,7 @@ const info: ReceiverOptions = {
    title: 'Info',
 }
 
-export const options: DefaultOptions = {
+export const defaultOptions: DefaultOptions = {
    [NType.SUCCESS]: success,
    [NType.ERROR]: error,
    [NType.WARNING]: warning,

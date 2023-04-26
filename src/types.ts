@@ -24,6 +24,7 @@ export type Position =
    | 'bottom-right'
 
 export type NotivueOptions = Partial<Record<NotificationType | 'global', Partial<ReceiverOptions>>>
+export type NotivueAnimations = Partial<{ enter: string; leave: string; clearAll: string }>
 
 export type ReceiverOptions = {
    icon: boolean
@@ -37,7 +38,6 @@ export type ReceiverOptions = {
 }
 
 export type ReceiverProps = {
-   method: 'unshift' | 'push'
    pauseOnHover: boolean
    position: Position
    id: string
@@ -45,7 +45,7 @@ export type ReceiverProps = {
    gap: string
    class: string | { [key: string]: boolean } | string[]
    options: NotivueOptions
-   animations: Partial<{ enter: string; leave: string; clearAll: string }>
+   animations: NotivueAnimations
    use: DefaultRenderFn
    theme?: Theme
    icons?: Partial<Record<NotificationType | 'close', IconSrc>>
@@ -56,7 +56,7 @@ export type ScopedPushStyles = {
    class?: string
 }
 
-// Receiver Internal
+// Item Internal
 
 export type DefaultOptions = {
    [K in NotificationType]: ReceiverOptions
@@ -64,7 +64,7 @@ export type DefaultOptions = {
    [key: string]: never
 }
 
-type InternalData = {
+type InternalItemOptions = {
    timeoutId: number | undefined
    createdAt: number
    clear: () => void
@@ -86,7 +86,7 @@ export type InternalPushOptions = { id: string; type: NotificationType }
 
 // Store
 
-export type StoreItem = InternalData & MergedOptions
+export type StoreItem = InternalItemOptions & MergedOptions
 
 export type StoreRefs = {
    items: Ref<StoreItem[]>
@@ -122,15 +122,13 @@ export type Store = { push: Push } & StoreRefs & StoreFns
 
 export type PushStatic = <T extends Record<string, unknown>>(
    options: StaticPushOptions<T> | ReceiverOptions['message']
-) => ClearFns
+) => ClearFunctions
 
 export type PushPromise = <T extends Record<string, unknown>>(
    options: StaticPushOptions<T> | ReceiverOptions['message']
-) => {
-   resolve: (options: PromiseResultPushOptions<T> | ReceiverOptions['message']) => ClearFns
-   reject: (options: PromiseResultPushOptions<T> | ReceiverOptions['message']) => ClearFns
-   clear: ClearFns['clear']
-   destroy: ClearFns['destroy']
+) => ClearFunctions & {
+   resolve: (options: PromiseResultPushOptions<T> | ReceiverOptions['message']) => ClearFunctions
+   reject: (options: PromiseResultPushOptions<T> | ReceiverOptions['message']) => ClearFunctions
 }
 
 export type Push = PushStatic & {
@@ -194,7 +192,7 @@ export type CtxProps = Pick<InternalPushOptions, 'type'> & {
 
 // Push - Return
 
-export type ClearFns = { clear: () => void; destroy: () => void }
+export type ClearFunctions = { clear: () => void; destroy: () => void }
 
 // Default Component
 
@@ -279,6 +277,5 @@ export type Icons = Partial<Record<NotificationType | 'close', IconSrc>>
 export type NotivueIcons = Icons
 export type NotivueTheme = Theme
 export type PushOptions<T = {}> = StaticPushOptions<T>
-export type PushPromiseResultOptions<T = {}> = PromiseResultPushOptions<T>
-export type PushReturn = ClearFns
-export type NotivueNotificationOptions = Partial<ReceiverOptions>
+export type PushReturn = ClearFunctions
+export type NotivueSingleOptions = Partial<ReceiverOptions>

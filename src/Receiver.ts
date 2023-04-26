@@ -15,7 +15,7 @@ import { staticStyles, useDynamicStyles } from './useStyles'
 import { useRefsMap } from './useRefsMap'
 import { useResizeObserver } from './useResizeObserver'
 import { useWindowSize } from './useWindowSize'
-import { options as defaultOptions } from './options'
+import { defaultOptions } from './options'
 import { ariaLive } from './ariaLive'
 import { mergeOptions, getDefaultAnims } from './utils'
 import {
@@ -88,6 +88,9 @@ export const Receiver = defineComponent({
       const position = toRef(props, 'position')
       const pauseOnHover = toRef(props, 'pauseOnHover')
       const animations = toRef(props, 'animations')
+      const rOptions = toRef(props, 'options')
+      const gap = toRef(props, 'gap')
+      const zIndex = toRef(props, 'zIndex')
 
       // Reactivity - Props - Computed
 
@@ -169,7 +172,7 @@ export const Receiver = defineComponent({
                isHovering = false
             }
          },
-         { flush: 'post' } // watchPostEffect not supported < 3.2.0
+         { flush: 'post' } // watchPostEffect unsupported < 3.2.0
       )
 
       // Watcher - Clear All
@@ -185,7 +188,7 @@ export const Receiver = defineComponent({
       function attachListener() {
          return watch(incoming, (pushOptions) => {
             const createdAt = performance.now()
-            const options = mergeOptions(defaultOptions, props.options, pushOptions)
+            const options = mergeOptions(defaultOptions, rOptions.value, pushOptions)
 
             let customRenderer: Partial<
                Pick<StoreItem, 'prevProps' | 'prevComponent' | 'customComponent'>
@@ -377,7 +380,7 @@ export const Receiver = defineComponent({
                   'div',
                   {
                      ref: wrapperRef,
-                     style: { zIndex: props.zIndex, ...staticStyles.wrapper },
+                     style: { zIndex: zIndex.value, ...staticStyles.wrapper },
                      class: props.class,
                   },
                   h(
@@ -404,7 +407,7 @@ export const Receiver = defineComponent({
                               'div',
                               {
                                  style: {
-                                    padding: `0 0 ${props.gap} 0`,
+                                    padding: `0 0 ${gap.value} 0`,
                                     ...staticStyles.box,
                                     ...dynamicStyles.value.box,
                                  },
