@@ -66,7 +66,7 @@ import 'notivue/animations.css'
 createApp(App).use(notivue).mount('#app')
 ```
 
-### 2. App.vue (or anywhere else)
+### 2. App.vue
 
 ```vue
 <script setup>
@@ -102,7 +102,7 @@ const push = usePush()
 
 ## Thanks
 
-- [Ionic Team](https://ionic.io/) for the icons sets
+- [Ionic Team](https://ionic.io/) for the icon sets
 - [Uktash Verna](https://github.com/n3r4zzurr0) for the SVG spinner
 
 <br />

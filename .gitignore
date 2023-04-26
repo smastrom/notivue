@@ -18,3 +18,4 @@ quasar
 *.tgz
 
 cypress/downloads
+cypress/screenshots

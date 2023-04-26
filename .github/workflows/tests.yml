@@ -1,0 +1,40 @@
+name: Tests
+
+on: [push]
+
+jobs:
+   cypress-run:
+      runs-on: ubuntu-latest
+      steps:
+         - uses: actions/checkout@v3
+         - uses: actions/setup-node@v3
+           with:
+              node-version: '18'
+         - uses: pnpm/action-setup@v2
+           name: Install pnpm
+           id: pnpm-install
+           with:
+              version: 8
+              run_install: false
+         - name: Install dependencies
+           run: pnpm install
+         - name: Install Playwright linux dependencies
+           run: npx playwright install-deps webkit
+         - name: Chrome tests
+           uses: cypress-io/github-action@v5
+           with:
+              install: false
+              component: true
+              browser: chrome
+         - name: Firefox tests
+           uses: cypress-io/github-action@v5
+           with:
+              install: false
+              component: true
+              browser: firefox
+         - name: Webkit tests
+           uses: cypress-io/github-action@v5
+           with:
+              install: false
+              component: true
+              browser: webkit
