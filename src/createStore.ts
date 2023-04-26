@@ -30,17 +30,6 @@ export function createStore(): Store {
       items.value = items.value.filter(({ id: _id }) => _id !== id)
    }
 
-   function animateItem(id: string, className: string, onEnd: () => void) {
-      updateItem(id, {
-         animationClass: className,
-         onAnimationstart: (event: AnimationEvent) => event.stopPropagation(),
-         onAnimationend: (event: AnimationEvent) => {
-            event.stopPropagation()
-            onEnd()
-         },
-      })
-   }
-
    function updateAll(updateItem: (prevItem: StoreItem) => StoreItem) {
       items.value = items.value.map((prevItem) => updateItem(prevItem))
    }
@@ -62,7 +51,9 @@ export function createStore(): Store {
    } satisfies CreatePushParam)
 
    return {
+      // Not used internally, used by users
       push,
+      // Used internally by Receiver
       items,
       incoming,
       isEnabled,
@@ -70,7 +61,6 @@ export function createStore(): Store {
       hasItems,
       createItem,
       getItem,
-      animateItem,
       updateItem,
       removeItem,
       updateAll,

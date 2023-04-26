@@ -102,7 +102,6 @@ export const Receiver = defineComponent({
          removeItem,
          destroyAll,
          updateAll,
-         animateItem,
       } = useStore(props.id)
 
       // Reactivity - Elements and styles
@@ -248,7 +247,7 @@ export const Receiver = defineComponent({
                         : createTimeout(options.id, options.duration),
                   /**
                    * These methods are an exception and the only ones created
-                   * here and not in the store as they rely too much on the
+                   * here that mutates the store as they rely too much on the
                    * component instance.
                    */
                   clear: () => animateLeave(options.id),
@@ -300,11 +299,21 @@ export const Receiver = defineComponent({
 
       // Functions - Animations
 
+      function animateItem(id: string, className: string, onEnd: () => void) {
+         updateItem(id, {
+            animationClass: className,
+            onAnimationstart: (event: AnimationEvent) => event.stopPropagation(),
+            onAnimationend: (event: AnimationEvent) => {
+               event.stopPropagation()
+               onEnd()
+            },
+         })
+      }
+
       function animateEnter(id: string) {
          animateItem(id, mergedAnims.value.enter, () =>
             updateItem(id, { animationClass: '', onAnimationend: undefined })
          )
-
          setPositions()
       }
 

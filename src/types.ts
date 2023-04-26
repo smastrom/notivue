@@ -102,7 +102,6 @@ export type StoreFns = {
    removeItem: (id: string) => void
    destroyAll: () => void
    updateAll: (onUpdate: (item: StoreItem) => StoreItem) => void
-   animateItem: (id: string, className: string, onEnd: () => void) => void
 }
 
 export type CreatePushParam = {
