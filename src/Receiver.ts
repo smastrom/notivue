@@ -55,7 +55,7 @@ export const Receiver = defineComponent({
       },
       options: {
          type: Object as PropType<Props['options']>,
-         default: () => defaultOptions,
+         default: () => ({}),
       },
       animations: {
          type: Object as PropType<Props['animations']>,
@@ -116,19 +116,6 @@ export const Receiver = defineComponent({
 
       let isHovering = false
 
-      // Watchers - Notifications
-
-      let detachListener: ReturnType<typeof attachListener>
-
-      watchEffect(() => {
-         if (!isEnabled.value && detachListener) {
-            detachListener()
-            destroyAll()
-         } else {
-            detachListener = attachListener()
-         }
-      })
-
       // Watchers - Resize and positioning
 
       watch(isTop, () => setPositions(TType.SILENT))
@@ -149,6 +136,14 @@ export const Receiver = defineComponent({
          { flush: 'post' }
       )
 
+      // Watchers - Clear All
+
+      watch(clearAllScheduler, () => {
+         if (hasItems.value) {
+            animateClearAll()
+         }
+      })
+
       // Watchers - Hover
 
       watch(
@@ -161,15 +156,18 @@ export const Receiver = defineComponent({
          { flush: 'post' }
       )
 
-      // Watcher - Clear All
+      // Watchers - Notifications
 
-      watch(clearAllScheduler, () => {
-         if (hasItems.value) {
-            animateClearAll()
+      let detachListener: ReturnType<typeof attachListener>
+
+      watchEffect(() => {
+         if (!isEnabled.value && detachListener) {
+            detachListener()
+            destroyAll()
+         } else {
+            detachListener = attachListener()
          }
       })
-
-      // Functions - Listener
 
       function attachListener() {
          return watch(incoming, (pushOptions) => {
@@ -270,7 +268,7 @@ export const Receiver = defineComponent({
          return { notivueProps: { message, type, duration, clear: () => animateLeave(id) } }
       }
 
-      // Functions - Transitions
+      // Transitions
 
       function setPositions(type: TType = TType.PUSH) {
          const factor = isTop.value ? 1 : -1
@@ -297,7 +295,7 @@ export const Receiver = defineComponent({
          }
       }
 
-      // Functions - Animations
+      // Animations
 
       function animateItem(id: string, className: string, onEnd: () => void) {
          updateItem(id, {
@@ -369,6 +367,8 @@ export const Receiver = defineComponent({
          },
       }
 
+      // Render
+
       return () =>
          h(Teleport, { to: 'body' }, [
             items.value.length > 0 &&
@@ -410,11 +410,7 @@ export const Receiver = defineComponent({
                               },
                               [
                                  item.customComponent?.() ??
-                                    props.use({
-                                       item,
-                                       theme: props.theme,
-                                       icons: props.icons,
-                                    }),
+                                    props.use(item, props.theme, props.icons),
                                  ariaLive(item),
                               ]
                            )

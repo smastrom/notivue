@@ -194,13 +194,11 @@ export type ClearFunctions = { clear: () => void; destroy: () => void }
 
 // Default Component
 
-export type DefaultRenderFnParam = {
-   item: StoreItem
-   theme: Theme | undefined
-   icons: Record<string, IconSrc> | undefined
-}
-
-export type DefaultRenderFn = (param: DefaultRenderFnParam) => VNode
+export type DefaultRenderFn = (
+   item: StoreItem,
+   theme?: Theme,
+   icons?: Record<string, IconSrc>
+) => VNode
 
 // Theme
 

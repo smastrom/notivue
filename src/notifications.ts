@@ -3,9 +3,9 @@ import { Classes as Cx } from './constants'
 import { hIcon, hMessage } from './utils'
 import { icons as filledIcons } from './icons'
 import { light } from './themes'
-import type { IconSrc, DefaultRenderFnParam } from './types'
+import type { IconSrc, StoreItem } from './types'
 
-export function notifications({ item, theme = light, icons = filledIcons }: DefaultRenderFnParam) {
+export function notifications(item: StoreItem, theme = light, icons = filledIcons) {
    return h(
       'div',
       {
@@ -17,7 +17,10 @@ export function notifications({ item, theme = light, icons = filledIcons }: Defa
       [
          item.icon &&
             icons?.[item.type] &&
-            hIcon(icons[item.type], { class: Cx.ICON, key: `icon_${item.type}_${item.id}` }),
+            hIcon(icons[item.type] as IconSrc, {
+               class: Cx.ICON,
+               key: `icon_${item.type}_${item.id}`,
+            }),
 
          h('div', { class: Cx.CONTENT }, [
             item.title && h('h3', { class: Cx.TITLE }, item.title),

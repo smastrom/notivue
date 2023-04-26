@@ -1,6 +1,6 @@
 import { h } from 'vue'
 import { NotificationType as NType } from './constants'
-import { ReceiverProps } from './types'
+import type { Icons } from './types'
 
 const svgProps = {
    xmlns: 'http://www.w3.org/2000/svg',
@@ -100,7 +100,7 @@ export const close = h('svg', featherProps, [
    h('line', { x1: 6, y1: 6, x2: 18, y2: 18 }),
 ])
 
-export const icons: ReceiverProps['icons'] = {
+export const icons: Icons = {
    [NType.SUCCESS]: () => success,
    [NType.ERROR]: () => error,
    [NType.INFO]: () => info,
@@ -111,7 +111,7 @@ export const icons: ReceiverProps['icons'] = {
    close: () => close,
 }
 
-export const outlineIcons: ReceiverProps['icons'] = {
+export const outlineIcons: Icons = {
    [NType.SUCCESS]: () => successOutline,
    [NType.ERROR]: () => errorOutline,
    [NType.INFO]: () => infoOutline,
