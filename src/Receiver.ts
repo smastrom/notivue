@@ -261,7 +261,7 @@ export const Receiver = defineComponent({
       }
 
       function createTimeout(id: string, time: number) {
-         return setTimeout(() => animateLeave(id), time)
+         return window.setTimeout(() => animateLeave(id), time)
       }
 
       function getCtxProps({ message, type, duration, id }: MergedOptions) {
