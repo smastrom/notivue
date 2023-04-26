@@ -2,7 +2,7 @@
    "name": "notivue",
    "version": "0.9.0",
    "private": false,
-   "description": "Fully-fledged notification system for Vue 3.",
+   "description": "Fully-featured notification system for Vue 3.",
    "homepage": "https://notivue.netlify.app/",
    "bugs": {
       "url": "https://github.com/smastrom/notivue/issues"

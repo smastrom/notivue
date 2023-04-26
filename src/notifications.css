@@ -48,7 +48,6 @@
 }
 
 .Notivue__notification {
-   --nv-factor: 1;
    width: var(--nv-width);
    max-width: 100%;
    padding: var(--nv-spacing);
@@ -70,15 +69,25 @@
    }
 }
 
-[dir='rtl'] .Notivue__notification {
-   --nv-factor: -1;
-}
-
 .Notivue__icon {
+   animation: Notivue__icon-pop-kf 200ms ease-in-out backwards;
    display: flex;
    color: var(--nv-accent, var(--nv-global-accent));
    margin: 0;
    margin-inline-end: var(--nv-spacing);
+   will-change: transform, opacity;
+}
+
+@keyframes Notivue__icon-pop-kf {
+   0% {
+      opacity: 0;
+      transform: scale(0.33);
+   }
+
+   100% {
+      opacity: 1;
+      transform: scale(1);
+   }
 }
 
 .Notivue__content-title {

@@ -1,14 +1,14 @@
 <div align="center">
 
-![notivue](https://i.ibb.co/4Mq5cnX/cover.png)
+![notivue](https://i.ibb.co/DKmV9Xj/cover.png)
 
 # Notivue
 
-Fully-fledged flexible notification system for Vue 3.
+### Fully-featured notification system for Vue 3.
 
 ---
 
-[Live Demo](https://notivue.netlify.app/) - [Documentation](https://notivuedocs.netlify.app/) - [StackBlitz]()
+[Live Demo](https://notivue.netlify.app) - [Documentation](https://notivuedocs.netlify.app) - [StackBlitz](https://stackblitz.com/edit/vitejs-vite-kdrtrw?file=src/components/Example.vue)
 
 </div>
 
@@ -17,10 +17,10 @@ Fully-fledged flexible notification system for Vue 3.
 ## Features
 
 **🧬 JS and CSS modular**  
-_Granularly bundle only what you use_
+_Granularly bundle only the features you need_
 
 **🧚‍♂️ Zero deps and lightweight**  
-_From 3.8 to 6 KB (gzipped)_
+_From ~3.5 KB (gzipped)_
 
 **🔰 Ships with anything you need**  
 _Themes, icons, animations and much more_
@@ -96,7 +96,14 @@ const push = usePush()
 
 ## Links
 
-[Live Demo](https://notivue.netlify.app/) - [Documentation]() - [StackBlitz]()
+[Live Demo](https://notivue.netlify.app) - [Documentation](https://notivuedocs.netlify.app) - [StackBlitz](https://stackblitz.com/edit/vitejs-vite-kdrtrw?file=src/components/Example.vue)
+
+<br />
+
+## Thanks
+
+- [Ionic Team](https://ionic.io/) for the icons sets
+- [Uktash Verna](https://github.com/n3r4zzurr0) for the SVG Spinner
 
 <br />
 
