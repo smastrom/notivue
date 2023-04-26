@@ -53,14 +53,6 @@ export const Receiver = defineComponent({
          type: String as PropType<Props['position']>,
          default: 'top-center',
       },
-      zIndex: {
-         type: Number as PropType<Props['zIndex']>,
-         default: 500,
-      },
-      gap: {
-         type: String as PropType<Props['gap']>,
-         default: '0.75rem',
-      },
       options: {
          type: Object as PropType<Props['options']>,
          default: () => defaultOptions,
@@ -88,11 +80,6 @@ export const Receiver = defineComponent({
       const position = toRef(props, 'position')
       const pauseOnHover = toRef(props, 'pauseOnHover')
       const animations = toRef(props, 'animations')
-      const rOptions = toRef(props, 'options')
-      const gap = toRef(props, 'gap')
-      const zIndex = toRef(props, 'zIndex')
-
-      // Reactivity - Props - Computed
 
       const isTop = computed(() => position.value.startsWith('top'))
 
@@ -171,8 +158,8 @@ export const Receiver = defineComponent({
             if (isEmpty) {
                isHovering = false
             }
-         },
-         { flush: 'post' } // watchPostEffect unsupported < 3.2.0
+         }, // watchPostEffect unsupported < 3.2.0
+         { flush: 'post' }
       )
 
       // Watcher - Clear All
@@ -188,7 +175,7 @@ export const Receiver = defineComponent({
       function attachListener() {
          return watch(incoming, (pushOptions) => {
             const createdAt = performance.now()
-            const options = mergeOptions(defaultOptions, rOptions.value, pushOptions)
+            const options = mergeOptions(defaultOptions, props.options, pushOptions)
 
             let customRenderer: Partial<
                Pick<StoreItem, 'prevProps' | 'prevComponent' | 'customComponent'>
@@ -380,7 +367,7 @@ export const Receiver = defineComponent({
                   'div',
                   {
                      ref: wrapperRef,
-                     style: { zIndex: zIndex.value, ...staticStyles.wrapper },
+                     style: staticStyles.wrapper,
                      class: props.class,
                   },
                   h(
@@ -407,7 +394,6 @@ export const Receiver = defineComponent({
                               'div',
                               {
                                  style: {
-                                    padding: `0 0 ${gap.value} 0`,
                                     ...staticStyles.box,
                                     ...dynamicStyles.value.box,
                                  },

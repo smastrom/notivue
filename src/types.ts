@@ -24,6 +24,7 @@ export type Position =
    | 'bottom-right'
 
 export type NotivueOptions = Partial<Record<NotificationType | 'global', Partial<ReceiverOptions>>>
+
 export type NotivueAnimations = Partial<{ enter: string; leave: string; clearAll: string }>
 
 export type ReceiverOptions = {
@@ -41,14 +42,12 @@ export type ReceiverProps = {
    pauseOnHover: boolean
    position: Position
    id: string
-   zIndex: number
-   gap: string
    class: string | { [key: string]: boolean } | string[]
    options: NotivueOptions
    animations: NotivueAnimations
    use: DefaultRenderFn
    theme?: Theme
-   icons?: Partial<Record<NotificationType | 'close', IconSrc>>
+   icons?: Icons
 }
 
 export type ScopedPushStyles = {
@@ -80,7 +79,7 @@ type InternalItemOptions = {
    prevComponent?: () => Component
 }
 
-export type MergedOptions = Required<ReceiverOptions> & IncomingOptions
+export type MergedOptions = Required<ReceiverOptions> & IncomingPushOptions
 
 export type InternalPushOptions = { id: string; type: NotificationType }
 
@@ -90,7 +89,7 @@ export type StoreItem = InternalItemOptions & MergedOptions
 
 export type StoreRefs = {
    items: Ref<StoreItem[]>
-   incoming: ShallowRef<IncomingOptions>
+   incoming: ShallowRef<IncomingPushOptions>
    clearAllScheduler: Ref<number>
    isEnabled: Ref<boolean>
    hasItems: ComputedRef<boolean>
@@ -107,7 +106,7 @@ export type StoreFns = {
 }
 
 export type CreatePushParam = {
-   setIncoming: (options: IncomingOptions) => void
+   setIncoming: (options: IncomingPushOptions) => void
    callItemMethod: (id: string, method: 'clear' | 'destroy') => void
    scheduleClearAll: () => void
    enable: () => void
@@ -154,7 +153,7 @@ export type PushPromiseParam<T> = PromiseResultPushOptions<T> | ReceiverOptions[
 
 // Push - Param - Options
 
-export type IncomingOptions<T = unknown> = Partial<ReceiverOptions> &
+export type IncomingPushOptions<T = unknown> = Partial<ReceiverOptions> &
    InternalPushOptions &
    ScopedPushStyles &
    (MaybeRenderStatic<T> | MaybeRenderPromiseResult<T extends Record<string, unknown> ? T : never>)
@@ -278,4 +277,3 @@ export type NotivueIcons = Icons
 export type NotivueTheme = Theme
 export type PushOptions<T = {}> = StaticPushOptions<T>
 export type PushReturn = ClearFunctions
-export type NotivueSingleOptions = Partial<ReceiverOptions>

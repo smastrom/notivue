@@ -28,7 +28,6 @@ function customPush() {
    }
 
    push.info({
-      title: false,
       message: store.rtl
          ? 'Stephanie LaGarde تريد إرسال رسالة لك.'
          : 'Stephanie LaGarde wants to send you a message.',
@@ -52,7 +51,6 @@ async function customAsync() {
 
    const promise = push.promise({
       message: store.rtl ? 'جاري تحميل الملف…' : 'Uploading file…',
-      title: false,
       render: {
          component: () => CustomPromise,
          props: ({ notivueProps }) => ({
@@ -66,7 +64,6 @@ async function customAsync() {
 
    promise.resolve({
       message: store.rtl ? 'تم تحميل الملف بنجاح!' : 'File successfully uploaded!',
-      title: false,
       render: {
          props: ({ notivueProps, prevProps }) => ({
             ...notivueProps,

@@ -1,7 +1,7 @@
 import { h, type VNode, type Component } from 'vue'
 import type {
    ReceiverProps,
-   IncomingOptions,
+   IncomingPushOptions,
    MergedOptions,
    NotificationType as NTypeU,
    DefaultOptions,
@@ -72,7 +72,7 @@ export function hMessage(message: string) {
 export function mergeOptions(
    defaultOptions: DefaultOptions,
    receiverProps: ReceiverProps['options'],
-   pushOptions: IncomingOptions
+   pushOptions: IncomingPushOptions
 ): MergedOptions {
    const mergedGlobals = { ...receiverProps.global, ...receiverProps[pushOptions.type] }
 

@@ -17,6 +17,7 @@ export const staticStyles: Record<string, CSSProperties> = {
    wrapper: {
       ...boxSizing,
       ...flexCenter,
+      zIndex: 'var(--nv-z, 500)' as any,
       position: 'fixed',
       height: '100%',
       pointerEvents: 'none',
@@ -40,6 +41,7 @@ export const staticStyles: Record<string, CSSProperties> = {
    },
    box: {
       ...boxSizing,
+      padding: `0 0 var(--nv-gap, 0.75rem) 0`,
       pointerEvents: 'auto',
       maxWidth: '100%',
    },

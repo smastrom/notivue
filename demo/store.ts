@@ -1,4 +1,4 @@
-import { getCurrentInstance, reactive } from 'vue'
+import { reactive } from 'vue'
 import type { Position, Themes } from '../src/types'
 
 export const store = reactive({

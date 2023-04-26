@@ -17,13 +17,9 @@ import Logo from './components/Background.vue'
 import CustomIcon from './icons/CustomIcon.vue'
 import { NotivueIcons } from '../src/types'
 
-const globalOptions = {
-   icon: true,
-}
-
 const options = {
    global: {
-      ...globalOptions,
+      icon: true,
    },
 } as const
 
@@ -35,9 +31,8 @@ const icons: NotivueIcons = {
 const _options = {
    global: {
       title: false,
-      ...globalOptions,
    },
-}
+} as const
 
 const emojis = computed<NotivueIcons>(() => ({
    success: '✅',
