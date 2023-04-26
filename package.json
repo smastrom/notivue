@@ -46,14 +46,14 @@
       "postbuild": "postcss ./src/animations.css ./src/notifications.css -d ./dist/ --use cssnano postcss-nesting --no-map",
       "build:demo": "rimraf dist && vite build --mode demo",
       "dev": "vite",
+      "prepare": "husky install",
       "pretty-quick": "pretty-quick",
       "preview": "vite preview",
       "test:chrome": "cypress run --component --browser chrome",
       "test:firefox": "cypress run --component --browser firefox",
       "test:webkit": "cypress run --component --browser webkit",
-      "test": "test:chrome && test:firefox && test:webkit",
-      "test:gui": "cypress open --component",
-      "prepare": "husky install"
+      "test": "pnpm test:chrome && pnpm test:firefox && pnpm test:webkit",
+      "test:gui": "cypress open --component"
    },
    "devDependencies": {
       "@rollup/plugin-terser": "^0.4.1",
@@ -75,9 +75,8 @@
       "vite": "^4.3.3",
       "vite-plugin-dts": "^2.3.0",
       "vue": "^3.2.47",
-      "vue-tsc": "^1.4.4"
-   },
-   "dependencies": {
+      "vue-tsc": "^1.4.4",
       "cypress-real-events": "^1.7.6"
-   }
+   },
+   "dependencies": {}
 }
