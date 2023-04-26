@@ -249,6 +249,18 @@ type PromiseColorsVars =
    | '--nv-promise-border'
    | '--nv-promise-accent'
 
+type PromiseResolveColorsVars =
+   | '--nv-promise-resolve-foreground'
+   | '--nv-promise-resolve-background'
+   | '--nv-promise-resolve-border'
+   | '--nv-promise-resolve-accent'
+
+type PromiseRejectColorsVars =
+   | '--nv-promise-reject-foreground'
+   | '--nv-promise-reject-background'
+   | '--nv-promise-reject-border'
+   | '--nv-promise-reject-accent'
+
 type ThemeVars =
    | ThemeLayoutVars
    | ThemeGlobalColorsVars
@@ -257,6 +269,8 @@ type ThemeVars =
    | WarningColorsVars
    | InfoColorsVars
    | PromiseColorsVars
+   | PromiseResolveColorsVars
+   | PromiseRejectColorsVars
 
 export type Theme = Partial<Record<ThemeVars, string>>
 

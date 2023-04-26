@@ -17,15 +17,15 @@ export const light: Theme = {
    ...shadow,
    '--nv-border-width': '0px',
    // Global
-   '--nv-global-background': '#fff',
-   '--nv-global-border': '#dedede',
+   '--nv-global-background': '#FFF',
+   '--nv-global-border': '#DEDEDE',
    '--nv-global-foreground': '#334155',
    // Scoped
-   '--nv-success-accent': '#28b780',
-   '--nv-error-accent': '#e74c3c',
-   '--nv-warning-accent': '#f59e0b',
-   '--nv-info-accent': '#3e8eff',
-   '--nv-promise-accent': '#64748b',
+   '--nv-success-accent': '#28B780',
+   '--nv-error-accent': '#E74C3C',
+   '--nv-warning-accent': '#F59E0B',
+   '--nv-info-accent': '#3E8EFF',
+   '--nv-promise-accent': '#64748B',
 }
 
 export const pastel: Theme = {
@@ -33,15 +33,15 @@ export const pastel: Theme = {
    ...layout,
    '--nv-shadow': '0 0.25rem 0.5rem rgba(0, 0, 40, 0.1)',
    // Success
-   '--nv-success-background': '#e9faef',
+   '--nv-success-background': '#E9FAEF',
    '--nv-success-accent': '#059669',
-   '--nv-success-foreground': '#065f46',
+   '--nv-success-foreground': '#065F46',
    // Error
    '--nv-error-background': '#FEEFEF',
    '--nv-error-accent': '#E6523C',
    '--nv-error-foreground': '#E6523C',
    // Warning
-   '--nv-warning-background': '#fff0d8',
+   '--nv-warning-background': '#FFF0D8',
    '--nv-warning-accent': '#F48533',
    '--nv-warning-foreground': '#81471D',
    // Info
@@ -49,7 +49,7 @@ export const pastel: Theme = {
    '--nv-info-accent': '#1F70AC',
    '--nv-info-foreground': '#1F70AC',
    // Promise
-   '--nv-promise-background': '#f1f5f9',
+   '--nv-promise-background': '#F1F5F9',
    '--nv-promise-accent': '#334155',
    '--nv-promise-foreground': '#334155',
 }
@@ -58,19 +58,19 @@ export const material: Theme = {
    ...layout,
    ...shadow,
    // Global
-   '--nv-global-accent': '#fff',
-   '--nv-global-border': '#dedede',
-   '--nv-global-foreground': '#fff',
+   '--nv-global-accent': '#FFF',
+   '--nv-global-border': '#DEDEDE',
+   '--nv-global-foreground': '#FFF',
    // Scoped
    '--nv-success-background': '#209E74',
    '--nv-error-background': '#E6523C',
    '--nv-info-background': '#0B9DE6',
-   '--nv-warning-background': '#ffe556',
-   '--nv-warning-accent': '#4f5358',
-   '--nv-warning-foreground': '#4f5358',
-   '--nv-warning-border': '#4f5358',
-   '--nv-promise-accent': '#64748b',
-   '--nv-promise-background': '#f1f5f9',
+   '--nv-warning-background': '#FFE556',
+   '--nv-warning-accent': '#4F5358',
+   '--nv-warning-foreground': '#4F5358',
+   '--nv-warning-border': '#4F5358',
+   '--nv-promise-accent': '#64748B',
+   '--nv-promise-background': '#f1F5F9',
    '--nv-promise-foreground': '#334155',
 }
 

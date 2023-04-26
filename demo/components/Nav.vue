@@ -241,6 +241,7 @@ nav {
    padding: 10px 10px 20px 0;
    background-color: var(--nav-bg-color);
    backdrop-filter: blur(6px);
+   -webkit-backdrop-filter: blur(6px);
    border-top: 1px solid var(--nav-border-color);
    display: flex;
    justify-content: center;
@@ -250,6 +251,10 @@ nav {
    left: 0;
    position: fixed;
    overflow: hidden;
+
+   & * {
+      touch-action: manipulation;
+   }
 }
 
 .Container {

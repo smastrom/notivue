@@ -61,6 +61,7 @@
    box-shadow: var(--nv-shadow);
 
    & * {
+      touch-action: manipulation;
       box-sizing: border-box;
    }
 
@@ -76,6 +77,10 @@
    margin: 0;
    margin-inline-end: var(--nv-spacing);
    will-change: transform, opacity;
+
+   @media (prefers-reduced-motion) {
+      animation-duration: 0s;
+   }
 }
 
 @keyframes Notivue__icon-pop-kf {
@@ -126,6 +131,7 @@
    background: none;
    opacity: 0.5;
    max-width: max-content;
+   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
    &::before {
       content: '';
@@ -140,6 +146,7 @@
 
    &:focus-visible {
       outline: none;
+      box-shadow: none;
       opacity: 1;
 
       &::before {

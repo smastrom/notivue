@@ -10,7 +10,7 @@ import type {
    CreatePushParam,
 } from './types'
 
-export function createPushFn({
+export function createPush({
    setIncoming,
    callItemMethod,
    scheduleClearAll,

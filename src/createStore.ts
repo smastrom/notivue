@@ -1,5 +1,5 @@
 import { computed, ref, shallowRef } from 'vue'
-import { createPushFn } from './createPush'
+import { createPush } from './createPush'
 import type { IncomingPushOptions, StoreItem, Store, Push, CreatePushParam } from './types'
 
 export function createStore(): Store {
@@ -38,7 +38,7 @@ export function createStore(): Store {
       items.value = []
    }
 
-   const push: Push = createPushFn({
+   const push: Push = createPush({
       setIncoming: (options) => (incoming.value = options),
       enable: () => (isEnabled.value = true),
       disable: () => (isEnabled.value = false),
