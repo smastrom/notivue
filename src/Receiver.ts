@@ -373,9 +373,7 @@ export const Receiver = defineComponent({
                   h(
                      'div',
                      {
-                        style: {
-                           ...staticStyles.container,
-                        },
+                        style: staticStyles.container,
                         ...(pauseOnHover.value ? pointerEvents : {}),
                      },
                      items.value.map((item) =>

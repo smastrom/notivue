@@ -10,8 +10,6 @@ export function createStore(): Store {
    const count = computed(() => items.value.length)
    const hasItems = computed(() => count.value > 0)
 
-   // Exported, used by Receiver
-
    function createItem(item: StoreItem) {
       items.value.unshift(item)
    }
@@ -51,35 +49,13 @@ export function createStore(): Store {
       items.value = []
    }
 
-   // push-specific, not exported
-
-   function enable() {
-      isEnabled.value = true
-   }
-
-   function disable() {
-      isEnabled.value = false
-   }
-
-   function setIncoming(options: IncomingPushOptions) {
-      incoming.value = options
-   }
-
-   function callItemMethod(id: string, method: 'clear' | 'destroy') {
-      getItem(id)?.[method]()
-   }
-
-   function scheduleClearAll() {
-      clearAllScheduler.value++
-   }
-
    const push: Push = createPushFn({
-      setIncoming,
-      callItemMethod,
-      scheduleClearAll,
+      setIncoming: (options) => (incoming.value = options),
+      enable: () => (isEnabled.value = true),
+      disable: () => (isEnabled.value = false),
+      callItemMethod: (id: string, method: 'clear' | 'destroy') => getItem(id)?.[method](),
+      scheduleClearAll: () => clearAllScheduler.value++,
       destroyAll,
-      enable,
-      disable,
       isEnabled,
       count,
       hasItems,
