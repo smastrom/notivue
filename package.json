@@ -47,6 +47,7 @@
       "@rollup/plugin-terser": "^0.4.1",
       "@vitejs/plugin-vue": "^4.1.0",
       "cssnano": "^5.1.15",
+      "cypress": "^12.10.0",
       "postcss": "^8.4.23",
       "postcss-cli": "^10.1.0",
       "postcss-nesting": "^11.2.2",

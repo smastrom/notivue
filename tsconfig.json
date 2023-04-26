@@ -1,18 +1,16 @@
 {
    "compilerOptions": {
       "target": "ESNext",
-      "useDefineForClassFields": true,
       "module": "ESNext",
       "moduleResolution": "Node",
       "strict": true,
-      "jsx": "preserve",
       "resolveJsonModule": true,
       "isolatedModules": true,
       "esModuleInterop": true,
       "lib": ["ESNext", "DOM"],
       "skipLibCheck": true,
-      "noEmit": true
+      "noEmit": true,
+      "types": ["cypress"]
    },
-   "include": ["src", "demo", "vite-env.d.ts", "vite-env.d.ts"],
-   "references": [{ "path": "./tsconfig.node.json" }]
+   "include": ["src", "demo", "tests", "vite-env.d.ts", "vite-env.d.ts"]
 }
