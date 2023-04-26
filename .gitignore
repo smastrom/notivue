@@ -16,3 +16,5 @@ dist
 nuxt
 quasar
 *.tgz
+
+cypress/downloads

@@ -48,7 +48,10 @@
       "dev": "vite",
       "pretty-quick": "pretty-quick",
       "preview": "vite preview",
-      "test": "cypress run --component",
+      "test:chrome": "cypress run --component --browser chrome",
+      "test:firefox": "cypress run --component --browser firefox",
+      "test:webkit": "cypress run --component --browser webkit",
+      "test": "test:chrome && test:firefox && test:webkit",
       "test:gui": "cypress open --component",
       "prepare": "husky install"
    },
@@ -56,9 +59,12 @@
       "@rollup/plugin-terser": "^0.4.1",
       "@types/node": "^18.16.1",
       "@vitejs/plugin-vue": "^4.2.1",
+      "axe-core": "^4.7.0",
       "cssnano": "^5.1.15",
       "cypress": "^12.10.0",
+      "cypress-axe": "^1.4.0",
       "husky": "^8.0.0",
+      "playwright-webkit": "^1.32.3",
       "postcss": "^8.4.23",
       "postcss-cli": "^10.1.0",
       "postcss-nesting": "^11.2.2",
@@ -70,5 +76,8 @@
       "vite-plugin-dts": "^2.3.0",
       "vue": "^3.2.47",
       "vue-tsc": "^1.4.4"
+   },
+   "dependencies": {
+      "cypress-real-events": "^1.7.6"
    }
 }

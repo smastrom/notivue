@@ -10,7 +10,15 @@
       "lib": ["ESNext", "DOM"],
       "skipLibCheck": true,
       "noEmit": true,
-      "types": ["cypress", "node"]
+      "types": ["node", "cypress", "cypress-axe", "cypress-real-events"]
    },
-   "include": ["src", "demo", "tests", "vite-env.d.ts"]
+   "include": [
+      "src",
+      "demo",
+      "tests",
+      "vite-env.d.ts",
+      "cypress.config.ts",
+      "./cypress/**/*.ts",
+      "cypress.d.ts"
+   ]
 }
