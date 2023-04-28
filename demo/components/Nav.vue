@@ -15,7 +15,7 @@ import Dismiss from '../icons/Dismiss.vue'
 import Destroy from '../icons/Destroy.vue'
 import Controls from './ComponentControls.vue'
 import ThemesControls from './ThemesControls.vue'
-import CustomSocial from './CustomSocial.vue'
+import CustomClassic from './CustomClassic.vue'
 import CustomPromise from './CustomPromise.vue'
 
 const navRef = ref<HTMLElement | null>(null)
@@ -32,8 +32,7 @@ function customPush() {
          ? 'Stephanie LaGarde تريد إرسال رسالة لك.'
          : 'Stephanie LaGarde wants to send you a message.',
       render: {
-         component: () => CustomSocial,
-
+         component: () => CustomClassic,
          props: ({ notivueProps }) => ({
             clear: notivueProps.clear,
             timeAgo: store.rtl ? 'منذ 5 دقائق' : '5 mins ago',
@@ -238,7 +237,7 @@ function getRandomInt(min: number, max: number) {
 
 <style scoped>
 nav {
-   padding: 10px 10px 20px 0;
+   padding: 1rem 1.25rem 1.25rem 1.25rem;
    background-color: var(--nav-bg-color);
    backdrop-filter: blur(6px);
    -webkit-backdrop-filter: blur(6px);
@@ -258,8 +257,8 @@ nav {
 }
 
 .Container {
+   position: relative;
    overflow: auto;
-   padding: 10px;
    width: max-content;
    display: grid;
    grid-auto-flow: column;

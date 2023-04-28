@@ -131,7 +131,7 @@ body {
 }
 
 .BounceAnim {
-   animation: BounceKF 1s infinite;
+   animation: BounceKF 1s 6;
 }
 
 @keyframes BounceKF {

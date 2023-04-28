@@ -2,6 +2,7 @@
 import {
    store,
    setPauseOnHover,
+   setPauseOnTouch,
    setCustomIcons as _setCustomIcons,
    setRenderTiles as _setRenderTiles,
    setOutlineIcons as _setOutlineIcons,
@@ -48,11 +49,24 @@ function setCustomIcons() {
    _setCustomIcons()
    pushSuccess()
 }
+
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
 </script>
 
 <template>
    <div class="Controls">
       <div
+         v-if="isMobile"
+         class="ButtonBase SwitchButton"
+         role="switch"
+         :aria-checked="store.pauseOnTouch"
+         aria-label="Pause on Touch"
+         @click="setPauseOnTouch"
+      >
+         Pause on Touch
+      </div>
+      <div
+         v-else
          class="ButtonBase SwitchButton"
          role="switch"
          :aria-checked="store.pauseOnHover"

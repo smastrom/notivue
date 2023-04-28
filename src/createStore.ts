@@ -1,6 +1,6 @@
 import { computed, ref, shallowRef } from 'vue'
 import { createPush } from './createPush'
-import type { IncomingPushOptions, StoreItem, Store, Push, CreatePushParam } from './types'
+import type { IncomingPushOptions, StoreItem, Store } from './types'
 
 export function createStore(): Store {
    const items = ref<StoreItem[]>([])
@@ -14,8 +14,8 @@ export function createStore(): Store {
       items.value.unshift(item)
    }
 
-   function getItem(id: string) {
-      return items.value.find(({ id: _id }) => _id === id)
+   function getItem(_id: string) {
+      return items.value.find(({ id }) => id === _id)
    }
 
    function updateItem(id: string, options: Partial<StoreItem>) {
@@ -26,8 +26,8 @@ export function createStore(): Store {
       }
    }
 
-   function removeItem(id: string) {
-      items.value = items.value.filter(({ id: _id }) => _id !== id)
+   function removeItem(_id: string) {
+      items.value = items.value.filter(({ id }) => id !== _id)
    }
 
    function updateAll(updateItem: (prevItem: StoreItem) => StoreItem) {
@@ -38,7 +38,7 @@ export function createStore(): Store {
       items.value = []
    }
 
-   const push: Push = createPush({
+   const push = createPush({
       setIncoming: (options) => (incoming.value = options),
       enable: () => (isEnabled.value = true),
       disable: () => (isEnabled.value = false),
@@ -48,7 +48,7 @@ export function createStore(): Store {
       isEnabled,
       count,
       hasItems,
-   } satisfies CreatePushParam)
+   })
 
    return {
       // usePush()

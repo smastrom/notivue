@@ -40,6 +40,7 @@ export type ReceiverOptions = {
 
 export type ReceiverProps = {
    pauseOnHover: boolean
+   pauseOnTouch: boolean
    position: Position
    id: string
    class: string | { [key: string]: boolean } | string[]
@@ -63,7 +64,7 @@ export type DefaultOptions = {
    [key: string]: never
 }
 
-type InternalItemOptions = {
+type InternalOptions = {
    timeoutId: number | undefined
    createdAt: number
    clear: () => void
@@ -85,7 +86,7 @@ export type InternalPushOptions = { id: string; type: NotificationType }
 
 // Store
 
-export type StoreItem = InternalItemOptions & MergedOptions
+export type StoreItem = InternalOptions & MergedOptions
 
 export type StoreRefs = {
    items: Ref<StoreItem[]>
@@ -122,11 +123,15 @@ export type PushStatic = <T extends Record<string, unknown>>(
    options: StaticPushOptions<T> | ReceiverOptions['message']
 ) => ClearFunctions
 
+type ResolveReject<T> = (
+   options: PromiseResultPushOptions<T> | ReceiverOptions['message']
+) => ClearFunctions
+
 export type PushPromise = <T extends Record<string, unknown>>(
    options: StaticPushOptions<T> | ReceiverOptions['message']
 ) => ClearFunctions & {
-   resolve: (options: PromiseResultPushOptions<T> | ReceiverOptions['message']) => ClearFunctions
-   reject: (options: PromiseResultPushOptions<T> | ReceiverOptions['message']) => ClearFunctions
+   resolve: ResolveReject<T>
+   reject: ResolveReject<T>
 }
 
 export type Push = PushStatic & {
@@ -165,22 +170,23 @@ export type PromiseResultPushOptions<T> = Partial<ReceiverOptions & ScopedPushSt
 
 // Push - Param - Options - Custom Render
 
-export type MaybeRenderStatic<T> = {
+export type MaybeRender<T> = {
    render?: {
       component?: () => Component
-      props?: (props: { notivueProps: CtxProps }) => Partial<CtxProps & T>
+      props: T
    }
 }
 
-export type MaybeRenderPromiseResult<T = {}> = {
-   render?: {
-      component?: () => Component
-      props?: (props: {
-         notivueProps: CtxProps
-         prevProps: Omit<T, keyof CtxProps>
-      }) => Record<string, unknown>
-   }
-}
+export type MaybeRenderStatic<T> = MaybeRender<
+   (props: { notivueProps: CtxProps }) => Partial<CtxProps & T>
+>
+
+export type MaybeRenderPromiseResult<T = {}> = MaybeRender<
+   (props: {
+      notivueProps: CtxProps
+      prevProps: Omit<T, keyof CtxProps>
+   }) => Record<string, unknown>
+>
 
 export type CtxProps = Pick<InternalPushOptions, 'type'> & {
    duration: ReceiverOptions['duration']
@@ -194,11 +200,7 @@ export type ClearFunctions = { clear: () => void; destroy: () => void }
 
 // Default Component
 
-export type DefaultRenderFn = (
-   item: StoreItem,
-   theme?: Theme,
-   icons?: Record<string, IconSrc>
-) => VNode
+export type DefaultRenderFn = (item: StoreItem, theme?: Theme, icons?: Icons) => VNode
 
 // Theme
 
@@ -286,5 +288,7 @@ export type Icons = Partial<Record<NotificationType | 'close', IconSrc>>
 
 export type NotivueIcons = Icons
 export type NotivueTheme = Theme
+export type NotivueProps = ReceiverProps
+
 export type PushOptions<T = {}> = StaticPushOptions<T>
 export type PushReturn = ClearFunctions

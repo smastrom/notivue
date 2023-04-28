@@ -1,8 +1,6 @@
 <div align="center">
 
-![notivue](https://i.ibb.co/DKmV9Xj/cover.png)
-
-# Notivue
+<img src="https://i.ibb.co/DKmV9Xj/cover.png" style="border-radius: 10px;" />
 
 ### Fully-featured notification system for Vue 3.
 

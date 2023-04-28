@@ -15,9 +15,10 @@ import { staticStyles, useDynamicStyles } from './useStyles'
 import { useRefsMap } from './useRefsMap'
 import { useResizeObserver } from './useResizeObserver'
 import { useWindowSize } from './useWindowSize'
+import { useVisibilityChange } from './useVisibilityChange'
 import { defaultOptions } from './options'
 import { ariaLive } from './ariaLive'
-import { mergeOptions, getDefaultAnims } from './utils'
+import { mergeOptions, getDefaultAnims, isMouse } from './utils'
 import {
    FIXED_INCREMENT,
    COMPONENT_NAME,
@@ -49,6 +50,10 @@ export const Receiver = defineComponent({
          type: Boolean as PropType<Props['pauseOnHover']>,
          default: true,
       },
+      pauseOnTouch: {
+         type: Boolean as PropType<Props['pauseOnTouch']>,
+         default: true,
+      },
       position: {
          type: String as PropType<Props['position']>,
          default: 'top-center',
@@ -75,10 +80,16 @@ export const Receiver = defineComponent({
       },
    },
    setup(props) {
+      // Non-reactive
+
+      let isHovering = false
+      let hasTouched = false
+
       // Reactivity - Props
 
       const position = toRef(props, 'position')
       const pauseOnHover = toRef(props, 'pauseOnHover')
+      const pauseOnTouch = toRef(props, 'pauseOnTouch')
       const animations = toRef(props, 'animations')
 
       const isTop = computed(() => position.value.startsWith('top'))
@@ -112,15 +123,20 @@ export const Receiver = defineComponent({
 
       const dynamicStyles = useDynamicStyles(position)
 
-      // Non-reactive
+      // Lifecycle - Visibility Change
 
-      let isHovering = false
+      useVisibilityChange({
+         onVisible: resumeTimeouts,
+         onHidden: pauseTimeouts,
+      })
+
+      // Lifecycle - Resize
+
+      useWindowSize(() => setPositions(TType.SILENT))
 
       // Watchers - Resize and positioning
 
       watch(isTop, () => setPositions(TType.SILENT))
-
-      useWindowSize(() => setPositions(TType.SILENT))
 
       const resizeObserver = useResizeObserver(() => setPositions(TType.HEIGHT))
 
@@ -144,15 +160,17 @@ export const Receiver = defineComponent({
          }
       })
 
-      // Watchers - Hover
+      // Watchers - Hover and Touch
 
       watch(
-         () => !hasItems.value,
-         (isEmpty) => {
-            if (isEmpty) {
+         hasItems,
+         (_hasItems) => {
+            if (!_hasItems) {
                isHovering = false
+               hasTouched = false
+               document.removeEventListener('pointerdown', resumeTouch)
             }
-         }, // watchPostEffect unsupported < 3.2.0
+         },
          { flush: 'post' }
       )
 
@@ -243,11 +261,6 @@ export const Receiver = defineComponent({
                      options.duration === Infinity
                         ? undefined
                         : createTimeout(options.id, options.duration),
-                  /**
-                   * These methods are an exception and the only ones created
-                   * here that mutates the store as they rely too much on the
-                   * component instance.
-                   */
                   clear: () => animateLeave(options.id),
                   destroy: () => {
                      removeItem(options.id)
@@ -297,9 +310,9 @@ export const Receiver = defineComponent({
 
       // Animations
 
-      function animateItem(id: string, className: string, onEnd: () => void) {
+      function animateItem(id: string, animationClass: string, onEnd: () => void) {
          updateItem(id, {
-            animationClass: className,
+            animationClass,
             onAnimationstart: (event: AnimationEvent) => event.stopPropagation(),
             onAnimationend: (event: AnimationEvent) => {
                event.stopPropagation()
@@ -323,48 +336,89 @@ export const Receiver = defineComponent({
       function animateClearAll() {
          if (wrapperRef.value) {
             wrapperRef.value.classList.add(mergedAnims.value.clearAll)
-            wrapperRef.value.onanimationend = () => {
-               destroyAll()
+            wrapperRef.value.onanimationend = () => destroyAll()
+         }
+      }
+
+      // Hover / Touch Timeouts
+
+      function pauseTimeouts() {
+         if (!hasItems.value) return
+
+         const stoppedAt = performance.now()
+
+         updateAll((item) => {
+            clearTimeout(item.timeoutId)
+
+            return {
+               ...item,
+               stoppedAt,
+               elapsed: stoppedAt - item.createdAt + (item.elapsed ?? 0),
+            }
+         })
+      }
+
+      function resumeTimeouts() {
+         if (!hasItems.value) return
+
+         updateAll((item) => {
+            const newTimeout = item.duration + FIXED_INCREMENT - (item.elapsed ?? 0)
+
+            return {
+               ...item,
+               createdAt: performance.now(),
+               timeoutId:
+                  item.duration === Infinity ? undefined : createTimeout(item.id, newTimeout),
+            }
+         })
+      }
+
+      // Events
+
+      const events = computed(() => ({
+         ...(pauseOnHover.value ? { onPointerenter: pauseHover, onPointerleave: resumeHover } : {}),
+         ...(pauseOnTouch.value ? { onPointerdown: pauseTouch } : {}),
+      }))
+
+      function pauseHover(event: PointerEvent) {
+         if (!isHovering && isMouse(event)) {
+            pauseTimeouts()
+            isHovering = true
+         }
+      }
+
+      function resumeHover(event: PointerEvent) {
+         if (isHovering && isMouse(event)) {
+            resumeTimeouts()
+            isHovering = false
+         }
+      }
+
+      function pauseTouch(event: PointerEvent) {
+         if (!hasTouched && !isMouse(event)) {
+            const isNotivueCloseButton = (event.target as HTMLElement).tagName === 'BUTTON'
+
+            if (!isNotivueCloseButton) {
+               pauseTimeouts()
+               hasTouched = true
+
+               document.removeEventListener('pointerdown', resumeTouch)
+               document.addEventListener('pointerdown', resumeTouch)
             }
          }
       }
 
-      // Props
+      function resumeTouch(event: PointerEvent) {
+         if (hasTouched && !isMouse(event)) {
+            const isOutside = !wrapperRef.value!.contains(event.target as Node)
+            const isNotivueCloseButton =
+               !isOutside && (event.target as HTMLElement).tagName === 'BUTTON'
 
-      const pointerEvents = {
-         onPointerenter() {
-            if (hasItems.value && !isHovering) {
-               isHovering = true
-
-               const stoppedAt = performance.now()
-
-               updateAll((item) => {
-                  clearTimeout(item.timeoutId)
-
-                  return {
-                     ...item,
-                     stoppedAt,
-                     elapsed: stoppedAt - item.createdAt + (item.elapsed ?? 0),
-                  }
-               })
+            if (isOutside || isNotivueCloseButton) {
+               resumeTimeouts()
+               hasTouched = false
             }
-         },
-         onPointerleave() {
-            if (hasItems.value && isHovering) {
-               updateAll((item) => {
-                  const newTimeout = item.duration + FIXED_INCREMENT - (item.elapsed ?? 0)
-
-                  return {
-                     ...item,
-                     createdAt: performance.now(),
-                     timeoutId:
-                        item.duration === Infinity ? undefined : createTimeout(item.id, newTimeout),
-                  }
-               })
-
-               isHovering = false
-            }
-         },
+         }
       }
 
       // Render
@@ -383,7 +437,7 @@ export const Receiver = defineComponent({
                      'div',
                      {
                         style: staticStyles.container,
-                        ...(pauseOnHover.value ? pointerEvents : {}),
+                        ...events.value,
                      },
                      items.value.map((item) =>
                         h(

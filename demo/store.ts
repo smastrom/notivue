@@ -6,6 +6,7 @@ export const store = reactive({
    maxWidth: '100%',
    theme: 'light' as Themes,
    pauseOnHover: true,
+   pauseOnTouch: true,
    renderTitles: true,
    isDisabled: false,
    customIcons: false,
@@ -13,6 +14,10 @@ export const store = reactive({
    rtl: false,
    centerOnMobile: false,
 })
+
+export function setPauseOnTouch() {
+   store.pauseOnTouch = !store.pauseOnTouch
+}
 
 export function setPosition(position: Position) {
    store.position = position

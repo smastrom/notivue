@@ -32,7 +32,7 @@ export function notifications(item: StoreItem, theme = light, icons = filledIcon
             h(
                'button',
                { class: Cx.CLOSE, 'aria-label': item.closeAriaLabel, onClick: item.clear },
-               [hIcon(icons.close as IconSrc, { class: Cx.CLOSE_ICON })]
+               [hIcon(icons.close, { class: Cx.CLOSE_ICON })]
             ),
       ]
    )

@@ -1,4 +1,5 @@
 import { h, type VNode, type Component } from 'vue'
+import { CLASS_PREFIX as CX } from './constants'
 import type {
    ReceiverProps,
    IncomingPushOptions,
@@ -6,7 +7,6 @@ import type {
    NotificationType as NTypeU,
    DefaultOptions,
 } from './types'
-import { CLASS_PREFIX as CX } from './constants'
 
 export const isSSR = typeof window === 'undefined'
 
@@ -23,6 +23,10 @@ export function hIcon(icon: (() => Component) | string, props = {}) {
       default:
          return null
    }
+}
+
+export function isMouse(event: PointerEvent) {
+   return event.pointerType === 'mouse'
 }
 
 const newLineRegex = /(\n)/g

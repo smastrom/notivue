@@ -184,6 +184,7 @@
    font-weight: 700;
    transition: 100ms opacity ease-out;
    color: var(--nv-fg, var(--nv-global-foreground));
+   pointer-events: none;
 }
 
 .Notivue__close:hover .Notivue__close-icon {
