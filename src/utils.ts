@@ -10,10 +10,6 @@ import type {
 
 export const isSSR = typeof window === 'undefined'
 
-export function createID() {
-   return performance.now().toString()
-}
-
 export function hIcon(icon: (() => Component) | string, props = {}) {
    switch (typeof icon) {
       case 'function':

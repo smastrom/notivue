@@ -42,13 +42,14 @@ export type ReceiverProps = {
    pauseOnHover: boolean
    pauseOnTouch: boolean
    position: Position
-   id: string
+   id: InternalPushOptions['id']
    class: string | { [key: string]: boolean } | string[]
    options: NotivueOptions
    animations: NotivueAnimations
    use: DefaultRenderFn
    theme?: Theme
    icons?: Icons
+   teleportTo?: string | HTMLElement
 }
 
 export type ScopedPushStyles = {
@@ -80,9 +81,9 @@ type InternalOptions = {
    prevComponent?: () => Component
 }
 
-export type MergedOptions = Required<ReceiverOptions> & IncomingPushOptions
-
 export type InternalPushOptions = { id: string; type: NotificationType }
+
+export type MergedOptions = Required<ReceiverOptions> & IncomingPushOptions
 
 // Store
 
@@ -91,31 +92,42 @@ export type StoreItem = InternalOptions & MergedOptions
 export type StoreRefs = {
    items: Ref<StoreItem[]>
    incoming: ShallowRef<IncomingPushOptions>
-   clearAllScheduler: Ref<number>
    isEnabled: Ref<boolean>
+   clearAllTrigger: Ref<number>
+}
+
+export type StoreComputed = {
+   count: ComputedRef<number>
    hasItems: ComputedRef<boolean>
 }
 
-export type StoreFns = {
+export type StoreMethods = {
    createItem: (options: StoreItem) => void
-   getItem: (id: string) => StoreItem | undefined
-   updateItem: (id: string, options: Partial<StoreItem>) => void
-   removeItem: (id: string) => void
-   destroyAll: () => void
+   getItem: (id: InternalPushOptions['id']) => StoreItem | undefined
+   updateItem: (id: InternalPushOptions['id'], options: Partial<StoreItem>) => void
+   removeItem: (id: InternalPushOptions['id']) => void
    updateAll: (onUpdate: (item: StoreItem) => StoreItem) => void
+   destroyAll: () => void
 }
 
-export type CreatePushParam = {
+export type InternalStoreMethods = {
    setIncoming: (options: IncomingPushOptions) => void
-   callItemMethod: (id: string, method: 'clear' | 'destroy') => void
-   scheduleClearAll: () => void
+   callItemMethod: (id: InternalPushOptions['id'], method: 'clear' | 'destroy') => void
+   clearAll: () => void
    enable: () => void
    disable: () => void
-   count: ComputedRef<number>
-} & Pick<StoreFns, 'destroyAll'> &
-   Pick<StoreRefs, 'isEnabled' | 'hasItems'>
+}
 
-export type Store = { push: Push } & StoreRefs & StoreFns
+export type Store = { push: Push } & StoreMethods & StoreRefs & Omit<StoreComputed, 'count'>
+
+// Push - Create
+
+export type CreatePush = (
+   param: InternalStoreMethods &
+      Pick<StoreMethods, 'destroyAll'> &
+      Pick<StoreRefs, 'isEnabled'> &
+      Pick<StoreComputed, 'count'>
+) => Push
 
 // Push - Function
 
@@ -134,26 +146,26 @@ export type PushPromise = <T extends Record<string, unknown>>(
    reject: ResolveReject<T>
 }
 
-export type Push = PushStatic & {
-   error: PushStatic
+export type PushMethods = {
    success: PushStatic
-   warning: PushStatic
+   error: PushStatic
    info: PushStatic
+   warning: PushStatic
    promise: PushPromise
-   clearAll: () => void
-   destroyAll: () => void
-   enable: () => void
-   disable: () => void
-   isEnabled: Ref<boolean>
-   hasItems: ComputedRef<boolean>
-   count: Ref<number>
 }
+
+export type Push = PushStatic &
+   PushMethods &
+   Pick<InternalStoreMethods, 'enable' | 'disable' | 'clearAll'> &
+   Pick<StoreMethods, 'destroyAll'> &
+   Pick<StoreRefs, 'isEnabled'> &
+   Pick<StoreComputed, 'count'>
 
 // Push - Param
 
-export type PushStaticParam<T> = StaticPushOptions<T> | ReceiverOptions['message']
+export type PushStaticOptions<T> = StaticPushOptions<T> | ReceiverOptions['message']
 
-export type PushPromiseParam<T> = PromiseResultPushOptions<T> | ReceiverOptions['message']
+export type PushPromiseOptions<T> = PromiseResultPushOptions<T> | ReceiverOptions['message']
 
 // Push - Param - Options
 

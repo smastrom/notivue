@@ -5,8 +5,9 @@ import type { IncomingPushOptions, StoreItem, Store } from './types'
 export function createStore(): Store {
    const items = ref<StoreItem[]>([])
    const incoming = shallowRef<IncomingPushOptions>({} as IncomingPushOptions)
-   const clearAllScheduler = ref(0)
    const isEnabled = ref(true)
+   const clearAllTrigger = ref(0)
+
    const count = computed(() => items.value.length)
    const hasItems = computed(() => count.value > 0)
 
@@ -19,45 +20,62 @@ export function createStore(): Store {
    }
 
    function updateItem(id: string, options: Partial<StoreItem>) {
-      const item = getItem(id) // isReactive(item) -> true
+      Object.assign(getItem(id) ?? {}, options)
+   }
 
-      if (item) {
-         Object.assign(item, options)
-      }
+   function updateAll(updateItem: (item: StoreItem) => StoreItem) {
+      items.value = items.value.map((item) => updateItem(item))
    }
 
    function removeItem(_id: string) {
       items.value = items.value.filter(({ id }) => id !== _id)
    }
 
-   function updateAll(updateItem: (prevItem: StoreItem) => StoreItem) {
-      items.value = items.value.map((prevItem) => updateItem(prevItem))
-   }
-
    function destroyAll() {
       items.value = []
    }
 
+   // Internal unexported methods, used by createPush()
+
+   function setIncoming(options: IncomingPushOptions) {
+      incoming.value = options
+   }
+
+   function enable() {
+      isEnabled.value = true
+   }
+
+   function disable() {
+      isEnabled.value = false
+   }
+
+   function callItemMethod(id: string, method: 'clear' | 'destroy') {
+      getItem(id)?.[method]()
+   }
+
+   function clearAll() {
+      clearAllTrigger.value++
+   }
+
    const push = createPush({
-      setIncoming: (options) => (incoming.value = options),
-      enable: () => (isEnabled.value = true),
-      disable: () => (isEnabled.value = false),
-      callItemMethod: (id: string, method: 'clear' | 'destroy') => getItem(id)?.[method](),
-      scheduleClearAll: () => clearAllScheduler.value++,
+      setIncoming,
+      enable,
+      disable,
+      callItemMethod,
+      clearAll,
       destroyAll,
       isEnabled,
       count,
-      hasItems,
    })
 
    return {
       // usePush()
       push,
-      // useStore(), internal
+      // useStore()
       items,
       incoming,
       isEnabled,
-      clearAllScheduler,
+      clearAllTrigger,
       hasItems,
       createItem,
       getItem,

@@ -1,30 +1,29 @@
-import { createID } from './utils'
 import { NotificationType as NType } from './constants'
 import type {
    StaticPushOptions,
    PushPromise,
-   Push,
    PromiseResultPushOptions,
-   PushStaticParam,
-   PushPromiseParam,
-   CreatePushParam,
+   PushStaticOptions,
+   PushPromiseOptions,
+   CreatePush,
 } from './types'
 
-export function createPush({
+export const createPush = (({
    setIncoming,
    callItemMethod,
-   scheduleClearAll,
+   clearAll,
    destroyAll,
-   isEnabled,
-   hasItems,
    enable,
    disable,
+   isEnabled,
    count,
-}: CreatePushParam): Push {
+}) => {
+   let createCount = 0
+
    function create<T>(
-      options: PushStaticParam<T> | PushPromiseParam<T>,
+      options: PushStaticOptions<T> | PushPromiseOptions<T>,
       status = NType.SUCCESS,
-      id = createID()
+      id = `${createCount++}`
    ) {
       if (typeof options === 'string') {
          options = { message: options }
@@ -43,21 +42,21 @@ export function createPush({
       }
    }
 
-   function push<T>(options: PushStaticParam<T>) {
+   function push<T>(options: PushStaticOptions<T>) {
       return create<T>(options)
    }
 
-   push.clearAll = scheduleClearAll
+   push.clearAll = clearAll
 
    push.destroyAll = destroyAll
 
-   push.success = <T>(options: PushStaticParam<T>) => create(options)
+   push.success = <T>(options: PushStaticOptions<T>) => create(options)
 
-   push.error = <T>(options: PushStaticParam<T>) => create(options, NType.ERROR)
+   push.error = <T>(options: PushStaticOptions<T>) => create(options, NType.ERROR)
 
-   push.warning = <T>(options: PushStaticParam<T>) => create(options, NType.WARNING)
+   push.warning = <T>(options: PushStaticOptions<T>) => create(options, NType.WARNING)
 
-   push.info = <T>(options: PushStaticParam<T>) => create(options, NType.INFO)
+   push.info = <T>(options: PushStaticOptions<T>) => create(options, NType.INFO)
 
    push.enable = enable
 
@@ -66,8 +65,6 @@ export function createPush({
    push.isEnabled = isEnabled
 
    push.count = count
-
-   push.hasItems = hasItems
 
    push.promise = ((options) => {
       const { id, clear, destroy } = create(options, NType.PROMISE)
@@ -81,4 +78,4 @@ export function createPush({
    }) satisfies PushPromise
 
    return push
-}
+}) satisfies CreatePush
