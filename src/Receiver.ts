@@ -1,15 +1,4 @@
-import {
-   Teleport,
-   defineComponent,
-   ref,
-   computed,
-   watch,
-   watchEffect,
-   h,
-   toRef,
-   nextTick,
-   type PropType,
-} from 'vue'
+import { Teleport, defineComponent, ref, computed, watch, h, toRef, nextTick, PropType } from 'vue'
 import { useStore } from './useStore'
 import { staticStyles, useDynamicStyles } from './useStyles'
 import { useRefsMap } from './useRefsMap'
@@ -38,10 +27,6 @@ export const Receiver = defineComponent({
    name: COMPONENT_NAME,
    inheritAttrs: false,
    props: {
-      id: {
-         type: String as PropType<Props['id']>,
-         default: '',
-      },
       class: {
          type: String as PropType<Props['class']>,
          default: '',
@@ -109,7 +94,6 @@ export const Receiver = defineComponent({
          items,
          incoming,
          clearAllTrigger,
-         isEnabled,
          hasItems,
          createItem,
          getItem,
@@ -117,7 +101,7 @@ export const Receiver = defineComponent({
          removeItem,
          destroyAll,
          updateAll,
-      } = useStore(props.id)
+      } = useStore()
 
       // Reactivity - Elements and styles
 
@@ -127,14 +111,14 @@ export const Receiver = defineComponent({
 
       const dynamicStyles = useDynamicStyles(position)
 
-      // Lifecycle - Visibility Change
+      // Event Listeners - Visibility Change
 
       useVisibilityChange({
          onVisible: resumeTimeouts,
          onHidden: pauseTimeouts,
       })
 
-      // Lifecycle - Resize
+      // Event Listeners - Resize
 
       useWindowSize(() => setPositions(TType.SILENT))
 
@@ -180,108 +164,93 @@ export const Receiver = defineComponent({
 
       // Watchers - Notifications
 
-      let detachListener: ReturnType<typeof attachListener>
+      watch(
+         incoming,
+         (incomingOptions) => {
+            const createdAt = performance.now()
+            const options = mergeOptions(defaultOptions, props.options, incomingOptions)
 
-      watchEffect(() => {
-         if (!isEnabled.value && detachListener) {
-            detachListener()
-            destroyAll()
-         } else {
-            detachListener = attachListener()
-         }
-      })
+            let customRenderer: Partial<
+               Pick<StoreItem, 'prevProps' | 'prevComponent' | 'customComponent'>
+            > = {
+               customComponent: undefined,
+            }
 
-      function attachListener() {
-         return watch(
-            incoming,
-            (incomingOptions) => {
-               const createdAt = performance.now()
-               const options = mergeOptions(defaultOptions, props.options, incomingOptions)
+            if (
+               options.type.includes(NType.PROMISE_REJECT) ||
+               options.type.includes(NType.PROMISE_RESOLVE)
+            ) {
+               const currItem = getItem(options.id)
+               const prevComponent = currItem?.prevComponent
 
-               let customRenderer: Partial<
-                  Pick<StoreItem, 'prevProps' | 'prevComponent' | 'customComponent'>
-               > = {
-                  customComponent: undefined,
+               if (prevComponent) {
+                  const prevProps = { ...(currItem.prevProps ?? {}) }
+
+                  delete prevProps.message
+                  delete prevProps.type
+                  delete prevProps.duration
+                  delete prevProps.clear
+
+                  const newComponent = options.render?.component
+                  const newProps = { ...getCtxProps(options), prevProps }
+
+                  customRenderer = {
+                     customComponent: () =>
+                        h(
+                           newComponent ? newComponent() : prevComponent(),
+                           (
+                              options.render?.props as NonNullable<
+                                 MaybeRenderPromiseResult['render']
+                              >['props']
+                           )?.(newProps) ?? {}
+                        ),
+                  }
                }
 
-               if (
-                  options.type.includes(NType.PROMISE_REJECT) ||
-                  options.type.includes(NType.PROMISE_RESOLVE)
-               ) {
-                  const currItem = getItem(options.id)
-                  const prevComponent = currItem?.prevComponent
+               updateItem(options.id, {
+                  ...options,
+                  ...customRenderer,
+                  createdAt,
+                  timeoutId: isHovering ? undefined : createTimeout(options.id, options.duration),
+               })
+            } else {
+               const _customComponent = options.render?.component
 
-                  if (prevComponent) {
-                     const prevProps = { ...(currItem.prevProps ?? {}) }
+               if (_customComponent) {
+                  const props = ((
+                     options.render?.props as NonNullable<
+                        MaybeRenderStatic<CtxProps & Record<string, unknown>>['render']
+                     >['props']
+                  )?.(getCtxProps(options)) ?? {}) as CtxProps
 
-                     delete prevProps.message
-                     delete prevProps.type
-                     delete prevProps.duration
-                     delete prevProps.clear
-
-                     const newComponent = options.render?.component
-                     const newProps = { ...getCtxProps(options), prevProps }
-
-                     customRenderer = {
-                        customComponent: () =>
-                           h(
-                              newComponent ? newComponent() : prevComponent(),
-                              (
-                                 options.render?.props as NonNullable<
-                                    MaybeRenderPromiseResult['render']
-                                 >['props']
-                              )?.(newProps) ?? {}
-                           ),
-                     }
+                  customRenderer = {
+                     customComponent: () => h(_customComponent(), props),
+                     ...(options.type === NType.PROMISE
+                        ? { prevProps: props, prevComponent: _customComponent }
+                        : {}),
                   }
+               }
 
-                  updateItem(options.id, {
-                     ...options,
-                     ...customRenderer,
-                     createdAt,
-                     timeoutId: isHovering
+               createItem({
+                  ...options,
+                  ...customRenderer,
+                  createdAt,
+                  timeoutId:
+                     options.duration === Infinity
                         ? undefined
                         : createTimeout(options.id, options.duration),
-                  })
-               } else {
-                  const _customComponent = options.render?.component
+                  clear: () => animateLeave(options.id),
+                  destroy: () => {
+                     removeItem(options.id)
+                     setPositions()
+                  },
+               })
 
-                  if (_customComponent) {
-                     const props = ((
-                        options.render?.props as NonNullable<
-                           MaybeRenderStatic<CtxProps & Record<string, unknown>>['render']
-                        >['props']
-                     )?.(getCtxProps(options)) ?? {}) as CtxProps
-
-                     customRenderer = {
-                        customComponent: () => h(_customComponent(), props),
-                        ...(options.type === NType.PROMISE
-                           ? { prevProps: props, prevComponent: _customComponent }
-                           : {}),
-                     }
-                  }
-
-                  createItem({
-                     ...options,
-                     ...customRenderer,
-                     createdAt,
-                     timeoutId:
-                        options.duration === Infinity
-                           ? undefined
-                           : createTimeout(options.id, options.duration),
-                     clear: () => animateLeave(options.id),
-                     destroy: () => {
-                        removeItem(options.id)
-                        setPositions()
-                     },
-                  })
-
-                  nextTick(() => animateEnter(options.id))
-               }
-            },
-            { flush: 'sync' }
-         )
-      }
+               nextTick(() => animateEnter(options.id))
+            }
+         },
+         { flush: 'sync' }
+      )
 
       function createTimeout(id: string, time: number) {
          return window.setTimeout(() => animateLeave(id), time)

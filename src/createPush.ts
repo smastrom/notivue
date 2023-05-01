@@ -8,16 +8,7 @@ import type {
    CreatePush,
 } from './types'
 
-export const createPush = (({
-   setIncoming,
-   callItemMethod,
-   clearAll,
-   destroyAll,
-   enable,
-   disable,
-   isEnabled,
-   count,
-}) => {
+export const createPush = (({ setIncoming, callItemMethod, clearAll, destroyAll }) => {
    let createCount = 0
 
    function create<T>(
@@ -46,10 +37,6 @@ export const createPush = (({
       return create<T>(options)
    }
 
-   push.clearAll = clearAll
-
-   push.destroyAll = destroyAll
-
    push.success = <T>(options: PushStaticOptions<T>) => create(options)
 
    push.error = <T>(options: PushStaticOptions<T>) => create(options, NType.ERROR)
@@ -57,14 +44,6 @@ export const createPush = (({
    push.warning = <T>(options: PushStaticOptions<T>) => create(options, NType.WARNING)
 
    push.info = <T>(options: PushStaticOptions<T>) => create(options, NType.INFO)
-
-   push.enable = enable
-
-   push.disable = disable
-
-   push.isEnabled = isEnabled
-
-   push.count = count
 
    push.promise = ((options) => {
       const { id, clear, destroy } = create(options, NType.PROMISE)
@@ -76,6 +55,10 @@ export const createPush = (({
          destroy,
       }
    }) satisfies PushPromise
+
+   push.clearAll = clearAll
+
+   push.destroyAll = destroyAll
 
    return push
 }) satisfies CreatePush

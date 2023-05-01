@@ -1,9 +1,5 @@
 import type { VNode, Component, CSSProperties, Ref, ShallowRef, ComputedRef } from 'vue'
 
-export type PluginOptions = {
-   register?: string[]
-}
-
 // Props
 
 export type NotificationType =
@@ -42,7 +38,6 @@ export type ReceiverProps = {
    pauseOnHover: boolean
    pauseOnTouch: boolean
    position: Position
-   id: InternalPushOptions['id']
    class: string | { [key: string]: boolean } | string[]
    options: NotivueOptions
    animations: NotivueAnimations
@@ -92,12 +87,10 @@ export type StoreItem = InternalOptions & MergedOptions
 export type StoreRefs = {
    items: Ref<StoreItem[]>
    incoming: ShallowRef<IncomingPushOptions>
-   isEnabled: Ref<boolean>
    clearAllTrigger: Ref<number>
 }
 
 export type StoreComputed = {
-   count: ComputedRef<number>
    hasItems: ComputedRef<boolean>
 }
 
@@ -108,25 +101,17 @@ export type StoreMethods = {
    removeItem: (id: InternalPushOptions['id']) => void
    updateAll: (onUpdate: (item: StoreItem) => StoreItem) => void
    destroyAll: () => void
-}
-
-export type InternalStoreMethods = {
+   clearAll: () => void
    setIncoming: (options: IncomingPushOptions) => void
    callItemMethod: (id: InternalPushOptions['id'], method: 'clear' | 'destroy') => void
-   clearAll: () => void
-   enable: () => void
-   disable: () => void
 }
 
-export type Store = { push: Push } & StoreMethods & StoreRefs & Omit<StoreComputed, 'count'>
+export type Store = StoreMethods & StoreRefs & StoreComputed & { push: Push }
 
 // Push - Create
 
 export type CreatePush = (
-   param: InternalStoreMethods &
-      Pick<StoreMethods, 'destroyAll'> &
-      Pick<StoreRefs, 'isEnabled'> &
-      Pick<StoreComputed, 'count'>
+   param: Pick<StoreMethods, 'setIncoming' | 'callItemMethod' | 'clearAll' | 'destroyAll'>
 ) => Push
 
 // Push - Function
@@ -154,12 +139,7 @@ export type PushMethods = {
    promise: PushPromise
 }
 
-export type Push = PushStatic &
-   PushMethods &
-   Pick<InternalStoreMethods, 'enable' | 'disable' | 'clearAll'> &
-   Pick<StoreMethods, 'destroyAll'> &
-   Pick<StoreRefs, 'isEnabled'> &
-   Pick<StoreComputed, 'count'>
+export type Push = PushStatic & PushMethods & Pick<StoreMethods, 'clearAll' | 'destroyAll'>
 
 // Push - Param
 
