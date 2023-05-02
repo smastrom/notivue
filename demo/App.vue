@@ -15,7 +15,8 @@ import { store } from './store'
 import Nav from './components/Nav.vue'
 import Logo from './components/Background.vue'
 import CustomIcon from './icons/CustomIcon.vue'
-import { NotivueIcons } from '../src/types'
+
+import type { NotivueIcons } from '../src/types'
 
 const options = {
    global: {
@@ -23,16 +24,16 @@ const options = {
    },
 } as const
 
-const icons: NotivueIcons = {
-   ..._icons,
-   warning: () => CustomIcon,
-}
-
 const _options = {
    global: {
       title: false,
    },
 } as const
+
+const icons: NotivueIcons = {
+   ..._icons,
+   warning: () => CustomIcon,
+}
 
 const emojis = computed<NotivueIcons>(() => ({
    success: '✅',
@@ -62,6 +63,7 @@ watchEffect(() => document.documentElement.style.setProperty('--nv-root-containe
       :options="store.renderTitles ? options : _options"
       :icons="store.customIcons ? emojis : store.outlineIcons ? outlineIcons : icons"
       :pauseOnHover="store.pauseOnHover"
+      :pauseOnTouch="store.pauseOnTouch"
       :position="store.position"
       :theme="themes[store.theme]"
       :class="{ CustomClass: store.centerOnMobile }"

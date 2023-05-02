@@ -4,8 +4,6 @@
 
 ### Fully-featured notification system for Vue 3.
 
----
-
 [Live Demo](https://notivue.netlify.app) - [Documentation](https://notivuedocs.netlify.app) - [StackBlitz](https://stackblitz.com/edit/vitejs-vite-kdrtrw?file=src/components/Example.vue)
 
 </div>

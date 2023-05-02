@@ -77,9 +77,9 @@ export const Receiver = defineComponent({
       // Reactivity - Props
 
       const position = toRef(props, 'position')
+      const animations = toRef(props, 'animations')
       const pauseOnHover = toRef(props, 'pauseOnHover')
       const pauseOnTouch = toRef(props, 'pauseOnTouch')
-      const animations = toRef(props, 'animations')
 
       const isTop = computed(() => position.value.startsWith('top'))
 
@@ -124,9 +124,9 @@ export const Receiver = defineComponent({
 
       // Watchers - Resize and positioning
 
-      watch(isTop, () => setPositions(TType.SILENT))
-
       const resizeObserver = useResizeObserver(() => setPositions(TType.HEIGHT))
+
+      watch(isTop, () => setPositions(TType.SILENT))
 
       watch(
          () => items.value.filter(({ type }) => type === NType.PROMISE).map(({ id }) => id),
@@ -142,25 +142,23 @@ export const Receiver = defineComponent({
 
       // Watchers - Clear All
 
-      watch(clearAllTrigger, () => {
-         if (hasItems.value) {
-            animateClearAll()
-         }
-      })
+      watch(clearAllTrigger, animateClearAll)
 
       // Watchers - Hover and Touch
 
-      watch(
-         hasItems,
-         (_hasItems) => {
-            if (!_hasItems) {
-               isHovering = false
-               hasTouched = false
-               document.removeEventListener('pointerdown', resumeTouch)
-            }
-         },
-         { flush: 'post' }
-      )
+      watch(hasItems, (_hasItems) => {
+         if (!_hasItems) {
+            isHovering = false
+            hasTouched = false
+            removeTouchListener()
+         }
+      })
+
+      watch(pauseOnTouch, (_pauseOnTouch) => {
+         if (!_pauseOnTouch) {
+            removeTouchListener()
+         }
+      })
 
       // Watchers - Notifications
 
@@ -359,6 +357,10 @@ export const Receiver = defineComponent({
          ...(pauseOnTouch.value ? { onPointerdown: pauseTouch } : {}),
       }))
 
+      function removeTouchListener() {
+         document.removeEventListener('pointerdown', resumeTouch)
+      }
+
       function pauseHover(event: PointerEvent) {
          if (!isHovering && isMouse(event)) {
             pauseTimeouts()
@@ -381,7 +383,7 @@ export const Receiver = defineComponent({
                pauseTimeouts()
                hasTouched = true
 
-               document.removeEventListener('pointerdown', resumeTouch)
+               removeTouchListener()
                document.addEventListener('pointerdown', resumeTouch)
             }
          }

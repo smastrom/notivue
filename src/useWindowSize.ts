@@ -4,7 +4,7 @@ import { isSSR } from './utils'
 export function useWindowSize(onResize: () => void) {
    if (isSSR) return
 
-   function _onResize(event: UIEvent) {
+   function _onResize() {
       // Below this width always reposition
       if (window.matchMedia('(max-width: 768px)').matches) {
          onResize()
