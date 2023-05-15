@@ -12,7 +12,7 @@ import {
    FIXED_INCREMENT,
    COMPONENT_NAME,
    NotificationType as NType,
-   TransitionTypes as TType,
+   TransitionType as TType,
 } from './constants'
 import type {
    ReceiverProps as Props,
@@ -69,11 +69,6 @@ export const Receiver = defineComponent({
       },
    },
    setup(props) {
-      // Non-reactive
-
-      let isHovering = false
-      let hasTouched = false
-
       // Reactivity - Props
 
       const position = toRef(props, 'position')
@@ -103,48 +98,42 @@ export const Receiver = defineComponent({
          updateAll,
       } = useStore()
 
-      // Reactivity - Elements and styles
-
-      const wrapperRef = ref<HTMLElement>()
+      // Reactivity - Elements
 
       const { refs, sortedIds, setRefs } = useRefsMap()
 
+      const wrapperRef = ref<HTMLElement>()
+
+      // Reactivity - Styles
+
       const dynamicStyles = useDynamicStyles(position)
 
-      // Event Listeners - Visibility Change
+      // Event Listeners - visibilityChange
 
       useVisibilityChange({
          onVisible: resumeTimeouts,
          onHidden: pauseTimeouts,
       })
 
-      // Event Listeners - Resize
+      // Event Listeners - Reposition on viewport resize
 
       useWindowSize(() => setPositions(TType.SILENT))
 
-      // Watchers - Resize and positioning
+      // Watchers - Reposition on height change
 
-      const resizeObserver = useResizeObserver(() => setPositions(TType.HEIGHT))
+      const promiseRefs = computed(() =>
+         items.value
+            .filter(({ type }) => type === NType.PROMISE)
+            .map(({ id }) => refs.get(id) as HTMLElement)
+      )
+
+      useResizeObserver(promiseRefs, () => setPositions(TType.HEIGHT))
+
+      // Watchers - Reposition on position prop change
 
       watch(isTop, () => setPositions(TType.SILENT))
 
-      watch(
-         () => items.value.filter(({ type }) => type === NType.PROMISE).map(({ id }) => id),
-         (newPromises) => {
-            if (newPromises.length > 0) {
-               newPromises.forEach((id) =>
-                  resizeObserver.value?.observe(refs.get(id) as HTMLElement)
-               )
-            }
-         },
-         { flush: 'post' }
-      )
-
-      // Watchers - Clear All
-
-      watch(clearAllTrigger, animateClearAll)
-
-      // Watchers - Hover and Touch
+      // Watchers - Hover and Touch, toggle functionality
 
       watch(hasItems, (_hasItems) => {
          if (!_hasItems) {
@@ -160,7 +149,11 @@ export const Receiver = defineComponent({
          }
       })
 
-      // Watchers - Notifications
+      // Watchers - Clear All
+
+      watch(clearAllTrigger, animateClearAll)
+
+      // Watchers - Process incoming
 
       watch(
          incoming,
@@ -258,6 +251,38 @@ export const Receiver = defineComponent({
          return { notivueProps: { message, type, duration, clear: () => animateLeave(id) } }
       }
 
+      // Animations
+
+      function animateItem(id: string, animationClass: string, onEnd: () => void) {
+         updateItem(id, {
+            animationClass,
+            onAnimationstart: (event) => event.stopPropagation(),
+            onAnimationend: (event) => {
+               event.stopPropagation()
+               onEnd()
+            },
+         })
+      }
+
+      function animateEnter(id: string) {
+         animateItem(id, mergedAnims.value.enter, () =>
+            updateItem(id, { animationClass: '', onAnimationend: undefined })
+         )
+         setPositions()
+      }
+
+      function animateLeave(id: string) {
+         animateItem(id, mergedAnims.value.leave, () => removeItem(id))
+         setPositions()
+      }
+
+      function animateClearAll() {
+         if (wrapperRef.value) {
+            wrapperRef.value.classList.add(mergedAnims.value.clearAll)
+            wrapperRef.value.onanimationend = () => destroyAll()
+         }
+      }
+
       // Transitions
 
       function setPositions(type: TType = TType.PUSH) {
@@ -285,39 +310,17 @@ export const Receiver = defineComponent({
          }
       }
 
-      // Animations
+      // Pause Events - Events
 
-      function animateItem(id: string, animationClass: string, onEnd: () => void) {
-         updateItem(id, {
-            animationClass,
-            onAnimationstart: (event: AnimationEvent) => event.stopPropagation(),
-            onAnimationend: (event: AnimationEvent) => {
-               event.stopPropagation()
-               onEnd()
-            },
-         })
-      }
+      const events = computed(() => ({
+         ...(pauseOnHover.value ? { onPointerenter: pauseHover, onPointerleave: resumeHover } : {}),
+         ...(pauseOnTouch.value ? { onPointerdown: pauseTouch } : {}),
+      }))
 
-      function animateEnter(id: string) {
-         animateItem(id, mergedAnims.value.enter, () =>
-            updateItem(id, { animationClass: '', onAnimationend: undefined })
-         )
-         setPositions()
-      }
+      // Pause Events - Helpers
 
-      function animateLeave(id: string) {
-         animateItem(id, mergedAnims.value.leave, () => removeItem(id))
-         setPositions()
-      }
-
-      function animateClearAll() {
-         if (wrapperRef.value) {
-            wrapperRef.value.classList.add(mergedAnims.value.clearAll)
-            wrapperRef.value.onanimationend = () => destroyAll()
-         }
-      }
-
-      // Hover / Touch Timeouts
+      let isHovering = false
+      let hasTouched = false
 
       function pauseTimeouts() {
          if (!hasItems.value) return
@@ -350,16 +353,7 @@ export const Receiver = defineComponent({
          })
       }
 
-      // Events
-
-      const events = computed(() => ({
-         ...(pauseOnHover.value ? { onPointerenter: pauseHover, onPointerleave: resumeHover } : {}),
-         ...(pauseOnTouch.value ? { onPointerdown: pauseTouch } : {}),
-      }))
-
-      function removeTouchListener() {
-         document.removeEventListener('pointerdown', resumeTouch)
-      }
+      // Pause Events - Hover
 
       function pauseHover(event: PointerEvent) {
          if (!isHovering && isMouse(event)) {
@@ -374,6 +368,8 @@ export const Receiver = defineComponent({
             isHovering = false
          }
       }
+
+      // Pause Events - Touch
 
       function pauseTouch(event: PointerEvent) {
          if (!hasTouched && !isMouse(event)) {
@@ -400,6 +396,10 @@ export const Receiver = defineComponent({
                hasTouched = false
             }
          }
+      }
+
+      function removeTouchListener() {
+         document.removeEventListener('pointerdown', resumeTouch)
       }
 
       // Render

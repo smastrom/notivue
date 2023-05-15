@@ -60,7 +60,7 @@ const isPromise = computed(() => props.type === 'promise')
    flex-direction: column;
    background-color: #fff;
    padding: 10px;
-   border: 2px solid #d6d6d6;
+   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
    border-radius: 10px;
    width: 360px;
    max-width: 100%;
@@ -72,8 +72,6 @@ const isPromise = computed(() => props.type === 'promise')
    align-items: center;
    justify-content: flex-start;
    gap: 10px;
-   border-bottom: 1px solid #d8d8d8;
-   padding-bottom: 5px;
 }
 
 .Close {
