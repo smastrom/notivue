@@ -28,7 +28,7 @@ export const Classes = {
    CLOSE_ICON: CLASS_PREFIX + 'close-icon',
 }
 
-export enum TransitionTypes {
+export enum TransitionType {
    PUSH,
    HEIGHT,
    SILENT,

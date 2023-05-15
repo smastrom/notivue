@@ -1,11 +1,11 @@
 import { inject } from 'vue'
-import { storeSymbol } from './symbols'
+import { storeInjectionKey } from './symbols'
 import type { Store, Push } from './types'
 
 export function useStore() {
-   return inject(storeSymbol) as Store
+   return inject(storeInjectionKey) as Store
 }
 
 export function usePush() {
-   return inject(storeSymbol)?.push as Push
+   return inject(storeInjectionKey)?.push as Push
 }

@@ -47,11 +47,9 @@ _Pure CSS RTL support_
 pnpm add notivue
 ```
 
-<br />
+### Vite / Vue CLI
 
-## Your first notification
-
-### 1. main.js
+**main.js**
 
 ```js
 import { notivue } from 'notivue'
@@ -62,7 +60,31 @@ import 'notivue/animations.css'
 createApp(App).use(notivue).mount('#app')
 ```
 
-### 2. App.vue
+### Nuxt 3
+
+**plugins/notivue.ts**
+
+```ts
+import { notivue } from 'notivue'
+
+export default defineNuxtPlugin(({ vueApp }) => {
+  vueApp.use(notivue)
+})
+```
+
+**nuxt.config.ts**
+
+```ts
+export default defineNuxtConfig({
+  css: ['notivue/notifications.css', 'notivue/animations.css']
+})
+```
+
+<br />
+
+## Usage
+
+**App.vue**
 
 ```vue
 <script setup>
@@ -74,7 +96,7 @@ import { Notivue, notifications } from 'notivue'
 </template>
 ```
 
-### 3. Anywhere in your app
+**Anywhere in your app**
 
 ```vue
 <script setup>

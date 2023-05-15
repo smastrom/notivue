@@ -1,11 +1,11 @@
-import { shallowRef, onMounted, onBeforeUnmount } from 'vue'
+import { onMounted, onBeforeUnmount, watch, type ComputedRef } from 'vue'
 
-export function useResizeObserver(onSizeChange: () => void) {
+export function useResizeObserver(refs: ComputedRef<HTMLElement[]>, onSizeChange: () => void) {
+   let resizeObserver: ResizeObserver
    const calls = new Set()
-   const resizeObserver = shallowRef<ResizeObserver>()
 
    onMounted(() => {
-      resizeObserver.value = new ResizeObserver((entries, observer) => {
+      resizeObserver = new ResizeObserver((entries, observer) => {
          entries.forEach((entry) => {
             if (!calls.has(entry.target)) {
                calls.add(entry.target)
@@ -18,9 +18,17 @@ export function useResizeObserver(onSizeChange: () => void) {
       })
    })
 
-   onBeforeUnmount(() => {
-      resizeObserver.value?.disconnect()
-   })
+   watch(
+      refs,
+      (_refs) => {
+         if (_refs.length > 0) {
+            _refs.forEach((ref) => resizeObserver?.observe(ref))
+         }
+      },
+      { flush: 'post' }
+   )
 
-   return resizeObserver
+   onBeforeUnmount(() => {
+      resizeObserver?.disconnect()
+   })
 }

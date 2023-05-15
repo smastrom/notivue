@@ -1,4 +1,4 @@
 import type { InjectionKey } from 'vue'
 import type { Store } from './types'
 
-export const storeSymbol = Symbol('') as InjectionKey<Store>
+export const storeInjectionKey = Symbol('') as InjectionKey<Store>
