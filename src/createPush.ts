@@ -6,6 +6,7 @@ import type {
    PushStaticOptions,
    PushPromiseOptions,
    CreatePush,
+   Push,
 } from './types'
 
 export const createPush = (({ setIncoming, callItemMethod, clearAll, destroyAll }) => {
@@ -62,3 +63,12 @@ export const createPush = (({ setIncoming, callItemMethod, clearAll, destroyAll 
 
    return push
 }) satisfies CreatePush
+
+export function createPushMock() {
+   return createPush({
+      setIncoming: () => {},
+      callItemMethod: () => {},
+      clearAll: () => {},
+      destroyAll: () => {},
+   }) as Push
+}

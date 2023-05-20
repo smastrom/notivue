@@ -9,10 +9,8 @@
       {
          "files": "README.md",
          "options": {
-            "semi": false,
             "tabWidth": 2,
-            "trailingComma": "none",
-            "useTabs": false
+            "trailingComma": "none"
          }
       }
    ]

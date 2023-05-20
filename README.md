@@ -1,10 +1,10 @@
 <div align="center">
 
-<img src="https://i.ibb.co/DKmV9Xj/cover.png" style="border-radius: 10px;" />
+![notivue](https://i.ibb.co/DKmV9Xj/cover.png)
 
-### Fully-featured notification system for Vue 3.
+### Fully-featured notification system for Vue and Nuxt.
 
-[Live Demo](https://notivue.netlify.app) - [Documentation](https://notivuedocs.netlify.app) - [StackBlitz](https://stackblitz.com/edit/vitejs-vite-kdrtrw?file=src/components/Example.vue)
+[Live Demo](https://notivue.netlify.app) - [Documentation](https://notivuedocs.netlify.app) - [Vite Example](https://stackblitz.com/edit/vitejs-vite-kdrtrw?file=src/components/Example.vue) - [Nuxt Example](https://stackblitz.com/edit/nuxt-starter-fnhcmx?file=app.vue)
 
 </div>
 
@@ -47,12 +47,18 @@ _Pure CSS RTL support_
 pnpm add notivue
 ```
 
-### Vite / Vue CLI
+<br />
+
+## Vite / Vue CLI
+
+### 1. Configure
 
 **main.js**
 
 ```js
+import { createApp } from 'vue'
 import { notivue } from 'notivue'
+import App from './App.vue'
 
 import 'notivue/notifications.css'
 import 'notivue/animations.css'
@@ -60,9 +66,40 @@ import 'notivue/animations.css'
 createApp(App).use(notivue).mount('#app')
 ```
 
-### Nuxt 3
+**App.vue**
 
-**plugins/notivue.ts**
+```vue
+<script setup>
+import { Notivue, notifications } from 'notivue'
+</script>
+
+<template>
+  <Notivue :use="notifications" />
+  <!-- ... -->
+</template>
+```
+
+### 2. Push notifications from any anywhere
+
+```vue
+<script setup>
+import { usePush } from 'notivue'
+
+const push = usePush()
+</script>
+
+<template>
+  <button @click="push.success('Something good has been pushed!')">Push</button>
+</template>
+```
+
+<br />
+
+## Nuxt 3
+
+### 1. Configure
+
+**plugins/notivue.client.ts** (create _/plugins_ folder if it doesn't exist)
 
 ```ts
 import { notivue } from 'notivue'
@@ -80,11 +117,7 @@ export default defineNuxtConfig({
 })
 ```
 
-<br />
-
-## Usage
-
-**App.vue**
+**App.vue** (wrap `<Notivue />` in a [ClientOnly](https://nuxt.com/docs/api/components/client-only) component)
 
 ```vue
 <script setup>
@@ -92,11 +125,14 @@ import { Notivue, notifications } from 'notivue'
 </script>
 
 <template>
-  <Notivue :use="notifications" />
+  <ClientOnly>
+    <Notivue :use="notifications" />
+  </ClientOnly>
+  <-- ... -->
 </template>
 ```
 
-**Anywhere in your app**
+### 2. Push notifications from any anywhere
 
 ```vue
 <script setup>
@@ -114,7 +150,7 @@ const push = usePush()
 
 ## Links
 
-[Live Demo](https://notivue.netlify.app) - [Documentation](https://notivuedocs.netlify.app) - [StackBlitz](https://stackblitz.com/edit/vitejs-vite-kdrtrw?file=src/components/Example.vue)
+[Live Demo](https://notivue.netlify.app) - [Documentation](https://notivuedocs.netlify.app) - [Vite Example](https://stackblitz.com/edit/vitejs-vite-kdrtrw?file=src/components/Example.vue) - [Nuxt Example](https://stackblitz.com/edit/nuxt-starter-fnhcmx?file=app.vue)
 
 <br />
 
