@@ -256,8 +256,8 @@ export const Receiver = defineComponent({
       function animateItem(id: string, animationClass: string, onEnd: () => void) {
          updateItem(id, {
             animationClass,
-            onAnimationstart: (event) => event.stopPropagation(),
-            onAnimationend: (event) => {
+            onAnimationstart: (event: AnimationEvent) => event.stopPropagation(),
+            onAnimationend: (event: AnimationEvent) => {
                event.stopPropagation()
                onEnd()
             },
