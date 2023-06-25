@@ -148,6 +148,53 @@ const push = usePush()
 
 <br />
 
+## Customizing Options
+
+### Globally
+
+```vue
+<script setup>
+import { Notivue, notifications } from 'notivue'
+</script>
+
+<template>
+  <ClientOnly>
+    <Notivue
+      :use="notifications"
+      :options="{
+        global: { title: false },
+        success: { close: false }
+      }"
+    />
+  </ClientOnly>
+  <-- ... -->
+</template>
+```
+
+### Push-specific
+
+```vue
+<script setup>
+import { usePush } from 'notivue'
+
+const push = usePush()
+
+function pushNotification() {
+  push.success({
+    message: 'Something good has been pushed!',
+    title: false,
+    close: false
+  })
+}
+</script>
+
+<template>
+  <button @click="pushNotification">Push</button>
+</template>
+```
+
+<br />
+
 ## Links
 
 [Live Demo](https://notivue.netlify.app) - [Documentation](https://notivuedocs.netlify.app) - [Vite Example](https://stackblitz.com/edit/vitejs-vite-kdrtrw?file=src/components/Example.vue) - [Nuxt Example](https://stackblitz.com/edit/nuxt-starter-fnhcmx?file=app.vue)

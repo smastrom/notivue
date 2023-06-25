@@ -4,6 +4,7 @@ import dts from 'vite-plugin-dts'
 import terser from '@rollup/plugin-terser'
 import cssNesting from 'postcss-nesting'
 import cssNano from 'cssnano'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 const css = {
    postcss: {
@@ -46,6 +47,10 @@ export default defineConfig(({ mode }) => {
             ],
          },
       },
-      plugins: [dts({ staticImport: true, insertTypesEntry: true }), vue()],
+      plugins: [
+         dts({ staticImport: true, insertTypesEntry: true }),
+         vue(),
+         visualizer({ emitFile: true, filename: 'stats.html', gzipSize: true }),
+      ],
    }
 })

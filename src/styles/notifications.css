@@ -65,7 +65,7 @@
       box-sizing: border-box;
    }
 
-   &[data-icon] {
+   &[data-notivue-icon='true'] {
       grid-template-columns: auto 1fr auto;
    }
 }
@@ -116,6 +116,10 @@
    margin: 0;
    padding: 0;
    font-size: var(--nv-message-size);
+}
+
+[dir='rtl'] .Notivue__content-message {
+   font-size: calc(var(--nv-message-size) + 0.33em);
 }
 
 .Notivue__close {

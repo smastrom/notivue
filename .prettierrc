@@ -10,7 +10,8 @@
          "files": "README.md",
          "options": {
             "tabWidth": 2,
-            "trailingComma": "none"
+            "trailingComma": "none",
+            "printWidth": 80
          }
       }
    ]

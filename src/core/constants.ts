@@ -1,8 +1,10 @@
-import { NotificationType as NTypeU } from './types'
+import { NotificationType as NTypeU } from '../types'
 
 export const FIXED_INCREMENT = 800
 
 export const EASING = 'cubic-bezier(0.22, 1, 0.36, 1)'
+
+export const NO_DUR = '0ms !important'
 
 export const COMPONENT_NAME = 'Notivue'
 

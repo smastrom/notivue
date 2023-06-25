@@ -1,12 +1,11 @@
 import { onBeforeUnmount, onMounted } from 'vue'
-import { isSSR } from './utils'
+import { isSSR } from '../core/utils'
 
 export function useWindowSize(onResize: () => void) {
    if (isSSR) return
 
    function _onResize() {
-      // Below this width always reposition
-      if (window.matchMedia('(max-width: 768px)').matches) {
+      if (window.matchMedia('(max-width: 1100px)').matches) {
          onResize()
       }
    }
