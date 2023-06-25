@@ -1,6 +1,6 @@
 import { computed } from 'vue'
 
-import { defaultOptions } from './options'
+import { defaultNotificationOptions } from './options'
 import { toWritableRefs, mergeDeep } from './utils'
 
 import { CLASS_PREFIX as CX } from './constants'
@@ -13,7 +13,7 @@ export const defaultConfig: _NotivueConfig = {
    position: 'top-center',
    teleportTo: 'body',
    class: '',
-   options: defaultOptions,
+   notifications: defaultNotificationOptions,
    animations: { enter: CX + 'enter', leave: CX + 'leave', clearAll: CX + 'clearAll' },
    theme: {},
    icons: {},

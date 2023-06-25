@@ -34,7 +34,7 @@ export interface _NotivueConfig {
    pauseOnTouch: boolean
    position: Position
    class: ClassName
-   options: Record<string, NotificationOptions>
+   notifications: Record<string, NotificationOptions>
    animations: Partial<{ enter: string; leave: string; clearAll: string }>
    teleportTo: string | HTMLElement
    theme: Theme
@@ -43,7 +43,7 @@ export interface _NotivueConfig {
 
 export interface NotificationOptions {
    icon: boolean
-   title: string | false
+   title: string
    message: string
    close: boolean
    duration: number
@@ -201,12 +201,6 @@ type ThemeVars =
    | PromiseColorsVars
    | PromiseResolveColorsVars
    | PromiseRejectColorsVars
-
-export type DefaultOptions = {
-   [K in NotificationType]: NotificationOptions
-} & {
-   [key: string]: never
-}
 
 // Aliases, mentioned in the docs, not used internally
 

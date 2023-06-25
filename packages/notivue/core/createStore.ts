@@ -1,7 +1,7 @@
 import { ref, shallowRef, triggerRef } from 'vue'
 
 import { getConfig } from './config'
-import { mergeIncomingOptions } from './options'
+import { mergeNotificationOptions } from './options'
 import { createPush } from './createPush'
 
 import { NotificationType as NType, FIXED_INCREMENT, TransitionType as TType } from './constants'
@@ -124,41 +124,44 @@ export function createStore(userConfig: DeepPartial<_NotivueConfig>) {
          const createdAt = Date.now()
          const updatedAt = performance.now()
 
-         const mergedOptions = mergeIncomingOptions(config.options.value, incomingOptions)
+         const notificationOptions = mergeNotificationOptions(
+            config.notifications.value,
+            incomingOptions
+         )
 
          const shouldSkipTimeout =
-            mergedOptions.duration === Infinity || pointer.isHovering || pointer.isTouching
+            notificationOptions.duration === Infinity || pointer.isHovering || pointer.isTouching
 
          if (
             ([NType.PROMISE_REJECT, NType.PROMISE_RESOLVE] as string[]).includes(
                incomingOptions.type
             )
          ) {
-            const { timeoutId } = this.get(mergedOptions.id) ?? {}
+            const { timeoutId } = this.get(notificationOptions.id) ?? {}
             clearTimeout(timeoutId)
 
-            this.update(mergedOptions.id, {
-               ...mergedOptions,
+            this.update(notificationOptions.id, {
+               ...notificationOptions,
                createdAt,
                updatedAt,
                timeoutId: shouldSkipTimeout
                   ? undefined
-                  : this.playLeaveTimeout(mergedOptions.id, mergedOptions.duration),
+                  : this.playLeaveTimeout(notificationOptions.id, notificationOptions.duration),
             })
          } else {
             this.set({
-               ...mergedOptions,
+               ...notificationOptions,
                createdAt,
                updatedAt,
                elapsed: 0,
                timeoutId: shouldSkipTimeout
                   ? undefined
-                  : this.playLeaveTimeout(mergedOptions.id, mergedOptions.duration),
-               clear: () => this.playLeave(mergedOptions.id),
-               destroy: () => this.remove(mergedOptions.id),
+                  : this.playLeaveTimeout(notificationOptions.id, notificationOptions.duration),
+               clear: () => this.playLeave(notificationOptions.id),
+               destroy: () => this.remove(notificationOptions.id),
             })
 
-            this.playEnter(mergedOptions.id)
+            this.playEnter(notificationOptions.id)
          }
       },
    }

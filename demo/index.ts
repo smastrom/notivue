@@ -11,7 +11,7 @@ createApp(App)
    .use(notivue, {
       theme: light,
       icons: filledIcons,
-      options: {
+      notifications: {
          success: { title: 'Success' },
       },
    })

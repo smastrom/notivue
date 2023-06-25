@@ -1,10 +1,9 @@
 import { NotificationType as NType } from './constants'
-import { DefaultOptions } from '../types'
 
 import type { NotificationOptions, UserPushOptionsWithInternals } from '../types'
 
 export const success: NotificationOptions = {
-   title: false,
+   title: '',
    message: '',
    duration: 4000,
    icon: true,
@@ -38,7 +37,7 @@ const info: NotificationOptions = {
    ...success,
 }
 
-export const defaultOptions = {
+export const defaultNotificationOptions = {
    [NType.SUCCESS]: success,
    [NType.ERROR]: error,
    [NType.WARNING]: warning,
@@ -46,9 +45,9 @@ export const defaultOptions = {
    [NType.PROMISE]: promise,
    [NType.PROMISE_RESOLVE]: success,
    [NType.PROMISE_REJECT]: error,
-} as DefaultOptions
+}
 
-export function mergeIncomingOptions(
+export function mergeNotificationOptions(
    optionsFromConfig: Record<string, NotificationOptions>,
    optionsFromPush: UserPushOptionsWithInternals
 ) {

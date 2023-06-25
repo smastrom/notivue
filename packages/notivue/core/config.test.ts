@@ -2,7 +2,7 @@ import { test, describe, expect } from 'vitest'
 
 import { defaultConfig } from './config'
 import { mergeDeep } from './utils'
-import { defaultOptions } from './options'
+import { defaultNotificationOptions } from './options'
 import { CLASS_PREFIX as CX } from './constants'
 import { filledIcons } from '../components/icons'
 import { light } from '../styles/themes'
@@ -32,7 +32,7 @@ describe('Config Merge', () => {
 
       expect(result).toMatchObject(userConfig)
 
-      expect(result.options).toStrictEqual(defaultOptions) // Default
+      expect(result.notifications).toStrictEqual(defaultNotificationOptions) // Default
 
       expect(result).toHaveProperty('animations', {
          enter: CX + 'enterCustom',
