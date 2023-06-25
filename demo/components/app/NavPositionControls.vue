@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { store, setPosition, setFullWidth, setCenterOnMobile } from '../store'
-import Arrow from '../icons/Arrow.vue'
-import type { Position } from '../../src/types'
+import { store, setFullWidth, toggleCenterOnMobile } from '../../lib/store'
+import { useConfig } from '../../../src'
 
-const isFullWidth = computed(() => store.maxWidth === '100%')
+import ArrowIcon from '../icons/ArrowIcon.vue'
+
+import type { Position } from '../../../src'
 
 const positions = [
    {
@@ -38,6 +39,14 @@ const positions = [
       rotate: -180,
    },
 ]
+
+const isFullWidth = computed(() => store.maxWidth === '100%')
+
+const config = useConfig()
+
+function setPosition(position: Position) {
+   config.position.value = position
+}
 </script>
 
 <template>
@@ -50,9 +59,9 @@ const positions = [
          @click="setPosition(position.value as Position)"
          tabindex="0"
          :aria-label="position.label"
-         :aria-checked="store.position === position.value"
+         :aria-checked="config.position.value === position.value"
       >
-         <Arrow :rotate="position.rotate" />
+         <ArrowIcon :rotate="position.rotate" />
       </div>
 
       <div
@@ -69,7 +78,7 @@ const positions = [
          role="switch"
          :aria-checked="store.centerOnMobile"
          aria-label="Center on Mobile"
-         @click="setCenterOnMobile"
+         @click="toggleCenterOnMobile"
       >
          Center on Mobile
       </div>
@@ -103,3 +112,4 @@ svg {
    width: 1em;
 }
 </style>
+../../src/types/types
