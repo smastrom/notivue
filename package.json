@@ -1,85 +1,34 @@
 {
-   "name": "notivue",
-   "version": "0.9.4",
-   "private": false,
-   "description": "Fully-featured notification system for Vue and Nuxt.",
-   "keywords": [
-      "vue",
-      "vuejs",
-      "notification",
-      "notifications",
-      "alert",
-      "alerts",
-      "toast",
-      "toasts",
-      "notivue"
-   ],
-   "homepage": "https://notivue.netlify.app/",
-   "bugs": {
-      "url": "https://github.com/smastrom/notivue/issues"
+   "version": "1.0.0",
+   "private": true,
+   "packageManager": "pnpm@8.6.3",
+   "engines": {
+      "node": ">=18.0.0"
    },
-   "repository": {
-      "type": "git",
-      "url": "https://github.com/smastrom/notivue.git"
-   },
-   "license": "MIT",
-   "author": {
-      "name": "Simone Mastromattei",
-      "email": "smastrom@proton.me"
-   },
-   "exports": {
-      ".": {
-         "import": "./dist/index.mjs",
-         "require": "./dist/index.js"
-      },
-      "./notifications.css": "./dist/notifications.css",
-      "./animations.css": "./dist/animations.css"
-   },
-   "main": "dist/index.js",
-   "module": "dist/index.mjs",
-   "types": "dist/index.d.ts",
-   "files": [
-      "dist/*"
-   ],
    "scripts": {
-      "build": "rimraf dist && vue-tsc && vite build",
-      "postbuild": "postcss ./src/styles/animations.css ./src/styles/notifications.css -d ./dist/ --use cssnano postcss-nesting --no-map",
-      "build:demo": "rimraf dist && vite build --mode demo",
-      "dev": "vite",
+      "preinstall": "npx only-allow pnpm",
+      "dev": "pnpm -C demo run dev",
+      "preview": "pnpm -C demo run preview",
+      "build": "pnpm -C packages/notivue run build",
+      "build:demo": "pnpm -C demo run build",
       "prepare": "husky install",
       "pretty-quick": "pretty-quick",
-      "preview": "vite preview",
+      "test:gui": "cypress open --component",
       "test:chrome": "cypress run --component --browser chrome",
       "test:firefox": "cypress run --component --browser firefox",
       "test:webkit": "cypress run --component --browser webkit",
-      "test": "pnpm test:chrome && pnpm test:firefox && pnpm test:webkit",
-      "test:gui": "cypress open --component"
+      "test": "pnpm test:chrome && pnpm test:firefox && pnpm test:webkit"
    },
    "devDependencies": {
-      "@rollup/plugin-terser": "^0.4.3",
       "@types/node": "^18.16.18",
       "@vitejs/plugin-vue": "^4.2.3",
-      "axe-core": "^4.7.2",
-      "cssnano": "^5.1.15",
-      "cypress": "^12.15.0",
-      "cypress-axe": "^1.4.0",
-      "cypress-real-events": "^1.8.1",
       "husky": "^8.0.3",
-      "playwright-webkit": "^1.35.1",
-      "postcss": "^8.4.24",
-      "postcss-cli": "^10.1.0",
-      "postcss-nesting": "^11.3.0",
       "prettier": "^2.8.8",
       "pretty-quick": "^3.1.3",
       "rimraf": "^4.4.1",
-      "rollup-plugin-visualizer": "^5.9.2",
       "typescript": "^4.9.5",
       "vite": "^4.3.9",
-      "vite-plugin-dts": "^2.3.0",
       "vue": "^3.3.4",
       "vue-tsc": "^1.8.1"
-   },
-   "dependencies": {
-      "date-fns": "^2.30.0"
    }
 }

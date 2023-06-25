@@ -1,4 +1,4 @@
-import { SVGAttributes, markRaw as raw } from 'vue'
+import { markRaw as raw, type SVGAttributes } from 'vue'
 import { NotificationType as NType } from '../../core/constants'
 
 import SuccessIcon from './SuccessIcon.vue'

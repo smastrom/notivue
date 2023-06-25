@@ -1,0 +1,70 @@
+{
+   "name": "notivue",
+   "version": "1.0.0",
+   "private": false,
+   "description": "Fully-featured notification system for Vue and Nuxt.",
+   "keywords": [
+      "vue",
+      "vuejs",
+      "notification",
+      "notifications",
+      "alert",
+      "alerts",
+      "toast",
+      "toasts",
+      "notivue"
+   ],
+   "homepage": "https://notivue.netlify.app/",
+   "bugs": {
+      "url": "https://github.com/smastrom/notivue/issues"
+   },
+   "repository": {
+      "type": "git",
+      "url": "https://github.com/smastrom/notivue.git"
+   },
+   "license": "MIT",
+   "author": {
+      "name": "Simone Mastromattei",
+      "email": "smastrom@proton.me"
+   },
+   "type": "module",
+   "exports": {
+      ".": {
+         "import": "./dist/index.mjs",
+         "require": "./dist/index.js"
+      },
+      "./notifications.css": "./dist/notifications.css",
+      "./animations.css": "./dist/animations.css"
+   },
+   "main": "dist/index.js",
+   "module": "dist/index.mjs",
+   "types": "dist/index.d.ts",
+   "files": [
+      "dist/*"
+   ],
+   "scripts": {
+      "dev": "pnpm --C \"../../demo\" run dev",
+      "preinstall": "npx only-allow pnpm",
+      "build": "rimraf dist && vue-tsc && vite build && pnpm run build:css",
+      "build:css": "esbuild ./styles/notifications.css ./styles/animations.css --bundle --outdir=dist --minify --target=chrome58,edge16,firefox57,node12,safari11",
+      "postbuild:css": "echo \"esbuild above warnings are fine, it means that code has been transformed for browsers that don't supports CSS nesting.\""
+   },
+   "devDependencies": {
+      "@rollup/plugin-terser": "^0.4.3",
+      "@types/node": "^18.16.18",
+      "@vitejs/plugin-vue": "^4.2.3",
+      "axe-core": "^4.7.2",
+      "cypress": "^12.15.0",
+      "cypress-axe": "^1.4.0",
+      "cypress-real-events": "^1.8.1",
+      "esbuild": "^0.18.8",
+      "playwright-webkit": "^1.35.1",
+      "rimraf": "^4.4.1",
+      "rollup-plugin-visualizer": "^5.9.2",
+      "typescript": "^4.9.5",
+      "vite": "^4.3.9",
+      "vite-plugin-dts": "^2.3.0",
+      "vue": "^3.3.4",
+      "vue-tsc": "^1.8.1"
+   }
+}

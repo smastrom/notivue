@@ -10,15 +10,12 @@
       "lib": ["ESNext", "DOM"],
       "skipLibCheck": true,
       "noEmit": true,
-      "types": ["node", "cypress", "cypress-axe", "cypress-real-events"]
+      "baseUrl": ".",
+      "paths": {
+         "@/components/*": ["components/*"],
+         "@/lib/*": ["lib/*"],
+         "notivue": ["../packages/notivue/index.ts"]
+      }
    },
-   "include": [
-      "src",
-      "demo",
-      "tests",
-      "vite-env.d.ts",
-      "cypress.config.ts",
-      "./cypress/**/*.ts",
-      "cypress.d.ts"
-   ]
+   "include": ["."]
 }

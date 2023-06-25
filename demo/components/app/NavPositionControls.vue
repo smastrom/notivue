@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { store, setFullWidth, toggleCenterOnMobile } from '../../lib/store'
-import { useConfig } from '../../../src'
+import { useConfig, type Position } from 'notivue'
+
+import { store, setFullWidth, toggleCenterOnMobile } from '@/lib/store'
 
 import ArrowIcon from '../icons/ArrowIcon.vue'
-
-import type { Position } from '../../../src'
 
 const positions = [
    {

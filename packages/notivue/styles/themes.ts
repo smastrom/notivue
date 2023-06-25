@@ -3,9 +3,9 @@ import type { Theme } from '../types'
 const layout: Theme = {
    '--nv-width': '360px',
    '--nv-spacing': '0.65rem',
-   '--nv-radius': '0.65rem',
+   '--nv-radius': '0.5rem',
    '--nv-icon-size': '1.5rem',
-   '--nv-title-size': '1rem',
+   '--nv-title-size': '0.925rem',
    '--nv-message-size': '0.875rem',
    '--nv-close-size': '1.5rem',
 }

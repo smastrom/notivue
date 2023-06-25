@@ -1,10 +1,10 @@
 import { createApp } from 'vue'
-import { notivue, light, filledIcons } from '../src'
+import { notivue, light, filledIcons } from 'notivue'
 
 import App from './components/app/App.vue'
 
-import '../src/styles/notifications.css'
-import '../src/styles/animations.css'
+import '../packages/notivue/styles/notifications.css'
+import '../packages/notivue/styles/animations.css'
 import './assets/style.css'
 
 createApp(App)

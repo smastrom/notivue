@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { usePush } from '../../../src'
-import { getRandomInt } from '../../lib/utils'
+import { usePush } from 'notivue'
+
+import { getRandomInt } from '@/lib/utils'
 
 import VueIcon from '../icons/VueIcon.vue'
 import Button from '../shared/Button.vue'
