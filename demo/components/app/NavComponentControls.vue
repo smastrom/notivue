@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { filledIcons, outlineIcons, useConfig, usePush } from 'notivue'
+
 import {
    store,
    toggleRenderTitles as toggleInternalRenderTitles,
@@ -7,7 +9,6 @@ import {
    toggleRTL as toggleInternalRTL,
    messages,
 } from '../../lib/store'
-import { filledIcons, outlineIcons, useConfig, usePush } from '../../../src'
 import { isMobile } from '../../lib/utils'
 
 const config = useConfig()

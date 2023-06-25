@@ -1,6 +1,6 @@
 import { reactive, computed } from 'vue'
 
-import type { Position, Themes } from '../../src/types'
+import type { Position, Themes } from 'notivue'
 
 export const store = reactive({
    position: 'top-center' as Position,

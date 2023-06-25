@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { watchEffect } from 'vue'
 
-import { Notifications, Notivue } from '../../../src'
-import { store } from '../../lib/store'
+import { Notifications, Notivue } from 'notivue'
+import { store } from '@/lib/store'
 
 import Nav from './Nav.vue'
 import Background from './Background.vue'

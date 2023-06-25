@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { messages } from '../../lib/store'
-import { usePush } from '../../../src'
-import { getRandomInt } from '../../lib/utils'
+import { usePush } from 'notivue'
+
+import { messages } from '@/lib/store'
+import { getRandomInt } from '@/lib/utils'
 
 import Button from '../shared/Button.vue'
 import SuccessIcon from '../icons/SuccessIcon.vue'

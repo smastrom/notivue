@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref } from 'vue'
-import { usePush } from '../../../src'
+import { usePush } from 'notivue'
 
 import NavComponentControls from './NavComponentControls.vue'
 import NavThemesControls from './NavThemesControls.vue'
