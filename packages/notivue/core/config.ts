@@ -5,9 +5,9 @@ import { toWritableRefs, mergeDeep } from './utils'
 
 import { CLASS_PREFIX as CX } from './constants'
 
-import type { NotivueConfig, DeepPartial } from '../types'
+import type { _NotivueConfig, DeepPartial } from '../types'
 
-export const defaultConfig: NotivueConfig = {
+export const defaultConfig: _NotivueConfig = {
    pauseOnHover: true,
    pauseOnTouch: true,
    position: 'top-center',
@@ -19,8 +19,8 @@ export const defaultConfig: NotivueConfig = {
    icons: {},
 }
 
-export function getConfig(userConfig: DeepPartial<NotivueConfig>) {
-   const reactiveConfig = toWritableRefs(mergeDeep(defaultConfig, userConfig) as NotivueConfig)
+export function getConfig(userConfig: DeepPartial<_NotivueConfig>) {
+   const reactiveConfig = toWritableRefs(mergeDeep(defaultConfig, userConfig))
 
    return {
       ...reactiveConfig,

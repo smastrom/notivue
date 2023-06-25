@@ -1,5 +1,6 @@
 import { shallowRef, type Ref } from 'vue'
-import { DeepPartial } from '../types'
+
+import type { DeepPartial } from '../types'
 
 export const isSSR = typeof window === 'undefined'
 
@@ -16,17 +17,18 @@ export function toWritableRefs<T extends Record<string, any>>(object: T) {
    )
 }
 
-export function mergeDeep<T extends Record<string, any>>(target: T, source: T | DeepPartial<T>): T {
-   const merged = { ...target }
+export function mergeDeep<T extends Record<string, any>>(target: T, source: DeepPartial<T>): T {
+   const merged: T = { ...target }
 
    for (const key in source) {
       if (source.hasOwnProperty(key)) {
          if (source[key] && typeof source[key] === 'object') {
-            // @ts-ignore
-            merged[key] = mergeDeep(target[key], source[key])
+            merged[key as keyof T] = mergeDeep(
+               target[key as keyof T],
+               source[key] as DeepPartial<T[keyof T]>
+            ) as T[keyof T]
          } else {
-            // @ts-ignore
-            merged[key] = source[key]
+            merged[key as keyof T] = source[key] as T[keyof T]
          }
       }
    }

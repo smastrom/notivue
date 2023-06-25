@@ -6,9 +6,9 @@ import { createPush } from './createPush'
 
 import { NotificationType as NType, FIXED_INCREMENT, TransitionType as TType } from './constants'
 
-import type { DeepPartial, UserPushOptionsWithInternals, NotivueConfig, StoreItem } from '../types'
+import type { DeepPartial, UserPushOptionsWithInternals, _NotivueConfig, StoreItem } from '../types'
 
-export function createStore(userConfig: DeepPartial<NotivueConfig>) {
+export function createStore(userConfig: DeepPartial<_NotivueConfig>) {
    const config = getConfig(userConfig)
 
    const items = {
