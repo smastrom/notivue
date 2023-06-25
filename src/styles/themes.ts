@@ -1,4 +1,4 @@
-import type { Theme } from './types'
+import type { Theme } from '../types'
 
 const layout: Theme = {
    '--nv-width': '360px',

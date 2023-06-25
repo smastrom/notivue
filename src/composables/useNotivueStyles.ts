@@ -1,19 +1,39 @@
-import { computed, type Ref, type ComputedRef, type CSSProperties } from 'vue'
-import { useReducedMotion } from './useReducedMotion'
-import { EASING } from './constants'
-import type { ReceiverProps } from './types'
+import { computed, type CSSProperties } from 'vue'
 
-const NO_DUR = '0ms !important'
+import { useReducedMotion } from './useReducedMotion'
+import { useConfig } from './useStore'
+import { NO_DUR, EASING } from '../core/constants'
+
+/**
+ * The follwing styles are defined here and not in a CSS file
+ * because they are needed whether user uses default or custom components.
+ *
+ * If user chooses to only use custom components they can simply
+ * remove the /notifications.css import.
+ */
 
 const boxSizing: CSSProperties = { boxSizing: 'border-box' }
+const noMargin: CSSProperties = { margin: '0' }
+const flex: CSSProperties = { display: 'flex' }
+const absolute: CSSProperties = { position: 'absolute' }
 
 const flexCenter: CSSProperties = {
-   display: 'flex',
+   ...flex,
    justifyContent: 'center',
    width: '100%',
 }
 
-export const staticStyles: Record<string, CSSProperties> = {
+export const visuallyHidden: CSSProperties = {
+   ...absolute,
+   clip: 'rect(0 0 0 0)',
+   clipPath: 'inset(50%)',
+   height: '1px',
+   overflow: 'hidden',
+   whiteSpace: 'nowrap',
+   width: '1px',
+}
+
+const staticStyles: Record<string, CSSProperties> = {
    wrapper: {
       ...boxSizing,
       ...flexCenter,
@@ -26,17 +46,21 @@ export const staticStyles: Record<string, CSSProperties> = {
    container: {
       ...boxSizing,
       ...flexCenter,
+      ...noMargin,
       position: 'relative',
       maxWidth: 'var(--nv-root-container, 100%)',
+      listStyle: 'none',
+      padding: '0',
    },
    row: {
       ...boxSizing,
+      ...noMargin,
+      ...flex,
+      ...absolute,
       padding: '0 var(--nv-root-right, 1.25rem) 0 var(--nv-root-left, 1.25rem)',
       transitionTimingFunction: EASING,
       transitionDuration: '300ms',
       transitionProperty: 'transform',
-      position: 'absolute',
-      display: 'flex',
       width: '100%',
    },
    box: {
@@ -47,19 +71,18 @@ export const staticStyles: Record<string, CSSProperties> = {
    },
 }
 
-export function useDynamicStyles(
-   position: Ref<ReceiverProps['position']>
-): ComputedRef<Record<string, CSSProperties>> {
+export function useNotivueStyles() {
    const isReduced = useReducedMotion()
+   const config = useConfig()
 
    const yCoords = computed<CSSProperties>(() =>
-      position.value.startsWith('top')
+      config.isTopAlign.value
          ? { top: 'var(--nv-root-top, 1.25rem)' }
          : { bottom: 'var(--nv-root-bottom, 1.25rem)' }
    )
 
    const xAlignment = computed<CSSProperties>(() => {
-      const is = (value: string) => position.value.endsWith(value)
+      const is = (value: string) => config.position.value.endsWith(value)
 
       return {
          justifyContent: `var(--nv-root-x-align, ${
@@ -68,7 +91,7 @@ export function useDynamicStyles(
       }
    })
 
-   return computed(() => ({
+   const dynamicStyles = computed(() => ({
       row: {
          ...yCoords.value,
          ...xAlignment.value,
@@ -76,4 +99,6 @@ export function useDynamicStyles(
       },
       box: isReduced.value ? { animationDuration: NO_DUR } : {},
    }))
+
+   return { staticStyles, dynamicStyles }
 }

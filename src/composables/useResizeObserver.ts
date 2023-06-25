@@ -1,7 +1,8 @@
 import { onMounted, onBeforeUnmount, watch, type ComputedRef } from 'vue'
 
-export function useResizeObserver(refs: ComputedRef<HTMLElement[]>, onSizeChange: () => void) {
+export function useResizeObserver(elements: HTMLElement[], onSizeChange: () => void) {
    let resizeObserver: ResizeObserver
+
    const calls = new Set()
 
    onMounted(() => {
@@ -19,11 +20,9 @@ export function useResizeObserver(refs: ComputedRef<HTMLElement[]>, onSizeChange
    })
 
    watch(
-      refs,
-      (_refs) => {
-         if (_refs.length > 0) {
-            _refs.forEach((ref) => resizeObserver?.observe(ref))
-         }
+      elements,
+      (el) => {
+         if (el.length > 0) el.forEach((el) => resizeObserver?.observe(el))
       },
       { flush: 'post' }
    )
