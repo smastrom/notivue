@@ -29,7 +29,7 @@ export type ClassName = string | { [key: string]: boolean } | string[]
 
 // Config
 
-export interface NotivueConfig {
+export interface _NotivueConfig {
    pauseOnHover: boolean
    pauseOnTouch: boolean
    position: Position
@@ -212,3 +212,4 @@ export type DefaultOptions = {
 
 export type NotivueIcons = Icons
 export type NotivueTheme = Theme
+export type NotivueConfig = DeepPartial<_NotivueConfig>

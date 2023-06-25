@@ -12,12 +12,7 @@
       "build": "pnpm -C packages/notivue run build",
       "build:demo": "pnpm -C demo run build",
       "prepare": "husky install",
-      "pretty-quick": "pretty-quick",
-      "test:gui": "cypress open --component",
-      "test:chrome": "cypress run --component --browser chrome",
-      "test:firefox": "cypress run --component --browser firefox",
-      "test:webkit": "cypress run --component --browser webkit",
-      "test": "pnpm test:chrome && pnpm test:firefox && pnpm test:webkit"
+      "pretty-quick": "pretty-quick"
    },
    "devDependencies": {
       "@types/node": "^18.16.18",
