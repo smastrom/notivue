@@ -1,14 +1,18 @@
 import { createApp } from 'vue'
-import { notivue } from '../src'
-import App from './App.vue'
+import { notivue, light, filledIcons } from '../src'
 
-import '../src/notifications.css'
-import '../src/animations.css'
+import App from './components/app/App.vue'
 
+import '../src/styles/notifications.css'
+import '../src/styles/animations.css'
 import './assets/style.css'
 
 createApp(App)
    .use(notivue, {
-      register: ['user-1'],
+      theme: light,
+      icons: filledIcons,
+      options: {
+         success: { title: 'Success' },
+      },
    })
    .mount('#app')

@@ -1,34 +1,32 @@
 <script setup lang="ts">
-import { store } from '../store'
+import { formatDistanceToNow as toNow } from 'date-fns'
 
 const props = defineProps<{
-   name: string
    message: string
-   timeAgo: string
-   clear: () => void
+   createdAt: number
+   close: () => void
+   profilePicture: string
+   name: string
 }>()
 </script>
 
 <template>
    <div class="Notification">
       <div class="Avatar">
-         <img src="../assets/profile-picture.png" alt="profile" class="Picture" />
+         <img src="../../assets/profile-picture.png" alt="profile" class="Picture" />
          <span class="OnlineDot" />
       </div>
       <div class="Content">
          <div class="Details">
-            <time>{{ props.timeAgo }}</time>
+            <time>{{ toNow(props.createdAt) }} ago</time>
             <p>
-               <a href="#">{{ name }}</a> {{ message }}
+               <a href="#">{{ name }}</a>
+               {{ message.replace(name, '') }}
             </p>
          </div>
          <nav class="Buttons">
-            <button @click="props.clear" class="Button ButtonReverse">
-               {{ store.rtl ? 'ينكر' : 'Deny' }}
-            </button>
-            <button @click="props.clear" class="Button">
-               {{ store.rtl ? 'يقبل' : 'Accept' }}
-            </button>
+            <button @click="props.close" class="Button ButtonReverse">Deny</button>
+            <button @click="props.close" class="Button">Accept</button>
          </nav>
       </div>
    </div>

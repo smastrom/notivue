@@ -114,6 +114,7 @@ body {
    color: var(--button-color);
    white-space: nowrap;
    user-select: none;
+   text-transform: capitalize;
 
    &:hover {
       transform: scale(1.1);

@@ -1,19 +1,15 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { formatDistanceToNow as toNow } from 'date-fns'
 
-import Upload from '../icons/Upload.vue'
-import Success from '../icons/Success.vue'
-import Close from '../icons/Close.vue'
-
-import type { NotificationType } from '../../src/types'
+import CloseIcon from '../icons/CloseIcon.vue'
 
 const props = defineProps<{
-   type: NotificationType
+   type: string
    fileName: string
    message: string
-   timeAgo?: string
-   remainingSpace?: number
-   clear: () => void
+   createdAt: number
+   close: () => void
 }>()
 
 const isPromise = computed(() => props.type === 'promise')
@@ -22,14 +18,10 @@ const isPromise = computed(() => props.type === 'promise')
 <template>
    <div class="Notification">
       <div class="Header">
-         <div class="IconContainer">
-            <Upload v-if="isPromise" />
-            <Success v-else />
-         </div>
          <div class="Title">
             <h3>{{ message }}</h3>
-            <button class="Close" @click="props.clear" v-if="!isPromise">
-               <Close />
+            <button class="Close" @click="props.close" v-if="!isPromise">
+               <CloseIcon />
             </button>
          </div>
       </div>
@@ -48,8 +40,8 @@ const isPromise = computed(() => props.type === 'promise')
       </div>
 
       <div class="Footer" v-else>
-         <time class="Time">{{ props.timeAgo }}</time>
-         <p><strong>Remaining space:</strong> {{ remainingSpace }} GB</p>
+         <time class="Time">{{ toNow(props.createdAt) }} ago</time>
+         <p><strong>Remaining space:</strong> 302.1 GB</p>
       </div>
    </div>
 </template>
