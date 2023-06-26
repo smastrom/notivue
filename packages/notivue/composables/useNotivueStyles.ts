@@ -2,15 +2,19 @@ import { computed, type CSSProperties } from 'vue'
 
 import { useReducedMotion } from './useReducedMotion'
 import { useConfig } from './useStore'
-import { NO_DUR, EASING } from '../core/constants'
+
+import type { NotivueElements } from '../types'
 
 /**
  * The follwing styles are defined here and not in a CSS file
  * because they are needed whether user uses default or custom components.
  *
- * If user chooses to only use custom components they can simply
- * remove the /notifications.css import.
+ * Hence if users choose to only use custom components they can
+ * remove the /notifications.css import and have no CSS at all.
  */
+
+export const EASING = 'cubic-bezier(0.22, 1, 0.36, 1)'
+export const NO_DUR = '0ms !important'
 
 const boxSizing: CSSProperties = { boxSizing: 'border-box' }
 const noMargin: CSSProperties = { margin: '0' }
@@ -33,7 +37,7 @@ export const visuallyHidden: CSSProperties = {
    width: '1px',
 }
 
-const staticStyles: Record<string, CSSProperties> = {
+const staticStyles: Record<NotivueElements, CSSProperties> = {
    wrapper: {
       ...boxSizing,
       ...flexCenter,
@@ -91,14 +95,17 @@ export function useNotivueStyles() {
       }
    })
 
-   const dynamicStyles = computed(() => ({
-      row: {
-         ...yCoords.value,
-         ...xAlignment.value,
-         ...(isReduced.value ? { transitionDuration: NO_DUR } : {}),
-      },
-      box: isReduced.value ? { animationDuration: NO_DUR } : {},
-   }))
+   const dynamicStyles = computed(
+      () =>
+         ({
+            row: {
+               ...yCoords.value,
+               ...xAlignment.value,
+               ...(isReduced.value ? { transitionDuration: NO_DUR } : {}),
+            },
+            box: isReduced.value ? { animationDuration: NO_DUR } : {},
+         } as Record<NotivueElements, CSSProperties>)
+   )
 
    return { staticStyles, dynamicStyles }
 }

@@ -1,6 +1,11 @@
 import { NotificationType as NType } from './constants'
 
-import type { NotificationOptions, UserPushOptionsWithInternals } from '../types'
+import type {
+   Obj,
+   NotificationOptions,
+   NotificationType,
+   UserPushOptionsWithInternals,
+} from '../types'
 
 export const success: NotificationOptions = {
    title: '',
@@ -12,7 +17,6 @@ export const success: NotificationOptions = {
    ariaRole: 'status',
    closeAriaLabel: 'Close',
    class: '',
-   props: {},
 }
 
 const error: NotificationOptions = {
@@ -45,12 +49,16 @@ export const defaultNotificationOptions = {
    [NType.PROMISE]: promise,
    [NType.PROMISE_RESOLVE]: success,
    [NType.PROMISE_REJECT]: error,
-}
+} as Record<NotificationType, NotificationOptions>
 
-export function mergeNotificationOptions(
+export function mergeNotificationOptions<T extends Obj = Obj>(
    optionsFromConfig: Record<string, NotificationOptions>,
-   optionsFromPush: UserPushOptionsWithInternals
+   optionsFromPush: UserPushOptionsWithInternals<T>
 ) {
+   if (!optionsFromPush.props) {
+      optionsFromPush.props = {} as T
+   }
+
    return {
       ...(optionsFromConfig[optionsFromPush.type] ?? optionsFromConfig.success),
       ...optionsFromConfig.global,

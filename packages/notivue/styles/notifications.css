@@ -1,11 +1,13 @@
-[data-notivue='success'] {
+[data-notivue='success'],
+[data-notivue='promise-resolve'] {
    --nv-bg: var(--nv-success-background);
    --nv-fg: var(--nv-success-foreground);
    --nv-accent: var(--nv-success-accent);
    --nv-border: var(--nv-success-border);
 }
 
-[data-notivue='error'] {
+[data-notivue='error'],
+[data-notivue='promise-reject'] {
    --nv-bg: var(--nv-error-background);
    --nv-fg: var(--nv-error-foreground);
    --nv-accent: var(--nv-error-accent);
@@ -31,20 +33,6 @@
    --nv-fg: var(--nv-promise-foreground);
    --nv-accent: var(--nv-promise-accent);
    --nv-border: var(--nv-promise-border);
-}
-
-[data-notivue='promise-resolve'] {
-   --nv-bg: var(--nv-promise-resolve-background, var(--nv-success-background));
-   --nv-fg: var(--nv-promise-resolve-foreground, var(--nv-success-foreground));
-   --nv-accent: var(--nv-promise-resolve-accent, var(--nv-success-accent));
-   --nv-border: var(--nv-promise-resolve-border, var(--nv-success-border));
-}
-
-[data-notivue='promise-reject'] {
-   --nv-bg: var(--nv-promise-reject-background, var(--nv-error-background));
-   --nv-fg: var(--nv-promise-reject-foreground, var(--nv-error-foreground));
-   --nv-accent: var(--nv-promise-reject-accent, var(--nv-error-accent));
-   --nv-border: var(--nv-promise-reject-border, var(--nv-error-border));
 }
 
 .Notivue__notification {

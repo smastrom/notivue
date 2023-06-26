@@ -4,9 +4,7 @@ import { isSSR } from '../core/utils'
 export function useReducedMotion() {
    const isReduced = ref(false)
 
-   if (isSSR) {
-      return isReduced
-   }
+   if (isSSR) return isReduced
 
    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduced)')
 

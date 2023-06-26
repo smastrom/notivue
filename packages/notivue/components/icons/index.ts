@@ -1,4 +1,5 @@
 import { markRaw as raw, type SVGAttributes } from 'vue'
+
 import { NotificationType as NType } from '../../core/constants'
 
 import SuccessIcon from './SuccessIcon.vue'
@@ -10,7 +11,7 @@ import InfoOutlineIcon from './InfoOutlineIcon.vue'
 import PromiseIcon from './PromiseIcon.vue'
 import CloseIcon from './CloseIcon.vue'
 
-import type { Icons } from '../../types'
+import type { NotivueIcons } from '../../types'
 
 export const svgProps: SVGAttributes = {
    xmlns: 'http://www.w3.org/2000/svg',
@@ -34,7 +35,7 @@ export const featherProps: SVGAttributes = {
    'stroke-linejoin': 'round',
 }
 
-export const filledIcons: Icons = {
+export const filledIcons: NotivueIcons = {
    [NType.SUCCESS]: raw(SuccessIcon),
    [NType.ERROR]: raw(ErrorIcon),
    [NType.INFO]: raw(InfoIcon),
@@ -45,7 +46,7 @@ export const filledIcons: Icons = {
    close: raw(CloseIcon),
 }
 
-export const outlineIcons: Icons = {
+export const outlineIcons: NotivueIcons = {
    [NType.SUCCESS]: raw(SuccessOutlineIcon),
    [NType.ERROR]: raw(ErrorOutlineIcon),
    [NType.INFO]: raw(InfoOutlineIcon),
