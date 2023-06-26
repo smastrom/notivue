@@ -1,7 +1,7 @@
 import { computed } from 'vue'
 
-import { isMouse } from '../core/utils'
-import { useConfig, useItems, usePointer } from './useStore'
+import { isMouse } from '@/core/utils'
+import { useConfig, useItems, usePointer } from '@/core/useStore'
 
 export function useMouseEvents() {
    const pointer = usePointer()

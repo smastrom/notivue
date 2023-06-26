@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { Teleport, type Component } from 'vue'
 
-import { useMouseEvents } from '../composables/useMouseEvents'
-import { useTouchEvents } from '../composables/useTouchEvents'
-import { useNotivueStyles, visuallyHidden } from '../composables/useNotivueStyles'
-import { useRepositioning } from '../composables/useRepositioning'
-import { useVisibilityChange } from '../composables/useVisibilityChange'
-import { useConfig, useItems, useElements } from '../composables/useStore'
+import { useConfig, useItems, useElements } from '@/core/useStore'
 
-import { NotivueSlot } from '../types'
-import { getSlotContext } from '../core/utils'
+import { useMouseEvents } from './composables/useMouseEvents'
+import { useTouchEvents } from './composables/useTouchEvents'
+import { useNotivueStyles, visuallyHidden } from './composables/useNotivueStyles'
+import { useRepositioning } from './composables/useRepositioning'
+import { useVisibilityChange } from './composables/useVisibilityChange'
+import { getSlotContext } from './utils'
+
+import { NotivueSlot } from '@/types'
 
 defineProps<{
    class: string

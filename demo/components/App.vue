@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { watchEffect } from 'vue'
 
-import { Notifications, Notivue, StoreItem } from 'notivue'
+import { Notifications, Notivue, NotivueSlot } from 'notivue'
 import { store } from '@/lib/store'
 
-import Nav from './Nav.vue'
-import Background from './Background.vue'
-import CustomClassic from '../custom-components/CustomClassic.vue'
-import CustomPromise from '../custom-components/CustomPromise.vue'
+import Nav from './app/Nav.vue'
+import Background from './app/Background.vue'
+import CustomClassic from './custom-components/CustomClassic.vue'
+import CustomPromise from './custom-components/CustomPromise.vue'
 
-import type { CustomPromiseProps, CustomProps } from './NavPushCustom.vue'
+import type { CustomPromiseProps, CustomProps } from './app/NavPushCustom.vue'
 
 watchEffect(() => document.documentElement.style.setProperty('--nv-root-container', store.maxWidth))
 </script>
@@ -20,12 +20,12 @@ watchEffect(() => document.documentElement.style.setProperty('--nv-root-containe
 
       <CustomClassic
          v-if="(item.props as CustomProps).isCustom"
-         :item="item as StoreItem<CustomProps>"
+         :item="item as NotivueSlot<CustomProps>"
       />
 
       <CustomPromise
          v-if="(item.props as CustomPromiseProps).isFileUpload"
-         :item="item as StoreItem<CustomPromiseProps>"
+         :item="item as NotivueSlot<CustomPromiseProps>"
       />
    </Notivue>
 

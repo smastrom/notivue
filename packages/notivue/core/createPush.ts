@@ -1,7 +1,7 @@
 import { NotificationType as NType } from './constants'
 import { createStore } from './createStore'
 
-import type { NotificationType, Push, PushOptions, UserPushOptions } from '../types'
+import type { NotificationType, Push, PushOptions, UserPushOptions } from '@/types'
 
 export function createPush(items: ReturnType<typeof createStore>['items']): Push {
    let createCount = 0

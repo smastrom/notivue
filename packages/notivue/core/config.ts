@@ -5,7 +5,7 @@ import { toWritableRefs, mergeDeep } from './utils'
 
 import { CLASS_PREFIX as CX } from './constants'
 
-import type { NotivueConfigRequired, DeepPartial, NotivueConfig } from '../types'
+import type { NotivueConfigRequired, NotivueConfig } from '@/types'
 
 export const defaultConfig: NotivueConfigRequired = {
    pauseOnHover: true,

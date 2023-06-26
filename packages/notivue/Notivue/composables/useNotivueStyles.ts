@@ -1,9 +1,9 @@
 import { computed, type CSSProperties } from 'vue'
 
 import { useReducedMotion } from './useReducedMotion'
-import { useConfig } from './useStore'
+import { useConfig } from '@/core/useStore'
 
-import type { NotivueElements } from '../types'
+import type { NotivueElements } from '@/types'
 
 /**
  * The follwing styles are defined here and not in a CSS file

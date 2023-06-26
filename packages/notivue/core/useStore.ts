@@ -1,25 +1,13 @@
 import { inject } from 'vue'
 
-import { storeInjectionKey } from '../core/symbols'
-import { createPushSSR } from '../core/createPush'
-import { isSSR, toWritableRefs } from '../core/utils'
-import { createStore } from '../core/createStore'
-import { defaultConfig } from '../core/config'
+import { createPushSSR } from './createPush'
+import { isSSR, toWritableRefs } from './utils'
+import { createStore } from './createStore'
+import { defaultConfig } from './config'
+import { storeInjectionKey } from './symbols'
 
 export function useStore(): ReturnType<typeof createStore> {
    return inject(storeInjectionKey) as ReturnType<typeof createStore>
-}
-
-export function useElements() {
-   return useStore().elements
-}
-
-export function useItems() {
-   return useStore().items
-}
-
-export function usePointer() {
-   return useStore().pointer
 }
 
 /**
@@ -38,4 +26,18 @@ export function usePush() {
    if (isSSR) return createPushSSR()
 
    return useStore().push
+}
+
+// Used internally by Notivue.vue
+
+export function useElements() {
+   return useStore().elements
+}
+
+export function useItems() {
+   return useStore().items
+}
+
+export function usePointer() {
+   return useStore().pointer
 }

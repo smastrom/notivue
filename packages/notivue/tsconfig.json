@@ -9,7 +9,14 @@
       "esModuleInterop": true,
       "lib": ["ESNext", "DOM"],
       "skipLibCheck": true,
-      "noEmit": true
+      "noEmit": true,
+      "baseUrl": ".",
+      "paths": {
+         "@/core/*": ["core/*"],
+         "@/Notivue/*": ["Notivue/*"],
+         "@/Notifications/*": ["Notifications/*"],
+         "@/types": ["types.ts"]
+      }
    },
    "include": ["."]
 }

@@ -141,8 +141,6 @@ export type NotivueElements = 'wrapper' | 'container' | 'row' | 'box'
 
 export type NotivueTheme = Partial<Record<ThemeVars, string>>
 
-export type Themes = 'light' | 'pastel' | 'material' | 'dark' | 'slate'
-
 type ThemeLayoutVars =
    | '--nv-width'
    | '--nv-spacing'

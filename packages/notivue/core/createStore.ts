@@ -12,7 +12,7 @@ import type {
    NotivueConfig,
    UserPushOptionsWithInternals,
    Obj,
-} from '../types'
+} from '@/types'
 
 export function createStore(userConfig: NotivueConfig) {
    const config = getConfig(userConfig)

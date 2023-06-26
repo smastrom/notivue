@@ -1,4 +1,4 @@
-import type { NotivueTheme } from '../types'
+import type { NotivueTheme } from '@/types'
 
 const layout: NotivueTheme = {
    '--nv-width': '360px',
@@ -12,7 +12,7 @@ const layout: NotivueTheme = {
 
 const shadow = { '--nv-shadow': '0 0.5rem 1rem rgba(0, 0, 0, 0.15)' }
 
-export const light: NotivueTheme = {
+export const lightTheme: NotivueTheme = {
    ...layout,
    ...shadow,
    '--nv-border-width': '0px',
@@ -28,7 +28,7 @@ export const light: NotivueTheme = {
    '--nv-promise-accent': '#64748B',
 }
 
-export const pastel: NotivueTheme = {
+export const pastelTheme: NotivueTheme = {
    // Layout
    ...layout,
    '--nv-shadow': '0 0.25rem 0.5rem rgba(0, 0, 40, 0.1)',
@@ -54,7 +54,7 @@ export const pastel: NotivueTheme = {
    '--nv-promise-foreground': '#334155',
 }
 
-export const material: NotivueTheme = {
+export const materialTheme: NotivueTheme = {
    ...layout,
    ...shadow,
    // Global
@@ -74,7 +74,7 @@ export const material: NotivueTheme = {
    '--nv-promise-foreground': '#334155',
 }
 
-export const dark: NotivueTheme = {
+export const darkTheme: NotivueTheme = {
    ...layout,
    '--nv-border-width': '1px',
    // Global
@@ -89,7 +89,7 @@ export const dark: NotivueTheme = {
    '--nv-promise-accent': '#D0D0D0',
 }
 
-export const slate: NotivueTheme = {
+export const slateTheme: NotivueTheme = {
    ...layout,
    '--nv-border-width': '1px',
    // Global

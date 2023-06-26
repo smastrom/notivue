@@ -3,8 +3,17 @@ import vue from '@vitejs/plugin-vue'
 import dts from 'vite-plugin-dts'
 import terser from '@rollup/plugin-terser'
 import { visualizer } from 'rollup-plugin-visualizer'
+import { resolve } from 'path'
 
 export default defineConfig({
+   resolve: {
+      alias: {
+         '@/core': resolve(__dirname, './core'),
+         '@/types': resolve(__dirname, './types.ts'),
+         '@/Notivue': resolve(__dirname, './Notivue'),
+         '@/Notifications': resolve(__dirname, './Notifications'),
+      },
+   },
    build: {
       lib: {
          entry: 'index.ts',

@@ -1,5 +1,6 @@
 import { onBeforeUnmount, onMounted } from 'vue'
-import { isSSR } from '../core/utils'
+
+import { isSSR } from '@/core/utils'
 
 export function useWindowSize(onResize: () => void) {
    if (isSSR) return

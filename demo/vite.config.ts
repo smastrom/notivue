@@ -11,9 +11,14 @@ export default defineConfig({
    },
    resolve: {
       alias: {
-         notivue: resolve(__dirname, '../packages/notivue/index.ts'),
          '@/lib': resolve(__dirname, './lib'),
          '@/components': resolve(__dirname, './components'),
+
+         notivue: resolve(__dirname, '../packages/notivue/index.ts'),
+         '@/core': resolve(__dirname, '../packages/notivue/core'),
+         '@/Notivue': resolve(__dirname, '../packages/notivue/Notivue'),
+         '@/Notifications': resolve(__dirname, '../packages/notivue/Notifications'),
+         '@/types': resolve(__dirname, '../packages/notivue/types.ts'),
       },
    },
    plugins: [vue()],

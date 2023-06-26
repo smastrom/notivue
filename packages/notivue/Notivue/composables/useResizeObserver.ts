@@ -1,4 +1,4 @@
-import { onMounted, onBeforeUnmount, watch, type ComputedRef } from 'vue'
+import { onMounted, onBeforeUnmount, watch } from 'vue'
 
 export function useResizeObserver(elements: HTMLElement[], onSizeChange: () => void) {
    let resizeObserver: ResizeObserver
