@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { watchEffect } from 'vue'
 
-import { Notifications, Notivue } from 'notivue'
+import { Notifications, Notivue, StoreItem } from 'notivue'
 import { store } from '@/lib/store'
 
 import Nav from './Nav.vue'
@@ -9,32 +9,23 @@ import Background from './Background.vue'
 import CustomClassic from '../custom-components/CustomClassic.vue'
 import CustomPromise from '../custom-components/CustomPromise.vue'
 
+import type { CustomPromiseProps, CustomProps } from './NavPushCustom.vue'
+
 watchEffect(() => document.documentElement.style.setProperty('--nv-root-container', store.maxWidth))
 </script>
 
 <template>
    <Notivue class="CustomClass" v-slot="item">
-      <Notifications
-         v-bind="{ item }"
-         v-if="item.type !== 'custom-classic' && !item.props.isFileUpload"
-      />
+      <Notifications v-bind="{ item }" v-if="!item.props.isCustom && !item.props.isFileUpload" />
 
       <CustomClassic
-         v-if="item.type === 'custom-classic'"
-         :message="item.message"
-         :createdAt="item.createdAt"
-         :close="item.clear"
-         :profilePicture="item.props.profilePicture"
-         :name="item.props.name"
+         v-if="(item.props as CustomProps).isCustom"
+         :item="item as StoreItem<CustomProps>"
       />
 
       <CustomPromise
-         v-if="item.props.isFileUpload"
-         :message="item.message"
-         :createdAt="item.createdAt"
-         :close="item.clear"
-         :type="item.type"
-         :fileName="item.props.fileName"
+         v-if="(item.props as CustomPromiseProps).isFileUpload"
+         :item="item as StoreItem<CustomPromiseProps>"
       />
    </Notivue>
 

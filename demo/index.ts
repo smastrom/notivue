@@ -12,6 +12,7 @@ createApp(App)
       theme: light,
       icons: filledIcons,
       notifications: {
+         global: { duration: 500000 },
          success: { title: 'Success' },
       },
    })

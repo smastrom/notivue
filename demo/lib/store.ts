@@ -85,7 +85,7 @@ export function toggleCenterOnMobile() {
 }
 
 function getTitle(title: string) {
-   return store.renderTitles ? title : false
+   return store.renderTitles ? title : ''
 }
 
 function getMsg(msg: string, rtlMsg: string) {

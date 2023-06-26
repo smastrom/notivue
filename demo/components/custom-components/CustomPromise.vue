@@ -4,23 +4,22 @@ import { formatDistanceToNow as toNow } from 'date-fns'
 
 import CloseIcon from '../icons/CloseIcon.vue'
 
+import type { NotivueSlot } from 'notivue'
+import type { CustomPromiseProps } from '../app/NavPushCustom.vue'
+
 const props = defineProps<{
-   type: string
-   fileName: string
-   message: string
-   createdAt: number
-   close: () => void
+   item: NotivueSlot<CustomPromiseProps>
 }>()
 
-const isPromise = computed(() => props.type === 'promise')
+const isPromise = computed(() => props.item.type === 'promise')
 </script>
 
 <template>
    <div class="Notification">
       <div class="Header">
          <div class="Title">
-            <h3>{{ message }}</h3>
-            <button class="Close" @click="props.close" v-if="!isPromise">
+            <h3>{{ item.message }}</h3>
+            <button class="Close" @click="item.close" v-if="!isPromise">
                <CloseIcon />
             </button>
          </div>
@@ -28,9 +27,9 @@ const isPromise = computed(() => props.type === 'promise')
 
       <div class="Content">
          <div class="Extension">
-            {{ fileName.split('.').pop() }}
+            {{ item.props.fileName.split('.').pop() }}
          </div>
-         <p class="FileName">{{ fileName }}</p>
+         <p class="FileName">{{ item.props.fileName }}</p>
       </div>
 
       <div class="Progress" v-if="isPromise">
@@ -40,7 +39,7 @@ const isPromise = computed(() => props.type === 'promise')
       </div>
 
       <div class="Footer" v-else>
-         <time class="Time">{{ toNow(props.createdAt) }} ago</time>
+         <time class="Time">{{ toNow(props.item.createdAt) }} ago</time>
          <p><strong>Remaining space:</strong> 302.1 GB</p>
       </div>
    </div>

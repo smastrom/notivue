@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useConfig, type Position } from 'notivue'
+import { useNotivue, type Position } from 'notivue'
 
 import { store, setFullWidth, toggleCenterOnMobile } from '@/lib/store'
 
@@ -41,7 +41,7 @@ const positions = [
 
 const isFullWidth = computed(() => store.maxWidth === '100%')
 
-const config = useConfig()
+const config = useNotivue()
 
 function setPosition(position: Position) {
    config.position.value = position

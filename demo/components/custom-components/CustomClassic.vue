@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { formatDistanceToNow as toNow } from 'date-fns'
 
-const props = defineProps<{
-   message: string
-   createdAt: number
-   close: () => void
-   profilePicture: string
-   name: string
+import type { NotivueSlot } from 'notivue'
+import type { CustomProps } from '../app/NavPushCustom.vue'
+
+defineProps<{
+   item: NotivueSlot<CustomProps>
 }>()
 </script>
 
@@ -18,15 +17,15 @@ const props = defineProps<{
       </div>
       <div class="Content">
          <div class="Details">
-            <time>{{ toNow(props.createdAt) }} ago</time>
+            <time>{{ toNow(item.createdAt) }} ago</time>
             <p>
-               <a href="#">{{ name }}</a>
-               {{ message.replace(name, '') }}
+               <a href="#">{{ item.props.name }}</a>
+               {{ item.message.replace(item.props.name, '') }}
             </p>
          </div>
          <nav class="Buttons">
-            <button @click="props.close" class="Button ButtonReverse">Deny</button>
-            <button @click="props.close" class="Button">Accept</button>
+            <button @click="item.close" class="Button ButtonReverse">Deny</button>
+            <button @click="item.close" class="Button">Accept</button>
          </nav>
       </div>
    </div>

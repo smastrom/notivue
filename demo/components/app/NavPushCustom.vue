@@ -8,14 +8,25 @@ import Button from '../shared/Button.vue'
 
 const push = usePush()
 
+export interface CustomProps {
+   name: string
+   profilePicture: string
+   isCustom: boolean
+}
+
+export interface CustomPromiseProps {
+   isFileUpload: boolean
+   fileName: string
+}
+
 function customPush() {
-   push.custom({
-      type: 'custom-classic',
+   push.info<CustomProps>({
       title: 'New Message Request',
       message: `Stephanie LaGarde wants to send you a message.`,
       props: {
          name: 'Stephanie LaGarde',
          profilePicture: '../../assets/profile-picture.png',
+         isCustom: true,
       },
    })
 }
@@ -23,7 +34,7 @@ function customPush() {
 async function customAsync() {
    const props = { isFileUpload: true, fileName: 'excel-sheet.xlsx' }
 
-   const promise = push.promise({
+   const promise = push.promise<CustomPromiseProps>({
       message: 'Your file is being uploaded...',
       props,
    })
