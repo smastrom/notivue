@@ -1,18 +1,14 @@
 import { NotificationType as NType } from './constants'
 import { createStore } from './createStore'
 
-import type { Push, PushCustomOptions, PushStaticOptions } from '../types'
+import type { NotificationType, Push, PushOptions, UserPushOptions } from '../types'
 
 export function createPush(items: ReturnType<typeof createStore>['items']): Push {
    let createCount = 0
 
-   function push(
-      options: PushStaticOptions | PushCustomOptions,
-      type: string,
-      id = `${createCount++}`
-   ) {
+   function push(options: PushOptions, type: NotificationType, id = `${createCount++}`) {
       if (typeof options === 'string') {
-         options = { message: options }
+         options = { message: options } as UserPushOptions
       }
 
       items.push({ ...options, id, type })
@@ -25,7 +21,6 @@ export function createPush(items: ReturnType<typeof createStore>['items']): Push
       error: (options) => push(options, NType.ERROR),
       warning: (options) => push(options, NType.WARNING),
       info: (options) => push(options, NType.INFO),
-      custom: (options) => push(options, options.type ?? NType.SUCCESS),
       promise: (options) => {
          const { id, clear, destroy } = push(options, NType.PROMISE)
 
@@ -48,5 +43,5 @@ export function createPushSSR(): Push {
       remove: () => {},
       removeAll: () => {},
       playClearAll: () => {},
-   } as any) // We don't care, it's a mock
+   } as any)
 }

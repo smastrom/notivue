@@ -6,9 +6,15 @@ import { createPush } from './createPush'
 
 import { NotificationType as NType, FIXED_INCREMENT, TransitionType as TType } from './constants'
 
-import type { DeepPartial, UserPushOptionsWithInternals, _NotivueConfig, StoreItem } from '../types'
+import type {
+   DeepPartial,
+   StoreItem,
+   NotivueConfig,
+   UserPushOptionsWithInternals,
+   Obj,
+} from '../types'
 
-export function createStore(userConfig: DeepPartial<_NotivueConfig>) {
+export function createStore(userConfig: NotivueConfig) {
    const config = getConfig(userConfig)
 
    const items = {
@@ -50,6 +56,7 @@ export function createStore(userConfig: DeepPartial<_NotivueConfig>) {
          this.updatePositions()
       },
       playLeave(id: string) {
+         this.updatePositions()
          this.updateAnimation(id, config.animations.value.leave, () => this.remove(id))
          this.updatePositions()
       },
@@ -120,48 +127,48 @@ export function createStore(userConfig: DeepPartial<_NotivueConfig>) {
             }
          })
       },
-      push(incomingOptions: UserPushOptionsWithInternals) {
+      push<T extends Obj = Obj>(incomingOptions: UserPushOptionsWithInternals<T>) {
          const createdAt = Date.now()
          const updatedAt = performance.now()
 
-         const notificationOptions = mergeNotificationOptions(
+         const notification = mergeNotificationOptions<T>(
             config.notifications.value,
             incomingOptions
          )
 
          const shouldSkipTimeout =
-            notificationOptions.duration === Infinity || pointer.isHovering || pointer.isTouching
+            notification.duration === Infinity || pointer.isHovering || pointer.isTouching
 
          if (
             ([NType.PROMISE_REJECT, NType.PROMISE_RESOLVE] as string[]).includes(
                incomingOptions.type
             )
          ) {
-            const { timeoutId } = this.get(notificationOptions.id) ?? {}
+            const { timeoutId } = this.get(notification.id) ?? {}
             clearTimeout(timeoutId)
 
-            this.update(notificationOptions.id, {
-               ...notificationOptions,
+            this.update(notification.id, {
+               ...notification,
                createdAt,
                updatedAt,
                timeoutId: shouldSkipTimeout
                   ? undefined
-                  : this.playLeaveTimeout(notificationOptions.id, notificationOptions.duration),
+                  : this.playLeaveTimeout(notification.id, notification.duration),
             })
          } else {
             this.set({
-               ...notificationOptions,
+               ...(notification as typeof notification & { props: T }),
                createdAt,
                updatedAt,
                elapsed: 0,
                timeoutId: shouldSkipTimeout
                   ? undefined
-                  : this.playLeaveTimeout(notificationOptions.id, notificationOptions.duration),
-               clear: () => this.playLeave(notificationOptions.id),
-               destroy: () => this.remove(notificationOptions.id),
+                  : this.playLeaveTimeout(notification.id, notification.duration),
+               clear: () => this.playLeave(notification.id),
+               destroy: () => this.remove(notification.id),
             })
 
-            this.playEnter(notificationOptions.id)
+            this.playEnter(notification.id)
          }
       },
    }

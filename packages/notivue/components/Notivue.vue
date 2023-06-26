@@ -8,14 +8,15 @@ import { useRepositioning } from '../composables/useRepositioning'
 import { useVisibilityChange } from '../composables/useVisibilityChange'
 import { useConfig, useItems, useElements } from '../composables/useStore'
 
-import { StoreItem } from '../types'
+import { NotivueSlot } from '../types'
+import { getSlotContext } from '../core/utils'
 
 defineProps<{
    class: string
 }>()
 
 defineSlots<{
-   default(item: StoreItem): Component
+   default(item: NotivueSlot): Component
 }>()
 
 const config = useConfig()
@@ -69,7 +70,7 @@ useRepositioning()
                      @animationend="item.onAnimationend"
                   >
                      <!-- Notification -->
-                     <slot v-bind="item as StoreItem" />
+                     <slot v-bind="getSlotContext(item)" />
 
                      <!-- Live Region -->
                      <div
@@ -78,9 +79,7 @@ useRepositioning()
                         :role="item.ariaRole"
                         :style="visuallyHidden"
                      >
-                        <div :style="staticStyles.ariaLive">
-                           {{ item.title || '' }} {{ item.message }}
-                        </div>
+                        <div>{{ item.title || '' }} {{ item.message }}</div>
                      </div>
                   </div>
                </li>

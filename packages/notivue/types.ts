@@ -1,9 +1,10 @@
-import type { VNode, Component, CSSProperties } from 'vue'
+import type { Component, CSSProperties } from 'vue'
 
 // Utils
 
 export type DeepRequired<T> = { [K in keyof T]: DeepRequired<T[K]> } & Required<T>
 export type DeepPartial<T> = { [P in keyof T]?: DeepPartial<T[P]> }
+export type Obj = Record<string, any>
 
 // Shared
 
@@ -24,22 +25,23 @@ export type Position =
    | 'bottom-center'
    | 'bottom-right'
 
-export type Icons = Partial<Record<string, Component | string>>
-export type ClassName = string | { [key: string]: boolean } | string[]
+export type NotivueIcons = Partial<Record<NotificationType | 'close', Component | string>>
 
 // Config
 
-export interface _NotivueConfig {
+export interface NotivueConfigRequired {
    pauseOnHover: boolean
    pauseOnTouch: boolean
    position: Position
-   class: ClassName
-   notifications: Record<string, NotificationOptions>
+   class: string
+   notifications: Record<NotificationType, NotificationOptions>
    animations: Partial<{ enter: string; leave: string; clearAll: string }>
    teleportTo: string | HTMLElement
-   theme: Theme
-   icons: Icons
+   theme: NotivueTheme
+   icons: NotivueIcons
 }
+
+export type NotivueConfig = DeepPartial<NotivueConfigRequired>
 
 export interface NotificationOptions {
    icon: boolean
@@ -50,70 +52,76 @@ export interface NotificationOptions {
    ariaLive: 'polite' | 'assertive'
    ariaRole: 'alert' | 'status'
    closeAriaLabel: string
-   class: ClassName
-   props: Record<string, any>
+   class: string
 }
 
 // Store Item
 
-/** Options added internally when creating a notification. */
-export interface InternalNotificationOptions {
-   timeoutId: number | undefined
+export interface ExposedInternalItemData {
    clear: () => void
    destroy: () => void
+   createdAt: number
+}
+
+export interface HiddenInternalItemData {
+   timeoutId: number | undefined
    elapsed: number
    updatedAt: number
-   createdAt: number
    transitionStyles?: CSSProperties
    animationClass?: string
    onAnimationstart?: (event: AnimationEvent) => void
    onAnimationend?: (event: AnimationEvent) => void
 }
 
+/** Options added internally when creating a notification. */
+export type InternalItemData = ExposedInternalItemData & HiddenInternalItemData
+
 export interface InlinePushStyles {
    style?: CSSProperties
 }
 
-export type InternalPushOptions = { id: string; type: string } // Added by push() in background
+export interface PushProps<T extends Obj = Obj> {
+   props?: T
+}
 
-export type UserPushOptions = Partial<NotificationOptions> & InlinePushStyles // Defined when calling push()
-
-export type UserPushOptionsWithInternals = UserPushOptions & InternalPushOptions // Added after calling push() and passed to store.push()
-
-export type StoreItem = DeepRequired<Omit<UserPushOptionsWithInternals, 'style'>> &
+/** Defined by the user when calling push() */
+export type UserPushOptions<T extends Obj = Obj> = Partial<NotificationOptions> &
    InlinePushStyles &
-   InternalNotificationOptions // Merged by store.push()
+   PushProps<T>
 
-// Push - Params
+/** Added in background after calling push() */
+export type InternalPushOptions = { id: string; type: NotificationType }
 
-export type PushStaticOptions = UserPushOptions | NotificationOptions['message']
+export type UserPushOptionsWithInternals<T extends Obj = Obj> = UserPushOptions<T> &
+   InternalPushOptions
 
-export type PushCustomOptions = UserPushOptions & {
-   type: InternalPushOptions['type']
-}
+/** Final shape of the store item */
+export type StoreItem<T extends Obj = Obj> = DeepRequired<NotificationOptions> &
+   Required<PushProps<T>> &
+   InlinePushStyles &
+   InternalPushOptions &
+   InternalItemData
 
-export type PushPromiseOptions = UserPushOptions | NotificationOptions['message']
+/** Portion of the store item exposed to slot */
+export type NotivueSlot<T extends Obj = Obj> = Omit<StoreItem<T>, keyof HiddenInternalItemData>
 
-// Push - Methods
+// Push
 
-export type PushStatic = (options: PushStaticOptions) => ClearFunctions
-export type PushCustom = (options: PushCustomOptions) => ClearFunctions
+export type PushOptions<T extends Obj = Obj> = UserPushOptions<T> | NotificationOptions['message']
 
-export type PushPromise = (
-   options: UserPushOptions | NotificationOptions['message']
+export type PushStatic = <T extends Obj = Obj>(options: PushOptions<T>) => ClearFunctions
+
+export type PushPromise = <T extends Obj = Obj>(
+   options: PushOptions<T>
 ) => ClearFunctions & {
-   resolve: ResolveReject
-   reject: ResolveReject
+   resolve: <T extends Obj = Obj>(options: PushOptions<T>) => ClearFunctions
+   reject: <T extends Obj = Obj>(options: PushOptions<T>) => ClearFunctions
 }
-
-type ResolveReject = (options: UserPushOptions | NotificationOptions['message']) => ClearFunctions
 
 export interface ClearFunctions {
    clear: () => void
    destroy: () => void
 }
-
-// Push - Object
 
 export interface Push {
    success: PushStatic
@@ -121,14 +129,17 @@ export interface Push {
    info: PushStatic
    warning: PushStatic
    promise: PushPromise
-   custom: PushCustom
    clearAll: () => void
    destroyAll: () => void
 }
 
+// Elements
+
+export type NotivueElements = 'wrapper' | 'container' | 'row' | 'box'
+
 // Themes
 
-export type Theme = Partial<Record<ThemeVars, string>>
+export type NotivueTheme = Partial<Record<ThemeVars, string>>
 
 export type Themes = 'light' | 'pastel' | 'material' | 'dark' | 'slate'
 
@@ -179,18 +190,6 @@ type PromiseColorsVars =
    | '--nv-promise-border'
    | '--nv-promise-accent'
 
-type PromiseResolveColorsVars =
-   | '--nv-promise-resolve-foreground'
-   | '--nv-promise-resolve-background'
-   | '--nv-promise-resolve-border'
-   | '--nv-promise-resolve-accent'
-
-type PromiseRejectColorsVars =
-   | '--nv-promise-reject-foreground'
-   | '--nv-promise-reject-background'
-   | '--nv-promise-reject-border'
-   | '--nv-promise-reject-accent'
-
 type ThemeVars =
    | ThemeLayoutVars
    | ThemeGlobalColorsVars
@@ -199,11 +198,3 @@ type ThemeVars =
    | WarningColorsVars
    | InfoColorsVars
    | PromiseColorsVars
-   | PromiseResolveColorsVars
-   | PromiseRejectColorsVars
-
-// Aliases, mentioned in the docs, not used internally
-
-export type NotivueIcons = Icons
-export type NotivueTheme = Theme
-export type NotivueConfig = DeepPartial<_NotivueConfig>

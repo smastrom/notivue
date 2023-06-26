@@ -1,6 +1,6 @@
-import type { Theme } from '../types'
+import type { NotivueTheme } from '../types'
 
-const layout: Theme = {
+const layout: NotivueTheme = {
    '--nv-width': '360px',
    '--nv-spacing': '0.65rem',
    '--nv-radius': '0.5rem',
@@ -12,7 +12,7 @@ const layout: Theme = {
 
 const shadow = { '--nv-shadow': '0 0.5rem 1rem rgba(0, 0, 0, 0.15)' }
 
-export const light: Theme = {
+export const light: NotivueTheme = {
    ...layout,
    ...shadow,
    '--nv-border-width': '0px',
@@ -28,7 +28,7 @@ export const light: Theme = {
    '--nv-promise-accent': '#64748B',
 }
 
-export const pastel: Theme = {
+export const pastel: NotivueTheme = {
    // Layout
    ...layout,
    '--nv-shadow': '0 0.25rem 0.5rem rgba(0, 0, 40, 0.1)',
@@ -54,7 +54,7 @@ export const pastel: Theme = {
    '--nv-promise-foreground': '#334155',
 }
 
-export const material: Theme = {
+export const material: NotivueTheme = {
    ...layout,
    ...shadow,
    // Global
@@ -74,7 +74,7 @@ export const material: Theme = {
    '--nv-promise-foreground': '#334155',
 }
 
-export const dark: Theme = {
+export const dark: NotivueTheme = {
    ...layout,
    '--nv-border-width': '1px',
    // Global
@@ -89,7 +89,7 @@ export const dark: Theme = {
    '--nv-promise-accent': '#D0D0D0',
 }
 
-export const slate: Theme = {
+export const slate: NotivueTheme = {
    ...layout,
    '--nv-border-width': '1px',
    // Global
