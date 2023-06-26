@@ -2,9 +2,9 @@ import { watch } from 'vue'
 
 import { useWindowSize } from './useWindowSize'
 import { useResizeObserver } from './useResizeObserver'
-import { useConfig, useItems, useElements } from './useStore'
+import { useConfig, useItems, useElements } from '@/core/useStore'
 
-import { TransitionType as TType } from '../core/constants'
+import { TransitionType as TType } from '@/core/constants'
 
 /** Set of watchers that aggressively reposition notifications. */
 export function useRepositioning() {

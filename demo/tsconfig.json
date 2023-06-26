@@ -14,7 +14,12 @@
       "paths": {
          "@/components/*": ["components/*"],
          "@/lib/*": ["lib/*"],
-         "notivue": ["../packages/notivue/index.ts"]
+
+         "notivue": ["../packages/notivue/index.ts"],
+         "@/core/*": ["../packages/notivue/core/*"],
+         "@/Notivue/*": ["../packages/notivue/Notivue/*"],
+         "@/Notifications/*": ["../packages/notivue/Notifications/*"],
+         "@/types": ["../packages/notivue/types.ts"]
       }
    },
    "include": ["."]

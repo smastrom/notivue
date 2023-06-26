@@ -5,7 +5,7 @@ import type {
    NotificationOptions,
    NotificationType,
    UserPushOptionsWithInternals,
-} from '../types'
+} from '@/types'
 
 export const success: NotificationOptions = {
    title: '',

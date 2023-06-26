@@ -1,5 +1,5 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
-import { isSSR } from '../core/utils'
+import { isSSR } from '@/core/utils'
 
 export function useReducedMotion() {
    const isReduced = ref(false)

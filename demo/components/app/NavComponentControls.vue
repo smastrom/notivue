@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { filledIcons, outlineIcons, useNotivue, usePush } from 'notivue'
+import { filledIcons, outlinedIcons, useNotivue, usePush } from 'notivue'
 
 import {
    store,
    toggleRenderTitles as toggleInternalRenderTitles,
-   toggleOutlineIcons as toggleInternalOutlineIcons,
+   toggleOutlinedIcons as toggleInternaloutlinedIcons,
    toggleEmojis as toggleInternalEmojis,
    toggleRTL as toggleInternalRTL,
    messages,
@@ -22,11 +22,11 @@ function togglePauseOnTouch() {
    config.pauseOnTouch.value = !config.pauseOnTouch.value
 }
 
-function toggleOutlineIcons() {
-   toggleInternalOutlineIcons()
+function toggleOutlinedIcons() {
+   toggleInternaloutlinedIcons()
    if (store.emojis) toggleInternalEmojis()
 
-   config.icons.value = store.outlineIcons ? outlineIcons : filledIcons
+   config.icons.value = store.outlinedIcons ? outlinedIcons : filledIcons
 }
 
 function toggleEmojis() {
@@ -44,7 +44,7 @@ function toggleEmojis() {
          close: store.rtl ? 'إغلاق' : 'Close',
       }
    } else {
-      config.icons.value = store.outlineIcons ? outlineIcons : filledIcons
+      config.icons.value = store.outlinedIcons ? outlinedIcons : filledIcons
    }
 }
 
@@ -97,9 +97,9 @@ function toggleRTL() {
       <div
          class="ButtonBase SwitchButton"
          role="switch"
-         :aria-checked="store.outlineIcons"
+         :aria-checked="store.outlinedIcons"
          aria-label="Outline Icons"
-         @click="toggleOutlineIcons"
+         @click="toggleOutlinedIcons"
       >
          Outline Icons
       </div>

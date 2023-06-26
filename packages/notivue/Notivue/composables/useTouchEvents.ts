@@ -1,7 +1,7 @@
 import { computed, watchEffect } from 'vue'
 
-import { useConfig, useItems, usePointer, useElements } from './useStore'
-import { isMouse } from '../core/utils'
+import { useConfig, useItems, usePointer, useElements } from '@/core/useStore'
+import { isMouse } from '@/core/utils'
 
 /**
  * The logic follows this pattern:

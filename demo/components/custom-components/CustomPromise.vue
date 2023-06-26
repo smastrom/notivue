@@ -19,7 +19,7 @@ const isPromise = computed(() => props.item.type === 'promise')
       <div class="Header">
          <div class="Title">
             <h3>{{ item.message }}</h3>
-            <button class="Close" @click="item.close" v-if="!isPromise">
+            <button class="Close" @click="item.clear" v-if="!isPromise">
                <CloseIcon />
             </button>
          </div>

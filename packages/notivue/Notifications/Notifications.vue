@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import { StoreItem } from '../types'
-import { useConfig } from '../composables/useStore'
+import { useConfig } from '@/core/useStore'
+import { Classes as Cx } from '@/core/constants'
 
-import { Classes as Cx } from '../core/constants'
+import type { NotivueSlot } from '@/types'
 
 const config = useConfig()
 
 const props = defineProps<{
-   item: StoreItem
+   item: NotivueSlot
 }>()
 
 const icon = computed(() => config.icons.value[props.item.type])
@@ -22,10 +22,12 @@ const closeIcon = computed(() => config.icons.value.close)
       :data-notivue="item.type"
       :data-notivue-icon="item.icon"
    >
-      <Component v-if="item.icon && typeof icon === 'object'" :is="icon" :class="Cx.ICON" />
-      <div v-else-if="item.icon && typeof icon === 'string'" :class="Cx.ICON" aria-hidden="true">
-         {{ icon }}
-      </div>
+      <template v-if="item.icon">
+         <Component v-if="typeof icon === 'object'" :is="icon" :class="Cx.ICON" />
+         <div v-else-if="typeof icon === 'string'" :class="Cx.ICON" aria-hidden="true">
+            {{ icon }}
+         </div>
+      </template>
 
       <div :class="Cx.CONTENT">
          <h3 v-if="item.title" :class="Cx.TITLE" v-text="item.title" />
@@ -38,16 +40,8 @@ const closeIcon = computed(() => config.icons.value.close)
          @click="item.clear"
          :aria-label="item.closeAriaLabel"
       >
-         <Component
-            v-if="item.close && typeof closeIcon === 'object'"
-            :is="closeIcon"
-            :class="Cx.CLOSE_ICON"
-         />
-         <div
-            v-else-if="item.close && typeof closeIcon === 'string'"
-            aria-hidden="true"
-            v-text="closeIcon"
-         />
+         <Component v-if="typeof closeIcon === 'object'" :is="closeIcon" :class="Cx.CLOSE_ICON" />
+         <div v-else-if="typeof closeIcon === 'string'" aria-hidden="true" v-text="closeIcon" />
       </button>
    </div>
 </template>

@@ -1,6 +1,6 @@
 import { shallowRef, type Ref } from 'vue'
 
-import type { DeepPartial, HiddenInternalItemData, StoreItem, NotivueSlot, Obj } from '../types'
+import type { DeepPartial } from '@/types'
 
 export const isSSR = typeof window === 'undefined'
 
@@ -34,22 +34,4 @@ export function mergeDeep<T extends Record<string, any>>(target: T, source: Deep
    }
 
    return merged
-}
-
-const internalKeys: (keyof HiddenInternalItemData)[] = [
-   'timeoutId',
-   'elapsed',
-   'updatedAt',
-   'transitionStyles',
-   'animationClass',
-   'onAnimationstart',
-   'onAnimationend',
-]
-
-export function getSlotContext(item: StoreItem): NotivueSlot {
-   return Object.fromEntries(
-      Object.entries(item).filter(
-         ([key]) => !internalKeys.includes(key as keyof HiddenInternalItemData)
-      )
-   ) as NotivueSlot
 }

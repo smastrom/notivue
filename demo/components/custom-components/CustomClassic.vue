@@ -24,8 +24,8 @@ defineProps<{
             </p>
          </div>
          <nav class="Buttons">
-            <button @click="item.close" class="Button ButtonReverse">Deny</button>
-            <button @click="item.close" class="Button">Accept</button>
+            <button @click="item.clear" class="Button ButtonReverse">Deny</button>
+            <button @click="item.clear" class="Button">Accept</button>
          </nav>
       </div>
    </div>

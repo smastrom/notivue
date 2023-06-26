@@ -1,11 +1,16 @@
-export { notivue } from './core/plugin'
+export { notivue } from '@/core/plugin'
+export { usePush, useConfig as useNotivue } from '@/core/useStore'
 
-export { default as Notivue } from './components/Notivue.vue'
-export { default as Notifications } from './components/Notifications.vue'
+export { default as Notivue } from '@/Notivue/Notivue.vue'
 
-export { usePush, useConfig as useNotivue } from './composables/useStore'
+export { default as Notifications } from '@/Notifications/Notifications.vue'
+export {
+   lightTheme,
+   pastelTheme,
+   materialTheme,
+   darkTheme,
+   slateTheme,
+} from '@/Notifications/themes'
+export { filledIcons, outlinedIcons } from '@/Notifications/icons'
 
-export { filledIcons, outlineIcons } from './components/icons'
-export { light, pastel, material, dark, slate } from './styles/themes'
-
-export * from './types'
+export * from '@/types'

@@ -1,10 +1,8 @@
-import { NotificationType as NTypeU } from '../types'
+import { NotificationType as NTypeU } from '@/types'
 
 export const FIXED_INCREMENT = 800
 
-export const COMPONENT_NAME = 'Notivue'
-
-export const CLASS_PREFIX = COMPONENT_NAME + '__'
+export const CLASS_PREFIX = 'Notivue__'
 
 export const NotificationType: Record<string, NTypeU> = {
    SUCCESS: 'success',
