@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { filledIcons, outlineIcons, useConfig, usePush } from 'notivue'
+import { filledIcons, outlineIcons, useNotivue, usePush } from 'notivue'
 
 import {
    store,
@@ -11,7 +11,7 @@ import {
 } from '../../lib/store'
 import { isMobile } from '../../lib/utils'
 
-const config = useConfig()
+const config = useNotivue()
 const push = usePush()
 
 function togglePauseOnHover() {

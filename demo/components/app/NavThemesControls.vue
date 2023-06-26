@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useConfig, light, pastel, material, dark, slate, type Themes } from 'notivue'
+import { useNotivue, light, pastel, material, dark, slate, type Themes } from 'notivue'
 
 import { setTheme, store } from '@/lib/store'
 
@@ -7,7 +7,7 @@ const themes = { light, pastel, material, dark, slate }
 
 const themeKeys = ['light', 'pastel', 'material', 'dark', 'slate'] as const
 
-const config = useConfig()
+const config = useNotivue()
 
 function setConfigTheme(themeKey: Themes) {
    setTheme(themeKey)
