@@ -9,10 +9,10 @@ import './assets/style.css'
 
 createApp(App)
    .use(notivue, {
-      theme: lightTheme,
+      theme: { ...lightTheme /* , '--nv-tip-width': '0.3rem' */ },
       icons: filledIcons,
       notifications: {
-         global: { duration: 500000 },
+         global: { duration: 300000 },
          success: { title: 'Success' },
       },
    })
