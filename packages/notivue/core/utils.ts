@@ -8,7 +8,7 @@ export function isMouse(event: PointerEvent) {
    return event.pointerType === 'mouse'
 }
 
-export function toWritableRefs<T extends Record<string, any>>(object: T) {
+export function toShallowRefs<T extends Record<string, any>>(object: T) {
    return Object.entries(object).reduce(
       (acc, [key, value]) => ({ ...acc, [key]: shallowRef(value) }),
       {} as {

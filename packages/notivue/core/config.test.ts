@@ -17,6 +17,7 @@ describe('Config Merge', () => {
       const userConfig = {
          pauseOnHover: false,
          pauseOnTouch: false,
+         pauseOnTabChange: false,
          position: 'bottom-center',
          teleportTo: 'html',
          class: 'CustomClass',

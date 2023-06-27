@@ -1,7 +1,7 @@
 import { computed } from 'vue'
 
 import { defaultNotificationOptions } from './options'
-import { toWritableRefs, mergeDeep } from './utils'
+import { toShallowRefs, mergeDeep } from './utils'
 
 import { CLASS_PREFIX as CX } from './constants'
 
@@ -10,6 +10,7 @@ import type { NotivueConfigRequired, NotivueConfig } from '@/types'
 export const defaultConfig: NotivueConfigRequired = {
    pauseOnHover: true,
    pauseOnTouch: true,
+   pauseOnTabChange: true,
    position: 'top-center',
    teleportTo: 'body',
    class: '',
@@ -20,7 +21,7 @@ export const defaultConfig: NotivueConfigRequired = {
 }
 
 export function getConfig(userConfig: NotivueConfig) {
-   const reactiveConfig = toWritableRefs(mergeDeep(defaultConfig, userConfig))
+   const reactiveConfig = toShallowRefs(mergeDeep(defaultConfig, userConfig))
 
    return {
       ...reactiveConfig,
