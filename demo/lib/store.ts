@@ -19,7 +19,7 @@ export const messages = computed(
          success: {
             title: getTitle(store.rtl ? 'نجاح' : 'Success'),
             message: getMsg(
-               'Your message has been successfully sent. Please.',
+               'Your message has been successfully sent to Maria.',
                'تم إرسال رسالتك بنجاح. لو سمحت.'
             ),
          },
@@ -63,7 +63,7 @@ export function toggleRenderTitles() {
 }
 
 export function setTheme(theme: string) {
-   document.documentElement.setAttribute('data-theme', theme)
+   document.documentElement.setAttribute('data-theme', theme.replace('Theme', ''))
    store.theme = theme
 }
 

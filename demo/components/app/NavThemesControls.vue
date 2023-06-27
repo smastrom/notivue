@@ -5,8 +5,6 @@ import { setTheme, store } from '@/lib/store'
 
 const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme }
 
-const themeKeys = ['lightTheme', 'pastelTheme', 'materialTheme', 'darkTheme', 'slateTheme']
-
 const config = useNotivue()
 
 function setConfigTheme(themeKey: string) {
@@ -18,7 +16,7 @@ function setConfigTheme(themeKey: string) {
 <template>
    <div class="Controls">
       <div
-         v-for="themeKey in themeKeys"
+         v-for="themeKey in Object.keys(themes)"
          :key="themeKey"
          class="ButtonBase SwitchButton"
          role="switch"
@@ -26,7 +24,7 @@ function setConfigTheme(themeKey: string) {
          :aria-label="themeKey"
          @click="setConfigTheme(themeKey)"
       >
-         {{ themeKey }}
+         {{ themeKey.replace('Theme', '') }}
       </div>
    </div>
 </template>
