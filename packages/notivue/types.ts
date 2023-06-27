@@ -32,6 +32,7 @@ export type NotivueIcons = Partial<Record<NotificationType | 'close', Component 
 export interface NotivueConfigRequired {
    pauseOnHover: boolean
    pauseOnTouch: boolean
+   pauseOnTabChange: boolean
    position: Position
    class: string
    notifications: Record<NotificationType, NotificationOptions>
@@ -149,42 +150,36 @@ type ThemeLayoutVars =
    | '--nv-icon-size'
    | '--nv-title-size'
    | '--nv-message-size'
-   | '--nv-close-size'
    | '--nv-shadow'
+   // New
+   | '--nv-tip-width'
+   | '--nv-y-align'
 
 type ThemeGlobalColorsVars =
-   | '--nv-global-background'
-   | '--nv-global-foreground'
+   | '--nv-global-bg'
+   | '--nv-global-fg'
    | '--nv-global-accent'
    | '--nv-global-border'
 
 type SuccessColorsVars =
-   | '--nv-success-foreground'
-   | '--nv-success-background'
+   | '--nv-success-fg'
+   | '--nv-success-bg'
    | '--nv-success-border'
    | '--nv-success-accent'
 
-type ErrorColorsVars =
-   | '--nv-error-foreground'
-   | '--nv-error-background'
-   | '--nv-error-border'
-   | '--nv-error-accent'
+type ErrorColorsVars = '--nv-error-fg' | '--nv-error-bg' | '--nv-error-border' | '--nv-error-accent'
 
 type WarningColorsVars =
-   | '--nv-warning-foreground'
-   | '--nv-warning-background'
+   | '--nv-warning-fg'
+   | '--nv-warning-bg'
    | '--nv-warning-border'
    | '--nv-warning-accent'
 
-type InfoColorsVars =
-   | '--nv-info-foreground'
-   | '--nv-info-background'
-   | '--nv-info-border'
-   | '--nv-info-accent'
+type InfoColorsVars = '--nv-info-fg' | '--nv-info-bg' | '--nv-info-border' | '--nv-info-accent'
 
 type PromiseColorsVars =
-   | '--nv-promise-foreground'
-   | '--nv-promise-background'
+   | '--nv-promise-fg'
+   | '--nv-promise-bg'
    | '--nv-promise-border'
    | '--nv-promise-accent'
 

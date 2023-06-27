@@ -30,8 +30,8 @@ const mouseEvents = useMouseEvents()
 const touchEvents = useTouchEvents()
 
 useVisibilityChange({
-   onHidden: () => items.pauseTimeouts(),
-   onVisible: () => items.resumeTimeouts(),
+   onHidden: () => (config.pauseOnTabChange.value ? items.pauseTimeouts() : items.removeAll()),
+   onVisible: () => (config.pauseOnTabChange.value ? items.resumeTimeouts() : {}),
 })
 
 useRepositioning()

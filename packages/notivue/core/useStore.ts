@@ -1,7 +1,7 @@
 import { inject } from 'vue'
 
 import { createPushSSR } from './createPush'
-import { isSSR, toWritableRefs } from './utils'
+import { isSSR, toShallowRefs } from './utils'
 import { createStore } from './createStore'
 import { defaultConfig } from './config'
 import { storeInjectionKey } from './symbols'
@@ -17,7 +17,7 @@ export function useStore(): ReturnType<typeof createStore> {
  */
 
 export function useConfig() {
-   if (isSSR) return toWritableRefs({ ...defaultConfig, isTopAlign: true })
+   if (isSSR) return toShallowRefs({ ...defaultConfig, isTopAlign: true })
 
    return useStore().config
 }
