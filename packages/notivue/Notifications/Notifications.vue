@@ -17,11 +17,7 @@ const closeIcon = computed(() => config.icons.value.close)
 </script>
 
 <template>
-   <div
-      :class="`${Cx.NOTIFICATION} ${item.class}`"
-      :data-notivue="item.type"
-      :data-notivue-icon="item.icon"
-   >
+   <div :class="`${Cx.NOTIFICATION} ${item.class}`" :data-notivue="item.type">
       <template v-if="item.icon">
          <Component v-if="typeof icon === 'object'" :is="icon" :class="Cx.ICON" />
          <div v-else-if="typeof icon === 'string'" :class="Cx.ICON" aria-hidden="true">
