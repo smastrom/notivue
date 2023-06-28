@@ -28,7 +28,7 @@ onBeforeUnmount(() => {
 function getNavHeight() {
    document.documentElement.style.setProperty(
       '--nv-root-bottom',
-      `${(navRef.value?.clientHeight ?? 0) + 10}px`
+      `${navRef.value?.clientHeight ?? 0}px`
    )
 }
 </script>

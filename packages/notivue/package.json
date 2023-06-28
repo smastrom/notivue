@@ -46,7 +46,7 @@
       "dev": "pnpm --C \"../../demo\" run dev",
       "preinstall": "npx only-allow pnpm",
       "build": "rimraf dist && vue-tsc && vite build && pnpm run build:css",
-      "build:css": "esbuild ./Notifications/notifications.css ./Notivue/animations.css --bundle --outdir=dist --minify --target=chrome58,edge16,firefox57,node12,safari11",
+      "build:css": "esbuild ./Notifications/notifications.css ./core/animations.css --bundle --outdir=dist --minify --target=chrome58,edge16,firefox57,node12,safari11",
       "postbuild:css": "echo \"esbuild above warnings are fine, it means that code has been transformed for browsers that don't supports CSS nesting.\"",
       "test": "vitest",
       "test:components": "pnpm test:chrome && pnpm test:firefox && pnpm test:webkit",

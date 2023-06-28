@@ -1,30 +1,38 @@
 import { computed, type CSSProperties } from 'vue'
 
-import { useReducedMotion } from './useReducedMotion'
 import { useConfig } from '@/core/useStore'
+import { useReducedMotion } from './useReducedMotion'
 
 import type { NotivueElements } from '@/types'
 
 /**
- * The follwing styles are defined here and not in a CSS file
- * because they are needed whether user uses default or custom components.
+ * The follwing styles are not defined in a CSS file because
+ * they are needed whether user uses default or custom components.
  *
  * Hence if users choose to only use custom components they can
  * remove the /notifications.css import and have no CSS at all.
  */
 
-export const EASING = 'cubic-bezier(0.22, 1, 0.36, 1)'
-export const NO_DUR = '0ms !important'
+const NO_DUR = '0ms !important'
 
-const boxSizing: CSSProperties = { boxSizing: 'border-box' }
-const noMargin: CSSProperties = { margin: '0' }
-const flex: CSSProperties = { display: 'flex' }
 const absolute: CSSProperties = { position: 'absolute' }
+const boxSizing: CSSProperties = { boxSizing: 'border-box' }
 
-const flexCenter: CSSProperties = {
-   ...flex,
-   justifyContent: 'center',
-   width: '100%',
+const noMargin: CSSProperties = { margin: '0' }
+const noPadding: CSSProperties = { padding: '0' }
+
+const flex: CSSProperties = { display: 'flex' }
+const flexCenter: CSSProperties = { ...flex, justifyContent: 'center' }
+
+const nvZ = 'var(--nv-z, 500)'
+const nvGap = 'var(--nv-gap, 0.75rem)'
+
+const rootWidth = 'var(--nv-root-width, 100%)'
+const rootOffsets = {
+   top: 'var(--nv-root-top, 1.25rem)',
+   right: 'var(--nv-root-right, 1.25rem)',
+   bottom: 'var(--nv-root-bottom, 1.25rem)',
+   left: 'var(--nv-root-left, 1.25rem)',
 }
 
 export const visuallyHidden: CSSProperties = {
@@ -41,71 +49,73 @@ const staticStyles: Record<NotivueElements, CSSProperties> = {
    wrapper: {
       ...boxSizing,
       ...flexCenter,
-      zIndex: 'var(--nv-z, 500)' as any,
+      ...noPadding,
+      zIndex: nvZ,
       position: 'fixed',
-      height: '100%',
       pointerEvents: 'none',
-      top: '0px',
+      inset: Object.values(rootOffsets).join(' '),
    },
-   container: {
+   ol: {
       ...boxSizing,
       ...flexCenter,
       ...noMargin,
+      ...noPadding,
+      width: '100%',
       position: 'relative',
-      maxWidth: 'var(--nv-root-container, 100%)',
+      maxWidth: rootWidth,
       listStyle: 'none',
-      padding: '0',
    },
-   row: {
+   li: {
       ...boxSizing,
       ...noMargin,
       ...flex,
       ...absolute,
-      padding: '0 var(--nv-root-right, 1.25rem) 0 var(--nv-root-left, 1.25rem)',
-      transitionTimingFunction: EASING,
+      transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)',
       transitionDuration: '300ms',
       transitionProperty: 'transform',
       width: '100%',
    },
-   box: {
+   item: {
       ...boxSizing,
-      padding: `0 0 var(--nv-gap, 0.75rem) 0`,
+      padding: `0 0 ${nvGap} 0`,
       pointerEvents: 'auto',
       maxWidth: '100%',
    },
 }
 
 export function useNotivueStyles() {
-   const isReduced = useReducedMotion()
    const config = useConfig()
+   const isReduced = useReducedMotion()
 
-   const yCoords = computed<CSSProperties>(() =>
-      config.isTopAlign.value
-         ? { top: 'var(--nv-root-top, 1.25rem)' }
-         : { bottom: 'var(--nv-root-bottom, 1.25rem)' }
-   )
+   const isAlignedTo = (value: string) => config.position.value.endsWith(value)
 
-   const xAlignment = computed<CSSProperties>(() => {
-      const is = (value: string) => config.position.value.endsWith(value)
+   /* Simulate overflow-hidden only on the opposite side of the current vertical align */
+   const clipPath = computed<CSSProperties>(() => {
+      const clipInset = Object.values(rootOffsets).map((value) => `calc(-1 * ${value})`)
 
-      return {
-         justifyContent: `var(--nv-root-x-align, ${
-            is('left') ? 'start' : is('right') ? 'end' : 'center'
-         })`,
-      }
+      config.isTopAlign.value ? clipInset.splice(2, 1, '0px') : clipInset.splice(0, 1, '0px')
+
+      return { clipPath: `inset(${clipInset.join(' ')})` }
    })
 
-   const dynamicStyles = computed(
-      () =>
-         ({
-            row: {
-               ...yCoords.value,
-               ...xAlignment.value,
-               ...(isReduced.value ? { transitionDuration: NO_DUR } : {}),
-            },
-            box: isReduced.value ? { animationDuration: NO_DUR } : {},
-         } as Record<NotivueElements, CSSProperties>)
-   )
+   const xAlignment = computed<CSSProperties>(() => ({
+      justifyContent: `var(--nv-root-x-align, ${
+         isAlignedTo('left') ? 'flex-start' : isAlignedTo('right') ? 'flex-end' : 'center'
+      })`,
+   }))
 
-   return { staticStyles, dynamicStyles }
+   return computed<Record<NotivueElements, CSSProperties>>(() => ({
+      wrapper: { ...staticStyles.wrapper, ...clipPath.value },
+      ol: staticStyles.ol,
+      li: {
+         ...staticStyles.li,
+         ...xAlignment.value,
+         ...(config.isTopAlign.value ? { top: '0px' } : { bottom: '0px' }),
+         ...(isReduced.value ? { transitionDuration: NO_DUR } : {}),
+      },
+      item: {
+         ...staticStyles.item,
+         ...(isReduced.value ? { animationDuration: NO_DUR } : {}),
+      },
+   }))
 }
