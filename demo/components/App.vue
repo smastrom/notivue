@@ -11,7 +11,7 @@ import CustomPromise from './custom-components/CustomPromise.vue'
 
 import type { CustomPromiseProps, CustomProps } from './app/NavPushCustom.vue'
 
-watchEffect(() => document.documentElement.style.setProperty('--nv-root-container', store.maxWidth))
+watchEffect(() => document.documentElement.style.setProperty('--nv-root-width', store.maxWidth))
 </script>
 
 <template>
@@ -38,5 +38,13 @@ watchEffect(() => document.documentElement.style.setProperty('--nv-root-containe
    .CustomClass {
       --nv-root-x-align: center;
    }
+}
+
+[data-notivue-y='top'] {
+   /* --nv-root-top: 180px; */
+}
+
+[data-notivue-y='bottom'] {
+   --nv-root-top: 0px;
 }
 </style>

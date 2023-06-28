@@ -24,7 +24,7 @@ const config = useConfig()
 const items = useItems()
 const elements = useElements()
 
-const { staticStyles, dynamicStyles } = useNotivueStyles()
+const styles = useNotivueStyles()
 
 const mouseEvents = useMouseEvents()
 const touchEvents = useTouchEvents()
@@ -43,30 +43,29 @@ useRepositioning()
          <!-- Wrapper -->
          <div
             :ref="elements.wrapper"
-            :style="{ ...staticStyles.wrapper, ...config.theme.value }"
+            :style="{ ...styles.wrapper, ...config.theme.value }"
             :class="class"
          >
             <!-- Container -->
-            <ol :style="staticStyles.container" v-bind="{ ...mouseEvents, ...touchEvents }">
+            <ol :style="styles.ol" v-bind="{ ...mouseEvents, ...touchEvents }">
                <!-- Row -->
                <li
                   v-for="(item, index) in items.data.value"
                   :key="`${item.id}_${item.type}`"
                   :data-notivue-id="item.id"
+                  :data-notivue-y="config.isTopAlign.value ? 'top' : 'bottom'"
                   :aria-setsize="items.data.value.length"
                   :aria-posinset="index + 1"
                   :ref="elements.items"
                   :style="{
-                     ...staticStyles.row,
-                     ...dynamicStyles.row,
+                     ...styles.li,
                      ...item.transitionStyles,
                   }"
                >
                   <!-- Notification Container -->
                   <div
-                     :style="{ ...staticStyles.box, ...dynamicStyles.box }"
+                     :style="styles.item"
                      :class="item.animationClass"
-                     :data-notivue-y="config.isTopAlign.value ? 'top' : 'bottom'"
                      @animationstart="item.onAnimationstart"
                      @animationend="item.onAnimationend"
                   >
