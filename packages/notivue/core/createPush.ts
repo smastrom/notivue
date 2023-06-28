@@ -1,14 +1,14 @@
-import { NotificationType as NType } from './constants'
+import { NotificationTypeKeys as NKeys } from './constants'
 import { createStore } from './createStore'
 
-import type { NotificationType, Push, PushOptions, UserPushOptions } from '@/types'
+import type { NotificationType, Push, PushOptions } from '@/types'
 
 export function createPush(items: ReturnType<typeof createStore>['items']): Push {
    let createCount = 0
 
    function push(options: PushOptions, type: NotificationType, id = `${createCount++}`) {
       if (typeof options === 'string') {
-         options = { message: options } as UserPushOptions
+         options = { message: options }
       }
 
       items.push({ ...options, id, type })
@@ -17,16 +17,16 @@ export function createPush(items: ReturnType<typeof createStore>['items']): Push
    }
 
    return {
-      success: (options) => push(options, NType.SUCCESS),
-      error: (options) => push(options, NType.ERROR),
-      warning: (options) => push(options, NType.WARNING),
-      info: (options) => push(options, NType.INFO),
+      success: (options) => push(options, NKeys.SUCCESS),
+      error: (options) => push(options, NKeys.ERROR),
+      warning: (options) => push(options, NKeys.WARNING),
+      info: (options) => push(options, NKeys.INFO),
       promise: (options) => {
-         const { id, clear, destroy } = push(options, NType.PROMISE)
+         const { id, clear, destroy } = push(options, NKeys.PROMISE)
 
          return {
-            resolve: (options) => push(options, NType.PROMISE_RESOLVE, id),
-            reject: (options) => push(options, NType.PROMISE_REJECT, id),
+            resolve: (options) => push(options, NKeys.PROMISE_RESOLVE, id),
+            reject: (options) => push(options, NKeys.PROMISE_REJECT, id),
             clear,
             destroy,
          }

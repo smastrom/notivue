@@ -1,10 +1,14 @@
-import { ref, shallowRef, triggerRef } from 'vue'
+import { ref, shallowRef, triggerRef, type InjectionKey } from 'vue'
 
 import { getConfig } from './config'
 import { mergeNotificationOptions } from './options'
 import { createPush } from './createPush'
 
-import { NotificationType as NType, FIXED_INCREMENT, TransitionType as TType } from './constants'
+import {
+   NotificationTypeKeys as NKeys,
+   TransitionType as TType,
+   FIXED_TIMEOUT_INCREMENT,
+} from './constants'
 
 import type {
    DeepPartial,
@@ -13,6 +17,8 @@ import type {
    UserPushOptionsWithInternals,
    Obj,
 } from '@/types'
+
+export const storeInjectionKey = Symbol('') as InjectionKey<ReturnType<typeof createStore>>
 
 export function createStore(userConfig: NotivueConfig) {
    const config = getConfig(userConfig)
@@ -115,7 +121,7 @@ export function createStore(userConfig: NotivueConfig) {
          if (!this.data.value) return
 
          this.updateAll((item) => {
-            const newTimeout = item.duration + FIXED_INCREMENT - item.elapsed
+            const newTimeout = item.duration + FIXED_TIMEOUT_INCREMENT - item.elapsed
 
             return {
                ...item,
@@ -140,7 +146,7 @@ export function createStore(userConfig: NotivueConfig) {
             notification.duration === Infinity || pointer.isHovering || pointer.isTouching
 
          if (
-            ([NType.PROMISE_REJECT, NType.PROMISE_RESOLVE] as string[]).includes(
+            ([NKeys.PROMISE_REJECT, NKeys.PROMISE_RESOLVE] as string[]).includes(
                incomingOptions.type
             )
          ) {

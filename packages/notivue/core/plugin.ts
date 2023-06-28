@@ -1,5 +1,4 @@
-import { createStore } from './createStore'
-import { storeInjectionKey } from './symbols'
+import { createStore, storeInjectionKey } from './createStore'
 
 import type { Plugin } from 'vue'
 import type { NotivueConfig } from '@/types'

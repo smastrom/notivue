@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 
 import { useConfig } from '@/core/useStore'
-import { Classes as Cx } from '@/core/constants'
+import { Classes as Cx } from './constants'
 
 import type { NotivueSlot } from '@/types'
 

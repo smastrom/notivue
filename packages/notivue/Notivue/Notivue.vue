@@ -46,9 +46,9 @@ useRepositioning()
             :style="{ ...styles.wrapper, ...config.theme.value }"
             :class="class"
          >
-            <!-- Container -->
+            <!-- List Container -->
             <ol :style="styles.ol" v-bind="{ ...mouseEvents, ...touchEvents }">
-               <!-- Row -->
+               <!-- List Item -->
                <li
                   v-for="(item, index) in items.data.value"
                   :key="`${item.id}_${item.type}`"
@@ -72,7 +72,7 @@ useRepositioning()
                      <!-- Notification -->
                      <slot v-bind="getSlotContext(item)" />
 
-                     <!-- Live Region -->
+                     <!-- Aria Live -->
                      <div
                         aria-atomic="true"
                         :aria-live="item.ariaLive"
