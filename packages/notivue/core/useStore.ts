@@ -2,9 +2,8 @@ import { inject } from 'vue'
 
 import { createPushSSR } from './createPush'
 import { isSSR, toShallowRefs } from './utils'
-import { createStore } from './createStore'
+import { createStore, storeInjectionKey } from './createStore'
 import { defaultConfig } from './config'
-import { storeInjectionKey } from './symbols'
 
 export function useStore(): ReturnType<typeof createStore> {
    return inject(storeInjectionKey) as ReturnType<typeof createStore>

@@ -1,4 +1,4 @@
-import { NotificationType as NType } from './constants'
+import { NotificationTypeKeys as NKeys } from './constants'
 
 import type {
    Obj,
@@ -42,13 +42,13 @@ const info: NotificationOptions = {
 }
 
 export const defaultNotificationOptions = {
-   [NType.SUCCESS]: success,
-   [NType.ERROR]: error,
-   [NType.WARNING]: warning,
-   [NType.INFO]: info,
-   [NType.PROMISE]: promise,
-   [NType.PROMISE_RESOLVE]: success,
-   [NType.PROMISE_REJECT]: error,
+   [NKeys.SUCCESS]: success,
+   [NKeys.ERROR]: error,
+   [NKeys.WARNING]: warning,
+   [NKeys.INFO]: info,
+   [NKeys.PROMISE]: promise,
+   [NKeys.PROMISE_RESOLVE]: success,
+   [NKeys.PROMISE_REJECT]: error,
 } as Record<NotificationType, NotificationOptions>
 
 export function mergeNotificationOptions<T extends Obj = Obj>(
