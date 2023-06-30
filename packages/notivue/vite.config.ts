@@ -2,7 +2,6 @@ import { defineConfig } from 'vitest/config'
 import vue from '@vitejs/plugin-vue'
 import dts from 'vite-plugin-dts'
 import terser from '@rollup/plugin-terser'
-import { visualizer } from 'rollup-plugin-visualizer'
 import { resolve } from 'path'
 
 export default defineConfig({
@@ -14,6 +13,7 @@ export default defineConfig({
          '@/Notifications': resolve(__dirname, './Notifications'),
       },
    },
+
    build: {
       lib: {
          entry: 'index.ts',
@@ -40,9 +40,5 @@ export default defineConfig({
          ],
       },
    },
-   plugins: [
-      dts({ staticImport: true, insertTypesEntry: true }),
-      vue(),
-      visualizer({ emitFile: true, filename: 'stats.html', gzipSize: true }),
-   ],
+   plugins: [dts({ staticImport: true, insertTypesEntry: true }), vue()],
 })

@@ -62,7 +62,6 @@ export function createStore(userConfig: NotivueConfig) {
          this.updatePositions()
       },
       playLeave(id: string) {
-         this.updatePositions()
          this.updateAnimation(id, config.animations.value.leave, () => this.remove(id))
          this.updatePositions()
       },
@@ -76,13 +75,13 @@ export function createStore(userConfig: NotivueConfig) {
          }
       },
       updatePositions(type = TType.PUSH) {
-         const factor = config.isTopAlign.value ? 1 : -1
-
-         let accPrevHeights = 0
-
          const sortedItems = elements.items.value.sort(
             (a, b) => +b.dataset.notivueId! - +a.dataset.notivueId!
          )
+
+         let accPrevHeights = 0
+
+         const factor = config.isTopAlign.value ? 1 : -1
 
          for (const el of sortedItems) {
             const currId = el.dataset.notivueId!
@@ -113,7 +112,7 @@ export function createStore(userConfig: NotivueConfig) {
 
             return {
                ...item,
-               elapsed: pausedAt - item.updatedAt + item.elapsed,
+               elapsed: pausedAt - item.resumedAt + item.elapsed,
             }
          })
       },
@@ -125,7 +124,7 @@ export function createStore(userConfig: NotivueConfig) {
 
             return {
                ...item,
-               updatedAt: performance.now(),
+               resumedAt: performance.now(),
                timeoutId:
                   item.duration === Infinity
                      ? undefined
@@ -135,7 +134,7 @@ export function createStore(userConfig: NotivueConfig) {
       },
       push<T extends Obj = Obj>(incomingOptions: UserPushOptionsWithInternals<T>) {
          const createdAt = Date.now()
-         const updatedAt = performance.now()
+         const resumedAt = performance.now()
 
          const notification = mergeNotificationOptions<T>(
             config.notifications.value,
@@ -156,7 +155,7 @@ export function createStore(userConfig: NotivueConfig) {
             this.update(notification.id, {
                ...notification,
                createdAt,
-               updatedAt,
+               resumedAt,
                timeoutId: shouldSkipTimeout
                   ? undefined
                   : this.playLeaveTimeout(notification.id, notification.duration),
@@ -165,7 +164,7 @@ export function createStore(userConfig: NotivueConfig) {
             this.set({
                ...(notification as typeof notification & { props: T }),
                createdAt,
-               updatedAt,
+               resumedAt,
                elapsed: 0,
                timeoutId: shouldSkipTimeout
                   ? undefined

@@ -1,25 +1,34 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import { useConfig } from '@/core/useStore'
 import { Classes as Cx } from './constants'
+import { filledIcons } from './icons'
+import { lightTheme } from './themes'
 
-import type { NotivueSlot } from '@/types'
+import type { NotivueIcons, NotivueSlot, NotivueTheme } from '@/types'
 
-const config = useConfig()
+const props = withDefaults(
+   defineProps<{
+      item: NotivueSlot
+      icons?: NotivueIcons
+      theme?: NotivueTheme
+   }>(),
+   { icons: () => filledIcons, theme: () => lightTheme }
+)
 
-const props = defineProps<{
-   item: NotivueSlot
-}>()
-
-const icon = computed(() => config.icons.value[props.item.type])
-const closeIcon = computed(() => config.icons.value.close)
+const icon = computed(() => props.icons[props.item.type])
+const closeIcon = computed(() => props.icons.close)
 </script>
 
 <template>
-   <div :class="`${Cx.NOTIFICATION} ${item.class}`" :data-notivue="item.type">
-      <template v-if="item.icon">
-         <Component v-if="typeof icon === 'object'" :is="icon" :class="Cx.ICON" />
+   <div :class="`${Cx.NOTIFICATION} ${item.class}`" :data-notivue="item.type" :style="theme">
+      <template v-if="icon">
+         <Component
+            v-if="typeof icon === 'object' && closeIcon != null"
+            :is="icon"
+            :class="Cx.ICON"
+            aria-hidden="true"
+         />
          <div v-else-if="typeof icon === 'string'" :class="Cx.ICON" aria-hidden="true">
             {{ icon }}
          </div>
@@ -31,12 +40,16 @@ const closeIcon = computed(() => config.icons.value.close)
       </div>
 
       <button
-         v-if="item.close"
+         v-if="closeIcon && item.type !== 'promise'"
          :class="Cx.CLOSE"
          @click="item.clear"
          :aria-label="item.closeAriaLabel"
       >
-         <Component v-if="typeof closeIcon === 'object'" :is="closeIcon" :class="Cx.CLOSE_ICON" />
+         <Component
+            v-if="typeof closeIcon === 'object' && closeIcon != null"
+            :is="closeIcon"
+            :class="Cx.CLOSE_ICON"
+         />
          <div v-else-if="typeof closeIcon === 'string'" aria-hidden="true" v-text="closeIcon" />
       </button>
    </div>

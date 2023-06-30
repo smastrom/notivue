@@ -41,11 +41,7 @@ useRepositioning()
    <Teleport :to="config.teleportTo.value">
       <template v-if="items.data.value.length > 0">
          <!-- Wrapper -->
-         <div
-            :ref="elements.wrapper"
-            :style="{ ...styles.wrapper, ...config.theme.value }"
-            :class="class"
-         >
+         <div :ref="elements.wrapper" :style="styles.wrapper" :class="class">
             <!-- List Container -->
             <ol :style="styles.ol" v-bind="{ ...mouseEvents, ...touchEvents }">
                <!-- List Item -->
