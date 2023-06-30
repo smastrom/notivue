@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import { notivue, lightTheme, filledIcons } from 'notivue'
+import { notivue } from 'notivue'
 
 import App from './components/App.vue'
 
@@ -9,8 +9,6 @@ import './assets/style.css'
 
 createApp(App)
    .use(notivue, {
-      theme: { ...lightTheme /* , '--nv-tip-width': '0.3rem' */ },
-      icons: filledIcons,
       notifications: {
          global: { duration: 300000 },
          success: { title: 'Success' },

@@ -11,8 +11,6 @@ export const success: NotificationOptions = {
    title: '',
    message: '',
    duration: 4000,
-   icon: true,
-   close: true,
    ariaLive: 'polite',
    ariaRole: 'status',
    closeAriaLabel: 'Close',
@@ -29,7 +27,6 @@ const error: NotificationOptions = {
 const promise: NotificationOptions = {
    ...success,
    duration: Infinity,
-   close: false,
 }
 
 const warning: NotificationOptions = {

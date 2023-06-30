@@ -25,7 +25,9 @@ export type Position =
    | 'bottom-center'
    | 'bottom-right'
 
-export type NotivueIcons = Partial<Record<NotificationType | 'close', Component | string>>
+export type NotivueIcons = Partial<
+   Record<NotificationType | 'close', Component | string | null | undefined>
+>
 
 // Config
 
@@ -38,17 +40,13 @@ export interface NotivueConfigRequired {
    notifications: Record<NotificationType, NotificationOptions>
    animations: Partial<{ enter: string; leave: string; clearAll: string }>
    teleportTo: string | HTMLElement
-   theme: NotivueTheme
-   icons: NotivueIcons
 }
 
 export type NotivueConfig = DeepPartial<NotivueConfigRequired>
 
 export interface NotificationOptions {
-   icon: boolean
    title: string
    message: string
-   close: boolean
    duration: number
    ariaLive: 'polite' | 'assertive'
    ariaRole: 'alert' | 'status'
@@ -67,7 +65,7 @@ export interface ExposedInternalItemData {
 export interface HiddenInternalItemData {
    timeoutId: number | undefined
    elapsed: number
-   updatedAt: number
+   resumedAt: number
    transitionStyles?: CSSProperties
    animationClass?: string
    onAnimationstart?: (event: AnimationEvent) => void

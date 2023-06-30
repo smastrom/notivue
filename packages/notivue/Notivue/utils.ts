@@ -3,7 +3,7 @@ import type { StoreItem, NotivueSlot, HiddenInternalItemData } from '@/types'
 const internalKeys: (keyof HiddenInternalItemData)[] = [
    'timeoutId',
    'elapsed',
-   'updatedAt',
+   'resumedAt',
    'transitionStyles',
    'animationClass',
    'onAnimationstart',

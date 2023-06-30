@@ -5,9 +5,6 @@ import { mergeDeep } from './utils'
 import { defaultNotificationOptions } from './options'
 import { CLASS_PREFIX as CX } from './constants'
 
-import { filledIcons } from '@/Notifications/icons'
-import { lightTheme } from '@/Notifications/themes'
-
 describe('Config Merge', () => {
    test('Returns default config', () => {
       expect(mergeDeep(defaultConfig, {})).toStrictEqual(defaultConfig)
@@ -21,8 +18,7 @@ describe('Config Merge', () => {
          position: 'bottom-center',
          teleportTo: 'html',
          class: 'CustomClass',
-         theme: lightTheme,
-         icons: filledIcons,
+
          options: {},
          animations: {
             enter: CX + 'enterCustom',
@@ -41,8 +37,5 @@ describe('Config Merge', () => {
          leave: CX + 'leaveCustom',
          clearAll: CX + 'clearAll', // Default
       })
-
-      expect(result.theme).toStrictEqual(lightTheme)
-      expect(result.icons).toStrictEqual(filledIcons)
    })
 })
