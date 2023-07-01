@@ -1,30 +1,33 @@
 <script setup lang="ts">
-import { useNotivue, lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme } from 'notivue'
+import { type ThemeNames } from 'notivue'
 
 import { setTheme, store } from '@/lib/store'
 
-const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme }
+const themeNames = [
+   'lightTheme',
+   'pastelTheme',
+   'materialTheme',
+   'darkTheme',
+   'slateTheme',
+] as const
 
-const config = useNotivue()
-
-function setConfigTheme(themeKey: string) {
+function setConfigTheme(themeKey: ThemeNames) {
    setTheme(themeKey)
-   config.theme.value = themes[themeKey as keyof typeof themes]
 }
 </script>
 
 <template>
    <div class="Controls">
       <div
-         v-for="themeKey in Object.keys(themes)"
-         :key="themeKey"
+         v-for="themeName in themeNames"
+         :key="themeName"
          class="ButtonBase SwitchButton"
          role="switch"
-         :aria-checked="store.theme === themeKey"
-         :aria-label="themeKey"
-         @click="setConfigTheme(themeKey)"
+         :aria-checked="store.theme === themeName"
+         :aria-label="themeName"
+         @click="setConfigTheme(themeName)"
       >
-         {{ themeKey.replace('Theme', '') }}
+         {{ themeName.replace('Theme', '') }}
       </div>
    </div>
 </template>

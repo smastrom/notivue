@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { filledIcons, outlinedIcons, useNotivue, usePush } from 'notivue'
+import { useNotivue, usePush } from 'notivue'
 
 import {
    store,
-   toggleRenderTitles as toggleInternalRenderTitles,
-   toggleOutlinedIcons as toggleInternaloutlinedIcons,
-   toggleEmojis as toggleInternalEmojis,
-   toggleRTL as toggleInternalRTL,
+   toggleRenderTitles as _toggleRenderTitles,
+   toggleRTL as _toggleRTL,
+   toggleOutlinedIcons,
+   toggleEmojis,
    messages,
 } from '../../lib/store'
 import { isMobile } from '../../lib/utils'
@@ -22,41 +22,15 @@ function togglePauseOnTouch() {
    config.pauseOnTouch.value = !config.pauseOnTouch.value
 }
 
-function toggleOutlinedIcons() {
-   toggleInternaloutlinedIcons()
-   if (store.emojis) toggleInternalEmojis()
-
-   config.icons.value = store.outlinedIcons ? outlinedIcons : filledIcons
-}
-
-function toggleEmojis() {
-   toggleInternalEmojis()
-
-   if (store.emojis) {
-      config.icons.value = {
-         success: '✅',
-         error: '⛔️',
-         warning: '🤌',
-         info: '💡',
-         promise: '🌀',
-         'promise-resolve': '✅',
-         'promise-reject': '⛔️',
-         close: store.rtl ? 'إغلاق' : 'Close',
-      }
-   } else {
-      config.icons.value = store.outlinedIcons ? outlinedIcons : filledIcons
-   }
-}
-
 async function toggleRenderTitles() {
-   toggleInternalRenderTitles()
+   _toggleRenderTitles()
 
    push.destroyAll()
    push.success(messages.value.success)
 }
 
 function toggleRTL() {
-   toggleInternalRTL()
+   _toggleRTL()
 
    push.destroyAll()
    push.success(messages.value.success)
@@ -106,20 +80,20 @@ function toggleRTL() {
       <div
          class="ButtonBase SwitchButton"
          role="switch"
+         :aria-checked="store.emojis"
+         aria-label="Emoji Icons"
+         @click="toggleEmojis"
+      >
+         Emoji Icons
+      </div>
+      <div
+         class="ButtonBase SwitchButton"
+         role="switch"
          :aria-checked="store.rtl"
          aria-label="RTL Direction"
          @click="toggleRTL"
       >
          RTL Direction
-      </div>
-      <div
-         class="ButtonBase SwitchButton"
-         role="switch"
-         :aria-checked="store.emojis"
-         aria-label="Use Emojis"
-         @click="toggleEmojis"
-      >
-         Use Emojis
       </div>
    </div>
 </template>

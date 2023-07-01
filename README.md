@@ -1,6 +1,6 @@
 <div align="center">
 
-![notivue](https://i.ibb.co/DKmV9Xj/cover.png)
+# Notivue
 
 ### Fully-featured notification system for Vue and Nuxt.
 
@@ -16,7 +16,7 @@
 _Granularly include only the features you need_
 
 **🧚‍♂️ Zero deps and lightweight**  
-_From ~3.5 KB (gzipped)_
+_From ~4 KB (gzipped)_
 
 **🎢 Slick transitions and animations**  
 _Customize any animation_

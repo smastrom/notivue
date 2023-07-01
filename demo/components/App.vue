@@ -1,7 +1,17 @@
 <script setup lang="ts">
 import { watchEffect } from 'vue'
 
-import { Notifications, Notivue, NotivueSlot } from 'notivue'
+import {
+   Notifications,
+   Notivue,
+   lightTheme,
+   pastelTheme,
+   materialTheme,
+   darkTheme,
+   slateTheme,
+   outlinedIcons,
+   type NotivueSlot,
+} from 'notivue'
 import { store } from '@/lib/store'
 
 import Nav from './app/Nav.vue'
@@ -12,11 +22,31 @@ import CustomPromise from './custom-components/CustomPromise.vue'
 import type { CustomPromiseProps, CustomProps } from './app/NavPushCustom.vue'
 
 watchEffect(() => document.documentElement.style.setProperty('--nv-root-width', store.maxWidth))
+
+// <Notifications /> props
+
+const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme } as const
+
+const emojiIcons = {
+   success: '✅',
+   error: '⛔️',
+   warning: '🤌',
+   info: '💡',
+   promise: '🌀',
+   'promise-resolve': '✅',
+   'promise-reject': '⛔️',
+   close: store.rtl ? 'إغلاق' : 'Close',
+}
 </script>
 
 <template>
    <Notivue class="CustomClass" v-slot="item">
-      <Notifications v-bind="{ item }" v-if="!item.props.isCustom && !item.props.isFileUpload" />
+      <Notifications
+         v-if="!item.props.isCustom && !item.props.isFileUpload"
+         :item="item"
+         :theme="themes[store.theme]"
+         :icons="store.outlinedIcons ? outlinedIcons : store.emojis ? emojiIcons : undefined"
+      />
 
       <CustomClassic
          v-if="(item.props as CustomProps).isCustom"

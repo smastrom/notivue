@@ -138,6 +138,8 @@ export type NotivueElements = 'wrapper' | 'ol' | 'li' | 'item'
 
 // Themes
 
+export type ThemeNames = 'lightTheme' | 'pastelTheme' | 'materialTheme' | 'darkTheme' | 'slateTheme'
+
 export type NotivueTheme = Partial<Record<ThemeVars, string>>
 
 type ThemeLayoutVars =
