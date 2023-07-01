@@ -10,7 +10,7 @@ import type {
 export const success: NotificationOptions = {
    title: '',
    message: '',
-   duration: 4000,
+   duration: 6000,
    ariaLive: 'polite',
    ariaRole: 'status',
    closeAriaLabel: 'Close',
@@ -19,7 +19,6 @@ export const success: NotificationOptions = {
 
 const error: NotificationOptions = {
    ...success,
-   duration: 6000,
    ariaLive: 'assertive',
    ariaRole: 'alert',
 }

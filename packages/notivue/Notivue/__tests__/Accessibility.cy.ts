@@ -1,20 +1,16 @@
-import AccessibilityVue from './Accessibility.vue'
+import Push from './components/Push.vue'
 
-it('All elements besides slot should be accessible', () => {
-   cy.mount(AccessibilityVue)
+it('All elements besides the slot should be accessible', () => {
+   cy.mount(Push)
 
-   for (let i = 0; i < 5; i++) cy.get('.Push').click()
+   for (let i = 0; i < 10; i++) cy.get('.Success').click()
 
-   cy.get('li > div')
-      .should('have.length', 5)
-      .then((els) => {
-         els.each((_, el) => {
-            const ariaRegion = el.children[1]
+   cy.get('li > div > div:last-of-type')
+      .should('have.length', 10)
+      .should('have.attr', 'aria-live', 'polite')
+      .and('have.attr', 'role', 'status')
 
-            cy.wrap(ariaRegion).should('have.attr', 'aria-live', 'polite')
-            cy.wrap(ariaRegion).should('have.attr', 'role', 'status')
-         })
-      })
+   // TODO: Check for any type of notification
 
    cy.injectAxe()
    cy.checkA11y('.Notivue__root')

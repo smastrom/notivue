@@ -59,6 +59,7 @@
       "@rollup/plugin-terser": "^0.4.3",
       "@types/node": "^18.16.18",
       "@vitejs/plugin-vue": "^4.2.3",
+      "@vue/test-utils": "^2.4.0",
       "axe-core": "^4.7.2",
       "cypress": "^12.15.0",
       "cypress-axe": "^1.4.0",

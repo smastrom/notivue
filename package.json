@@ -17,7 +17,7 @@
       "pretty-quick": "pretty-quick"
    },
    "devDependencies": {
-      "@types/node": "^18.16.18",
+      "@types/node": "^18.16.19",
       "@vitejs/plugin-vue": "^4.2.3",
       "husky": "^8.0.3",
       "prettier": "^2.8.8",
