@@ -11,9 +11,9 @@ export default defineConfig({
          '@/types': resolve(__dirname, './types.ts'),
          '@/Notivue': resolve(__dirname, './Notivue'),
          '@/Notifications': resolve(__dirname, './Notifications'),
+         notivue: resolve(__dirname, './index.ts'),
       },
    },
-
    build: {
       lib: {
          entry: 'index.ts',

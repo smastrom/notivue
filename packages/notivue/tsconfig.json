@@ -15,7 +15,8 @@
          "@/core/*": ["core/*"],
          "@/Notivue/*": ["Notivue/*"],
          "@/Notifications/*": ["Notifications/*"],
-         "@/types": ["types.ts"]
+         "@/types": ["types.ts"],
+         "notivue": ["index.ts"]
       }
    },
    "include": ["."]

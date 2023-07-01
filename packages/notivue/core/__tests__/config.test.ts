@@ -1,9 +1,9 @@
 import { test, describe, expect } from 'vitest'
 
-import { defaultConfig } from './config'
-import { mergeDeep } from './utils'
-import { defaultNotificationOptions } from './options'
-import { CLASS_PREFIX as CX } from './constants'
+import { defaultConfig } from '../config'
+import { mergeDeep } from '../utils'
+import { defaultNotificationOptions } from '../options'
+import { CLASS_PREFIX as CX } from '../constants'
 
 describe('Config Merge', () => {
    test('Returns default config', () => {
