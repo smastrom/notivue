@@ -8,3 +8,11 @@ export const notivue: Plugin = {
       app.provide(storeInjectionKey, createStore(config))
    },
 }
+
+export function notivueCypress(config: NotivueConfig = {}): Plugin {
+   return {
+      install(app) {
+         app.provide(storeInjectionKey, createStore(config))
+      },
+   }
+}

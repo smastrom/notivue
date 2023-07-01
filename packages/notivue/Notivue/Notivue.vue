@@ -13,7 +13,7 @@ import { getSlotContext } from './utils'
 import { NotivueSlot } from '@/types'
 
 defineProps<{
-   class: string
+   class?: string
 }>()
 
 defineSlots<{

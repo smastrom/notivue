@@ -3,8 +3,9 @@ import { notivue } from 'notivue'
 
 import App from './components/App.vue'
 
-import '../packages/notivue/core/animations.css'
-import '../packages/notivue/Notifications/notifications.css'
+import '@/core/animations.css'
+import '@/Notifications/notifications.css'
+
 import './assets/style.css'
 
 createApp(App)
