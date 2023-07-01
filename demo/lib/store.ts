@@ -1,11 +1,18 @@
 import { reactive, computed } from 'vue'
-
-import type { Position } from 'notivue'
+import {
+   lightTheme,
+   pastelTheme,
+   materialTheme,
+   darkTheme,
+   slateTheme,
+   type Position,
+   type ThemeNames,
+} from 'notivue'
 
 export const store = reactive({
    position: 'top-center' as Position,
    maxWidth: '100%',
-   theme: 'lightTheme',
+   theme: 'lightTheme' as ThemeNames,
    renderTitles: false,
    emojis: false,
    outlinedIcons: false,
@@ -62,16 +69,24 @@ export function toggleRenderTitles() {
    store.renderTitles = !store.renderTitles
 }
 
-export function setTheme(theme: string) {
-   document.documentElement.setAttribute('data-theme', theme.replace('Theme', ''))
-   store.theme = theme
+export function setTheme(themeName: ThemeNames) {
+   document.documentElement.setAttribute('data-theme', themeName.replace('Theme', ''))
+   store.theme = themeName
 }
 
 export function toggleOutlinedIcons() {
+   if (store.emojis) {
+      store.emojis = !store.emojis
+   }
+
    store.outlinedIcons = !store.outlinedIcons
 }
 
 export function toggleEmojis() {
+   if (store.outlinedIcons) {
+      store.outlinedIcons = !store.outlinedIcons
+   }
+
    store.emojis = !store.emojis
 }
 
