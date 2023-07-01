@@ -106,7 +106,6 @@
 }
 
 .Notivue__content-message {
-   font-weight: 500;
    opacity: 0.9;
    max-height: 250px;
    overflow: auto;

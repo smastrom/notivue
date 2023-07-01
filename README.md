@@ -13,31 +13,25 @@
 ## Features
 
 **🧬 JS and CSS modular**  
-_Granularly bundle only the features you need_
+_Granularly include only the features you need_
 
 **🧚‍♂️ Zero deps and lightweight**  
 _From ~3.5 KB (gzipped)_
 
-**🔰 Ships with anything you need**  
-_Themes, icons, animations and much more_
-
-**💅 Theming API**  
-_Create your own theme with a breeze_
-
-**🌀 Promise API**  
-_Update pending notifications with ease_
+**🎢 Slick transitions and animations**  
+_Customize any animation_
 
 **🧩 Custom Components API**  
 _Use your own components while Notivue handles the rest_
 
-**🎢 Slick transitions and animations**  
-_Customize enter/leave animations_
+**🌀 Promise API**  
+_Update pending notifications with ease_
 
-**♿️ Accessible and WAI ARIA compliant**  
+**🔰 Includes a ready-made component with anything you need**  
+_Themes, icons, animations, rtl support and much more_
+
+**♿️ Fully accessible**  
 _Accessible notifications to everyone_
-
-**🕉 Out-of-the box native RTL support**  
-_Pure CSS RTL support_
 
 <br />
 
@@ -53,28 +47,35 @@ pnpm add notivue
 
 ### 1. Configure
 
-**main.js**
+**main.js/ts**
 
 ```js
 import { createApp } from 'vue'
 import { notivue } from 'notivue'
+
 import App from './App.vue'
 
-import 'notivue/notifications.css'
-import 'notivue/animations.css'
+import 'notivue/notifications.css' // Only needed if using built-in notifications
+import 'notivue/animations.css' // Only needed if using built-in animations
 
-createApp(App).use(notivue).mount('#app')
+const app = createApp(App)
+
+app.use(notivue)
+app.mount('#app')
 ```
 
 **App.vue**
 
 ```vue
 <script setup>
-import { Notivue, notifications } from 'notivue'
+import { Notivue, Notifications } from 'notivue'
 </script>
 
 <template>
-  <Notivue :use="notifications" />
+  <Notivue v-slot="item">
+    <Notifications :item="item" />
+  </Notivue>
+
   <!-- ... -->
 </template>
 ```
@@ -104,9 +105,7 @@ const push = usePush()
 ```ts
 import { notivue } from 'notivue'
 
-export default defineNuxtPlugin(({ vueApp }) => {
-  vueApp.use(notivue)
-})
+export default defineNuxtPlugin(({ vueApp }) => vueApp.use(notivue))
 ```
 
 **nuxt.config.ts**
@@ -121,14 +120,17 @@ export default defineNuxtConfig({
 
 ```vue
 <script setup>
-import { Notivue, notifications } from 'notivue'
+import { Notivue, Notifications } from 'notivue'
 </script>
 
 <template>
   <ClientOnly>
-    <Notivue :use="notifications" />
+    <Notivue v-slot="item">
+      <Notifications :item="item" />
+    </Notivue>
   </ClientOnly>
-  <-- ... -->
+
+  <!-- ... -->
 </template>
 ```
 
@@ -143,53 +145,6 @@ const push = usePush()
 
 <template>
   <button @click="push.success('Something good has been pushed!')">Push</button>
-</template>
-```
-
-<br />
-
-## Customizing Options
-
-### Globally
-
-```vue
-<script setup>
-import { Notivue, notifications } from 'notivue'
-</script>
-
-<template>
-  <ClientOnly>
-    <Notivue
-      :use="notifications"
-      :options="{
-        global: { title: false },
-        success: { close: false }
-      }"
-    />
-  </ClientOnly>
-  <-- ... -->
-</template>
-```
-
-### Push-specific
-
-```vue
-<script setup>
-import { usePush } from 'notivue'
-
-const push = usePush()
-
-function pushNotification() {
-  push.success({
-    message: 'Something good has been pushed!',
-    title: false,
-    close: false
-  })
-}
-</script>
-
-<template>
-  <button @click="pushNotification">Push</button>
 </template>
 ```
 
