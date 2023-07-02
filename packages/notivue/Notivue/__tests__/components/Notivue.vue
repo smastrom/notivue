@@ -64,7 +64,7 @@ async function randomPromise() {
 </script>
 
 <template>
-   <div :data-touch-active="rPauseOnTouch" :data-hover-active="rPauseOnHover">
+   <div>
       <Notivue v-slot="item" :class="cyProps.class || 'Root'">
          <div class="Notification">{{ JSON.stringify(item) }}</div>
          <button class="ClearButton" @click="item.clear">Clear</button>

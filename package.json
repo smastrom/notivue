@@ -11,8 +11,8 @@
       "preview": "pnpm -C demo run preview",
       "build": "pnpm -C packages/notivue run build",
       "build:demo": "pnpm -C demo run build",
-      "test:ct:gui": "pnpm -C packages/notivue run test:ct:gui",
-      "test:ct": "pnpm -C packages/notivue run test:ct",
+      "test": "pnpm -C packages/notivue run test",
+      "test:gui": "pnpm -C packages/notivue run test:gui",
       "prepare": "husky install",
       "pretty-quick": "pretty-quick"
    },
