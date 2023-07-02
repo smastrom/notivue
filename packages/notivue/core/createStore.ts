@@ -56,13 +56,15 @@ export function createStore(userConfig: NotivueConfig) {
          })
       },
       playEnter(id: string) {
-         this.updateAnimation(id, config.animations.value.enter, () => {
+         this.updateAnimation(id, config.animations.value.enter ?? '', () =>
             this.update(id, { animationClass: '' })
-         })
+         )
          this.updatePositions()
       },
       playLeave(id: string) {
-         this.updateAnimation(id, config.animations.value.leave, () => this.remove(id))
+         if (!config.animations.value.leave) this.remove(id)
+
+         this.updateAnimation(id, config.animations.value.leave ?? '', () => this.remove(id))
          this.updatePositions()
       },
       playLeaveTimeout(id: string, time: number) {
@@ -72,34 +74,6 @@ export function createStore(userConfig: NotivueConfig) {
          if (elements.wrapper.value) {
             elements.wrapper.value.classList.add(config.animations.value.clearAll ?? '')
             elements.wrapper.value.onanimationend = () => items.removeAll()
-         }
-      },
-      updatePositions(type = TType.PUSH) {
-         const sortedItems = elements.items.value.sort(
-            (a, b) => +b.dataset.notivueId! - +a.dataset.notivueId!
-         )
-
-         let accPrevHeights = 0
-
-         const factor = config.isTopAlign.value ? 1 : -1
-
-         for (const el of sortedItems) {
-            const currId = el.dataset.notivueId!
-            const item = items.get(currId)
-
-            if (!el || !item || item.animationClass === config.animations.value.leave) {
-               continue
-            }
-
-            items.update(currId, {
-               transitionStyles: {
-                  ...(type === TType.HEIGHT ? { transitionProperty: 'all' } : {}),
-                  ...(type === TType.SILENT ? { transition: 'none' } : {}),
-                  transform: `translate3d(0, ${accPrevHeights}px, 0)`,
-               },
-            })
-
-            accPrevHeights += factor * el.clientHeight
          }
       },
       pauseTimeouts() {
@@ -131,6 +105,34 @@ export function createStore(userConfig: NotivueConfig) {
                      : items.playLeaveTimeout(item.id, newTimeout),
             }
          })
+      },
+      updatePositions(type = TType.PUSH) {
+         const sortedItems = elements.items.value.sort(
+            (a, b) => +b.dataset.notivueId! - +a.dataset.notivueId!
+         )
+
+         let accPrevHeights = 0
+
+         for (const el of sortedItems) {
+            const currId = el.dataset.notivueId!
+            const item = items.get(currId)
+
+            if (!el || !item || item.animationClass === config.animations.value.leave) {
+               continue
+            }
+
+            items.update(currId, {
+               transitionStyles: {
+                  transitionDuration: elements.getAnimationData().duration,
+                  transitionTimingFunction: elements.getAnimationData().easing,
+                  ...(type === TType.HEIGHT ? { transitionProperty: 'all' } : {}),
+                  ...(type === TType.SILENT ? { transition: 'none' } : {}),
+                  transform: `translate3d(0, ${accPrevHeights}px, 0)`,
+               },
+            })
+
+            accPrevHeights += (config.isTopAlign.value ? 1 : -1) * el.clientHeight
+         }
       },
       push<T extends Obj = Obj>(incomingOptions: UserPushOptionsWithInternals<T>) {
          const createdAt = Date.now()
@@ -164,9 +166,7 @@ export function createStore(userConfig: NotivueConfig) {
             if (this.data.value.length >= config.limit.value) {
                const additionalItems = [...this.data.value].slice(config.limit.value - 1)
 
-               additionalItems.forEach(({ id }) =>
-                  this.updateAnimation(id, config.animations.value.leave, () => this.remove(id))
-               )
+               additionalItems.forEach(({ id }) => this.playLeave(id))
             }
 
             this.set({
@@ -189,6 +189,26 @@ export function createStore(userConfig: NotivueConfig) {
    const elements = {
       wrapper: ref<HTMLElement | null>(null),
       items: ref<HTMLElement[]>([]),
+      animationData: { duration: '', easing: '' },
+      /** Syncs transition duration/easing with the one defined in the CSS animation.
+       * Runs on the first push and then caches the value.
+       */
+      getAnimationData() {
+         if (!this.animationData.duration) {
+            const animEl = this.wrapper.value?.querySelector(`.${config.animations.value.enter}`)
+
+            if (!animEl) {
+               this.animationData.duration = '0s'
+               this.animationData.easing = 'linear'
+            } else {
+               const style = getComputedStyle(animEl)
+
+               this.animationData.duration = style.animationDuration
+               this.animationData.easing = style.animationTimingFunction
+            }
+         }
+         return this.animationData
+      },
    }
 
    const pointer = {

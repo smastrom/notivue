@@ -16,7 +16,11 @@ export const defaultConfig: NotivueConfigRequired = {
    class: '',
    notifications: defaultNotificationOptions,
    limit: Infinity,
-   animations: { enter: CX + 'enter', leave: CX + 'leave', clearAll: CX + 'clearAll' },
+   animations: {
+      enter: CX + 'enter',
+      leave: CX + 'leave',
+      clearAll: CX + 'clearAll',
+   },
 }
 
 export function getConfig(userConfig: NotivueConfig) {

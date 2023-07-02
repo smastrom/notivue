@@ -75,7 +75,7 @@ useRepositioning()
                         :role="item.ariaRole"
                         :style="visuallyHidden"
                      >
-                        <div>{{ item.title || '' }} {{ item.message }}</div>
+                        <div>{{ item.title ? `${item.title}:` : '' }} {{ item.message }}</div>
                      </div>
                   </div>
                </li>

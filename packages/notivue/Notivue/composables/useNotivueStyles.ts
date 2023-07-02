@@ -70,8 +70,6 @@ const staticStyles: Record<NotivueElements, CSSProperties> = {
       ...noMargin,
       ...flex,
       ...absolute,
-      transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)',
-      transitionDuration: '300ms',
       transitionProperty: 'transform',
       width: '100%',
    },
@@ -87,8 +85,6 @@ export function useNotivueStyles() {
    const config = useConfig()
    const isReduced = useReducedMotion()
 
-   const isAlignedTo = (value: string) => config.position.value.endsWith(value)
-
    /* Simulate overflow-hidden only on the opposite side of the current vertical align */
    const clipPath = computed<CSSProperties>(() => {
       const clipInset = Object.values(rootOffsets).map((value) => `calc(-1 * ${value})`)
@@ -98,6 +94,7 @@ export function useNotivueStyles() {
       return { clipPath: `inset(${clipInset.join(' ')})` }
    })
 
+   const isAlignedTo = (value: string) => config.position.value.endsWith(value)
    const xAlignment = computed<CSSProperties>(() => ({
       justifyContent: `var(--nv-root-x-align, ${
          isAlignedTo('left') ? 'flex-start' : isAlignedTo('right') ? 'flex-end' : 'center'

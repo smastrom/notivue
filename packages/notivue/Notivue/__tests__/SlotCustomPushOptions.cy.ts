@@ -5,10 +5,10 @@ const options = {
    class: 'CustomClass',
    title: 'CustomTitle',
    message: 'CustomMessage',
-   ariaLive: 'assertive',
-   ariaRole: 'alert',
+   ariaLive: 'assertiveCustom',
+   ariaRole: 'alertCustom',
    closeAriaLabel: 'CustomClose',
-} // All different
+}
 
 describe('Custom notification options match the slot content', () => {
    const componentConfig = [{ config: {} }, { props: { options } } as any]
@@ -22,23 +22,19 @@ describe('Custom notification options match the slot content', () => {
    })
 
    it('Error', () => {
-      const _options = { ...options, ariaLive: 'polite', ariaRole: 'status' } // Override to keep all different
-
-      cy.mount(Slot, { config: {} }, { props: { options: _options } } as any)
+      cy.mount(Slot, ...componentConfig)
 
          .get('.Error')
          .click()
-         .checkSlotAgainst(_options)
+         .checkSlotAgainst(options)
    })
 
    it('Warning', () => {
-      const _options = { ...options, ariaRole: 'status' } // Same
-
-      cy.mount(Slot, { config: {} }, { props: { options: _options } } as any)
+      cy.mount(Slot, ...componentConfig)
 
          .get('.Warning')
          .click()
-         .checkSlotAgainst(_options)
+         .checkSlotAgainst(options)
    })
 
    it('Info', () => {

@@ -4,12 +4,10 @@
 
 [data-notivue-y='top'] {
    --notivue-ty: -200px;
-   --notivue-ty-origin: top;
 }
 
 [data-notivue-y='bottom'] {
    --notivue-ty: 200px;
-   --notivue-ty-origin: bottom;
 }
 
 .Notivue__enter {
@@ -18,7 +16,7 @@
 
 @keyframes Notivue__enter-kf {
    0% {
-      transform: scale(0.5) translate3d(0, var(--notivue-ty), 0);
+      transform: scale(0.6) translate3d(0, var(--notivue-ty), 0);
       opacity: 0;
    }
    100% {
@@ -33,13 +31,14 @@
 
 @keyframes Notivue__leave-kf {
    100% {
-      transform-origin: var(--notivue-ty-origin);
       transform: scale(1);
       opacity: 1;
+      filter: blur(0px);
    }
    100% {
-      transform: scale(0.7);
+      transform: scale(1.05);
       opacity: 0;
+      filter: blur(2px);
    }
 }
 
