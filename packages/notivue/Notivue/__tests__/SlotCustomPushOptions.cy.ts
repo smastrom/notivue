@@ -1,8 +1,16 @@
-import Slot from './components/Slot.vue'
+import Notivue from './components/Notivue.vue'
+
+const config = {
+   duration: 2000,
+   title: 'ConfigTitle',
+   message: 'ConfigMessage',
+   ariaLive: 'assertiveConfig',
+   ariaRole: 'alertConfig',
+   closeAriaLabel: 'ConfigClose',
+}
 
 const options = {
    duration: 1000,
-   class: 'CustomClass',
    title: 'CustomTitle',
    message: 'CustomMessage',
    ariaLive: 'assertiveCustom',
@@ -10,11 +18,24 @@ const options = {
    closeAriaLabel: 'CustomClose',
 }
 
-describe('Custom notification options match the slot content', () => {
-   const componentConfig = [{ config: {} }, { props: { options } } as any]
+describe('Push notification options have higher priority over config', () => {
+   const componentConfig = [
+      {
+         config: {
+            notifications: {
+               success: config,
+               error: config,
+               warning: config,
+               info: config,
+               promise: config,
+            },
+         },
+      },
+      { props: { options } } as any,
+   ]
 
    it('Success', () => {
-      cy.mount(Slot, ...componentConfig)
+      cy.mount(Notivue, ...componentConfig)
 
          .get('.Success')
          .click()
@@ -22,7 +43,7 @@ describe('Custom notification options match the slot content', () => {
    })
 
    it('Error', () => {
-      cy.mount(Slot, ...componentConfig)
+      cy.mount(Notivue, ...componentConfig)
 
          .get('.Error')
          .click()
@@ -30,7 +51,7 @@ describe('Custom notification options match the slot content', () => {
    })
 
    it('Warning', () => {
-      cy.mount(Slot, ...componentConfig)
+      cy.mount(Notivue, ...componentConfig)
 
          .get('.Warning')
          .click()
@@ -38,7 +59,7 @@ describe('Custom notification options match the slot content', () => {
    })
 
    it('Info', () => {
-      cy.mount(Slot, ...componentConfig)
+      cy.mount(Notivue, ...componentConfig)
 
          .get('.Info')
          .click()
@@ -46,10 +67,77 @@ describe('Custom notification options match the slot content', () => {
    })
 
    it('Promise', () => {
-      cy.mount(Slot, ...componentConfig)
+      cy.mount(Notivue, ...componentConfig)
 
          .get('.Promise')
          .click()
          .checkSlotAgainst(options)
+   })
+})
+
+describe('Push notification options are merged properly with config', () => {
+   const someOptions = {
+      ...options,
+   } as Partial<typeof options>
+
+   delete someOptions.duration
+   delete someOptions.title
+   delete someOptions.message
+
+   const componentConfig = [
+      {
+         config: {
+            notifications: {
+               success: config,
+               error: config,
+               warning: config,
+               info: config,
+               promise: config,
+            },
+         },
+      },
+      { props: { options: someOptions } } as any,
+   ]
+
+   const expectedOptions = { ...config, ...someOptions }
+
+   it('Success', () => {
+      cy.mount(Notivue, ...componentConfig)
+
+         .get('.Success')
+         .click()
+         .checkSlotAgainst(expectedOptions)
+   })
+
+   it('Error', () => {
+      cy.mount(Notivue, ...componentConfig)
+
+         .get('.Error')
+         .click()
+         .checkSlotAgainst(expectedOptions)
+   })
+
+   it('Warning', () => {
+      cy.mount(Notivue, ...componentConfig)
+
+         .get('.Warning')
+         .click()
+         .checkSlotAgainst(expectedOptions)
+   })
+
+   it('Info', () => {
+      cy.mount(Notivue, ...componentConfig)
+
+         .get('.Info')
+         .click()
+         .checkSlotAgainst(expectedOptions)
+   })
+
+   it('Promise', () => {
+      cy.mount(Notivue, ...componentConfig)
+
+         .get('.Promise')
+         .click()
+         .checkSlotAgainst(expectedOptions)
    })
 })

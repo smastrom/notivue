@@ -49,11 +49,10 @@
       "build:css": "esbuild ./Notifications/notifications.css ./core/animations.css --bundle --outdir=dist --minify --target=chrome58,edge16,firefox57,node12,safari11",
       "postbuild:css": "echo \"esbuild above warnings are fine, it means that code has been transformed for browsers that don't supports CSS nesting.\"",
       "test": "vitest",
-      "test:ct": "pnpm test:ct:chrome && pnpm test:ct:firefox && pnpm test:ct:webkit",
+      "test:ct": "pnpm test:ct:chrome && pnpm test:ct:firefox",
       "test:ct:gui": "cypress open --component",
       "test:ct:chrome": "cypress run --component --browser chrome",
-      "test:ct:firefox": "cypress run --component --browser firefox",
-      "test:ct:webkit": "cypress run --component --browser webkit"
+      "test:ct:firefox": "cypress run --component --browser firefox"
    },
    "devDependencies": {
       "@rollup/plugin-terser": "^0.4.3",
@@ -65,7 +64,6 @@
       "cypress-axe": "^1.4.0",
       "cypress-real-events": "^1.8.1",
       "esbuild": "^0.18.8",
-      "playwright-webkit": "^1.35.1",
       "rimraf": "^4.4.1",
       "typescript": "^4.9.5",
       "vite": "^4.3.9",

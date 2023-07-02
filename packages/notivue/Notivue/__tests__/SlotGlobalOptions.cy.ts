@@ -1,4 +1,4 @@
-import Slot from './components/Slot.vue'
+import Notivue from './components/Notivue.vue'
 
 const globalOptions = {
    title: 'TitleCustom',
@@ -34,7 +34,7 @@ describe('Global options have higher priority over defaults', () => {
    }
 
    it('Success', () => {
-      cy.mount(Slot, customConfig)
+      cy.mount(Notivue, customConfig)
 
          .get('.Success')
          .click()
@@ -42,7 +42,7 @@ describe('Global options have higher priority over defaults', () => {
    })
 
    it('Error', () => {
-      cy.mount(Slot, customConfig)
+      cy.mount(Notivue, customConfig)
 
          .get('.Error')
          .click()
@@ -50,7 +50,7 @@ describe('Global options have higher priority over defaults', () => {
    })
 
    it('Warning', () => {
-      cy.mount(Slot, customConfig)
+      cy.mount(Notivue, customConfig)
 
          .get('.Warning')
          .click()
@@ -58,7 +58,7 @@ describe('Global options have higher priority over defaults', () => {
    })
 
    it('Info', () => {
-      cy.mount(Slot, customConfig)
+      cy.mount(Notivue, customConfig)
 
          .get('.Info')
          .click()
@@ -66,7 +66,7 @@ describe('Global options have higher priority over defaults', () => {
    })
 
    it('Promise', () => {
-      cy.mount(Slot, customConfig)
+      cy.mount(Notivue, customConfig)
 
          .get('.Promise')
          .click()
@@ -81,7 +81,7 @@ describe('Push options have higher priority over globals', () => {
    ]
 
    it('Success', () => {
-      cy.mount(Slot, ...componentConfig)
+      cy.mount(Notivue, ...componentConfig)
 
          .get('.Success')
          .click()
@@ -89,7 +89,7 @@ describe('Push options have higher priority over globals', () => {
    })
 
    it('Error', () => {
-      cy.mount(Slot, ...componentConfig)
+      cy.mount(Notivue, ...componentConfig)
 
          .get('.Error')
          .click()
@@ -97,7 +97,7 @@ describe('Push options have higher priority over globals', () => {
    })
 
    it('Warning', () => {
-      cy.mount(Slot, ...componentConfig)
+      cy.mount(Notivue, ...componentConfig)
 
          .get('.Warning')
          .click()
@@ -105,7 +105,7 @@ describe('Push options have higher priority over globals', () => {
    })
 
    it('Info', () => {
-      cy.mount(Slot, ...componentConfig)
+      cy.mount(Notivue, ...componentConfig)
 
          .get('.Info')
          .click()
@@ -113,7 +113,7 @@ describe('Push options have higher priority over globals', () => {
    })
 
    it('Promise', () => {
-      cy.mount(Slot, ...componentConfig)
+      cy.mount(Notivue, ...componentConfig)
 
          .get('.Promise')
          .click()

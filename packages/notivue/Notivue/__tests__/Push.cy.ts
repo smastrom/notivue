@@ -1,10 +1,10 @@
-import Push from './components/Slot.vue'
+import Notivue from './components/Notivue.vue'
 
 import { defaultConfig } from '@/core/config'
 
 describe('Push', () => {
    it('Can push any type of notification', () => {
-      cy.mount(Push)
+      cy.mount(Notivue)
 
          .get('.Success')
          .click()
@@ -26,7 +26,7 @@ describe('Push', () => {
    })
 
    it('Dismisses any static notification', () => {
-      cy.mount(Push)
+      cy.mount(Notivue)
 
          .get('.Success')
          .click()
@@ -50,7 +50,7 @@ describe('Push', () => {
    })
 
    it('Updates and dismisses promises', () => {
-      cy.mount(Push)
+      cy.mount(Notivue)
 
          .get('.RandomPromise')
          .click()

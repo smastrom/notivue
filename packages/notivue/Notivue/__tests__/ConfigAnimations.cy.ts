@@ -1,4 +1,4 @@
-import Config from './components/Config.vue'
+import Notivue from './components/Notivue.vue'
 
 import type { VueWrapper } from '@vue/test-utils'
 
@@ -11,7 +11,7 @@ const customAnims = {
 
 describe('Animations', () => {
    it('Custom animations classes are toggled properly', () => {
-      cy.mount(Config, { config: { animations: customAnims } }).checkAnimations(
+      cy.mount(Notivue, { config: { animations: customAnims } }).checkAnimations(
          `.${customAnims.enter}`,
          `.${customAnims.leave}`,
          `.${customAnims.clearAll}`
@@ -22,7 +22,7 @@ describe('Animations', () => {
       const _customAnimations = { ...customAnims } as Partial<typeof customAnims>
       delete _customAnimations.enter
 
-      cy.mount(Config, { config: { animations: _customAnimations } }).checkAnimations(
+      cy.mount(Notivue, { config: { animations: _customAnimations } }).checkAnimations(
          '.Notivue__enter',
          '.fade-out',
          '.fade-all'
@@ -30,7 +30,7 @@ describe('Animations', () => {
    })
 
    it('Should update animations config dynamically', () => {
-      cy.mount(Config)
+      cy.mount(Notivue)
          .get<VueWrapper>('@vue')
          .then((wrapper) => wrapper.setProps({ animations: customAnims }))
 

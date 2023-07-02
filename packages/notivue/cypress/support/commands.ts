@@ -23,6 +23,7 @@ declare global {
          ): Chainable<any>
          throwIfDurationMismatch(duration: number): void
          getNotifications(): Chainable<any>
+         getAriaLive(): Chainable<any>
          checkSlotAgainst(obj: Record<string, any>): Chainable<any>
          checkSlotPropsAgainst(obj: Record<string, any>): Chainable<any>
          checkAnimations(
@@ -30,7 +31,7 @@ declare global {
             leaveClass: string,
             clearAllClass: string
          ): Chainable<any>
-         checkTransitionStyles(element: HTMLElement, height: number): Chainable<any>
+         checkTransitions(element: HTMLElement, height: number): Chainable<any>
       }
    }
 }
@@ -57,6 +58,10 @@ Cypress.Commands.add('throwIfDurationMismatch', (duration: number) => {
 })
 
 Cypress.Commands.add('getNotifications', () => cy.get('li > div > div:first-of-type'))
+
+Cypress.Commands.add('getAriaLive', () => {
+   return cy.get('li > div > div:last-of-type')
+})
 
 Cypress.Commands.add('checkSlotAgainst', (obj: Record<string, any>) =>
    cy.getNotifications().then((el) => expect(parseText(el)).to.contain(obj))
@@ -94,12 +99,12 @@ Cypress.Commands.add(
          .should('exist')
 )
 
-Cypress.Commands.add('checkTransitionStyles', (element: HTMLElement, height: number) =>
+Cypress.Commands.add('checkTransitions', (element: HTMLElement, height: number) =>
    cy
       .wrap(element)
       .should('have.attr', 'style')
       .and('include', `transform: translate3d(0px, ${height}px, 0px)`)
-      .and('include', 'transition-duration: 300m')
+      .and('include', 'transition-duration: 0.3s')
       .and('include', 'transition-property: transform')
       .and('include', 'transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1)')
 )

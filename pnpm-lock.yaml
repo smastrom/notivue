@@ -95,9 +95,6 @@ importers:
          esbuild:
             specifier: ^0.18.8
             version: 0.18.8
-         playwright-webkit:
-            specifier: ^1.35.1
-            version: 1.35.1
          rimraf:
             specifier: ^4.4.1
             version: 4.4.1
@@ -3558,27 +3555,6 @@ packages:
          jsonc-parser: 3.2.0
          mlly: 1.4.0
          pathe: 1.1.1
-      dev: true
-
-   /playwright-core@1.35.1:
-      resolution:
-         {
-            integrity: sha512-pNXb6CQ7OqmGDRspEjlxE49w+4YtR6a3X6mT1hZXeJHWmsEz7SunmvZeiG/+y1yyMZdHnnn73WKYdtV1er0Xyg==,
-         }
-      engines: { node: '>=16' }
-      hasBin: true
-      dev: true
-
-   /playwright-webkit@1.35.1:
-      resolution:
-         {
-            integrity: sha512-95hNkUxgLPK6NF/6mP5hY7S28ApnBIPVMjDizE+IP6ZDwyo2ctnmOl+Jyp3iu+Tu9JjNcbbGMFEHdZBM8PzqrA==,
-         }
-      engines: { node: '>=16' }
-      hasBin: true
-      requiresBuild: true
-      dependencies:
-         playwright-core: 1.35.1
       dev: true
 
    /postcss-nesting@11.3.0(postcss@8.4.24):

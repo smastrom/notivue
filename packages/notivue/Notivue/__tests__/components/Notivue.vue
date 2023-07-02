@@ -1,0 +1,91 @@
+<script setup lang="ts">
+import { toRef, watch } from 'vue'
+
+import { usePush, useNotivue, Notivue, type UserPushOptions } from 'notivue'
+
+const push = usePush()
+const config = useNotivue()
+
+const cyProps = defineProps<{
+   options?: UserPushOptions
+   class?: string
+   pauseOnTouch?: boolean
+   pauseOnHover?: boolean
+   animations?: {
+      enter: string
+      leave: string
+      clearAll: string
+   }
+   teleportTo?: string
+   limit?: number
+}>()
+
+const rPauseOnTouch = toRef(cyProps, 'pauseOnTouch')
+const rPauseOnHover = toRef(cyProps, 'pauseOnHover')
+const rAnimations = toRef(cyProps, 'animations')
+const rTeleportTo = toRef(cyProps, 'teleportTo')
+const rLimit = toRef(cyProps, 'limit')
+
+watch(rPauseOnTouch, (newValue) => {
+   config.pauseOnTouch.value = newValue
+})
+
+watch(rPauseOnHover, (newValue) => {
+   config.pauseOnHover.value = newValue
+})
+
+watch(rAnimations, (newValue) => {
+   if (!newValue) return
+   config.animations.value = newValue
+})
+
+watch(rTeleportTo, (newValue) => {
+   if (!newValue) return
+   config.teleportTo.value = newValue
+})
+
+watch(rLimit, (newValue) => {
+   if (!newValue) return
+   config.limit.value = newValue
+})
+
+async function randomPromise() {
+   const promise = push.promise(cyProps.options ?? {})
+
+   try {
+      await new Promise((resolve, reject) =>
+         setTimeout(Math.random() > 0.5 ? resolve : reject, 3000)
+      )
+      promise.resolve(cyProps.options ?? {})
+   } catch (error) {
+      promise.reject(cyProps.options ?? {})
+   }
+}
+</script>
+
+<template>
+   <div :data-touch-active="rPauseOnTouch" :data-hover-active="rPauseOnHover">
+      <Notivue v-slot="item" :class="cyProps.class || 'Root'">
+         <div class="Notification">{{ JSON.stringify(item) }}</div>
+         <button class="ClearButton" @click="item.clear">Clear</button>
+         <button class="DestroyButton" @click="item.destroy">Destroy</button>
+      </Notivue>
+
+      <button class="Success" @click="push.success(options ?? {})">Success</button>
+      <button class="Error" @click="push.error(options ?? {})">Error</button>
+      <button class="Warning" @click="push.warning(options ?? {})">Warning</button>
+      <button class="Info" @click="push.info(options ?? {})">Info</button>
+      <button class="Promise" @click="push.promise(options ?? {})">Promise</button>
+      <button class="RandomPromise" @click="randomPromise">Promise</button>
+
+      <button class="ClearAll" @click="push.clearAll">Clear All</button>
+   </div>
+</template>
+
+<style scoped>
+.Notification {
+   width: 300px;
+   height: 60px;
+   overflow: hidden;
+}
+</style>
