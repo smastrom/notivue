@@ -31,13 +31,15 @@ export type NotivueIcons = Partial<
 
 // Config
 
+export type NotificationOptionsField = Record<NotificationType | 'global', NotificationOptions>
+
 export interface NotivueConfigRequired {
    pauseOnHover: boolean
    pauseOnTouch: boolean
    pauseOnTabChange: boolean
    position: Position
    class: string
-   notifications: Record<NotificationType, NotificationOptions>
+   notifications: NotificationOptionsField
    animations: Partial<{ enter: string; leave: string; clearAll: string }>
    teleportTo: string | HTMLElement
 }
@@ -51,7 +53,6 @@ export interface NotificationOptions {
    ariaLive: 'polite' | 'assertive'
    ariaRole: 'alert' | 'status'
    closeAriaLabel: string
-   class: string
 }
 
 // Store Item
@@ -75,18 +76,12 @@ export interface HiddenInternalItemData {
 /** Options added internally when creating a notification. */
 export type InternalItemData = ExposedInternalItemData & HiddenInternalItemData
 
-export interface InlinePushStyles {
-   style?: CSSProperties
-}
-
 export interface PushProps<T extends Obj = Obj> {
    props?: T
 }
 
 /** Defined by the user when calling push() */
-export type UserPushOptions<T extends Obj = Obj> = Partial<NotificationOptions> &
-   InlinePushStyles &
-   PushProps<T>
+export type UserPushOptions<T extends Obj = Obj> = Partial<NotificationOptions> & PushProps<T>
 
 /** Added in background after calling push() */
 export type InternalPushOptions = { id: string; type: NotificationType }
@@ -97,7 +92,6 @@ export type UserPushOptionsWithInternals<T extends Obj = Obj> = UserPushOptions<
 /** Final shape of the store item */
 export type StoreItem<T extends Obj = Obj> = DeepRequired<NotificationOptions> &
    Required<PushProps<T>> &
-   InlinePushStyles &
    InternalPushOptions &
    InternalItemData
 

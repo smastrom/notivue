@@ -5,6 +5,7 @@ const push = usePush()
 
 const props = defineProps<{
    options?: UserPushOptions
+   class?: string
 }>()
 
 async function randomPromise() {
@@ -23,8 +24,10 @@ async function randomPromise() {
 
 <template>
    <div>
-      <Notivue v-slot="item">
+      <Notivue v-slot="item" class="Root">
          <div style="width: 300px">{{ JSON.stringify(item) }}</div>
+         <button class="ClearButton" @click="item.clear">Clear</button>
+         <button class="DestroyButton" @click="item.destroy">Destroy</button>
       </Notivue>
 
       <button class="Success" @click="push.success(options ?? '')">Success</button>

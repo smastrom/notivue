@@ -1,7 +1,7 @@
-import Push from './components/Push.vue'
+import Slot from './components/Slot.vue'
 
 it('All elements besides the slot should be accessible', () => {
-   cy.mount(Push)
+   cy.mount(Slot)
 
    for (let i = 0; i < 10; i++) cy.get('.Success').click()
 
@@ -10,8 +10,6 @@ it('All elements besides the slot should be accessible', () => {
       .should('have.attr', 'aria-live', 'polite')
       .and('have.attr', 'role', 'status')
 
-   // TODO: Check for any type of notification
-
    cy.injectAxe()
-   cy.checkA11y('.Notivue__root')
+   cy.checkA11y('.Root')
 })

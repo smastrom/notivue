@@ -5,6 +5,7 @@ import type {
    NotificationOptions,
    NotificationType,
    UserPushOptionsWithInternals,
+   NotificationOptionsField,
 } from '@/types'
 
 export const success: NotificationOptions = {
@@ -14,7 +15,6 @@ export const success: NotificationOptions = {
    ariaLive: 'polite',
    ariaRole: 'status',
    closeAriaLabel: 'Close',
-   class: '',
 }
 
 const error: NotificationOptions = {
@@ -48,7 +48,7 @@ export const defaultNotificationOptions = {
 } as Record<NotificationType, NotificationOptions>
 
 export function mergeNotificationOptions<T extends Obj = Obj>(
-   optionsFromConfig: Record<string, NotificationOptions>,
+   optionsFromConfig: NotificationOptionsField,
    optionsFromPush: UserPushOptionsWithInternals<T>
 ) {
    if (!optionsFromPush.props) {

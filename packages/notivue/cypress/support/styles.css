@@ -1,0 +1,24 @@
+:root {
+   --easing: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.fade-in {
+   animation: fade-kf 300ms var(--easing);
+}
+
+.fade-out {
+   animation: fade-kf 300ms var(--easing);
+}
+
+.fade-all {
+   animation: fade-kf 600ms var(--easing) forwards;
+}
+
+@keyframes fade-kf {
+   0% {
+      opacity: 1;
+   }
+   100% {
+      opacity: 0;
+   }
+}

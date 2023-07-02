@@ -1,4 +1,4 @@
-import PauseOnHoverTouch from './components/PauseOnHoverTouch.vue'
+import Config from './components/Config.vue'
 
 import { FIXED_TIMEOUT_INCREMENT } from '@/core/constants'
 
@@ -10,7 +10,7 @@ describe('Pause on hover', { browser: ['chrome'] }, () => {
    })
 
    it('Can pause and resume notifications', () => {
-      cy.mount(PauseOnHoverTouch)
+      cy.mount(Config)
 
          .get('.Push')
          .click()
@@ -32,7 +32,7 @@ describe('Pause on hover', { browser: ['chrome'] }, () => {
    })
 
    it('Should not pause notifications if pauseOnHover is false', () => {
-      cy.mount(PauseOnHoverTouch, { config: { pauseOnHover: false } })
+      cy.mount(Config, { config: { pauseOnHover: false } })
 
          .get('.Push')
          .click()
@@ -47,7 +47,7 @@ describe('Pause on hover', { browser: ['chrome'] }, () => {
    })
 
    it('Should update config dynamically and work', () => {
-      cy.mount(PauseOnHoverTouch, { config: { pauseOnHover: false } })
+      cy.mount(Config, { config: { pauseOnHover: false } })
 
          .get<VueWrapper>('@vue')
          .then((wrapper) => wrapper.setProps({ pauseOnHover: true }))
