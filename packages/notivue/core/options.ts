@@ -3,7 +3,6 @@ import { NotificationTypeKeys as NKeys } from './constants'
 import type {
    Obj,
    NotificationOptions,
-   NotificationType,
    UserPushOptionsWithInternals,
    NotificationOptionsField,
 } from '@/types'
@@ -38,6 +37,7 @@ const info: NotificationOptions = {
 }
 
 export const defaultNotificationOptions = {
+   global: {},
    [NKeys.SUCCESS]: success,
    [NKeys.ERROR]: error,
    [NKeys.WARNING]: warning,
@@ -45,7 +45,7 @@ export const defaultNotificationOptions = {
    [NKeys.PROMISE]: promise,
    [NKeys.PROMISE_RESOLVE]: success,
    [NKeys.PROMISE_REJECT]: error,
-} as Record<NotificationType, NotificationOptions>
+} as NotificationOptionsField
 
 export function mergeNotificationOptions<T extends Obj = Obj>(
    optionsFromConfig: NotificationOptionsField,

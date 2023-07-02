@@ -161,6 +161,14 @@ export function createStore(userConfig: NotivueConfig) {
                   : this.playLeaveTimeout(notification.id, notification.duration),
             })
          } else {
+            if (this.data.value.length >= config.limit.value) {
+               const additionalItems = [...this.data.value].slice(config.limit.value - 1)
+
+               additionalItems.forEach(({ id }) =>
+                  this.updateAnimation(id, config.animations.value.leave, () => this.remove(id))
+               )
+            }
+
             this.set({
                ...(notification as typeof notification & { props: T }),
                createdAt,
