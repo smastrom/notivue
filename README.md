@@ -31,7 +31,7 @@ _Update pending notifications with ease_
 _Themes, icons, animations, rtl support and much more_
 
 **♿️ Fully accessible**  
-_Accessible notifications to everyone_
+_Built-in keyboard and screen reader support_
 
 <br />
 

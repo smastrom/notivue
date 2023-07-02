@@ -27,14 +27,13 @@
       "name": "Simone Mastromattei",
       "email": "smastrom@proton.me"
    },
-   "type": "module",
    "exports": {
       ".": {
          "import": "./dist/index.mjs",
          "require": "./dist/index.js"
       },
-      "./notifications.css": "./dist/notifications.css",
-      "./animations.css": "./dist/animations.css"
+      "./notifications.css": "./dist/Notifications/notifications.css",
+      "./animations.css": "./dist/core/animations.css"
    },
    "main": "dist/index.js",
    "module": "dist/index.mjs",
@@ -46,8 +45,7 @@
       "dev": "pnpm --C \"../../demo\" run dev",
       "preinstall": "npx only-allow pnpm",
       "build": "rimraf dist && vue-tsc && vite build && pnpm run build:css",
-      "build:css": "esbuild ./Notifications/notifications.css ./core/animations.css --bundle --outdir=dist --minify --target=chrome58,edge16,firefox57,node12,safari11",
-      "postbuild:css": "echo \"esbuild above warnings are fine, it means that code has been transformed for browsers that don't supports CSS nesting.\"",
+      "build:css": "esbuild ./Notifications/notifications.css ./core/animations.css --bundle --outdir=dist --minify --target=chrome58,edge16,firefox57,node12,safari11 --log-level=error",
       "test": "pnpm test:ct:chrome && pnpm test:ct:firefox",
       "test:gui": "cypress open --component",
       "test:chrome": "cypress run --component --browser chrome",

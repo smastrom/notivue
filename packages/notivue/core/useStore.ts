@@ -10,12 +10,12 @@ export function useStore(): ReturnType<typeof createStore> {
 }
 
 /**
- * useConfig and usePush might be called on the server because
+ * useNotivue and usePush might be called on the server because
  * are exposed to the user. In such case we return an object
  * with the same shape.
  */
 
-export function useConfig() {
+export function useNotivue() {
    if (isSSR) return toShallowRefs({ ...defaultConfig, isTopAlign: true })
 
    return useStore().config

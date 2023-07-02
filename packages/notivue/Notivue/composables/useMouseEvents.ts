@@ -1,12 +1,12 @@
 import { computed } from 'vue'
 
 import { isMouse } from '@/core/utils'
-import { useConfig, useItems, usePointer } from '@/core/useStore'
+import { useNotivue, useItems, usePointer } from '@/core/useStore'
 
 export function useMouseEvents() {
    const pointer = usePointer()
    const items = useItems()
-   const config = useConfig()
+   const config = useNotivue()
 
    function pauseHover(event: PointerEvent) {
       if (!pointer.isHovering && isMouse(event)) {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Teleport, type Component } from 'vue'
 
-import { useConfig, useItems, useElements } from '@/core/useStore'
+import { useNotivue, useItems, useElements } from '@/core/useStore'
 
 import { useMouseEvents } from './composables/useMouseEvents'
 import { useTouchEvents } from './composables/useTouchEvents'
@@ -20,7 +20,7 @@ defineSlots<{
    default(item: NotivueSlot): Component
 }>()
 
-const config = useConfig()
+const config = useNotivue()
 const items = useItems()
 const elements = useElements()
 

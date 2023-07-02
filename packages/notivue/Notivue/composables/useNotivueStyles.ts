@@ -1,6 +1,6 @@
 import { computed, type CSSProperties } from 'vue'
 
-import { useConfig } from '@/core/useStore'
+import { useNotivue } from '@/core/useStore'
 import { useReducedMotion } from './useReducedMotion'
 
 import type { NotivueElements } from '@/types'
@@ -73,7 +73,7 @@ const staticStyles: Record<NotivueElements, CSSProperties> = {
 }
 
 export function useNotivueStyles() {
-   const config = useConfig()
+   const config = useNotivue()
    const isReduced = useReducedMotion()
 
    /** Simulates overflow-hidden only on the opposite side of the current vertical align.

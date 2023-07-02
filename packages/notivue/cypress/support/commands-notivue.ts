@@ -2,7 +2,7 @@
 
 import { mount } from 'cypress/vue'
 
-import { notivueCypress } from '@/core/plugin'
+import { notivueCypress } from '@/core/notivue'
 import { defaultConfig } from '@/core/config'
 import { parseText } from './utils'
 
