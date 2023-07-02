@@ -15,6 +15,7 @@ export const defaultConfig: NotivueConfigRequired = {
    teleportTo: 'body',
    class: '',
    notifications: defaultNotificationOptions,
+   limit: Infinity,
    animations: { enter: CX + 'enter', leave: CX + 'leave', clearAll: CX + 'clearAll' },
 }
 

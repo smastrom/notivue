@@ -42,6 +42,7 @@ export interface NotivueConfigRequired {
    notifications: NotificationOptionsField
    animations: Partial<{ enter: string; leave: string; clearAll: string }>
    teleportTo: string | HTMLElement
+   limit: number
 }
 
 export type NotivueConfig = DeepPartial<NotivueConfigRequired>

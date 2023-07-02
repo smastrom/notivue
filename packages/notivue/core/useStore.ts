@@ -27,7 +27,11 @@ export function usePush() {
    return useStore().push
 }
 
-// Used internally by Notivue.vue
+/**
+ * Used internally by Notivue.vue, since the component should
+ * be wrapped in a ClientOnly component there's no need to
+ * check for SSR.
+ */
 
 export function useElements() {
    return useStore().elements

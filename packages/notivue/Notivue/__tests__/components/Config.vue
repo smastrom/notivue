@@ -15,12 +15,14 @@ const cyProps = defineProps<{
       clearAll: string
    }
    teleportTo?: string
+   limit?: number
 }>()
 
 const rPauseOnTouch = toRef(cyProps, 'pauseOnTouch')
 const rPauseOnHover = toRef(cyProps, 'pauseOnHover')
 const rAnimations = toRef(cyProps, 'animations')
 const rTeleportTo = toRef(cyProps, 'teleportTo')
+const rLimit = toRef(cyProps, 'limit')
 
 watch(rPauseOnTouch, (newValue) => {
    config.pauseOnTouch.value = newValue
@@ -38,6 +40,11 @@ watch(rAnimations, (newValue) => {
 watch(rTeleportTo, (newValue) => {
    if (!newValue) return
    config.teleportTo.value = newValue
+})
+
+watch(rLimit, (newValue) => {
+   if (!newValue) return
+   config.limit.value = newValue
 })
 </script>
 
