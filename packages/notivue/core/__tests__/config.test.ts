@@ -18,7 +18,7 @@ describe('Config Merge', () => {
          position: 'bottom-center',
          teleportTo: 'html',
          class: 'CustomClass',
-
+         limit: 10,
          options: {},
          animations: {
             enter: CX + 'enterCustom',

@@ -39,48 +39,49 @@ useRepositioning()
 
 <template>
    <Teleport :to="config.teleportTo.value">
-      <template v-if="items.data.value.length > 0">
-         <!-- Wrapper -->
-         <div :ref="elements.wrapper" :style="styles.wrapper" :class="class">
-            <!-- List Container -->
-            <ol :style="styles.ol" v-bind="{ ...mouseEvents, ...touchEvents }">
-               <!-- List Item -->
-               <li
-                  v-for="(item, index) in items.data.value"
-                  :key="`${item.id}_${item.type}`"
-                  :data-notivue-id="item.id"
-                  :data-notivue-y="config.isTopAlign.value ? 'top' : 'bottom'"
-                  :aria-setsize="items.data.value.length"
-                  :aria-posinset="index + 1"
-                  :ref="elements.items"
-                  :style="{
-                     ...styles.li,
-                     ...item.transitionStyles,
-                  }"
-               >
-                  <!-- Notification Container -->
-                  <div
-                     :style="styles.item"
-                     :class="item.animationClass"
-                     @animationstart="item.onAnimationstart"
-                     @animationend="item.onAnimationend"
-                  >
-                     <!-- Notification -->
-                     <slot v-bind="getSlotContext(item)" />
+      <!-- List Container -->
+      <ol
+         :ref="elements.wrapper"
+         :style="styles.ol"
+         v-bind="{ ...mouseEvents, ...touchEvents }"
+         :class="class"
+         v-if="items.data.value.length > 0"
+      >
+         <!-- List Item -->
+         <li
+            v-for="(item, index) in items.data.value"
+            :key="`${item.id}_${item.type}`"
+            :data-notivue-id="item.id"
+            :data-notivue-y="config.isTopAlign.value ? 'top' : 'bottom'"
+            :aria-setsize="items.data.value.length"
+            :aria-posinset="index + 1"
+            :ref="elements.items"
+            :style="{
+               ...item.transitionStyles,
+               ...styles.li,
+            }"
+         >
+            <!-- Notification Container -->
+            <div
+               :style="styles.item"
+               :class="item.animationClass"
+               @animationstart="item.onAnimationstart"
+               @animationend="item.onAnimationend"
+            >
+               <!-- Notification -->
+               <slot v-bind="getSlotContext(item)" />
 
-                     <!-- Aria Live -->
-                     <div
-                        aria-atomic="true"
-                        :aria-live="item.ariaLive"
-                        :role="item.ariaRole"
-                        :style="visuallyHidden"
-                     >
-                        <div>{{ item.title ? `${item.title}:` : '' }} {{ item.message }}</div>
-                     </div>
-                  </div>
-               </li>
-            </ol>
-         </div>
-      </template>
+               <!-- Aria Live -->
+               <div
+                  aria-atomic="true"
+                  :aria-live="item.ariaLive"
+                  :role="item.ariaRole"
+                  :style="visuallyHidden"
+               >
+                  <div>{{ item.title ? `${item.title}:` : '' }} {{ item.message }}</div>
+               </div>
+            </div>
+         </li>
+      </ol>
    </Teleport>
 </template>
