@@ -17,10 +17,7 @@ const NO_DUR = '0ms !important'
 
 const absolute: CSSProperties = { position: 'absolute' }
 const boxSizing: CSSProperties = { boxSizing: 'border-box' }
-
 const noMargin: CSSProperties = { margin: '0' }
-const noPadding: CSSProperties = { padding: '0' }
-
 const flex: CSSProperties = { display: 'flex' }
 const flexCenter: CSSProperties = { ...flex, justifyContent: 'center' }
 
@@ -46,30 +43,24 @@ export const visuallyHidden: CSSProperties = {
 }
 
 const staticStyles: Record<NotivueElements, CSSProperties> = {
-   wrapper: {
-      ...boxSizing,
-      ...flexCenter,
-      ...noPadding,
-      zIndex: nvZ,
-      position: 'fixed',
-      pointerEvents: 'none',
-      inset: Object.values(rootOffsets).join(' '),
-   },
    ol: {
       ...boxSizing,
       ...flexCenter,
       ...noMargin,
-      ...noPadding,
-      width: '100%',
-      position: 'relative',
+      zIndex: nvZ,
       maxWidth: rootWidth,
+      padding: '0',
       listStyle: 'none',
+      position: 'fixed',
+      pointerEvents: 'none',
+      inset: Object.values(rootOffsets).join(' '),
    },
    li: {
       ...boxSizing,
       ...noMargin,
       ...flex,
       ...absolute,
+      position: 'absolute',
       transitionProperty: 'transform',
       width: '100%',
    },
@@ -85,7 +76,9 @@ export function useNotivueStyles() {
    const config = useConfig()
    const isReduced = useReducedMotion()
 
-   /* Simulate overflow-hidden only on the opposite side of the current vertical align */
+   /** Simulates overflow-hidden only on the opposite side of the current vertical align.
+    * This will not clip enter animations but will contain the stream vertically.
+    */
    const clipPath = computed<CSSProperties>(() => {
       const clipInset = Object.values(rootOffsets).map((value) => `calc(-1 * ${value})`)
 
@@ -102,8 +95,7 @@ export function useNotivueStyles() {
    }))
 
    return computed<Record<NotivueElements, CSSProperties>>(() => ({
-      wrapper: { ...staticStyles.wrapper, ...clipPath.value },
-      ol: staticStyles.ol,
+      ol: { ...staticStyles.ol, ...clipPath.value },
       li: {
          ...staticStyles.li,
          ...xAlignment.value,

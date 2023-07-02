@@ -129,7 +129,7 @@ export interface Push {
 
 // Elements
 
-export type NotivueElements = 'wrapper' | 'ol' | 'li' | 'item'
+export type NotivueElements = 'ol' | 'li' | 'item'
 
 // Themes
 
