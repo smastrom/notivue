@@ -37,7 +37,6 @@ const info: NotificationOptions = {
 }
 
 export const defaultNotificationOptions = {
-   global: {},
    [NKeys.SUCCESS]: success,
    [NKeys.ERROR]: error,
    [NKeys.WARNING]: warning,
