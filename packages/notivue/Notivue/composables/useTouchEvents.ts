@@ -1,6 +1,6 @@
 import { computed, watchEffect } from 'vue'
 
-import { useConfig, useItems, usePointer, useElements } from '@/core/useStore'
+import { useNotivue, useItems, usePointer, useElements } from '@/core/useStore'
 import { isMouse } from '@/core/utils'
 
 /**
@@ -20,7 +20,7 @@ export function useTouchEvents() {
    const elements = useElements()
    const pointer = usePointer()
    const items = useItems()
-   const config = useConfig()
+   const config = useNotivue()
 
    function pauseTouch(event: PointerEvent) {
       if (!pointer.isTouching && !isMouse(event)) {

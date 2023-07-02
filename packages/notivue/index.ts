@@ -1,5 +1,5 @@
-export { notivue } from '@/core/plugin'
-export { usePush, useConfig as useNotivue } from '@/core/useStore'
+export { notivue } from '@/core/notivue'
+export { usePush, useNotivue } from '@/core/useStore'
 export { default as Notivue } from '@/Notivue/Notivue.vue'
 
 export { default as Notifications } from '@/Notifications/Notifications.vue'
