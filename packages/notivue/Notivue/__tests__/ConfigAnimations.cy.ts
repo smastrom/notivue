@@ -29,7 +29,7 @@ describe('Animations', () => {
       )
    })
 
-   it.only('Should update animations config dynamically', () => {
+   it('Should update animations config dynamically', () => {
       cy.mount(Config)
          .get<VueWrapper>('@vue')
          .then((wrapper) => wrapper.setProps({ animations: customAnims }))
