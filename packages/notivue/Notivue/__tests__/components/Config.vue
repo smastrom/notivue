@@ -14,11 +14,13 @@ const cyProps = defineProps<{
       leave: string
       clearAll: string
    }
+   teleportTo?: string
 }>()
 
 const rPauseOnTouch = toRef(cyProps, 'pauseOnTouch')
 const rPauseOnHover = toRef(cyProps, 'pauseOnHover')
 const rAnimations = toRef(cyProps, 'animations')
+const rTeleportTo = toRef(cyProps, 'teleportTo')
 
 watch(rPauseOnTouch, (newValue) => {
    config.pauseOnTouch.value = newValue
@@ -32,11 +34,16 @@ watch(rAnimations, (newValue) => {
    if (!newValue) return
    config.animations.value = newValue
 })
+
+watch(rTeleportTo, (newValue) => {
+   if (!newValue) return
+   config.teleportTo.value = newValue
+})
 </script>
 
 <template>
    <div :data-touch-active="rPauseOnTouch" :data-hover-active="rPauseOnHover">
-      <Notivue v-slot="item">
+      <Notivue v-slot="item" class="Root">
          <div style="height: 150px; width: 400px">{{ JSON.stringify(item) }}</div>
       </Notivue>
 
