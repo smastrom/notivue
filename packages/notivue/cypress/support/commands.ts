@@ -30,6 +30,7 @@ declare global {
             leaveClass: string,
             clearAllClass: string
          ): Chainable<any>
+         checkTransitionStyles(element: HTMLElement, height: number): Chainable<any>
       }
    }
 }
@@ -91,4 +92,14 @@ Cypress.Commands.add(
 
          .get(clearAllClass)
          .should('exist')
+)
+
+Cypress.Commands.add('checkTransitionStyles', (element: HTMLElement, height: number) =>
+   cy
+      .wrap(element)
+      .should('have.attr', 'style')
+      .and('include', `transform: translate3d(0px, ${height}px, 0px)`)
+      .and('include', 'transition-duration: 300m')
+      .and('include', 'transition-property: transform')
+      .and('include', 'transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1)')
 )
