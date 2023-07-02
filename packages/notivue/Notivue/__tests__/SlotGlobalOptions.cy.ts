@@ -18,7 +18,7 @@ const defaultOptions = {
    closeAriaLabel: 'CloseDefault',
 } as const
 
-describe('Global options have higher priority than defaults', () => {
+describe('Global options have higher priority over defaults', () => {
    const customConfig = {
       config: {
          notifications: {
@@ -74,7 +74,7 @@ describe('Global options have higher priority than defaults', () => {
    })
 })
 
-describe('Push options have higher priority than globals', () => {
+describe('Push options have higher priority over globals', () => {
    const componentConfig = [
       { config: { notifications: globalOptions } },
       { props: { options: defaultOptions } } as any,

@@ -1,13 +1,5 @@
 import { reactive, computed } from 'vue'
-import {
-   lightTheme,
-   pastelTheme,
-   materialTheme,
-   darkTheme,
-   slateTheme,
-   type Position,
-   type ThemeNames,
-} from 'notivue'
+import type { Position, ThemeNames } from 'notivue'
 
 export const store = reactive({
    position: 'top-center' as Position,
@@ -54,7 +46,7 @@ export const messages = computed(
          promise: {
             title: getTitle(store.rtl ? 'وعد' : 'Promise'),
             message: getMsg(
-               'We are sending your message. It will take a moment or two...',
+               'Sending your message, please wait...',
                'نحن نرسل رسالتك. سيستغرق ذلك لحظة أو اثنتين ...'
             ),
          },
