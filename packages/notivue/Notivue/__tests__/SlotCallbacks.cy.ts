@@ -1,8 +1,8 @@
-import Slot from './components/Slot.vue'
+import Notivue from './components/Notivue.vue'
 
-describe('Clear and destroy callbacks works', () => {
+describe('Clear and destroy callbacks work', () => {
    it('Clear', () => {
-      cy.mount(Slot)
+      cy.mount(Notivue)
 
          .get('.Success')
          .click()
@@ -14,7 +14,7 @@ describe('Clear and destroy callbacks works', () => {
    })
 
    it('Destroy', () => {
-      cy.mount(Slot)
+      cy.mount(Notivue)
 
          .get('.Success')
          .click()

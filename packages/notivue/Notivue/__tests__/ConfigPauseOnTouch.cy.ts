@@ -1,4 +1,4 @@
-import Config from './components/Config.vue'
+import Notivue from './components/Notivue.vue'
 
 import { FIXED_TIMEOUT_INCREMENT } from '@/core/constants'
 
@@ -10,57 +10,57 @@ describe('Pause on touch', () => {
    })
 
    it('Touch - Can pause and resume notifications', () => {
-      cy.mount(Config)
+      cy.mount(Notivue)
 
-         .get('.Push')
+         .get('.Success')
          .click()
          .wait(4000) // Remaining: 2000ms
 
-         .get('.Notivue__content-message')
+         .get('.Notification')
          .trigger('pointerdown', { pointerType: 'touch' })
          .wait(4000) // Any value greater than the remaining time
 
-         .get('.Notivue__notification')
+         .get('.Notification')
          .should('exist')
 
          .get('body')
          .trigger('pointerdown', { pointerType: 'touch' })
          .wait(2000 + FIXED_TIMEOUT_INCREMENT)
 
-         .get('.Notivue__notification')
+         .get('.Notification')
          .should('not.exist')
    })
 
    it('Touch - Should not pause notifications if pauseOnTouch is false', () => {
-      cy.mount(Config, { config: { pauseOnTouch: false } })
+      cy.mount(Notivue, { config: { pauseOnTouch: false } })
 
-         .get('.Push')
+         .get('.Success')
          .click()
          .wait(4000) // Remaining: 2000ms
 
-         .get('.Notivue__content-message')
+         .get('.Notification')
          .trigger('pointerdown', { pointerType: 'touch' })
          .wait(4000) // Any value greater than the remaining time
 
-         .get('.Notivue__notification')
+         .get('.Notification')
          .should('not.exist')
    })
 
    it('Touch - Should update config dynamically and work', () => {
-      cy.mount(Config, { config: { pauseOnTouch: false } })
+      cy.mount(Notivue, { config: { pauseOnTouch: false } })
 
          .get<VueWrapper>('@vue')
          .then((wrapper) => wrapper.setProps({ pauseOnTouch: true }))
 
-         .get('.Push')
+         .get('.Success')
          .click()
          .wait(4000) // Remaining: 2000ms
 
-         .get('.Notivue__content-message')
+         .get('.Notification')
          .trigger('pointerdown', { pointerType: 'touch' })
          .wait(4000) // Any value greater than the remaining time
 
-         .get('.Notivue__notification')
+         .get('.Notification')
          .should('exist')
    })
 })

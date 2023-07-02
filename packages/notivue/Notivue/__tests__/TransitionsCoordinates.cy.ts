@@ -1,8 +1,8 @@
-import Push from './components/Slot.vue'
+import Notivue from './components/Notivue.vue'
 
 describe('Transition styles are injected correctly', () => {
    it('Top alignment', () => {
-      cy.mount(Push)
+      cy.mount(Notivue)
 
       for (let i = 0; i < 20; i++) cy.get('.Success').click()
 
@@ -10,7 +10,7 @@ describe('Transition styles are injected correctly', () => {
          let accHeights = 0
 
          notifications.each((_, notification) => {
-            cy.checkTransitionStyles(notification, accHeights)
+            cy.checkTransitions(notification, accHeights)
 
             accHeights += notification.clientHeight
          })
@@ -18,7 +18,7 @@ describe('Transition styles are injected correctly', () => {
    })
 
    it('Bottom alignment', () => {
-      cy.mount(Push, { config: { position: 'bottom-center' } })
+      cy.mount(Notivue, { config: { position: 'bottom-center' } })
 
       for (let i = 0; i < 20; i++) cy.get('.Success').click()
 
@@ -26,7 +26,7 @@ describe('Transition styles are injected correctly', () => {
          let accHeights = 0
 
          notifications.each((_, notification) => {
-            cy.checkTransitionStyles(notification, accHeights)
+            cy.checkTransitions(notification, accHeights)
 
             accHeights += notification.clientHeight * -1
          })

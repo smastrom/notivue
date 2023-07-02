@@ -1,10 +1,10 @@
 import { parseText } from '../../cypress/support/utils'
 import { hiddenInternalKeys } from '../utils'
 
-import Slot from './components/Slot.vue'
+import Notivue from './components/Notivue.vue'
 
 it('Hidden internal properties are never defined', () => {
-   cy.mount(Slot)
+   cy.mount(Notivue)
 
       .get('.Success')
       .click()
@@ -13,7 +13,7 @@ it('Hidden internal properties are never defined', () => {
 })
 
 it('Exposed internal properties are always defined', () => {
-   cy.mount(Slot)
+   cy.mount(Notivue)
 
       .get('.Success')
       .click()

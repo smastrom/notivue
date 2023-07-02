@@ -22,3 +22,11 @@
       opacity: 0;
    }
 }
+
+.fade-in-test-prop {
+   animation: fade-kf 800ms ease-in-out;
+}
+
+.fade-in-test-prop {
+   animation: fade-kf 800ms ease-in-out;
+}

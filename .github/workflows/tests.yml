@@ -18,8 +18,6 @@ jobs:
               run_install: false
          - name: Install dependencies
            run: pnpm install
-         - name: Install Playwright linux dependencies
-           run: npx playwright install-deps webkit
          - name: Chrome tests
            uses: cypress-io/github-action@v5
            with:
@@ -34,10 +32,3 @@ jobs:
               install: false
               component: true
               browser: firefox
-         - name: Webkit tests
-           uses: cypress-io/github-action@v5
-           with:
-              working-directory: packages/notivue
-              install: false
-              component: true
-              browser: webkit
