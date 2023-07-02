@@ -5,3 +5,5 @@ import './commands'
 
 import '@/core/animations.css'
 import '@/Notifications/notifications.css'
+
+import './styles.css'

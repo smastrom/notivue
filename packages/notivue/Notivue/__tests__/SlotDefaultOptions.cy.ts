@@ -1,12 +1,12 @@
 import { defaultNotificationOptions } from '@/core/options'
 
-import Push from './components/Push.vue'
+import Slot from './components/Slot.vue'
 
 describe('Default options match the slot content', () => {
    const { success, error, warning, info, promise } = defaultNotificationOptions
 
    it('Success', () => {
-      cy.mount(Push)
+      cy.mount(Slot)
 
          .get('.Success')
          .click()
@@ -14,7 +14,7 @@ describe('Default options match the slot content', () => {
    })
 
    it('Error', () => {
-      cy.mount(Push)
+      cy.mount(Slot)
 
          .get('.Error')
          .click()
@@ -22,7 +22,7 @@ describe('Default options match the slot content', () => {
    })
 
    it('Warning', () => {
-      cy.mount(Push)
+      cy.mount(Slot)
 
          .get('.Warning')
          .click()
@@ -30,7 +30,7 @@ describe('Default options match the slot content', () => {
    })
 
    it('Info', () => {
-      cy.mount(Push)
+      cy.mount(Slot)
 
          .get('.Info')
          .click()
@@ -38,7 +38,7 @@ describe('Default options match the slot content', () => {
    })
 
    it('Promise', () => {
-      cy.mount(Push)
+      cy.mount(Slot)
 
          .get('.Promise')
          .click()

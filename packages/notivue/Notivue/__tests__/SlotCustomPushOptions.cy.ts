@@ -1,4 +1,4 @@
-import Push from './components/Push.vue'
+import Slot from './components/Slot.vue'
 
 const options = {
    duration: 1000,
@@ -14,7 +14,7 @@ describe('Custom notification options match the slot content', () => {
    const componentConfig = [{ config: {} }, { props: { options } } as any]
 
    it('Success', () => {
-      cy.mount(Push, ...componentConfig)
+      cy.mount(Slot, ...componentConfig)
 
          .get('.Success')
          .click()
@@ -24,7 +24,7 @@ describe('Custom notification options match the slot content', () => {
    it('Error', () => {
       const _options = { ...options, ariaLive: 'polite', ariaRole: 'status' } // Override to keep all different
 
-      cy.mount(Push, { config: {} }, { props: { options: _options } } as any)
+      cy.mount(Slot, { config: {} }, { props: { options: _options } } as any)
 
          .get('.Error')
          .click()
@@ -34,7 +34,7 @@ describe('Custom notification options match the slot content', () => {
    it('Warning', () => {
       const _options = { ...options, ariaRole: 'status' } // Same
 
-      cy.mount(Push, { config: {} }, { props: { options: _options } } as any)
+      cy.mount(Slot, { config: {} }, { props: { options: _options } } as any)
 
          .get('.Warning')
          .click()
@@ -42,7 +42,7 @@ describe('Custom notification options match the slot content', () => {
    })
 
    it('Info', () => {
-      cy.mount(Push, ...componentConfig)
+      cy.mount(Slot, ...componentConfig)
 
          .get('.Info')
          .click()
@@ -50,7 +50,7 @@ describe('Custom notification options match the slot content', () => {
    })
 
    it('Promise', () => {
-      cy.mount(Push, ...componentConfig)
+      cy.mount(Slot, ...componentConfig)
 
          .get('.Promise')
          .click()

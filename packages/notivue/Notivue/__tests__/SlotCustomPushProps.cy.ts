@@ -1,4 +1,4 @@
-import Push from './components/Push.vue'
+import Slot from './components/Slot.vue'
 
 const customProps = {
    isCustom: true,
@@ -15,7 +15,7 @@ describe('Custom props match the slot content', () => {
    const componentConfig = [{ config: {} }, { props: { options: { props: customProps } } } as any]
 
    it('Success', () => {
-      cy.mount(Push, ...componentConfig)
+      cy.mount(Slot, ...componentConfig)
 
          .get('.Success')
          .click()
@@ -23,7 +23,7 @@ describe('Custom props match the slot content', () => {
    })
 
    it('Error', () => {
-      cy.mount(Push, ...componentConfig)
+      cy.mount(Slot, ...componentConfig)
 
          .get('.Error')
          .click()
@@ -31,7 +31,7 @@ describe('Custom props match the slot content', () => {
    })
 
    it('Warning', () => {
-      cy.mount(Push, ...componentConfig)
+      cy.mount(Slot, ...componentConfig)
 
          .get('.Warning')
          .click()
@@ -39,7 +39,7 @@ describe('Custom props match the slot content', () => {
    })
 
    it('Info', () => {
-      cy.mount(Push, ...componentConfig)
+      cy.mount(Slot, ...componentConfig)
 
          .get('.Info')
          .click()
@@ -47,7 +47,7 @@ describe('Custom props match the slot content', () => {
    })
 
    it('Promise', () => {
-      cy.mount(Push, ...componentConfig)
+      cy.mount(Slot, ...componentConfig)
 
          .get('.Promise')
          .click()

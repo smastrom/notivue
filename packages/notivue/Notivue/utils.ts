@@ -1,6 +1,6 @@
 import type { StoreItem, NotivueSlot, HiddenInternalItemData } from '@/types'
 
-const internalKeys: (keyof HiddenInternalItemData)[] = [
+export const hiddenInternalKeys: (keyof HiddenInternalItemData)[] = [
    'timeoutId',
    'elapsed',
    'resumedAt',
@@ -13,7 +13,7 @@ const internalKeys: (keyof HiddenInternalItemData)[] = [
 export function getSlotContext(item: StoreItem): NotivueSlot {
    return Object.fromEntries(
       Object.entries(item).filter(
-         ([key]) => !internalKeys.includes(key as keyof HiddenInternalItemData)
+         ([key]) => !hiddenInternalKeys.includes(key as keyof HiddenInternalItemData)
       )
    ) as NotivueSlot
 }

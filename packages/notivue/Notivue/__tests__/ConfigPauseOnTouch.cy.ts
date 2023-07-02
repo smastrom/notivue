@@ -1,4 +1,4 @@
-import PauseOnHoverTouch from './components/PauseOnHoverTouch.vue'
+import Config from './components/Config.vue'
 
 import { FIXED_TIMEOUT_INCREMENT } from '@/core/constants'
 
@@ -10,7 +10,7 @@ describe('Pause on touch', () => {
    })
 
    it('Touch - Can pause and resume notifications', () => {
-      cy.mount(PauseOnHoverTouch)
+      cy.mount(Config)
 
          .get('.Push')
          .click()
@@ -32,7 +32,7 @@ describe('Pause on touch', () => {
    })
 
    it('Touch - Should not pause notifications if pauseOnTouch is false', () => {
-      cy.mount(PauseOnHoverTouch, { config: { pauseOnTouch: false } })
+      cy.mount(Config, { config: { pauseOnTouch: false } })
 
          .get('.Push')
          .click()
@@ -47,7 +47,7 @@ describe('Pause on touch', () => {
    })
 
    it('Touch - Should update config dynamically and work', () => {
-      cy.mount(PauseOnHoverTouch, { config: { pauseOnTouch: false } })
+      cy.mount(Config, { config: { pauseOnTouch: false } })
 
          .get<VueWrapper>('@vue')
          .then((wrapper) => wrapper.setProps({ pauseOnTouch: true }))

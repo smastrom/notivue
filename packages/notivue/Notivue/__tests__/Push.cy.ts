@@ -1,4 +1,4 @@
-import Push from './components/Push.vue'
+import Push from './components/Slot.vue'
 
 import { defaultConfig } from '@/core/config'
 
@@ -21,7 +21,7 @@ describe('Push', () => {
          .get('.Promise')
          .click()
 
-         .getNotification()
+         .getNotifications()
          .should('have.length', 5)
    })
 
@@ -40,12 +40,12 @@ describe('Push', () => {
          .get('.Warning')
          .click()
 
-         .getNotification()
+         .getNotifications()
          .should('have.length', 4)
 
          .wait(defaultConfig.notifications.success.duration)
 
-         .getNotification()
+         .getNotifications()
          .should('have.length', 0)
    })
 
@@ -57,9 +57,7 @@ describe('Push', () => {
 
          .wait(defaultConfig.notifications.success.duration)
 
-         .getNotification()
+         .getNotifications()
          .should('have.length', 0)
    })
-
-   // TODO: Add tests for inline styles and classes
 })

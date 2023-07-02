@@ -6,10 +6,19 @@ import { usePush, useNotivue, Notivue } from 'notivue'
 const push = usePush()
 const config = useNotivue()
 
-const cyProps = defineProps<{ pauseOnTouch?: boolean; pauseOnHover?: boolean }>()
+const cyProps = defineProps<{
+   pauseOnTouch?: boolean
+   pauseOnHover?: boolean
+   animations?: {
+      enter: string
+      leave: string
+      clearAll: string
+   }
+}>()
 
 const rPauseOnTouch = toRef(cyProps, 'pauseOnTouch')
 const rPauseOnHover = toRef(cyProps, 'pauseOnHover')
+const rAnimations = toRef(cyProps, 'animations')
 
 watch(rPauseOnTouch, (newValue) => {
    config.pauseOnTouch.value = newValue
@@ -17,6 +26,11 @@ watch(rPauseOnTouch, (newValue) => {
 
 watch(rPauseOnHover, (newValue) => {
    config.pauseOnHover.value = newValue
+})
+
+watch(rAnimations, (newValue) => {
+   if (!newValue) return
+   config.animations.value = newValue
 })
 </script>
 
@@ -26,6 +40,7 @@ watch(rPauseOnHover, (newValue) => {
          <div style="height: 150px; width: 400px">{{ JSON.stringify(item) }}</div>
       </Notivue>
 
-      <button class="Push" @click="push.success('Success')">Success</button>
+      <button class="Success" @click="push.success('Success')">Success</button>
+      <button class="ClearAll" @click="push.clearAll">Clear All</button>
    </div>
 </template>
