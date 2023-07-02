@@ -1,14 +1,40 @@
+import { defaultConfig } from '@/core/config'
 import Slot from './components/Slot.vue'
 
-it('All elements besides the slot should be accessible', () => {
+it('All elements should be accessible', () => {
+   const config = defaultConfig.notifications
+
    cy.mount(Slot)
 
-   for (let i = 0; i < 10; i++) cy.get('.Success').click()
+      .get('.Success')
+      .click()
+      .get('li > div > div:last-of-type')
+      .should('have.attr', 'aria-live', config.success.ariaLive)
+      .should('have.attr', 'role', config.success.ariaRole)
 
-   cy.get('li > div > div:last-of-type')
-      .should('have.length', 10)
-      .should('have.attr', 'aria-live', 'polite')
-      .and('have.attr', 'role', 'status')
+      .get('.Error')
+      .click()
+      .get('li > div > div:last-of-type')
+      .should('have.attr', 'aria-live', config.error.ariaLive)
+      .should('have.attr', 'role', config.error.ariaRole)
+
+      .get('.Info')
+      .click()
+      .get('li > div > div:last-of-type')
+      .should('have.attr', 'aria-live', config.info.ariaLive)
+      .should('have.attr', 'role', config.info.ariaRole)
+
+      .get('.Warning')
+      .click()
+      .get('li > div > div:last-of-type')
+      .should('have.attr', 'aria-live', config.warning.ariaLive)
+      .should('have.attr', 'role', config.warning.ariaRole)
+
+      .get('.Promise')
+      .click()
+      .get('li > div > div:last-of-type')
+      .should('have.attr', 'aria-live', config.promise.ariaLive)
+      .should('have.attr', 'role', config.promise.ariaRole)
 
    cy.injectAxe()
    cy.checkA11y('.Root')
