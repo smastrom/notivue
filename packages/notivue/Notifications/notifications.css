@@ -136,6 +136,12 @@
    &:focus-visible {
       outline: none;
       box-shadow: none;
+      opacity: 1;
+
+      & .Notivue__close-icon {
+         box-shadow: inset 0 0 0 2px #3e8eff;
+         border-radius: calc(var(--nv-radius, 0) / 2);
+      }
    }
 
    &:hover {
