@@ -41,6 +41,7 @@ useRepositioning()
    <Teleport :to="config.teleportTo.value">
       <!-- List Container -->
       <ol
+         :data-notivue-top="config.isTopAlign.value"
          :ref="elements.wrapper"
          :style="styles.ol"
          v-bind="{ ...mouseEvents, ...touchEvents }"
@@ -52,7 +53,6 @@ useRepositioning()
             v-for="(item, index) in items.data.value"
             :key="`${item.id}_${item.type}`"
             :data-notivue-id="item.id"
-            :data-notivue-y="config.isTopAlign.value ? 'top' : 'bottom'"
             :aria-setsize="items.data.value.length"
             :aria-posinset="index + 1"
             :ref="elements.items"
@@ -78,7 +78,7 @@ useRepositioning()
                   :role="item.ariaRole"
                   :style="visuallyHidden"
                >
-                  <div>{{ item.title ? `${item.title}:` : '' }} {{ item.message }}</div>
+                  <div>{{ item.title ? `${item.title}: ` : '' }}{{ item.message }}</div>
                </div>
             </div>
          </li>

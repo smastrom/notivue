@@ -45,7 +45,7 @@ export function createStore(userConfig: NotivueConfig) {
       updateAll(updateItem: (item: StoreItem) => StoreItem) {
          this.data.value = this.data.value.map((item) => updateItem(item))
       },
-      updateAnimation(id: string, animationClass = '', onEnd: () => void) {
+      updateAnimation(id: string, animationClass: string, onEnd = () => {}) {
          this.update(id, {
             animationClass,
             onAnimationstart: (event: AnimationEvent) => event.stopPropagation(),
@@ -56,9 +56,7 @@ export function createStore(userConfig: NotivueConfig) {
          })
       },
       playEnter(id: string) {
-         this.updateAnimation(id, config.animations.value.enter ?? '', () =>
-            this.update(id, { animationClass: '' })
-         )
+         this.updateAnimation(id, config.animations.value.enter ?? '')
          this.updatePositions()
       },
       playLeave(id: string) {
@@ -190,11 +188,11 @@ export function createStore(userConfig: NotivueConfig) {
       wrapper: ref<HTMLElement | null>(null),
       items: ref<HTMLElement[]>([]),
       animationData: { duration: '', easing: '' },
-      /** Syncs transition duration/easing with the one defined in the CSS animation.
-       * Runs on the first push and then caches the value.
+      /** Gets CSS animation duration and easing on first push and stores them.
+       * Returns the stored values which are applied to internal reposition transitions.
        */
       getAnimationData() {
-         if (!this.animationData.duration) {
+         if (!this.animationData.duration || !this.animationData.easing) {
             const animEl = this.wrapper.value?.querySelector(`.${config.animations.value.enter}`)
 
             if (!animEl) {

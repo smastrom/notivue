@@ -23,8 +23,6 @@ import type { CustomPromiseProps, CustomProps } from './app/NavPushCustom.vue'
 
 watchEffect(() => document.documentElement.style.setProperty('--nv-root-width', store.maxWidth))
 
-// <Notifications /> props
-
 const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme } as const
 
 const emojiIcons = {
@@ -65,16 +63,16 @@ const emojiIcons = {
 
 <style>
 @media (max-width: 768px) {
-   .CustomClass {
+   :root {
       --nv-root-x-align: center;
    }
 }
 
-[data-notivue-y='top'] {
-   /* --nv-root-top: 180px; */
+:root {
+   /* --nv-root-top: 200px; */
 }
 
-[data-notivue-y='bottom'] {
+[data-notivue-top='false'] {
    --nv-root-top: 0px;
 }
 </style>
