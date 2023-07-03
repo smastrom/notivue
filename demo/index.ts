@@ -12,7 +12,7 @@ createApp(App)
    .use(notivue, {
       notifications: {
          global: {
-            /* duration: 30000, */
+            /* duration: Infinity, */
          },
       },
    })

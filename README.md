@@ -4,7 +4,12 @@
 
 ### Fully-featured notification system for Vue and Nuxt.
 
-[Live Demo](https://notivue.netlify.app) - [Documentation](https://notivuedocs.netlify.app) - [Vite Example](https://stackblitz.com/edit/vitejs-vite-kdrtrw?file=src/components/Example.vue) - [Nuxt Example](https://stackblitz.com/edit/nuxt-starter-fnhcmx?file=app.vue)
+[Live Demo](https://notivue.netlify.app) - [Documentation](https://notivuedocs.netlify.app)
+
+**Examples**
+
+[Custom Components](https://stackblitz.com/edit/vitejs-vite-9jkh73?file=src%2Fcomponents%2FPage.vue) -
+[Vue Router](https://stackblitz.com/edit/vitejs-vite-kdrtrw?file=src/components/Example.vue) - [Nuxt](https://stackblitz.com/edit/nuxt-starter-fnhcmx?file=pages%2Findex.vue) - [Pinia](https://stackblitz.com/edit/vitejs-vite-knysks?file=src%2FApp.vue) - [TanStack Query](https://stackblitz.com/edit/vitejs-vite-ymjktx?file=src%2FApp.vue)
 
 </div>
 
@@ -31,7 +36,7 @@ _Update pending notifications with ease_
 _Themes, icons, animations, rtl support and much more_
 
 **♿️ Fully accessible**  
-_Built-in keyboard and screen reader support_
+_Built-in screen reader support_
 
 <br />
 
@@ -105,7 +110,9 @@ const push = usePush()
 ```ts
 import { notivue } from 'notivue'
 
-export default defineNuxtPlugin(({ vueApp }) => vueApp.use(notivue))
+export default defineNuxtPlugin(({ vueApp }) => {
+  vueApp.use(notivue)
+})
 ```
 
 **nuxt.config.ts**
@@ -147,12 +154,6 @@ const push = usePush()
   <button @click="push.success('Something good has been pushed!')">Push</button>
 </template>
 ```
-
-<br />
-
-## Links
-
-[Live Demo](https://notivue.netlify.app) - [Documentation](https://notivuedocs.netlify.app) - [Vite Example](https://stackblitz.com/edit/vitejs-vite-kdrtrw?file=src/components/Example.vue) - [Nuxt Example](https://stackblitz.com/edit/nuxt-starter-fnhcmx?file=app.vue)
 
 <br />
 
