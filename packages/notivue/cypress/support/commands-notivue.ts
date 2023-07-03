@@ -76,7 +76,7 @@ Cypress.Commands.add('clickAllStatic', () => {
 Cypress.Commands.add('clickRandomStatic', () => {
    const randomSelector = ['.Success', '.Error', '.Info', '.Warning'][Math.floor(Math.random() * 4)]
 
-   cy.get(randomSelector).click()
+   return cy.get(randomSelector).click()
 })
 
 Cypress.Commands.add('clickAll', () => {

@@ -6,12 +6,12 @@ export const RESOLVE_REJECT_DELAY = 1000
 
 export function getRandomOptions() {
    return {
-      title: Math.random().toString(),
-      message: Math.random().toString(),
+      title: window.crypto.randomUUID(),
+      message: window.crypto.randomUUID(),
       duration: Math.floor(Math.random() * 10000),
-      ariaLive: Math.random().toString() as any,
-      ariaRole: Math.random().toString() as any,
-      closeAriaLabel: Math.random().toString(),
+      ariaLive: window.crypto.randomUUID(),
+      ariaRole: window.crypto.randomUUID(),
+      closeAriaLabel: window.crypto.randomUUID(),
    }
 }
 
