@@ -3,11 +3,14 @@ import { toRef, watch } from 'vue'
 
 import { usePush, useNotivue, Notivue, type UserPushOptions } from 'notivue'
 
+import { RESOLVE_REJECT_DELAY } from '../../../cypress/support/utils'
+
 const push = usePush()
 const config = useNotivue()
 
 const cyProps = defineProps<{
    options?: UserPushOptions
+   newOptions?: UserPushOptions
    class?: string
    pauseOnTouch?: boolean
    pauseOnHover?: boolean
@@ -61,6 +64,30 @@ async function randomPromise() {
       promise.reject(cyProps.options ?? {})
    }
 }
+
+function pushAndClear() {
+   const notification = push.success(cyProps.options ?? {})
+   setTimeout(() => notification.clear(), 1000)
+}
+
+function pushAndDestroy() {
+   const notification = push.success(cyProps.options ?? {})
+   setTimeout(() => notification.destroy(), 1000)
+}
+
+async function pushPromiseAndResolve() {
+   const promise = push.promise(cyProps.options ?? {})
+   await new Promise((resolve) => setTimeout(resolve, RESOLVE_REJECT_DELAY))
+
+   promise.resolve(cyProps.newOptions ?? cyProps.options ?? {})
+}
+
+async function pushPromiseAndReject() {
+   const promise = push.promise(cyProps.options ?? {})
+   await new Promise((resolve) => setTimeout(resolve, RESOLVE_REJECT_DELAY))
+
+   promise.reject(cyProps.newOptions ?? cyProps.options ?? {})
+}
 </script>
 
 <template>
@@ -76,9 +103,20 @@ async function randomPromise() {
       <button class="Warning" @click="push.warning(options ?? {})">Warning</button>
       <button class="Info" @click="push.info(options ?? {})">Info</button>
       <button class="Promise" @click="push.promise(options ?? {})">Promise</button>
-      <button class="RandomPromise" @click="randomPromise">Promise</button>
 
+      <button class="DestroyAll" @click="push.destroyAll">Destroy All</button>
       <button class="ClearAll" @click="push.clearAll">Clear All</button>
+
+      <button class="PushAndClear" @click="pushAndClear">Push and Clear</button>
+      <button class="PushAndDestroy" @click="pushAndDestroy">Push and Destroy</button>
+
+      <button class="RandomPromise" @click="randomPromise">Push and Resolve/Reject Promise</button>
+      <button class="PushPromiseAndResolve" @click="pushPromiseAndResolve">
+         Push Promise and Resolve
+      </button>
+      <button class="PushPromiseAndReject" @click="pushPromiseAndReject">
+         Push Promise and Reject
+      </button>
    </div>
 </template>
 

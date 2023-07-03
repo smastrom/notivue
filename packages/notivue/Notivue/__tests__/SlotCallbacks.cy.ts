@@ -4,8 +4,7 @@ describe('Clear and destroy callbacks work', () => {
    it('Clear', () => {
       cy.mount(Notivue)
 
-         .get('.Success')
-         .click()
+         .clickRandomStatic()
          .get('.ClearButton')
          .click()
 
@@ -16,8 +15,7 @@ describe('Clear and destroy callbacks work', () => {
    it('Destroy', () => {
       cy.mount(Notivue)
 
-         .get('.Success')
-         .click()
+         .clickRandomStatic()
          .get('.DestroyButton')
          .click()
 

@@ -10,7 +10,7 @@ it('Transition properties are inherited correctly from CSS animations', () => {
       },
    })
 
-   for (let i = 0; i < 20; i++) cy.get('.Success').click()
+   for (let i = 0; i < 20; i++) cy.clickRandomStatic()
 
    cy.get('li').then((notifications) => {
       notifications.each((_, notification) => {

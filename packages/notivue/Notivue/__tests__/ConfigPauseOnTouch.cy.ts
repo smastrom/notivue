@@ -12,8 +12,7 @@ describe('Pause on touch', () => {
    it('Touch - Can pause and resume notifications', () => {
       cy.mount(Notivue)
 
-         .get('.Success')
-         .click()
+         .clickRandomStatic()
          .wait(4000) // Remaining: 2000ms
 
          .get('.Notification')
@@ -34,8 +33,7 @@ describe('Pause on touch', () => {
    it('Touch - Should not pause notifications if pauseOnTouch is false', () => {
       cy.mount(Notivue, { config: { pauseOnTouch: false } })
 
-         .get('.Success')
-         .click()
+         .clickRandomStatic()
          .wait(4000) // Remaining: 2000ms
 
          .get('.Notification')
@@ -52,8 +50,7 @@ describe('Pause on touch', () => {
          .get<VueWrapper>('@vue')
          .then((wrapper) => wrapper.setProps({ pauseOnTouch: true }))
 
-         .get('.Success')
-         .click()
+         .clickRandomStatic()
          .wait(4000) // Remaining: 2000ms
 
          .get('.Notification')

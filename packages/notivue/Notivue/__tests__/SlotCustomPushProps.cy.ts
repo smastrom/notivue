@@ -1,56 +1,98 @@
+import { RESOLVE_REJECT_DELAY, randomProps, randomProps2 } from '../../cypress/support/utils'
+
 import Notivue from './components/Notivue.vue'
 
-const customProps = {
-   isCustom: true,
-   something: {
-      name: 'something',
-      value: 333,
-      somethingElse: {
-         name: 'somethingElse',
-      },
-   },
-}
-
 describe('Custom props match the slot content', () => {
-   const componentConfig = [{ config: {} }, { props: { options: { props: customProps } } } as any]
+   describe('First-level notifications', () => {
+      const componentConfig = [
+         { config: {} },
+         {
+            props: {
+               options: { props: randomProps },
+            },
+         } as any,
+      ]
 
-   it('Success', () => {
-      cy.mount(Notivue, ...componentConfig)
+      it('Success', () => {
+         cy.mount(Notivue, ...componentConfig)
 
-         .get('.Success')
-         .click()
-         .checkSlotPropsAgainst(customProps)
+            .get('.Success')
+            .click()
+            .checkSlotPropsAgainst(randomProps)
+      })
+
+      it('Error', () => {
+         cy.mount(Notivue, ...componentConfig)
+
+            .get('.Error')
+            .click()
+            .checkSlotPropsAgainst(randomProps)
+      })
+
+      it('Warning', () => {
+         cy.mount(Notivue, ...componentConfig)
+
+            .get('.Warning')
+            .click()
+            .checkSlotPropsAgainst(randomProps)
+      })
+
+      it('Info', () => {
+         cy.mount(Notivue, ...componentConfig)
+
+            .get('.Info')
+            .click()
+            .checkSlotPropsAgainst(randomProps)
+      })
+
+      it('Promise', () => {
+         cy.mount(Notivue, ...componentConfig)
+
+            .get('.Promise')
+            .click()
+            .checkSlotPropsAgainst(randomProps)
+      })
    })
 
-   it('Error', () => {
-      cy.mount(Notivue, ...componentConfig)
+   describe('Promise - Resolve / Reject', () => {
+      const newCustomProps = {
+         isCustom: false,
+         somethingNew: 'somethingNew',
+         something: {
+            value: 111,
+            somethingElse: {
+               name: 'somethingElseNew',
+            },
+         },
+      }
 
-         .get('.Error')
-         .click()
-         .checkSlotPropsAgainst(customProps)
-   })
+      const componentConfig = [
+         { config: {} },
+         {
+            props: {
+               options: { props: randomProps },
+               // Passed new options to .resolve() and .reject() to make sure they are updated
+               newOptions: { props: randomProps2 },
+            },
+         } as any,
+      ]
 
-   it('Warning', () => {
-      cy.mount(Notivue, ...componentConfig)
+      it('Promise - Resolve', () => {
+         cy.mount(Notivue, ...componentConfig)
 
-         .get('.Warning')
-         .click()
-         .checkSlotPropsAgainst(customProps)
-   })
+            .get('.PushPromiseAndResolve')
+            .click()
+            .wait(RESOLVE_REJECT_DELAY) // Wait for resolve
+            .checkSlotPropsAgainst(randomProps2)
+      })
 
-   it('Info', () => {
-      cy.mount(Notivue, ...componentConfig)
+      it('Promise - Reject', () => {
+         cy.mount(Notivue, ...componentConfig)
 
-         .get('.Info')
-         .click()
-         .checkSlotPropsAgainst(customProps)
-   })
-
-   it('Promise', () => {
-      cy.mount(Notivue, ...componentConfig)
-
-         .get('.Promise')
-         .click()
-         .checkSlotPropsAgainst(customProps)
+            .get('.PushPromiseAndReject')
+            .click()
+            .wait(RESOLVE_REJECT_DELAY) // Wait for reject
+            .checkSlotPropsAgainst(randomProps2)
+      })
    })
 })

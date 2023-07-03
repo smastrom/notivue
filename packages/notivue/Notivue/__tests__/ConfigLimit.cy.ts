@@ -7,7 +7,7 @@ describe('Limit', () => {
       cy.mount(Notivue, { config: { limit: 5 } })
 
       for (let i = 0; i < 20; i++) {
-         cy.get('.Success').click()
+         cy.clickRandomStatic()
       }
 
       cy.getNotifications().should('have.length', 5)
@@ -19,7 +19,7 @@ describe('Limit', () => {
          .then((wrapper) => wrapper.setProps({ limit: 8 }))
 
       for (let i = 0; i < 20; i++) {
-         cy.get('.Success').click()
+         cy.clickRandomStatic()
       }
 
       cy.getNotifications().should('have.length', 8)

@@ -6,8 +6,7 @@ import Notivue from './components/Notivue.vue'
 it('Hidden internal properties are never defined', () => {
    cy.mount(Notivue)
 
-      .get('.Success')
-      .click()
+      .clickRandomStatic()
       .getNotifications()
       .then((el) => expect(parseText(el)).to.not.have.keys(hiddenInternalKeys))
 })
@@ -15,8 +14,7 @@ it('Hidden internal properties are never defined', () => {
 it('Exposed internal properties are always defined', () => {
    cy.mount(Notivue)
 
-      .get('.Success')
-      .click()
+      .clickRandomStatic()
       .getNotifications()
       .then((el) => {
          expect(parseText(el)).to.include.keys(['id', 'type', 'createdAt'])

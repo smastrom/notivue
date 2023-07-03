@@ -4,7 +4,7 @@ describe('Transition styles are injected correctly', () => {
    it('Top alignment', () => {
       cy.mount(Notivue)
 
-      for (let i = 0; i < 20; i++) cy.get('.Success').click()
+      for (let i = 0; i < 20; i++) cy.clickRandomStatic()
 
       cy.get('li').then((notifications) => {
          let accHeights = 0
@@ -20,7 +20,7 @@ describe('Transition styles are injected correctly', () => {
    it('Bottom alignment', () => {
       cy.mount(Notivue, { config: { position: 'bottom-center' } })
 
-      for (let i = 0; i < 20; i++) cy.get('.Success').click()
+      for (let i = 0; i < 20; i++) cy.clickRandomStatic()
 
       cy.get('li').then((notifications) => {
          let accHeights = 0

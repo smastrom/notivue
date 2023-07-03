@@ -1,25 +1,11 @@
-import Notivue from './components/Notivue.vue'
+import { DEFAULT_DURATION } from '@/core/constants'
 
-import { defaultConfig } from '@/core/config'
+import Notivue from './components/Notivue.vue'
 
 describe('Push', () => {
    it('Can push any type of notification', () => {
       cy.mount(Notivue)
-
-         .get('.Success')
-         .click()
-
-         .get('.Error')
-         .click()
-
-         .get('.Info')
-         .click()
-
-         .get('.Warning')
-         .click()
-
-         .get('.Promise')
-         .click()
+         .clickAll()
 
          .getNotifications()
          .should('have.length', 5)
@@ -27,23 +13,12 @@ describe('Push', () => {
 
    it('Dismisses any static notification', () => {
       cy.mount(Notivue)
-
-         .get('.Success')
-         .click()
-
-         .get('.Error')
-         .click()
-
-         .get('.Info')
-         .click()
-
-         .get('.Warning')
-         .click()
+         .clickAllStatic()
 
          .getNotifications()
          .should('have.length', 4)
 
-         .wait(defaultConfig.notifications.success.duration)
+         .wait(DEFAULT_DURATION)
 
          .getNotifications()
          .should('have.length', 0)
@@ -55,7 +30,49 @@ describe('Push', () => {
          .get('.RandomPromise')
          .click()
 
-         .wait(defaultConfig.notifications.success.duration)
+         .wait(DEFAULT_DURATION)
+
+         .getNotifications()
+         .should('have.length', 0)
+   })
+
+   it('Clears all notifications', () => {
+      cy.mount(Notivue)
+         .clickAll()
+
+         .get('.ClearAll')
+         .click()
+
+         .getNotifications()
+         .should('have.length', 0)
+   })
+
+   it('Destroys all notifications', () => {
+      cy.mount(Notivue)
+         .clickAll()
+
+         .get('.DestroyAll')
+         .click()
+
+         .getNotifications()
+         .should('have.length', 0)
+   })
+
+   it('Clears single notification', () => {
+      cy.mount(Notivue)
+
+         .get('.PushAndClear')
+         .click()
+
+         .getNotifications()
+         .should('have.length', 0)
+   })
+
+   it('Destroys single notification', () => {
+      cy.mount(Notivue)
+
+         .get('.PushAndDestroy')
+         .click()
 
          .getNotifications()
          .should('have.length', 0)

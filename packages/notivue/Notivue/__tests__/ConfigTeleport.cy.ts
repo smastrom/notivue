@@ -6,8 +6,7 @@ describe('Teleport', () => {
    it('By default is teleported to body', () => {
       cy.mount(Notivue)
 
-         .get('.Success')
-         .click()
+         .clickRandomStatic()
 
          .get('body')
          .children()
@@ -17,8 +16,7 @@ describe('Teleport', () => {
    it('Can teleport to different element', () => {
       cy.mount(Notivue, { config: { teleportTo: 'html' } })
 
-         .get('.Success')
-         .click()
+         .clickRandomStatic()
 
          .get('body')
          .children()
@@ -34,8 +32,7 @@ describe('Teleport', () => {
          .get<VueWrapper>('@vue')
          .then((wrapper) => wrapper.setProps({ teleportTo: 'html' }))
 
-         .get('.Success')
-         .click()
+         .clickRandomStatic()
 
          .get('body')
          .children()

@@ -4,6 +4,8 @@ export const FIXED_TIMEOUT_INCREMENT = 800
 
 export const CLASS_PREFIX = 'Notivue__'
 
+export const DEFAULT_DURATION = 6000
+
 export const NotificationTypeKeys: Record<string, NTypeU> = {
    SUCCESS: 'success',
    ERROR: 'error',

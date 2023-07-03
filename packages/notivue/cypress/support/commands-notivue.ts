@@ -3,12 +3,10 @@
 import { mount } from 'cypress/vue'
 
 import { notivueCypress } from '@/core/notivue'
-import { defaultConfig } from '@/core/config'
+import { DEFAULT_DURATION } from '@/core/constants'
 import { parseText } from './utils'
 
 import type { NotivueConfig } from 'index'
-
-const { duration } = defaultConfig.notifications.success
 
 type MountParams = Parameters<typeof mount>
 type OptionsParam = MountParams[1]
@@ -22,6 +20,10 @@ declare global {
             options?: OptionsParam
          ): Chainable<any>
          throwIfDurationMismatch(duration: number): void
+
+         clickRandomStatic(): Chainable<any>
+         clickAllStatic(): Chainable<any>
+         clickAll(): Chainable<any>
          getNotifications(): Chainable<any>
          getAriaLive(): Chainable<any>
          checkSlotAgainst(obj: Record<string, any>): Chainable<any>
@@ -50,11 +52,38 @@ Cypress.Commands.add(
 )
 
 Cypress.Commands.add('throwIfDurationMismatch', (duration: number) => {
-   if (defaultConfig.notifications.success.duration !== duration) {
+   if (DEFAULT_DURATION !== duration) {
       throw new Error(
          `Default success duration is not ${duration}ms. Is the default config changed?`
       )
    }
+})
+
+Cypress.Commands.add('clickAllStatic', () => {
+   cy.get('.Success')
+      .click()
+
+      .get('.Error')
+      .click()
+
+      .get('.Info')
+      .click()
+
+      .get('.Warning')
+      .click()
+})
+
+Cypress.Commands.add('clickRandomStatic', () => {
+   const randomSelector = ['.Success', '.Error', '.Info', '.Warning'][Math.floor(Math.random() * 4)]
+
+   cy.get(randomSelector).click()
+})
+
+Cypress.Commands.add('clickAll', () => {
+   cy.clickAllStatic()
+
+      .get('.Promise')
+      .click()
 })
 
 Cypress.Commands.add('getNotifications', () => cy.get('li > div > div:first-of-type'))
@@ -68,7 +97,7 @@ Cypress.Commands.add('checkSlotAgainst', (obj: Record<string, any>) =>
 )
 
 Cypress.Commands.add('checkSlotPropsAgainst', (obj: Record<string, any>) =>
-   cy.getNotifications().then((el) => expect(parseText(el).props).to.eql(obj))
+   cy.getNotifications().then((el) => cy.wrap(parseText(el).props).should('eql', obj))
 )
 
 Cypress.Commands.add(
@@ -83,7 +112,7 @@ Cypress.Commands.add(
          .get(leaveClass)
          .should('not.exist')
 
-         .wait(duration)
+         .wait(DEFAULT_DURATION)
 
          .get(leaveClass)
          .should('exist')

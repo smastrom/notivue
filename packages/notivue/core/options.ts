@@ -1,4 +1,4 @@
-import { NotificationTypeKeys as NKeys } from './constants'
+import { DEFAULT_DURATION, NotificationTypeKeys as NKeys } from './constants'
 
 import type {
    Obj,
@@ -10,7 +10,7 @@ import type {
 export const success: NotificationOptions = {
    title: '',
    message: '',
-   duration: 6000,
+   duration: DEFAULT_DURATION,
    ariaLive: 'polite',
    ariaRole: 'status',
    closeAriaLabel: 'Close',

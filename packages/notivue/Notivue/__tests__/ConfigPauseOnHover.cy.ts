@@ -12,8 +12,7 @@ describe('Pause on hover', { browser: ['chrome'] }, () => {
    it('Can pause and resume notifications', () => {
       cy.mount(Notivue)
 
-         .get('.Success')
-         .click()
+         .clickRandomStatic()
          .wait(4000) // Remaining time 2000ms
 
          .get('.Notification')
@@ -34,8 +33,7 @@ describe('Pause on hover', { browser: ['chrome'] }, () => {
    it('Should not pause notifications if pauseOnHover is false', () => {
       cy.mount(Notivue, { config: { pauseOnHover: false } })
 
-         .get('.Success')
-         .click()
+         .clickRandomStatic()
          .wait(4000) // Remaining: 2000ms
 
          .get('.Notification')
@@ -52,8 +50,7 @@ describe('Pause on hover', { browser: ['chrome'] }, () => {
          .get<VueWrapper>('@vue')
          .then((wrapper) => wrapper.setProps({ pauseOnHover: true }))
 
-         .get('.Success')
-         .click()
+         .clickRandomStatic()
          .wait(4000) // Remaining time 2000ms
 
          .get('.Notification')

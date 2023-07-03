@@ -11,14 +11,13 @@ it('Notivue attributes are added correctly', () => {
       }
    )
 
-      .get('.Success')
-      .click()
+      .clickRandomStatic()
       .get('ol')
       .should('have.class', 'CustomClass')
       .get('li')
       .invoke('attr', 'data-notivue-id')
       .should('exist')
-      .get('li')
-      .invoke('attr', 'data-notivue-y')
+      .get('ol')
+      .invoke('attr', 'data-notivue-top')
       .should('exist')
 })
