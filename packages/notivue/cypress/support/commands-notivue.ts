@@ -76,7 +76,7 @@ Cypress.Commands.add('clickAllStatic', () => {
 Cypress.Commands.add('clickRandomStatic', () => {
    const randomSelector = ['.Success', '.Error', '.Info', '.Warning'][Math.floor(Math.random() * 4)]
 
-   cy.get(randomSelector).click()
+   return cy.get(randomSelector).click()
 })
 
 Cypress.Commands.add('clickAll', () => {
@@ -93,7 +93,7 @@ Cypress.Commands.add('getAriaLive', () => {
 })
 
 Cypress.Commands.add('checkSlotAgainst', (obj: Record<string, any>) =>
-   cy.getNotifications().then((el) => expect(parseText(el)).to.contain(obj))
+   cy.getNotifications().then((el) => cy.wrap(parseText(el)).should('contain', obj))
 )
 
 Cypress.Commands.add('checkSlotPropsAgainst', (obj: Record<string, any>) =>

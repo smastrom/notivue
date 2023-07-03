@@ -4,14 +4,18 @@ export function parseText(subject: any) {
 
 export const RESOLVE_REJECT_DELAY = 1000
 
+function randomId() {
+   return Math.random().toString(36).substr(2, 9)
+}
+
 export function getRandomOptions() {
    return {
-      title: Math.random().toString(),
-      message: Math.random().toString(),
+      title: randomId(),
+      message: randomId(),
       duration: Math.floor(Math.random() * 10000),
-      ariaLive: Math.random().toString() as any,
-      ariaRole: Math.random().toString() as any,
-      closeAriaLabel: Math.random().toString(),
+      ariaLive: randomId(),
+      ariaRole: randomId(),
+      closeAriaLabel: randomId(),
    }
 }
 

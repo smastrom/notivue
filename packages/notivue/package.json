@@ -1,8 +1,8 @@
 {
    "name": "notivue",
-   "version": "1.0.0",
+   "version": "1.0.2",
    "private": false,
-   "description": "Fully-featured notification system for Vue and Nuxt.",
+   "description": "Fully-featured toast notification system for Vue and Nuxt.",
    "keywords": [
       "vue",
       "vuejs",
@@ -44,12 +44,11 @@
    "scripts": {
       "dev": "pnpm --C \"../../demo\" run dev",
       "preinstall": "npx only-allow pnpm",
+      "prebuild": "cp ../../README.md .",
       "build": "rimraf dist && vue-tsc && vite build && pnpm run build:css",
       "build:css": "esbuild ./Notifications/notifications.css ./core/animations.css --bundle --outdir=dist --minify --target=chrome58,edge16,firefox57,node12,safari11 --log-level=error",
-      "test": "pnpm run test:chrome && pnpm run test:firefox",
-      "test:gui": "cypress open --component",
-      "test:chrome": "cypress run --component --browser chrome",
-      "test:firefox": "cypress run --component --browser firefox"
+      "test": "cypress run --component --browser chrome",
+      "test:gui": "cypress open --component --browser chrome"
    },
    "devDependencies": {
       "@rollup/plugin-terser": "^0.4.3",

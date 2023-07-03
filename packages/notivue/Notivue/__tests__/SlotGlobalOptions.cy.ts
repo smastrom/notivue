@@ -22,7 +22,7 @@ describe('Global options have higher priority over defaults', () => {
             'promise-resolve': newDefaultOptions,
             'promise-reject': newDefaultOptions,
          },
-      },
+      } as any,
    }
 
    describe('First-level notifications', () => {

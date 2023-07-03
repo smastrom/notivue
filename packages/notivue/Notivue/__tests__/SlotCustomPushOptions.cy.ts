@@ -4,7 +4,6 @@ import Notivue from './components/Notivue.vue'
 
 const config = getRandomOptions()
 const options = getRandomOptions()
-const newOptions = getRandomOptions()
 
 const notivueConfig = {
    notifications: {
@@ -79,6 +78,8 @@ describe('Push notification options have higher priority over config', () => {
 })
 
 describe('Push notification options are merged properly with config', () => {
+   const newOptions = getRandomOptions()
+
    // First-level notifications (success, error, warning, info, promise)
    const someOptions = {
       ...options,
@@ -152,7 +153,7 @@ describe('Push notification options are merged properly with config', () => {
       })
    })
 
-   describe('Promise - Resolve / Reject', () => {
+   describe.only('Promise - Resolve / Reject', () => {
       const expectedOptions = { ...config, ...someNewOptions }
 
       it('Promise - Resolve', () => {

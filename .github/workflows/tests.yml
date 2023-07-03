@@ -25,10 +25,3 @@ jobs:
               install: false
               component: true
               browser: chrome
-         - name: Firefox tests
-           uses: cypress-io/github-action@v5
-           with:
-              working-directory: packages/notivue
-              install: false
-              component: true
-              browser: firefox

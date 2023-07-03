@@ -55,17 +55,6 @@ describe('Custom props match the slot content', () => {
    })
 
    describe('Promise - Resolve / Reject', () => {
-      const newCustomProps = {
-         isCustom: false,
-         somethingNew: 'somethingNew',
-         something: {
-            value: 111,
-            somethingElse: {
-               name: 'somethingElseNew',
-            },
-         },
-      }
-
       const componentConfig = [
          { config: {} },
          {

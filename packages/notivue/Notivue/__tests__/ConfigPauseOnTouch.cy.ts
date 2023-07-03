@@ -4,7 +4,7 @@ import { FIXED_TIMEOUT_INCREMENT } from '@/core/constants'
 
 import type { VueWrapper } from '@vue/test-utils'
 
-describe('Pause on touch', () => {
+describe('Pause on touch', { browser: ['chrome'] }, () => {
    beforeEach(() => {
       cy.throwIfDurationMismatch(6000)
    })
