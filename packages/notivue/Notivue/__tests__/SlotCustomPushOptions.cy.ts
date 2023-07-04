@@ -94,8 +94,7 @@ describe('Push notification options are merged properly with config', () => {
       ...newOptions,
    } as Partial<typeof newOptions>
 
-   delete someNewOptions.closeAriaLabel
-   delete someNewOptions.duration
+   delete someNewOptions.ariaLive
    delete someNewOptions.ariaRole
 
    const componentConfig = [
@@ -153,7 +152,7 @@ describe('Push notification options are merged properly with config', () => {
       })
    })
 
-   describe.only('Promise - Resolve / Reject', () => {
+   describe('Promise - Resolve / Reject', () => {
       const expectedOptions = { ...config, ...someNewOptions }
 
       it('Promise - Resolve', () => {

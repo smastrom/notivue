@@ -60,9 +60,9 @@ export function createStore(userConfig: NotivueConfig) {
          this.updatePositions()
       },
       playLeave(id: string) {
-         if (!config.animations.value.leave) this.remove(id)
+         if (!config.animations.value.leave) return this.remove(id)
 
-         this.updateAnimation(id, config.animations.value.leave ?? '', () => this.remove(id))
+         this.updateAnimation(id, config.animations.value.leave, () => this.remove(id))
          this.updatePositions()
       },
       playLeaveTimeout(id: string, time: number) {
@@ -70,8 +70,10 @@ export function createStore(userConfig: NotivueConfig) {
       },
       playClearAll() {
          if (elements.wrapper.value) {
-            elements.wrapper.value.classList.add(config.animations.value.clearAll ?? '')
-            elements.wrapper.value.onanimationend = () => items.removeAll()
+            if (!config.animations.value.clearAll) return this.removeAll()
+
+            elements.wrapper.value.classList.add(config.animations.value.clearAll)
+            elements.wrapper.value.onanimationend = () => this.removeAll()
          }
       },
       pauseTimeouts() {

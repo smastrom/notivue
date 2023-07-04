@@ -9,7 +9,6 @@ export default defineConfig({
          framework: 'vue',
          bundler: 'vite',
       },
-      experimentalWebKitSupport: true,
       setupNodeEvents(on) {
          on('task', {
             log(message) {

@@ -53,7 +53,6 @@ export interface NotificationOptions {
    duration: number
    ariaLive: 'polite' | 'assertive'
    ariaRole: 'alert' | 'status'
-   closeAriaLabel: string
 }
 
 // Store Item

@@ -13,7 +13,6 @@ export const success: NotificationOptions = {
    duration: DEFAULT_DURATION,
    ariaLive: 'polite',
    ariaRole: 'status',
-   closeAriaLabel: 'Close',
 }
 
 const error: NotificationOptions = {

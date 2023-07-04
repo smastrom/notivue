@@ -15,7 +15,6 @@ export function getRandomOptions() {
       duration: Math.floor(Math.random() * 10000),
       ariaLive: randomId(),
       ariaRole: randomId(),
-      closeAriaLabel: randomId(),
    }
 }
 

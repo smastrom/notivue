@@ -3,8 +3,8 @@ import { getRandomOptions } from '../../cypress/support/utils'
 import Notivue from './components/Notivue.vue'
 
 const globalOptions = getRandomOptions()
-const defaultOptions = getRandomOptions()
-const newDefaultOptions = getRandomOptions()
+const options = getRandomOptions()
+const newOptions = getRandomOptions()
 
 describe('Global options have higher priority over defaults', () => {
    const customConfig = {
@@ -12,15 +12,15 @@ describe('Global options have higher priority over defaults', () => {
          notifications: {
             global: globalOptions,
 
-            success: defaultOptions,
-            error: defaultOptions,
-            warning: defaultOptions,
-            info: defaultOptions,
-            promise: defaultOptions,
+            success: options,
+            error: options,
+            warning: options,
+            info: options,
+            promise: options,
 
             // Use different options since options should be different
-            'promise-resolve': newDefaultOptions,
-            'promise-reject': newDefaultOptions,
+            'promise-resolve': newOptions,
+            'promise-reject': newOptions,
          },
       } as any,
    }
@@ -93,9 +93,9 @@ describe('Push options have higher priority over globals', () => {
       { config: { notifications: globalOptions } },
       {
          props: {
-            options: defaultOptions,
+            options,
             // Passed as new options to .resolve()  and .reject()
-            newOptions: newDefaultOptions,
+            newOptions,
          },
       } as any,
    ]
@@ -106,7 +106,7 @@ describe('Push options have higher priority over globals', () => {
 
             .get('.Success')
             .click()
-            .checkSlotAgainst(defaultOptions)
+            .checkSlotAgainst(options)
       })
 
       it('Error', () => {
@@ -114,7 +114,7 @@ describe('Push options have higher priority over globals', () => {
 
             .get('.Error')
             .click()
-            .checkSlotAgainst(defaultOptions)
+            .checkSlotAgainst(options)
       })
 
       it('Warning', () => {
@@ -122,7 +122,7 @@ describe('Push options have higher priority over globals', () => {
 
             .get('.Warning')
             .click()
-            .checkSlotAgainst(defaultOptions)
+            .checkSlotAgainst(options)
       })
 
       it('Info', () => {
@@ -130,7 +130,7 @@ describe('Push options have higher priority over globals', () => {
 
             .get('.Info')
             .click()
-            .checkSlotAgainst(defaultOptions)
+            .checkSlotAgainst(options)
       })
 
       it('Promise', () => {
@@ -138,7 +138,7 @@ describe('Push options have higher priority over globals', () => {
 
             .get('.Promise')
             .click()
-            .checkSlotAgainst(defaultOptions)
+            .checkSlotAgainst(options)
       })
    })
 
@@ -149,7 +149,7 @@ describe('Push options have higher priority over globals', () => {
             .get('.PushPromiseAndResolve')
             .click()
             .wait(1000) // Wait for resolve
-            .checkSlotAgainst(newDefaultOptions)
+            .checkSlotAgainst(newOptions)
       })
 
       it('Promise - Reject', () => {
@@ -158,7 +158,7 @@ describe('Push options have higher priority over globals', () => {
             .get('.PushPromiseAndReject')
             .click()
             .wait(1000) // Wait for reject
-            .checkSlotAgainst(newDefaultOptions)
+            .checkSlotAgainst(newOptions)
       })
    })
 })
