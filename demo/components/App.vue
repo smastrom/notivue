@@ -38,7 +38,7 @@ const emojiIcons = {
 </script>
 
 <template>
-   <Notivue class="CustomClass" v-slot="item">
+   <Notivue :class="store.centerOnMobile ? 'CenterOnMobile' : ''" v-slot="item">
       <Notifications
          v-if="!item.props.isCustom && !item.props.isFileUpload"
          :item="item"
@@ -63,7 +63,7 @@ const emojiIcons = {
 
 <style>
 @media (max-width: 768px) {
-   :root {
+   .CenterOnMobile {
       --nv-root-x-align: center;
    }
 }
