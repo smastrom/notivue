@@ -1,17 +1,13 @@
-[data-notivue-top] {
-   --notivue-easing: 300ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-[data-notivue-top='true'] {
+[data-notivue-top='true'] .Notivue__enter {
    --notivue-ty: -80px;
 }
 
-[data-notivue-top='false'] {
+[data-notivue-top='false'] .Notivue__enter {
    --notivue-ty: 80px;
 }
 
 .Notivue__enter {
-   animation: Notivue__enter-kf var(--notivue-easing);
+   animation: Notivue__enter-kf 300ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @keyframes Notivue__enter-kf {
@@ -30,7 +26,8 @@
 }
 
 .Notivue__leave {
-   animation: Notivue__leave-kf var(--notivue-easing);
+   will-change: filter;
+   animation: Notivue__leave-kf 300ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @keyframes Notivue__leave-kf {
@@ -47,6 +44,7 @@
 }
 
 .Notivue__clearAll {
+   will-change: filter;
    animation: Notivue__clearAll-kf 500ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
