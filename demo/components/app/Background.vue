@@ -52,6 +52,7 @@
    width: 100%;
    padding: 20px;
    height: calc(100vh - 200px);
+   height: calc(100svh - 200px);
    display: flex;
    justify-content: center;
    align-items: center;

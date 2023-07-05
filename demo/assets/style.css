@@ -85,6 +85,7 @@ html[data-theme='slate'] {
 body {
    margin: 0;
    padding: 0;
+   min-height: 100svh;
    min-height: 100vh;
 }
 

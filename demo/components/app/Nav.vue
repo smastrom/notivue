@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref } from 'vue'
+import { onMounted, onBeforeUnmount, ref, onUpdated } from 'vue'
 import { usePush } from 'notivue'
 
 import NavComponentControls from './NavComponentControls.vue'
@@ -13,28 +13,10 @@ import DismissIcon from '../icons/DismissIcon.vue'
 import DestroyIcon from '../icons/DestroyIcon.vue'
 
 const push = usePush()
-
-const navRef = ref<HTMLElement | null>(null)
-
-onMounted(() => {
-   getNavHeight()
-   window.addEventListener('resize', getNavHeight, { passive: true })
-})
-
-onBeforeUnmount(() => {
-   window.removeEventListener('resize', getNavHeight)
-})
-
-function getNavHeight() {
-   document.documentElement.style.setProperty(
-      '--nv-root-bottom',
-      `${navRef.value?.clientHeight ?? 0}px`
-   )
-}
 </script>
 
 <template>
-   <nav dir="ltr" ref="navRef">
+   <nav dir="ltr">
       <div class="Container">
          <ButtonGroup name="Position">
             <NavPositionControls />
@@ -78,9 +60,10 @@ nav {
    display: flex;
    justify-content: center;
    width: 100%;
-   z-index: 2147483647;
+   z-index: 99999;
    bottom: 0;
    left: 0;
+   height: 260px;
    position: fixed;
    overflow: hidden;
 

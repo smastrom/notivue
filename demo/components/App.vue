@@ -69,7 +69,7 @@ const emojiIcons = {
 }
 
 :root {
-   /* --nv-root-top: 200px; */
+   --nv-root-bottom: 260px;
 }
 
 [data-notivue-top='false'] {

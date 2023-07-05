@@ -5,6 +5,7 @@ import { getRandomInt } from '@/lib/utils'
 
 import VueIcon from '../icons/VueIcon.vue'
 import Button from '../shared/Button.vue'
+import { setTheme, store, toggleRTL } from '@/lib/store'
 
 const push = usePush()
 
@@ -19,7 +20,17 @@ export interface CustomPromiseProps {
    fileName: string
 }
 
+function resetOptions() {
+   if (store.rtl) {
+      push.destroyAll()
+      toggleRTL()
+   }
+   setTheme('lightTheme')
+}
+
 function customPush() {
+   resetOptions()
+
    push.info<CustomProps>({
       title: 'New Message Request',
       message: `Stephanie LaGarde wants to send you a message.`,
@@ -32,6 +43,8 @@ function customPush() {
 }
 
 async function customAsync() {
+   resetOptions()
+
    const props = { isFileUpload: true, fileName: 'excel-sheet.xlsx' }
 
    const promise = push.promise<CustomPromiseProps>({
