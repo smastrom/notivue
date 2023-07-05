@@ -43,7 +43,7 @@ function toggleRTL() {
          v-if="isMobile"
          class="ButtonBase SwitchButton"
          role="switch"
-         :aria-checked="config.pauseOnHover.value"
+         :aria-checked="config.pauseOnTouch.value"
          aria-label="Pause on Touch"
          @click="togglePauseOnTouch"
       >
