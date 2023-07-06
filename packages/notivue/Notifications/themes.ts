@@ -2,9 +2,9 @@ import type { NotivueTheme } from '@/types'
 
 const layout: NotivueTheme = {
    '--nv-width': '350px',
-   '--nv-spacing': '0.65rem',
+   '--nv-spacing': '0.5rem',
    '--nv-radius': '0.5rem',
-   '--nv-icon-size': '1.375rem',
+   '--nv-icon-size': '1.15rem',
    '--nv-title-size': '0.925rem',
    '--nv-message-size': '0.875rem',
    '--nv-tip-width': '0px',

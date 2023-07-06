@@ -13,7 +13,6 @@ export const defaultConfig: NotivueConfigRequired = {
    pauseOnTabChange: true,
    position: 'top-center',
    teleportTo: 'body',
-   class: '',
    notifications: defaultNotificationOptions,
    limit: Infinity,
    animations: {

@@ -46,11 +46,7 @@ const closeIcon = computed(() => props.icons.close)
          @click="item.clear"
          :aria-label="props.closeAriaLabel"
       >
-         <Component
-            v-if="typeof closeIcon === 'object' && closeIcon != null"
-            :is="closeIcon"
-            :class="Cx.CLOSE_ICON"
-         />
+         <Component v-if="typeof closeIcon === 'object'" :is="closeIcon" :class="Cx.CLOSE_ICON" />
          <div v-else-if="typeof closeIcon === 'string'" aria-hidden="true" v-text="closeIcon" />
       </button>
    </div>
