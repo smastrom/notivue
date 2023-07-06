@@ -1,6 +1,6 @@
 import { NotificationType as NTypeU } from '@/types'
 
-export const FIXED_TIMEOUT_INCREMENT = 800
+export const FIXED_TIMEOUT_INCREMENT = 1200
 
 export const CLASS_PREFIX = 'Notivue__'
 
