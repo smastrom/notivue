@@ -34,24 +34,36 @@ export type NotivueIcons = Partial<
 export type NotificationOptionsField = Record<NotificationType | 'global', NotificationOptions>
 
 export interface NotivueConfigRequired {
+   /** Whether to pause all notifications when hovering over them with mouse. */
    pauseOnHover: boolean
+   /** Whether to pause all notifications when tapping on them with touch devices. */
    pauseOnTouch: boolean
+   /** Whether to pause all notifications when switching tabs or window. */
    pauseOnTabChange: boolean
+   /** Position of notifications, one of 'top-left', 'top-center', 'top-right', 'bottom-left', 'bottom-center', 'bottom-right'. */
    position: Position
-   class: string
+   /** Notification options for each type. */
    notifications: NotificationOptionsField
+   /** Animation classes for `enter`, `leave` and `clearAll`. */
    animations: Partial<{ enter: string; leave: string; clearAll: string }>
+   /** Tag or element to which the stream will be teleported. */
    teleportTo: string | HTMLElement
+   /** Notifications limit. Defaults to `Infinity`. */
    limit: number
 }
 
 export type NotivueConfig = DeepPartial<NotivueConfigRequired>
 
 export interface NotificationOptions {
+   /** String to use as default title, an empty string doesn't render the title. */
    title: string
+   /** String to use as default message. */
    message: string
+   /** Duration of the notification. */
    duration: number
+   /** Value of `aria-live` attribute. */
    ariaLive: 'polite' | 'assertive'
+   /** Value of `role` attribute. */
    ariaRole: 'alert' | 'status'
 }
 

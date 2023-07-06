@@ -1,10 +1,10 @@
 import { createStore, storeInjectionKey } from './createStore'
 
-import type { Plugin } from 'vue'
+import type { App, Plugin } from 'vue'
 import type { NotivueConfig } from '@/types'
 
-export const notivue: Plugin = {
-   install(app, config: NotivueConfig = {}) {
+export const notivue = {
+   install(app: App, config: NotivueConfig = {}) {
       app.provide(storeInjectionKey, createStore(config))
    },
 }
