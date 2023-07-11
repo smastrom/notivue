@@ -11,7 +11,7 @@ import InfoOutlineIcon from './InfoOutlineIcon.vue'
 import PromiseIcon from './PromiseIcon.vue'
 import CloseIcon from './CloseIcon.vue'
 
-import type { NotivueIcons } from '@/types'
+import type { NotivueIcons } from 'notivue'
 
 export const svgProps: SVGAttributes = {
    xmlns: 'http://www.w3.org/2000/svg',

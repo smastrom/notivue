@@ -5,7 +5,7 @@ import { Classes as Cx } from './constants'
 import { filledIcons } from './icons'
 import { lightTheme } from './themes'
 
-import type { NotivueIcons, NotivueSlot, NotivueTheme } from '@/types'
+import type { NotivueIcons, NotivueSlot, NotivueTheme } from 'notivue'
 
 const props = withDefaults(
    defineProps<{

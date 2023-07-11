@@ -5,7 +5,7 @@ import type {
    NotificationOptions,
    UserPushOptionsWithInternals,
    NotificationOptionsField,
-} from '@/types'
+} from 'notivue'
 
 export const success: NotificationOptions = {
    title: '',

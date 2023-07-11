@@ -5,7 +5,7 @@ import { toShallowRefs, mergeDeep } from './utils'
 
 import { CLASS_PREFIX as CX } from './constants'
 
-import type { NotivueConfigRequired, NotivueConfig } from '@/types'
+import type { NotivueConfigRequired, NotivueConfig } from 'notivue'
 
 export const defaultConfig: NotivueConfigRequired = {
    pauseOnHover: true,

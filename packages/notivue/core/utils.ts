@@ -1,6 +1,6 @@
 import { shallowRef, type Ref } from 'vue'
 
-import type { DeepPartial } from '@/types'
+import type { DeepPartial } from 'notivue'
 
 export const isSSR = typeof window === 'undefined'
 

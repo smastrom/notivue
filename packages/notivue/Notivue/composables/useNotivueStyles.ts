@@ -3,7 +3,7 @@ import { computed, type CSSProperties } from 'vue'
 import { useNotivue } from '@/core/useStore'
 import { useReducedMotion } from './useReducedMotion'
 
-import type { NotivueElements } from '@/types'
+import type { NotivueElements } from 'notivue'
 
 /**
  * The follwing styles are not defined in a CSS file because

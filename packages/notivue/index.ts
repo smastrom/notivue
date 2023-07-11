@@ -12,4 +12,4 @@ export {
 } from '@/Notifications/themes'
 export { filledIcons, outlinedIcons } from '@/Notifications/icons'
 
-export * from '@/types'
+export * from './types'

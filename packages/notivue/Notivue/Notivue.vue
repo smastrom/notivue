@@ -10,7 +10,7 @@ import { useRepositioning } from './composables/useRepositioning'
 import { useVisibilityChange } from './composables/useVisibilityChange'
 import { getSlotContext } from './utils'
 
-import { NotivueSlot } from '@/types'
+import { NotivueSlot } from 'notivue'
 
 defineProps<{
    class?: string

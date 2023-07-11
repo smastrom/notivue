@@ -23,7 +23,6 @@ export default defineConfig({
          '@/core': resolve(__dirname, '../packages/notivue/core'),
          '@/Notivue': resolve(__dirname, '../packages/notivue/Notivue'),
          '@/Notifications': resolve(__dirname, '../packages/notivue/Notifications'),
-         '@/types': resolve(__dirname, '../packages/notivue/types.ts'),
       },
    },
    plugins: [vue()],

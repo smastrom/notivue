@@ -16,7 +16,7 @@ import type {
    NotivueConfig,
    UserPushOptionsWithInternals,
    Obj,
-} from '@/types'
+} from 'notivue'
 
 export const storeInjectionKey = Symbol('') as InjectionKey<ReturnType<typeof createStore>>
 

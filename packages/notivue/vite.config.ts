@@ -8,7 +8,6 @@ export default defineConfig({
    resolve: {
       alias: {
          '@/core': resolve(__dirname, './core'),
-         '@/types': resolve(__dirname, './types.ts'),
          '@/Notivue': resolve(__dirname, './Notivue'),
          '@/Notifications': resolve(__dirname, './Notifications'),
          notivue: resolve(__dirname, './index.ts'),
@@ -40,5 +39,6 @@ export default defineConfig({
          ],
       },
    },
+   // @ts-ignore
    plugins: [dts({ staticImport: true, insertTypesEntry: true }), vue()],
 })

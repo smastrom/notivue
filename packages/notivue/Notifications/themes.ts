@@ -1,4 +1,4 @@
-import type { NotivueTheme } from '@/types'
+import type { NotivueTheme } from 'notivue'
 
 const layout: NotivueTheme = {
    '--nv-width': '350px',
