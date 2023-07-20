@@ -1,4 +1,5 @@
 import { reactive, computed } from 'vue'
+
 import type { Position, ThemeNames } from 'notivue'
 
 export const store = reactive({
@@ -10,6 +11,7 @@ export const store = reactive({
    outlinedIcons: false,
    rtl: false,
    centerOnMobile: false,
+   enableSwipe: true,
 })
 
 export const messages = computed(
@@ -89,6 +91,10 @@ export function toggleRTL() {
 
 export function toggleCenterOnMobile() {
    store.centerOnMobile = !store.centerOnMobile
+}
+
+export function toggleSwipe() {
+   store.enableSwipe = !store.enableSwipe
 }
 
 function getTitle(title: string) {

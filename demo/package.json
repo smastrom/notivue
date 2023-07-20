@@ -15,6 +15,7 @@
       "vue-tsc": "^1.8.4"
    },
    "dependencies": {
+      "@neodrag/vue": "^2.0.3",
       "date-fns": "^2.30.0",
       "vue": "^3.3.4"
    }

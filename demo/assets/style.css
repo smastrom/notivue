@@ -122,6 +122,15 @@ body {
    }
 }
 
+.ButtonBase_Disabled {
+   opacity: 0.5;
+   cursor: not-allowed;
+
+   &:hover {
+      transform: none !important;
+   }
+}
+
 .SwitchButton {
    font-weight: 700;
    justify-items: center;

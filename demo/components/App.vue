@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { watchEffect } from 'vue'
+import { vDraggable } from '@neodrag/vue'
 
 import {
    Notifications,
@@ -13,6 +14,7 @@ import {
    type NotivueSlot,
 } from 'notivue'
 import { store } from '@/lib/store'
+import { useDragOptions } from '@/lib/useDragOptions'
 
 import Nav from './app/Nav.vue'
 import Background from './app/Background.vue'
@@ -35,11 +37,14 @@ const emojiIcons = {
    'promise-reject': '⛔️',
    close: store.rtl ? 'إغلاق' : 'Close',
 }
+
+const getDragOptions = useDragOptions('.Notivue__close')
 </script>
 
 <template>
    <Notivue :class="store.centerOnMobile ? 'CenterOnMobile' : ''" v-slot="item">
       <Notifications
+         v-draggable="store.enableSwipe ? getDragOptions(item) : { disabled: true }"
          v-if="!item.props.isCustom && !item.props.isFileUpload"
          :item="item"
          :theme="themes[store.theme]"
@@ -62,6 +67,18 @@ const emojiIcons = {
 </template>
 
 <style>
+.Notivue__drag {
+   cursor: grab;
+}
+
+.Notivue__content * {
+   user-select: none;
+}
+
+.Notivue__notification * {
+   touch-action: none !important;
+}
+
 @media (max-width: 768px) {
    .CenterOnMobile {
       --nv-root-x-align: center;

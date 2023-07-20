@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { watch } from 'vue'
 import { useNotivue, usePush } from 'notivue'
 
 import {
@@ -8,6 +9,7 @@ import {
    toggleOutlinedIcons,
    toggleEmojis,
    messages,
+   toggleSwipe,
 } from '../../lib/store'
 import { isMobile } from '../../lib/utils'
 
@@ -35,6 +37,16 @@ function toggleRTL() {
    push.destroyAll()
    push.success(messages.value.success)
 }
+
+watch(
+   () => (!config.pauseOnHover.value || !config.pauseOnTouch.value) && store.enableSwipe,
+   (isPauseOnHoverDisabled) => {
+      if (isPauseOnHoverDisabled) {
+         store.enableSwipe = false
+      }
+   },
+   { flush: 'post' }
+)
 </script>
 
 <template>
@@ -60,6 +72,21 @@ function toggleRTL() {
          Pause on Hover
       </div>
       <div
+         :class="[
+            'ButtonBase',
+            'SwitchButton',
+            {
+               ButtonBase_Disabled: !config.pauseOnHover.value || !config.pauseOnTouch.value,
+            },
+         ]"
+         role="switch"
+         :aria-checked="store.enableSwipe"
+         aria-label="Clear on Swipe"
+         @click="toggleSwipe"
+      >
+         Clear on Swipe
+      </div>
+      <div
          class="ButtonBase SwitchButton"
          role="switch"
          :aria-checked="store.renderTitles"
@@ -80,20 +107,20 @@ function toggleRTL() {
       <div
          class="ButtonBase SwitchButton"
          role="switch"
-         :aria-checked="store.emojis"
-         aria-label="Emoji Icons"
-         @click="toggleEmojis"
-      >
-         Emoji Icons
-      </div>
-      <div
-         class="ButtonBase SwitchButton"
-         role="switch"
          :aria-checked="store.rtl"
          aria-label="RTL Direction"
          @click="toggleRTL"
       >
          RTL Direction
+      </div>
+      <div
+         class="ButtonBase SwitchButton"
+         role="switch"
+         :aria-checked="store.emojis"
+         aria-label="Emoji Icons"
+         @click="toggleEmojis"
+      >
+         Emoji Icons
       </div>
    </div>
 </template>

@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { formatDistanceToNow as toNow } from 'date-fns'
+import { vDraggable } from '@neodrag/vue'
+
+import { store } from '@/lib/store'
+import { useDragOptions } from '@/lib/useDragOptions'
 
 import type { NotivueSlot } from 'notivue'
 import type { CustomProps } from '../app/NavPushCustom.vue'
@@ -7,10 +11,15 @@ import type { CustomProps } from '../app/NavPushCustom.vue'
 defineProps<{
    item: NotivueSlot<CustomProps>
 }>()
+
+const getDragOptions = useDragOptions('.Buttons')
 </script>
 
 <template>
-   <div class="Notification">
+   <div
+      class="Notification"
+      v-draggable="store.enableSwipe ? getDragOptions(item) : { disabled: true }"
+   >
       <div class="Avatar">
          <img src="../../assets/profile-picture.png" alt="profile" class="Picture" />
          <span class="OnlineDot" />
@@ -18,10 +27,10 @@ defineProps<{
       <div class="Content">
          <div class="Details">
             <time>{{ toNow(item.createdAt) }} ago</time>
-            <p>
-               <a href="#">{{ item.props.name }}</a>
+            <div>
+               <span class="FakeLink">{{ item.props.name }}</span>
                {{ item.message.replace(item.props.name, '') }}
-            </p>
+            </div>
          </div>
          <nav class="Buttons">
             <button @click="item.clear" class="Button ButtonReverse">Deny</button>
@@ -73,6 +82,7 @@ defineProps<{
 }
 
 .Content {
+   user-select: none;
    display: flex;
    gap: 10px;
    flex-direction: column;
@@ -90,16 +100,16 @@ defineProps<{
    & time {
       color: #919191;
    }
+}
 
-   & a {
-      text-decoration: none;
-      color: inherit;
-      font-weight: 700;
-      transition: color 100ms ease-out;
+.FakeLink {
+   text-decoration: none;
+   color: inherit;
+   font-weight: 700;
+   transition: color 100ms ease-out;
 
-      &:hover {
-         color: var(--blue-color);
-      }
+   &:hover {
+      color: var(--blue-color);
    }
 }
 
