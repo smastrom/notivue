@@ -22,13 +22,13 @@ export const lightTheme: NotivueTheme = {
    '--nv-border-width': '0px',
    '--nv-global-bg': '#FFF',
    '--nv-global-border': '#DEDEDE',
-   '--nv-global-fg': '#27272A',
+   '--nv-global-fg': '#171717',
    // Scoped
    '--nv-success-accent': '#28B780',
    '--nv-error-accent': '#E74C3C',
    '--nv-warning-accent': '#F59E0B',
    '--nv-info-accent': '#3E8EFF',
-   '--nv-promise-accent': '#27272A',
+   '--nv-promise-accent': '#171717',
 }
 
 export const pastelTheme: NotivueTheme = {
