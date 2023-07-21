@@ -15,8 +15,8 @@ export function useFocusEvents() {
    }
 
    /**
-    * Using a Set for better control instead of the watcher cleanup function
-    * listeners will in any case garbage collect when the notification is removed
+    * Using a Set for better control instead of the watcher cleanup function.
+    * Listener will in any case garbage collected when the notification is removed
     */
    const buttonSet = new Set<HTMLButtonElement>()
 

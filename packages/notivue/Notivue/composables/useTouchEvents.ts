@@ -1,78 +1,44 @@
-import { computed, onBeforeUnmount, watchEffect } from 'vue'
+import { computed } from 'vue'
 
-import { useNotivue, useItems, usePointer, useElements } from '@/core/useStore'
+import { useNotivue, useItems, usePointer } from '@/core/useStore'
 import { isMouse } from '@/core/utils'
 
 /**
  * The logic follows this pattern:
  *
- * 1. Leave animation timeouts are paused if tapping on the list container.
- * Event listener is added on the same element in Notivue.vue.
+ * Every time the users touch a notification, unless
+ * it's a button, all notifications will pause and automatically
+ * resume after 2 seconds.
  *
- * 2. Leave animation timeouts are resumed either:
- * - After 1.5 seconds that have been paused
- * - If tapping outside the list
- * - If clicking any button in the notification
- * Event listener is added on the document.
+ * If users keep tapping on the notifications, once timeouts
+ * are resumed, they will pause again after 2 seconds and so on.
  *
- * 3. Since 'pauseOnTouch' prop is reactive, listeners are also toggled using a watcher.
+ * 'pointer.isTouching' is used to keep track of the paused/resumed state.
  */
+
 export function useTouchEvents() {
-   const elements = useElements()
    const pointer = usePointer()
    const items = useItems()
    const config = useNotivue()
 
-   let autoResumeTimeout: ReturnType<typeof setTimeout>
-
-   function autoResumeTouch() {
-      items.resumeTimeouts()
-      pointer.toggleTouch()
-   }
+   let resumeTimeout: ReturnType<typeof setTimeout>
 
    function pauseTouch(event: PointerEvent) {
       if (!pointer.isTouching && !isMouse(event)) {
-         const isCloseButton = (event.target as HTMLElement).tagName === 'BUTTON'
+         const isButton = (event.target as HTMLElement).tagName === 'BUTTON'
 
-         if (!isCloseButton) {
+         if (!isButton) {
             items.pauseTimeouts()
             pointer.toggleTouch()
 
-            removeTouchListener()
-            document.addEventListener('pointerdown', resumeTouch)
-
-            clearTimeout(autoResumeTimeout)
-            autoResumeTimeout = setTimeout(autoResumeTouch, 1500)
+            clearTimeout(resumeTimeout)
+            resumeTimeout = setTimeout(() => {
+               items.resumeTimeouts()
+               pointer.toggleTouch()
+            }, 2000)
          }
       }
    }
-
-   function resumeTouch(event: PointerEvent) {
-      if (pointer.isTouching && !isMouse(event)) {
-         const isOutside = !elements.wrapper.value!.contains(event.target as Node)
-         const isCloseButton = !isOutside && (event.target as HTMLElement).tagName === 'BUTTON'
-
-         if (isOutside || isCloseButton) {
-            clearTimeout(autoResumeTimeout)
-            autoResumeTouch()
-         }
-      }
-   }
-
-   // Listeners
-
-   function removeTouchListener() {
-      document.removeEventListener('pointerdown', resumeTouch)
-   }
-
-   watchEffect(() => {
-      if (items.data.value.length === 0 || !config.pauseOnTouch.value) {
-         pointer.reset()
-         removeTouchListener()
-      }
-   })
-
-   onBeforeUnmount(removeTouchListener)
 
    return computed(() => (config.pauseOnTouch.value ? { onPointerdown: pauseTouch } : {}))
 }
