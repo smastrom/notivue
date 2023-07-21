@@ -4,7 +4,7 @@ import { FIXED_TIMEOUT_INCREMENT } from '@/core/constants'
 
 import type { VueWrapper } from '@vue/test-utils'
 
-describe('Pause on hover', { browser: ['chrome'] }, () => {
+describe('Pause on hover', () => {
    beforeEach(() => {
       cy.log('cypress-real-events is only supported in Chrome').throwIfDurationMismatch(6000)
    })

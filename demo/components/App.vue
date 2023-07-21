@@ -71,7 +71,7 @@ const getDragOptions = useDragOptions('.Notivue__close')
    cursor: grab;
 }
 
-.Notivue__content {
+.Notivue__content * {
    user-select: none;
 }
 
