@@ -1,4 +1,4 @@
-import { computed, watchEffect } from 'vue'
+import { computed, onBeforeUnmount, watchEffect } from 'vue'
 
 import { useNotivue, useItems, usePointer, useElements } from '@/core/useStore'
 import { isMouse } from '@/core/utils'
@@ -10,6 +10,7 @@ import { isMouse } from '@/core/utils'
  * Event listener is added on the same element in Notivue.vue.
  *
  * 2. Leave animation timeouts are resumed either:
+ * - After 1.5 seconds that have been paused
  * - If tapping outside the list
  * - If clicking any button in the notification
  * Event listener is added on the document.
@@ -22,6 +23,13 @@ export function useTouchEvents() {
    const items = useItems()
    const config = useNotivue()
 
+   let autoResumeTimeout: ReturnType<typeof setTimeout>
+
+   function autoResumeTouch() {
+      items.resumeTimeouts()
+      pointer.toggleTouch()
+   }
+
    function pauseTouch(event: PointerEvent) {
       if (!pointer.isTouching && !isMouse(event)) {
          const isCloseButton = (event.target as HTMLElement).tagName === 'BUTTON'
@@ -32,6 +40,9 @@ export function useTouchEvents() {
 
             removeTouchListener()
             document.addEventListener('pointerdown', resumeTouch)
+
+            clearTimeout(autoResumeTimeout)
+            autoResumeTimeout = setTimeout(autoResumeTouch, 1500)
          }
       }
    }
@@ -42,8 +53,8 @@ export function useTouchEvents() {
          const isCloseButton = !isOutside && (event.target as HTMLElement).tagName === 'BUTTON'
 
          if (isOutside || isCloseButton) {
-            items.resumeTimeouts()
-            pointer.toggleTouch()
+            clearTimeout(autoResumeTimeout)
+            autoResumeTouch()
          }
       }
    }
@@ -55,15 +66,13 @@ export function useTouchEvents() {
    }
 
    watchEffect(() => {
-      if (!config.pauseOnTouch.value) removeTouchListener()
-   })
-
-   watchEffect(() => {
-      if (items.data.value.length === 0) {
+      if (items.data.value.length === 0 || !config.pauseOnTouch.value) {
          pointer.reset()
          removeTouchListener()
       }
    })
+
+   onBeforeUnmount(removeTouchListener)
 
    return computed(() => (config.pauseOnTouch.value ? { onPointerdown: pauseTouch } : {}))
 }
