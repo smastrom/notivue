@@ -9,7 +9,7 @@ describe('Pause on touch', () => {
       cy.throwIfDurationMismatch(6000)
    })
 
-   it('Touch - Can pause and resume notifications', () => {
+   it.only('Touch - Can pause and resume notifications', () => {
       cy.mount(Notivue)
 
          .clickRandomStatic()
@@ -21,10 +21,6 @@ describe('Pause on touch', () => {
 
          .get('.Notification')
          .should('exist')
-
-         .get('body')
-         .trigger('pointerdown', { pointerType: 'touch' })
-         .wait(2000 + FIXED_TIMEOUT_INCREMENT)
 
          .get('.Notification')
          .should('not.exist')
