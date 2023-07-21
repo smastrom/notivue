@@ -42,7 +42,7 @@ const getDragOptions = useDragOptions('.Notivue__close')
 </script>
 
 <template>
-   <Notivue :class="store.centerOnMobile ? 'CenterOnMobile' : ''" v-slot="item">
+   <Notivue :class="{ CenterOnMobile: store.centerOnMobile }" v-slot="item">
       <Notifications
          v-draggable="store.enableSwipe ? getDragOptions(item) : { disabled: true }"
          v-if="!item.props.isCustom && !item.props.isFileUpload"
@@ -71,12 +71,12 @@ const getDragOptions = useDragOptions('.Notivue__close')
    cursor: grab;
 }
 
-.Notivue__content * {
+.Notivue__content {
    user-select: none;
 }
 
-.Notivue__notification * {
-   touch-action: none !important;
+.Notivue__notification {
+   touch-action: none;
 }
 
 @media (max-width: 768px) {

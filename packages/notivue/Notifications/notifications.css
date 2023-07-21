@@ -33,6 +33,10 @@
    --nv-fg: var(--nv-promise-fg);
    --nv-accent: var(--nv-promise-accent);
    --nv-border: var(--nv-promise-border);
+
+   & .Notivue__content {
+      padding-inline-end: var(--nv-spacing);
+   }
 }
 
 [dir='rtl'] .Notivue__notification {
@@ -42,6 +46,7 @@
 .Notivue__notification {
    --tip-width: calc(var(--tip-width-fx, 1) * var(--nv-tip-width, 0px));
 
+   touch-action: manipulation;
    box-sizing: border-box;
    position: relative;
    width: var(--nv-width);
@@ -56,7 +61,6 @@
       inset var(--tip-width) 0 0 var(--nv-accent, var(--nv-global-accent));
 
    & * {
-      touch-action: manipulation;
       box-sizing: border-box;
    }
 }
@@ -108,7 +112,7 @@
 }
 
 .Notivue__content-message {
-   opacity: 0.85;
+   opacity: 0.95;
    max-height: 250px;
    overflow: auto;
    line-height: 1.375;

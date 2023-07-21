@@ -11,16 +11,18 @@ const layout: NotivueTheme = {
    '--nv-y-align': 'center',
 }
 
-const shadow = { '--nv-shadow': '0 0.5rem 1rem rgba(0, 0, 0, 0.15)' }
+const shadow = {
+   '--nv-shadow': 'rgba(0, 0, 0, 0.08) 0px 4px 6px -1px, rgba(0, 0, 0, 0.04) 0px 2px 4px -1px',
+}
 
 export const lightTheme: NotivueTheme = {
    ...layout,
    ...shadow,
-   '--nv-border-width': '0',
    // Global
+   '--nv-border-width': '0px',
    '--nv-global-bg': '#FFF',
    '--nv-global-border': '#DEDEDE',
-   '--nv-global-fg': '#334155',
+   '--nv-global-fg': '#27272a',
    // Scoped
    '--nv-success-accent': '#28B780',
    '--nv-error-accent': '#E74C3C',
@@ -32,7 +34,7 @@ export const lightTheme: NotivueTheme = {
 export const pastelTheme: NotivueTheme = {
    // Layout
    ...layout,
-   '--nv-shadow': '0 0.25rem 0.5rem rgba(0, 0, 40, 0.1)',
+   ...shadow,
    // Success
    '--nv-success-bg': '#E9FAEF',
    '--nv-success-accent': '#059669',
