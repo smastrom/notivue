@@ -1,7 +1,5 @@
 import Notivue from './components/Notivue.vue'
 
-import { FIXED_TIMEOUT_INCREMENT } from '@/core/constants'
-
 import type { VueWrapper } from '@vue/test-utils'
 
 describe('Pause on touch', () => {
@@ -9,7 +7,7 @@ describe('Pause on touch', () => {
       cy.throwIfDurationMismatch(6000)
    })
 
-   it.only('Touch - Can pause and resume notifications', () => {
+   it('Touch - Can pause and resume notifications', () => {
       cy.mount(Notivue)
 
          .clickRandomStatic()
