@@ -33,10 +33,6 @@
    --nv-fg: var(--nv-promise-fg);
    --nv-accent: var(--nv-promise-accent);
    --nv-border: var(--nv-promise-border);
-
-   & .Notivue__content {
-      padding-inline-end: var(--nv-spacing);
-   }
 }
 
 [dir='rtl'] .Notivue__notification {
@@ -46,7 +42,6 @@
 .Notivue__notification {
    --tip-width: calc(var(--tip-width-fx, 1) * var(--nv-tip-width, 0px));
 
-   touch-action: manipulation;
    box-sizing: border-box;
    position: relative;
    width: var(--nv-width);
@@ -62,6 +57,7 @@
 
    & * {
       box-sizing: border-box;
+      touch-action: manipulation;
    }
 }
 
@@ -69,6 +65,7 @@
    display: flex;
    justify-content: center;
    align-items: center;
+   overflow: visible;
    min-width: var(--nv-icon-size);
    width: var(--nv-icon-size);
    height: var(--nv-icon-size);
@@ -100,6 +97,7 @@
    flex-grow: 1;
    text-align: inherit;
    padding: var(--nv-spacing) 0;
+   padding-inline-end: var(--nv-spacing);
 }
 
 .Notivue__content-title {

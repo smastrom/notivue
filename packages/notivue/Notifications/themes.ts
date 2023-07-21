@@ -1,12 +1,12 @@
 import type { NotivueTheme } from 'notivue'
 
 const layout: NotivueTheme = {
-   '--nv-width': '340px',
+   '--nv-width': '350px',
    '--nv-spacing': '0.5rem',
    '--nv-radius': '0.5rem',
-   '--nv-icon-size': '1.15rem',
+   '--nv-icon-size': '1.2rem',
    '--nv-title-size': '0.925rem',
-   '--nv-message-size': '0.875rem',
+   '--nv-message-size': '0.925rem',
    '--nv-tip-width': '0px',
    '--nv-y-align': 'center',
 }
@@ -22,13 +22,13 @@ export const lightTheme: NotivueTheme = {
    '--nv-border-width': '0px',
    '--nv-global-bg': '#FFF',
    '--nv-global-border': '#DEDEDE',
-   '--nv-global-fg': '#27272a',
+   '--nv-global-fg': '#27272A',
    // Scoped
    '--nv-success-accent': '#28B780',
    '--nv-error-accent': '#E74C3C',
    '--nv-warning-accent': '#F59E0B',
    '--nv-info-accent': '#3E8EFF',
-   '--nv-promise-accent': '#64748B',
+   '--nv-promise-accent': '#27272A',
 }
 
 export const pastelTheme: NotivueTheme = {

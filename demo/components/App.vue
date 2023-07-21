@@ -75,8 +75,8 @@ const getDragOptions = useDragOptions('.Notivue__close')
    user-select: none;
 }
 
-.Notivue__notification {
-   touch-action: none;
+.Notivue__notification * {
+   touch-action: none !important;
 }
 
 @media (max-width: 768px) {
