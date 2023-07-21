@@ -39,6 +39,13 @@ export default defineConfig({
          ],
       },
    },
-   // @ts-ignore
-   plugins: [dts({ staticImport: true, insertTypesEntry: true }), vue()],
+   plugins: [
+      // @ts-ignore
+      dts({
+         staticImport: true,
+         insertTypesEntry: true,
+         rollupTypes: true,
+      }),
+      vue(),
+   ],
 })

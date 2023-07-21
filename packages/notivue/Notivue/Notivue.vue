@@ -8,9 +8,11 @@ import { useTouchEvents } from './composables/useTouchEvents'
 import { useNotivueStyles, visuallyHidden } from './composables/useNotivueStyles'
 import { useRepositioning } from './composables/useRepositioning'
 import { useVisibilityChange } from './composables/useVisibilityChange'
+import { useFocusEvents } from './composables/useFocusEvents'
+
 import { getSlotContext } from './utils'
 
-import { NotivueSlot } from 'notivue'
+import type { NotivueSlot } from 'notivue'
 
 defineProps<{
    class?: string
@@ -28,6 +30,8 @@ const styles = useNotivueStyles()
 
 const mouseEvents = useMouseEvents()
 const touchEvents = useTouchEvents()
+
+useFocusEvents()
 
 useVisibilityChange({
    onHidden: () => (config.pauseOnTabChange.value ? items.pauseTimeouts() : items.removeAll()),

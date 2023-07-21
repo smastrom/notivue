@@ -4,35 +4,37 @@ const layout: NotivueTheme = {
    '--nv-width': '350px',
    '--nv-spacing': '0.5rem',
    '--nv-radius': '0.5rem',
-   '--nv-icon-size': '1.15rem',
+   '--nv-icon-size': '1.2rem',
    '--nv-title-size': '0.925rem',
-   '--nv-message-size': '0.875rem',
+   '--nv-message-size': '0.925rem',
    '--nv-tip-width': '0px',
    '--nv-y-align': 'center',
 }
 
-const shadow = { '--nv-shadow': '0 0.5rem 1rem rgba(0, 0, 0, 0.15)' }
+const shadow = {
+   '--nv-shadow': 'rgba(0, 0, 0, 0.08) 0px 4px 6px -1px, rgba(0, 0, 0, 0.04) 0px 2px 4px -1px',
+}
 
 export const lightTheme: NotivueTheme = {
    ...layout,
    ...shadow,
-   '--nv-border-width': '0',
    // Global
+   '--nv-border-width': '0px',
    '--nv-global-bg': '#FFF',
    '--nv-global-border': '#DEDEDE',
-   '--nv-global-fg': '#334155',
+   '--nv-global-fg': '#171717',
    // Scoped
    '--nv-success-accent': '#28B780',
    '--nv-error-accent': '#E74C3C',
    '--nv-warning-accent': '#F59E0B',
    '--nv-info-accent': '#3E8EFF',
-   '--nv-promise-accent': '#64748B',
+   '--nv-promise-accent': '#171717',
 }
 
 export const pastelTheme: NotivueTheme = {
    // Layout
    ...layout,
-   '--nv-shadow': '0 0.25rem 0.5rem rgba(0, 0, 40, 0.1)',
+   ...shadow,
    // Success
    '--nv-success-bg': '#E9FAEF',
    '--nv-success-accent': '#059669',

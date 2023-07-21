@@ -40,7 +40,3 @@ export function useElements() {
 export function useItems() {
    return useStore().items
 }
-
-export function usePointer() {
-   return useStore().pointer
-}

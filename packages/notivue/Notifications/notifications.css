@@ -56,8 +56,8 @@
       inset var(--tip-width) 0 0 var(--nv-accent, var(--nv-global-accent));
 
    & * {
-      touch-action: manipulation;
       box-sizing: border-box;
+      touch-action: manipulation;
    }
 }
 
@@ -65,6 +65,7 @@
    display: flex;
    justify-content: center;
    align-items: center;
+   overflow: visible;
    min-width: var(--nv-icon-size);
    width: var(--nv-icon-size);
    height: var(--nv-icon-size);
@@ -96,6 +97,7 @@
    flex-grow: 1;
    text-align: inherit;
    padding: var(--nv-spacing) 0;
+   padding-inline-end: var(--nv-spacing);
 }
 
 .Notivue__content-title {
@@ -108,7 +110,7 @@
 }
 
 .Notivue__content-message {
-   opacity: 0.85;
+   opacity: 0.95;
    max-height: 250px;
    overflow: auto;
    line-height: 1.375;

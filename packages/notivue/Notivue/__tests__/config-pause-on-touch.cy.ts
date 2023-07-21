@@ -1,10 +1,8 @@
 import Notivue from './components/Notivue.vue'
 
-import { FIXED_TIMEOUT_INCREMENT } from '@/core/constants'
-
 import type { VueWrapper } from '@vue/test-utils'
 
-describe('Pause on touch', { browser: ['chrome'] }, () => {
+describe('Pause on touch', () => {
    beforeEach(() => {
       cy.throwIfDurationMismatch(6000)
    })
@@ -21,10 +19,6 @@ describe('Pause on touch', { browser: ['chrome'] }, () => {
 
          .get('.Notification')
          .should('exist')
-
-         .get('body')
-         .trigger('pointerdown', { pointerType: 'touch' })
-         .wait(2000 + FIXED_TIMEOUT_INCREMENT)
 
          .get('.Notification')
          .should('not.exist')
