@@ -25,15 +25,16 @@ export function createStore(userConfig: NotivueConfig) {
 
    const items = {
       data: shallowRef<StoreItem[]>([]),
+      arePaused: false,
       set(item: StoreItem) {
          this.data.value.unshift(item)
          triggerRef(this.data)
       },
-      get(_id: string) {
-         return this.data.value.find(({ id }) => id === _id)
+      get(id: string) {
+         return this.data.value.find(({ id: _id }) => id === _id)
       },
-      remove(_id: string) {
-         this.data.value = this.data.value.filter(({ id }) => id !== _id)
+      remove(id: string) {
+         this.data.value = this.data.value.filter(({ id: _id }) => id !== _id)
       },
       removeAll() {
          this.data.value = []
@@ -77,7 +78,7 @@ export function createStore(userConfig: NotivueConfig) {
          }
       },
       pauseTimeouts() {
-         if (!this.data.value) return
+         if (!this.data.value || this.arePaused) return
 
          const pausedAt = performance.now()
 
@@ -89,9 +90,11 @@ export function createStore(userConfig: NotivueConfig) {
                elapsed: pausedAt - item.resumedAt + item.elapsed,
             }
          })
+
+         this.arePaused = true
       },
       resumeTimeouts() {
-         if (!this.data.value) return
+         if (!this.data.value || !this.arePaused) return
 
          this.updateAll((item) => {
             const newTimeout = item.duration + FIXED_TIMEOUT_INCREMENT - item.elapsed
@@ -105,6 +108,8 @@ export function createStore(userConfig: NotivueConfig) {
                      : items.playLeaveTimeout(item.id, newTimeout),
             }
          })
+
+         this.arePaused = false
       },
       updatePositions(type = TType.PUSH) {
          const sortedItems = elements.items.value.sort(
@@ -143,8 +148,7 @@ export function createStore(userConfig: NotivueConfig) {
             incomingOptions
          )
 
-         const shouldSkipTimeout =
-            notification.duration === Infinity || pointer.isHovering || pointer.isTouching
+         const shouldSkipTimeout = notification.duration === Infinity || this.arePaused
 
          if (
             ([NKeys.PROMISE_REJECT, NKeys.PROMISE_RESOLVE] as string[]).includes(
@@ -191,7 +195,8 @@ export function createStore(userConfig: NotivueConfig) {
       wrapper: ref<HTMLElement | null>(null),
       items: ref<HTMLElement[]>([]),
       animationData: { duration: '', easing: '' },
-      /** Gets CSS animation duration and easing on first push and stores them.
+      /**
+       * Gets CSS animation duration and easing on first push and stores them.
        * Returns the stored values which are applied to internal reposition transitions.
        */
       getAnimationData() {
@@ -212,28 +217,12 @@ export function createStore(userConfig: NotivueConfig) {
       },
    }
 
-   const pointer = {
-      isTouching: false,
-      isHovering: false,
-      toggleTouch() {
-         this.isTouching = !this.isTouching
-      },
-      toggleHover() {
-         this.isHovering = !this.isHovering
-      },
-      reset() {
-         this.isTouching = false
-         this.isHovering = false
-      },
-   }
-
    const push = createPush(items)
 
    return {
       config,
       elements,
       items,
-      pointer,
       push,
    }
 }

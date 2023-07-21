@@ -1,10 +1,11 @@
 import { watch } from 'vue'
-import { useElements, useItems, usePointer } from '@/core/useStore'
+
+import { useElements, useItems } from '@/core/useStore'
+import { isSSR } from '@/core/utils'
 
 export function useFocusEvents() {
    const items = useItems()
    const elements = useElements()
-   const pointer = usePointer()
 
    function pauseTimeouts() {
       items.pauseTimeouts()
@@ -16,14 +17,14 @@ export function useFocusEvents() {
 
    /**
     * Using a Set for better control instead of the watcher cleanup function.
-    * Listener will in any case garbage collected when the notification is removed
+    * Listener will in any case garbage collected when the notification is removed.
     */
    const buttonSet = new Set<HTMLButtonElement>()
 
    watch(
       elements.items.value,
       (newItems) => {
-         if (pointer.isHovering || pointer.isTouching) return
+         if (isSSR) return
 
          buttonSet.forEach((button) => {
             if (!elements.wrapper.value?.contains(button)) buttonSet.delete(button)
