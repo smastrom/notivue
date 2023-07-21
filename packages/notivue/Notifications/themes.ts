@@ -1,7 +1,7 @@
 import type { NotivueTheme } from 'notivue'
 
 const layout: NotivueTheme = {
-   '--nv-width': '350px',
+   '--nv-width': '340px',
    '--nv-spacing': '0.5rem',
    '--nv-radius': '0.5rem',
    '--nv-icon-size': '1.15rem',
