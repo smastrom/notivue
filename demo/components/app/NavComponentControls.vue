@@ -47,6 +47,15 @@ watch(
    },
    { flush: 'post' }
 )
+
+watch(
+   () => store.enableSwipe,
+   () => {
+      push.destroyAll()
+      push.success(messages.value.success)
+   },
+   { flush: 'post' }
+)
 </script>
 
 <template>

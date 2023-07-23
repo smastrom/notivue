@@ -41,17 +41,14 @@
 }
 
 .Notivue__clearAll {
-   will-change: filter;
    animation: Notivue__clearAll-kf 500ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @keyframes Notivue__clearAll-kf {
    0% {
-      filter: blur(0);
       opacity: 1;
    }
    100% {
-      filter: blur(8px);
       opacity: 0;
    }
 }

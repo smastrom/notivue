@@ -25,6 +25,7 @@ fieldset {
    border: none;
    padding: 0;
    margin: 0;
+   width: max-content;
 }
 
 legend {

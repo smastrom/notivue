@@ -4,7 +4,7 @@ import { usePush } from 'notivue'
 
 import NavComponentControls from './NavComponentControls.vue'
 import NavThemesControls from './NavThemesControls.vue'
-import NavPushClassic from './NavPushClassic.vue'
+import NavPushStatic from './NavPushStatic.vue'
 import NavPushCustom from './NavPushCustom.vue'
 import NavPositionControls from './NavPositionControls.vue'
 import ButtonGroup from '../shared/ButtonGroup.vue'
@@ -28,7 +28,7 @@ const push = usePush()
 
          <div class="DefaultComponent">
             <ButtonGroup name="Push 👇" isPush>
-               <NavPushClassic />
+               <NavPushStatic />
             </ButtonGroup>
 
             <ButtonGroup name="Theme">
@@ -75,10 +75,10 @@ nav {
 .Container {
    position: relative;
    overflow: auto;
-   width: max-content;
    display: grid;
    grid-auto-flow: column;
    gap: 50px;
+   width: 820px;
 }
 
 .DefaultComponent {

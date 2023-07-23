@@ -1,4 +1,4 @@
-import { computed } from 'vue'
+import { computed, onBeforeUnmount } from 'vue'
 
 import { useNotivue, useItems } from '@/core/useStore'
 import { isMouse } from '@/core/utils'
@@ -34,6 +34,10 @@ export function useTouchEvents() {
          }
       }
    }
+
+   onBeforeUnmount(() => {
+      clearTimeout(resumeTimeout)
+   })
 
    return computed(() => (config.pauseOnTouch.value ? { onPointerdown: pauseTouch } : {}))
 }
