@@ -95,6 +95,8 @@ div[role='radiogroup'] {
 
 div[role='radio'] {
    aspect-ratio: 1;
+   padding: 0px;
+   width: 2rem;
 }
 
 .Switch {
@@ -111,4 +113,3 @@ svg {
    width: 1em;
 }
 </style>
-../../src/types/types

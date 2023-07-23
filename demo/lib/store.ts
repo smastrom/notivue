@@ -48,7 +48,7 @@ export const messages = computed(
          promise: {
             title: getTitle(store.rtl ? 'وعد' : 'Promise'),
             message: getMsg(
-               'Sending your message, please wait...',
+               `We're sending your message, please wait...`,
                'نحن نرسل رسالتك. سيستغرق ذلك لحظة أو اثنتين ...'
             ),
          },
@@ -56,7 +56,7 @@ export const messages = computed(
 )
 
 export function setFullWidth() {
-   store.maxWidth = store.maxWidth === '100%' ? '1280px' : '100%'
+   store.maxWidth = store.maxWidth === '100%' ? '820px' : '100%'
 }
 
 export function toggleRenderTitles() {

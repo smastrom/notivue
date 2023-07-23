@@ -21,7 +21,7 @@ const getDragOptions = useDragOptions('.Buttons')
       v-draggable="store.enableSwipe ? getDragOptions(item) : { disabled: true }"
    >
       <div class="Avatar">
-         <img src="../../assets/profile-picture.png" alt="profile" class="Picture" />
+         <img :src="item.props.profilePicture" alt="profile" class="Picture" />
          <span class="OnlineDot" />
       </div>
       <div class="Content">

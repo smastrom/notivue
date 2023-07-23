@@ -36,7 +36,7 @@ function customPush() {
       message: `Stephanie LaGarde wants to send you a message.`,
       props: {
          name: 'Stephanie LaGarde',
-         profilePicture: '../../assets/profile-picture.png',
+         profilePicture: '../../assets/profile-picture.jpg',
          isCustom: true,
       },
    })
@@ -55,14 +55,14 @@ async function customAsync() {
    await new Promise((resolve) => setTimeout(resolve, getRandomInt(2000, 4000)))
 
    promise.resolve({
-      message: 'Your file has been uploaded successfully.',
+      message: 'Your file has been successfully uploaded.',
       props,
    })
 }
 </script>
 
 <template>
-   <Button @click="customPush" text="Classic">
+   <Button @click="customPush" text="Static">
       <VueIcon />
    </Button>
    <Button @click="customAsync" text="Promise">

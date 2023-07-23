@@ -133,7 +133,9 @@ body {
 
 .SwitchButton {
    font-weight: 700;
-   justify-items: center;
+   display: flex;
+   justify-content: center;
+   align-items: center;
 
    &[aria-checked='true'] {
       background-color: var(--button-active-bg-color);
