@@ -17,7 +17,6 @@ const NO_DUR = '0ms !important'
 
 const absolute: CSSProperties = { position: 'absolute' }
 const boxSizing: CSSProperties = { boxSizing: 'border-box' }
-const noMargin: CSSProperties = { margin: '0' }
 const flex: CSSProperties = { display: 'flex' }
 const flexCenter: CSSProperties = { ...flex, justifyContent: 'center' }
 
@@ -46,7 +45,7 @@ const staticStyles: Record<NotivueElements, CSSProperties> = {
    ol: {
       ...boxSizing,
       ...flexCenter,
-      ...noMargin,
+      margin: '0px auto',
       zIndex: nvZ,
       maxWidth: rootWidth,
       padding: '0',
@@ -57,7 +56,7 @@ const staticStyles: Record<NotivueElements, CSSProperties> = {
    },
    li: {
       ...boxSizing,
-      ...noMargin,
+      margin: '0',
       ...flex,
       ...absolute,
       position: 'absolute',
@@ -76,7 +75,8 @@ export function useNotivueStyles() {
    const config = useNotivue()
    const isReduced = useReducedMotion()
 
-   /** Simulates overflow-hidden only on the opposite side of the current vertical align.
+   /**
+    * Simulates overflow-hidden only on the opposite side of the current vertical align.
     * This will not clip enter animations but will contain the stream vertically.
     */
    const clipPath = computed<CSSProperties>(() => {

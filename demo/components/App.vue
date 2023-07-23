@@ -18,7 +18,7 @@ import { useDragOptions } from '@/lib/useDragOptions'
 
 import Nav from './app/Nav.vue'
 import Background from './app/Background.vue'
-import CustomClassic from './custom-components/CustomClassic.vue'
+import CustomStatic from './custom-components/CustomStatic.vue'
 import CustomPromise from './custom-components/CustomPromise.vue'
 
 import type { CustomPromiseProps, CustomProps } from './app/NavPushCustom.vue'
@@ -51,7 +51,7 @@ const getDragOptions = useDragOptions('.Notivue__close')
          :icons="store.outlinedIcons ? outlinedIcons : store.emojis ? emojiIcons : undefined"
       />
 
-      <CustomClassic
+      <CustomStatic
          v-if="(item.props as CustomProps).isCustom"
          :item="item as NotivueSlot<CustomProps>"
       />
