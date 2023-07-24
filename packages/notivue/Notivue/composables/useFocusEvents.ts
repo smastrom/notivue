@@ -7,14 +7,6 @@ export function useFocusEvents() {
    const items = useItems()
    const elements = useElements()
 
-   function pauseTimeouts() {
-      items.pauseTimeouts()
-   }
-
-   function resumeTimeouts() {
-      items.resumeTimeouts()
-   }
-
    /**
     * Using a Set for better control instead of the watcher cleanup function.
     * Listener will in any case garbage collected when the notification is removed.
@@ -34,11 +26,11 @@ export function useFocusEvents() {
             el.querySelectorAll('button').forEach((button) => {
                if (buttonSet.has(button)) return
 
-               button.addEventListener('focus', pauseTimeouts)
-               button.addEventListener('blur', resumeTimeouts)
+               button.addEventListener('focus', () => items.pauseTimeouts())
+               button.addEventListener('blur', () => items.resumeTimeouts())
                button.addEventListener('click', (event) => {
                   // If keyboard
-                  if (event.detail === 0) resumeTimeouts()
+                  if (event.detail === 0) items.resumeTimeouts()
                })
 
                buttonSet.add(button)
