@@ -162,7 +162,6 @@ export function createStore(userConfig: NotivueConfig) {
                ...notification,
                createdAt,
                resumedAt,
-               animationClass: '',
                timeoutId: shouldSkipTimeout
                   ? undefined
                   : this.playLeaveTimeout(notification.id, notification.duration),
