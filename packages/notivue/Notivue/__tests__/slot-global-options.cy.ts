@@ -1,4 +1,4 @@
-import { getRandomOptions } from '../../cypress/support/utils'
+import { RESOLVE_REJECT_DELAY, getRandomOptions } from '../../cypress/support/utils'
 
 import Notivue from './components/Notivue.vue'
 
@@ -148,7 +148,7 @@ describe('Push options have higher priority over globals', () => {
 
             .get('.PushPromiseAndResolve')
             .click()
-            .wait(1000) // Wait for resolve
+            .wait(RESOLVE_REJECT_DELAY) // Wait for resolve
             .checkSlotAgainst(newOptions)
       })
 
@@ -157,7 +157,7 @@ describe('Push options have higher priority over globals', () => {
 
             .get('.PushPromiseAndReject')
             .click()
-            .wait(1000) // Wait for reject
+            .wait(RESOLVE_REJECT_DELAY) // Wait for reject
             .checkSlotAgainst(newOptions)
       })
    })

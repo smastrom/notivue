@@ -19,7 +19,7 @@ defineProps<{
 }>()
 
 defineSlots<{
-   default(item: NotivueSlot): Component
+   default(item: NotivueSlot & { key?: string }): Component
 }>()
 
 const config = useNotivue()
@@ -55,7 +55,7 @@ useRepositioning()
          <!-- List Item -->
          <li
             v-for="(item, index) in items.data.value"
-            :key="`${item.id}_${item.type}`"
+            :key="item.id"
             :data-notivue-id="item.id"
             :aria-setsize="items.data.value.length"
             :aria-posinset="index + 1"
@@ -73,7 +73,7 @@ useRepositioning()
                @animationend="item.onAnimationend"
             >
                <!-- Notification -->
-               <slot v-bind="getSlotContext(item)" />
+               <slot v-bind="getSlotContext(item)" :key="`${item.id}_${item.type}`" />
 
                <!-- Aria Live -->
                <div
