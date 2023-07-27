@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { toRef, watch } from 'vue'
+import { toRef, watch, shallowRef, type Ref } from 'vue'
 
-import { usePush, useNotivue, Notivue, type UserPushOptions } from 'notivue'
+import { usePush, useNotivue, Notivue, type UserPushOptions, Push } from 'notivue'
 
 import { RESOLVE_REJECT_DELAY } from '../../../cypress/support/utils'
 
@@ -70,6 +70,12 @@ function pushAndClear() {
    setTimeout(() => notification.clear(), 1000)
 }
 
+const toBeCleared = shallowRef(null) as unknown as Ref<ReturnType<Push['success']>>
+
+function pushAndRenderClear() {
+   toBeCleared.value = push.success(cyProps.options ?? {})
+}
+
 function pushAndDestroy() {
    const notification = push.success(cyProps.options ?? {})
    setTimeout(() => notification.destroy(), 1000)
@@ -109,6 +115,9 @@ async function pushPromiseAndReject() {
 
       <button class="PushAndClear" @click="pushAndClear">Push and Clear</button>
       <button class="PushAndDestroy" @click="pushAndDestroy">Push and Destroy</button>
+
+      <button class="PushAndRenderClear" @click="pushAndRenderClear">Push and Render Clear</button>
+      <button v-if="toBeCleared" class="RenderedClear" @click="toBeCleared.clear">Clear</button>
 
       <button class="RandomPromise" @click="randomPromise">Push and Resolve/Reject Promise</button>
       <button class="PushPromiseAndResolve" @click="pushPromiseAndResolve">
