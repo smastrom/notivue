@@ -33,10 +33,10 @@ _Use your own components while Notivue handles the rest_
 _Update pending notifications with ease_
 
 **🔰 Includes a ready-made component with anything you need**  
-_Themes, icons, animations, rtl support and much more_
+_Themes, icons, rtl support and much more_
 
 **♿️ Fully accessible**  
-_Built-in screen reader support_
+_Built-in screen reader and reduced motion support_
 
 <br />
 

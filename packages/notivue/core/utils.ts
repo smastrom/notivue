@@ -35,3 +35,7 @@ export function mergeDeep<T extends Record<string, any>>(target: T, source: Deep
 
    return merged
 }
+
+export function isReducedMotion() {
+   return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
