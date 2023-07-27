@@ -1,7 +1,6 @@
 import { computed, type CSSProperties } from 'vue'
 
 import { useNotivue } from '@/core/useStore'
-import { useReducedMotion } from './useReducedMotion'
 
 import type { NotivueElements } from 'notivue'
 
@@ -12,8 +11,6 @@ import type { NotivueElements } from 'notivue'
  * Hence if users choose to only use custom components they can
  * remove the /notifications.css import and have no CSS at all.
  */
-
-const NO_DUR = '0ms !important'
 
 const absolute: CSSProperties = { position: 'absolute' }
 const boxSizing: CSSProperties = { boxSizing: 'border-box' }
@@ -73,7 +70,6 @@ const staticStyles: Record<NotivueElements, CSSProperties> = {
 
 export function useNotivueStyles() {
    const config = useNotivue()
-   const isReduced = useReducedMotion()
 
    /**
     * Simulates overflow-hidden only on the opposite side of the current vertical align.
@@ -100,11 +96,7 @@ export function useNotivueStyles() {
          ...staticStyles.li,
          ...xAlignment.value,
          ...(config.isTopAlign.value ? { top: '0px' } : { bottom: '0px' }),
-         ...(isReduced.value ? { transitionDuration: NO_DUR } : {}),
       },
-      item: {
-         ...staticStyles.item,
-         ...(isReduced.value ? { animationDuration: NO_DUR } : {}),
-      },
+      item: staticStyles.item,
    }))
 }

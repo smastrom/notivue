@@ -3,6 +3,7 @@ import { ref, shallowRef, triggerRef, type InjectionKey } from 'vue'
 import { getConfig } from './config'
 import { mergeNotificationOptions } from './options'
 import { createPush } from './createPush'
+import { isReducedMotion } from './utils'
 
 import {
    NotificationTypeKeys as NKeys,
@@ -57,11 +58,16 @@ export function createStore(userConfig: NotivueConfig) {
          })
       },
       playEnter(id: string) {
-         this.updateAnimation(id, config.animations.value.enter ?? '')
+         if (isReducedMotion()) return // Will be positioned by updatePositions...
+
+         this.updateAnimation(
+            id,
+            config.animations.value.enter ?? '' // ...same if no class is specified
+         )
          this.updatePositions()
       },
       playLeave(id: string) {
-         if (!config.animations.value.leave) return this.remove(id)
+         if (!config.animations.value.leave || isReducedMotion()) return this.remove(id)
 
          this.updateAnimation(id, config.animations.value.leave, () => this.remove(id))
          this.updatePositions()
@@ -71,14 +77,14 @@ export function createStore(userConfig: NotivueConfig) {
       },
       playClearAll() {
          if (elements.wrapper.value) {
-            if (!config.animations.value.clearAll) return this.removeAll()
+            if (!config.animations.value.clearAll || isReducedMotion()) return this.removeAll()
 
             elements.wrapper.value.classList.add(config.animations.value.clearAll)
             elements.wrapper.value.onanimationend = () => this.removeAll()
          }
       },
       pauseTimeouts() {
-         if (!this.data.value || this.arePaused) return
+         if (this.data.value.length === 0 || this.arePaused) return
 
          const pausedAt = performance.now()
 
@@ -94,7 +100,7 @@ export function createStore(userConfig: NotivueConfig) {
          this.arePaused = true
       },
       resumeTimeouts() {
-         if (!this.data.value || !this.arePaused) return
+         if (this.data.value.length === 0 || !this.arePaused) return
 
          this.updateAll((item) => {
             const newTimeout = item.duration + FIXED_TIMEOUT_INCREMENT - item.elapsed
@@ -116,6 +122,8 @@ export function createStore(userConfig: NotivueConfig) {
             (a, b) => +b.dataset.notivueId! - +a.dataset.notivueId!
          )
 
+         const isReduced = isReducedMotion() || type === TType.SILENT
+
          let accPrevHeights = 0
 
          for (const el of sortedItems) {
@@ -131,7 +139,8 @@ export function createStore(userConfig: NotivueConfig) {
                   transitionDuration: elements.getAnimationData().duration,
                   transitionTimingFunction: elements.getAnimationData().easing,
                   ...(type === TType.HEIGHT ? { transitionProperty: 'all' } : {}),
-                  ...(type === TType.SILENT ? { transition: 'none' } : {}),
+                  ...(isReduced ? { transition: 'none' } : {}),
+
                   transform: `translate3d(0, ${accPrevHeights}px, 0)`,
                },
             })
