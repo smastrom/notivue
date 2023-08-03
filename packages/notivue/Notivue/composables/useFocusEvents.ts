@@ -1,7 +1,6 @@
 import { watch } from 'vue'
 
 import { useElements, useItems } from '@/core/useStore'
-import { isSSR } from '@/core/utils'
 
 export function useFocusEvents() {
    const items = useItems()
@@ -16,8 +15,6 @@ export function useFocusEvents() {
    watch(
       elements.items.value,
       (newItems) => {
-         if (isSSR) return
-
          buttonSet.forEach((button) => {
             if (!elements.wrapper.value?.contains(button)) buttonSet.delete(button)
          })
