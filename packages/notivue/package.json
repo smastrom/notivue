@@ -1,6 +1,6 @@
 {
    "name": "notivue",
-   "version": "1.1.3",
+   "version": "1.1.4",
    "private": false,
    "description": "Fully-featured toast notification system for Vue and Nuxt.",
    "keywords": [
@@ -27,8 +27,10 @@
       "name": "Simone Mastromattei",
       "email": "smastrom@proton.me"
    },
+   "sideEffects": false,
    "exports": {
       ".": {
+         "types": "./dist/index.d.ts",
          "import": "./dist/index.mjs",
          "require": "./dist/index.js"
       },
@@ -39,11 +41,11 @@
    "module": "dist/index.mjs",
    "types": "dist/index.d.ts",
    "files": [
-      "dist/*"
+      "dist/*",
+      "*.d.ts"
    ],
    "scripts": {
       "dev": "pnpm --C \"../../demo\" run dev",
-      "preinstall": "npx only-allow pnpm",
       "prebuild": "cp ../../README.md .",
       "build": "rimraf dist && vue-tsc && vite build && pnpm run build:css",
       "build:css": "esbuild ./Notifications/notifications.css ./core/animations.css --bundle --outdir=dist --minify --target=chrome58,edge16,firefox57,node12,safari11 --log-level=error",

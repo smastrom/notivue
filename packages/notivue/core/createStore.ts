@@ -1,4 +1,4 @@
-import { ref, shallowRef, triggerRef, type InjectionKey } from 'vue'
+import { ref, shallowRef, triggerRef, nextTick, type InjectionKey } from 'vue'
 
 import { getConfig } from './config'
 import { mergeNotificationOptions } from './options'
@@ -97,7 +97,7 @@ export function createStore(userConfig: NotivueConfig) {
             }
          })
 
-         this.arePaused = true
+         nextTick(() => (this.arePaused = true))
       },
       resumeTimeouts() {
          if (this.data.value.length === 0 || !this.arePaused) return
@@ -115,7 +115,7 @@ export function createStore(userConfig: NotivueConfig) {
             }
          })
 
-         this.arePaused = false
+         nextTick(() => (this.arePaused = false))
       },
       updatePositions(type = TType.PUSH) {
          const sortedItems = elements.items.value.sort(
@@ -202,23 +202,24 @@ export function createStore(userConfig: NotivueConfig) {
    const elements = {
       wrapper: ref<HTMLElement | null>(null),
       items: ref<HTMLElement[]>([]),
-      animationData: { duration: '', easing: '' },
       /**
        * Gets CSS animation duration and easing on first push and stores them.
        * Returns the stored values which are applied to internal reposition transitions.
        */
+      animationData: null as null | { duration: string; easing: string },
       getAnimationData() {
-         if (!this.animationData.duration || !this.animationData.easing) {
+         if (!this.animationData) {
             const animEl = this.wrapper.value?.querySelector(`.${config.animations.value.enter}`)
 
             if (!animEl) {
-               this.animationData.duration = '0s'
-               this.animationData.easing = 'linear'
+               this.animationData = { duration: '0s', easing: 'ease' }
             } else {
                const style = getComputedStyle(animEl)
 
-               this.animationData.duration = style.animationDuration
-               this.animationData.easing = style.animationTimingFunction
+               this.animationData = {
+                  duration: style.animationDuration,
+                  easing: style.animationTimingFunction,
+               }
             }
          }
          return this.animationData

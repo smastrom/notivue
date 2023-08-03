@@ -48,28 +48,30 @@ pnpm add notivue
 
 <br />
 
-## Vite / Vue CLI
+## Vite
 
 ### 1. Configure
 
 **main.js/ts**
 
-```js
+```diff
 import { createApp } from 'vue'
-import { notivue } from 'notivue'
++ import { notivue } from 'notivue'
 
 import App from './App.vue'
 
-import 'notivue/notifications.css' // Only needed if using built-in notifications
-import 'notivue/animations.css' // Only needed if using built-in animations
++ import 'notivue/notifications.css' // Only needed if using built-in notifications
++ import 'notivue/animations.css' // Only needed if using built-in animations
 
 const app = createApp(App)
 
-app.use(notivue)
++ app.use(notivue)
 app.mount('#app')
 ```
 
 **App.vue**
+
+With built-in notifications:
 
 ```vue
 <script setup>
@@ -84,6 +86,41 @@ import { Notivue, Notifications } from 'notivue'
   <!-- ... -->
 </template>
 ```
+
+Or roll your own:
+
+```vue
+<template>
+  <Notivue v-slot="item">
+    <div class="rounded-full flex py-2 pl-3 bg-slate-700 text-slate-50 text-sm">
+      {{ item.message }}
+
+      <button
+        @click="item.clear"
+        aria-label="Dismiss"
+        class="pl-3 pr-2 hover:text-red-300 transition-colors"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          class="w-5 h-5"
+          aria-hidden="true"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
+          />
+        </svg>
+      </button>
+    </div>
+  </Notivue>
+
+  <!-- ... -->
+</template>
+```
+
+Animations, repositioning, pausing, timeouts, and ARIA live regions are always handled by `<Notivue />` when using custom components, so don't worry about anything else besides building the component itself.
 
 ### 2. Push notifications from any component
 
