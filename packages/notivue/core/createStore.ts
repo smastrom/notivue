@@ -26,16 +26,33 @@ export function createStore(userConfig: NotivueConfig) {
 
    const items = {
       data: shallowRef<StoreItem[]>([]),
+      enqueued: [] as StoreItem[],
       arePaused: false,
       set(item: StoreItem) {
          this.data.value.unshift(item)
          triggerRef(this.data)
+
+         this.playEnter(item.id)
       },
       get(id: string) {
          return this.data.value.find(({ id: _id }) => id === _id)
       },
       remove(id: string) {
          this.data.value = this.data.value.filter(({ id: _id }) => id !== _id)
+
+         nextTick(() => {
+            if ('isEnqueued' && this.enqueued.length > 0) {
+               this.enqueued[0] = {
+                  ...this.enqueued[0],
+                  timeoutId: this.enqueued[0].timeoutId(),
+                  createdAt: Date.now(),
+                  resumedAt: performance.now(),
+               }
+
+               this.set(this.enqueued.shift()!)
+               this.updatePositions() // Why this is needed?
+            }
+         })
       },
       removeAll() {
          this.data.value = []
@@ -91,6 +108,10 @@ export function createStore(userConfig: NotivueConfig) {
          this.updateAll((item) => {
             clearTimeout(item.timeoutId)
 
+            console.log(
+               'Pausing timeouts, ' + (pausedAt - item.resumedAt + item.elapsed) + 'ms elapsed'
+            )
+
             return {
                ...item,
                elapsed: pausedAt - item.resumedAt + item.elapsed,
@@ -104,6 +125,9 @@ export function createStore(userConfig: NotivueConfig) {
 
          this.updateAll((item) => {
             const newTimeout = item.duration + FIXED_TIMEOUT_INCREMENT - item.elapsed
+
+            console.log('Resuming timeouts, prev elapsed ' + item.elapsed)
+            console.log('Resuming timeouts, new timeout ' + newTimeout + 'ms left')
 
             return {
                ...item,
@@ -136,8 +160,8 @@ export function createStore(userConfig: NotivueConfig) {
 
             items.update(currId, {
                transitionStyles: {
-                  transitionDuration: elements.getAnimationData().duration,
-                  transitionTimingFunction: elements.getAnimationData().easing,
+                  transitionDuration: elements.getAnimationData()!.duration,
+                  transitionTimingFunction: elements.getAnimationData()!.easing,
                   ...(type === TType.HEIGHT ? { transitionProperty: 'all' } : {}),
                   ...(isReduced ? { transition: 'none' } : {}),
 
@@ -157,44 +181,47 @@ export function createStore(userConfig: NotivueConfig) {
             incomingOptions
          )
 
-         const shouldSkipTimeout = notification.duration === Infinity || this.arePaused
+         const createLeaveTimeout = () => {
+            if (notification.duration === Infinity || this.arePaused) return undefined
+            this.playLeaveTimeout(notification.id, notification.duration)
+         }
 
          if (
             ([NKeys.PROMISE_REJECT, NKeys.PROMISE_RESOLVE] as string[]).includes(
                incomingOptions.type
             )
          ) {
-            const { timeoutId } = this.get(notification.id) ?? {}
-            clearTimeout(timeoutId)
-
             this.update(notification.id, {
                ...notification,
                createdAt,
                resumedAt,
-               timeoutId: shouldSkipTimeout
-                  ? undefined
-                  : this.playLeaveTimeout(notification.id, notification.duration),
+               timeoutId: createLeaveTimeout(),
             })
          } else {
-            if (this.data.value.length >= config.limit.value) {
-               const additionalItems = [...this.data.value].slice(config.limit.value - 1)
+            const limit = 3 // config.limit.value
 
+            const shouldEnqueue =
+               'isEnqueued' &&
+               notification.type !== NKeys.PROMISE &&
+               (this.enqueued.length > 0 || this.data.value.length >= limit)
+
+            if (!shouldEnqueue && this.data.value.length >= limit) {
+               const additionalItems = this.data.value.slice(limit - 1)
                additionalItems.forEach(({ id }) => this.playLeave(id))
             }
 
-            this.set({
+            const item = {
                ...(notification as typeof notification & { props: T }),
                createdAt,
                resumedAt,
                elapsed: 0,
-               timeoutId: shouldSkipTimeout
-                  ? undefined
-                  : this.playLeaveTimeout(notification.id, notification.duration),
+               timeoutId: shouldEnqueue ? createLeaveTimeout : createLeaveTimeout(),
                clear: () => this.playLeave(notification.id),
                destroy: () => this.remove(notification.id),
-            })
+            }
 
-            this.playEnter(notification.id)
+            if (shouldEnqueue) this.enqueued.push(item)
+            else this.set(item)
          }
       },
    }
@@ -207,21 +234,22 @@ export function createStore(userConfig: NotivueConfig) {
        * Returns the stored values which are applied to internal reposition transitions.
        */
       animationData: null as null | { duration: string; easing: string },
-      getAnimationData() {
-         if (!this.animationData) {
-            const animEl = this.wrapper.value?.querySelector(`.${config.animations.value.enter}`)
+      setAnimationData() {
+         const animEl = this.wrapper.value?.querySelector(`.${config.animations.value.enter}`)
 
-            if (!animEl) {
-               this.animationData = { duration: '0s', easing: 'ease' }
-            } else {
-               const style = getComputedStyle(animEl)
+         if (!animEl) {
+            this.animationData = { duration: '0s', easing: 'ease' }
+         } else {
+            const style = getComputedStyle(animEl)
 
-               this.animationData = {
-                  duration: style.animationDuration,
-                  easing: style.animationTimingFunction,
-               }
+            this.animationData = {
+               duration: style.animationDuration,
+               easing: style.animationTimingFunction,
             }
          }
+      },
+      getAnimationData() {
+         if (!this.animationData) this.setAnimationData()
          return this.animationData
       },
    }
