@@ -40,6 +40,9 @@ export interface NotivueConfigRequired {
    pauseOnTouch: boolean
    /** Whether to pause all notifications when switching tabs or window. */
    pauseOnTabChange: boolean
+   /** Wheter to enqueue notifications when limit is reached. */
+   enqueue: boolean
+
    /** Position of notifications, one of 'top-left', 'top-center', 'top-right', 'bottom-left', 'bottom-center', 'bottom-right'. */
    position: Position
    /** Notification options for each type. */
@@ -76,7 +79,7 @@ export interface ExposedInternalItemData {
 }
 
 export interface HiddenInternalItemData {
-   timeoutId: number | undefined
+   timeout: number | undefined | (() => void) | void
    elapsed: number
    resumedAt: number
    transitionStyles?: CSSProperties

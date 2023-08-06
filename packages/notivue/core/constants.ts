@@ -1,7 +1,5 @@
 import { NotificationType as NTypeU } from 'notivue'
 
-export const FIXED_TIMEOUT_INCREMENT = 1200
-
 export const CLASS_PREFIX = 'Notivue__'
 
 export const DEFAULT_DURATION = 6000

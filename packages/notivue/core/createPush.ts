@@ -3,7 +3,10 @@ import { createStore } from './createStore'
 
 import type { NotificationType, Push, PushOptions } from 'notivue'
 
-export function createPush(items: ReturnType<typeof createStore>['items']): Push {
+export function createPush(
+   items: ReturnType<typeof createStore>['items'],
+   elements: ReturnType<typeof createStore>['elements']
+): Push {
    let createCount = 0
 
    function push(options: PushOptions, type: NotificationType, id = `${createCount++}`) {
@@ -11,7 +14,7 @@ export function createPush(items: ReturnType<typeof createStore>['items']): Push
          options = { message: options }
       }
 
-      items.push({ ...options, id, type })
+      items.pushProxy({ ...options, id, type })
 
       return { id, clear: () => items.playLeave(id), destroy: () => items.remove(id) }
    }
@@ -31,17 +34,12 @@ export function createPush(items: ReturnType<typeof createStore>['items']): Push
             destroy,
          }
       },
-      clearAll: () => items.playClearAll(),
+      clearAll: () => elements.clearWrapper(),
       destroyAll: () => items.removeAll(),
    }
 }
 
 export function createPushSSR(): Push {
-   return createPush({
-      push: () => {},
-      playLeave: () => {},
-      remove: () => {},
-      removeAll: () => {},
-      playClearAll: () => {},
-   } as any)
+   const noopProxy = new Proxy({}, { get: () => () => {} }) as any
+   return createPush(noopProxy, noopProxy)
 }

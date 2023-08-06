@@ -1,15 +1,11 @@
-import { ref, shallowRef, triggerRef, nextTick, type InjectionKey } from 'vue'
+import { ref, shallowRef, triggerRef, type InjectionKey } from 'vue'
 
 import { getConfig } from './config'
-import { mergeNotificationOptions } from './options'
+import { mergeNotificationOptions as mergeOptions } from './options'
 import { createPush } from './createPush'
 import { isReducedMotion } from './utils'
 
-import {
-   NotificationTypeKeys as NKeys,
-   TransitionType as TType,
-   FIXED_TIMEOUT_INCREMENT,
-} from './constants'
+import { NotificationTypeKeys as NKeys, TransitionType as TType } from './constants'
 
 import type {
    DeepPartial,
@@ -24,47 +20,118 @@ export const storeInjectionKey = Symbol('') as InjectionKey<ReturnType<typeof cr
 export function createStore(userConfig: NotivueConfig) {
    const config = getConfig(userConfig)
 
-   const items = {
-      data: shallowRef<StoreItem[]>([]),
-      enqueued: [] as StoreItem[],
-      arePaused: false,
-      set(item: StoreItem) {
-         this.data.value.unshift(item)
-         triggerRef(this.data)
+   const queue = {
+      entries: shallowRef<StoreItem[]>([]),
 
-         this.playEnter(item.id)
-      },
-      get(id: string) {
-         return this.data.value.find(({ id: _id }) => id === _id)
+      add(item: StoreItem) {
+         this.entries.value.push(item)
+         triggerRef(this.entries)
       },
       remove(id: string) {
-         this.data.value = this.data.value.filter(({ id: _id }) => id !== _id)
-
-         nextTick(() => {
-            if ('isEnqueued' && this.enqueued.length > 0) {
-               this.enqueued[0] = {
-                  ...this.enqueued[0],
-                  timeoutId: this.enqueued[0].timeoutId(),
-                  createdAt: Date.now(),
-                  resumedAt: performance.now(),
-               }
-
-               this.set(this.enqueued.shift()!)
-               this.updatePositions() // Why this is needed?
-            }
-         })
+         this.entries.value = this.entries.value.filter(({ id: _id }) => id !== _id)
       },
       removeAll() {
-         this.data.value = []
+         this.entries.value = []
+      },
+   }
+
+   const items = {
+      entries: shallowRef<StoreItem[]>([]),
+      paused: false,
+      /* -------------------------------------------------------------------------------------------------
+       * Core Methods
+       * -----------------------------------------------------------------------------------------------*/
+      add(item: StoreItem) {
+         this.entries.value.unshift(item)
+         triggerRef(this.entries)
+
+         this.playEnter(item.id)
+         elements.updatePositions()
+      },
+      addFromQueue() {
+         const nextItem = {
+            ...queue.entries.value[0],
+            timeout: (queue.entries.value[0].timeout as () => void)(),
+            createdAt: Date.now(),
+         }
+
+         this.add(nextItem)
+         queue.remove(nextItem.id)
+      },
+      get(id: string) {
+         return this.entries.value.find(({ id: _id }) => id === _id)
       },
       update(id: string, options: DeepPartial<StoreItem>) {
          Object.assign(this.get(id) ?? {}, options)
-         triggerRef(this.data)
+         triggerRef(this.entries)
       },
       updateAll(updateItem: (item: StoreItem) => StoreItem) {
-         this.data.value = this.data.value.map((item) => updateItem(item))
+         this.entries.value = this.entries.value.map(updateItem)
       },
-      updateAnimation(id: string, animationClass: string, onEnd = () => {}) {
+      remove(id: string) {
+         this.entries.value = this.entries.value.filter(({ timeout, id: _id }) => {
+            if (id !== _id) return true
+            return clearTimeout(timeout as number), false
+         })
+
+         if (config.enqueue && queue.entries.value.length > 0) this.addFromQueue()
+      },
+      removeAll() {
+         this.entries.value = []
+         queue.removeAll()
+      },
+      /* -------------------------------------------------------------------------------------------------
+       * Push proxy - Creates, updates or enqueues a pushed notification
+       * -----------------------------------------------------------------------------------------------*/
+      pushProxy<T extends Obj = Obj>(incomingOptions: UserPushOptionsWithInternals<T>) {
+         const createdAt = Date.now()
+         const entry = mergeOptions<T>(config.notifications.value, incomingOptions)
+
+         const createTimeout = () => {
+            if (entry.duration === Infinity || this.paused) return undefined
+            return window.setTimeout(() => this.playLeave(entry.id), entry.duration)
+         }
+
+         if ([NKeys.PROMISE_REJECT, NKeys.PROMISE_RESOLVE].includes(incomingOptions.type)) {
+            this.update(entry.id, {
+               ...entry,
+               createdAt,
+               timeout: createTimeout(),
+            })
+         } else {
+            const hasReachedLimit = this.entries.value.length >= config.limit.value
+            const hasEnqueuedItems = queue.entries.value.length > 0
+            const isNotPromise = entry.type !== NKeys.PROMISE
+
+            const shouldEnqueue =
+               config.enqueue && isNotPromise && (hasEnqueuedItems || hasReachedLimit)
+
+            if (!shouldEnqueue && hasReachedLimit) {
+               const exceedingItems = this.entries.value.slice(config.limit.value - 1)
+               exceedingItems.forEach(({ id }) => this.playLeave(id))
+            }
+
+            const item = {
+               ...entry,
+               createdAt,
+               timeout: shouldEnqueue ? createTimeout : createTimeout(),
+               clear: () => this.playLeave(entry.id),
+               destroy: () => this.remove(entry.id),
+            } as StoreItem<T>
+
+            if (shouldEnqueue) {
+               queue.add(item)
+            } else {
+               this.add(item)
+            }
+         }
+      },
+      /* -------------------------------------------------------------------------------------------------
+       * Animations
+       * -----------------------------------------------------------------------------------------------*/
+      updateAnimation(id: string, animationClass: string | undefined, onEnd = () => {}) {
+         if (!animationClass) return onEnd()
+
          this.update(id, {
             animationClass,
             onAnimationstart: (event: AnimationEvent) => event.stopPropagation(),
@@ -75,74 +142,121 @@ export function createStore(userConfig: NotivueConfig) {
          })
       },
       playEnter(id: string) {
-         if (isReducedMotion()) return // Will be positioned by updatePositions...
+         if (isReducedMotion()) return // Will be positioned by setPositions...
 
-         this.updateAnimation(
-            id,
-            config.animations.value.enter ?? '' // ...same if no class is specified
-         )
-         this.updatePositions()
+         this.updateAnimation(id, config.animations.value.enter)
+         elements.updatePositions()
       },
       playLeave(id: string) {
          if (!config.animations.value.leave || isReducedMotion()) return this.remove(id)
 
          this.updateAnimation(id, config.animations.value.leave, () => this.remove(id))
-         this.updatePositions()
+         elements.updatePositions()
       },
-      playLeaveTimeout(id: string, time: number) {
-         return window.setTimeout(() => this.playLeave(id), time)
-      },
-      playClearAll() {
-         if (elements.wrapper.value) {
-            if (!config.animations.value.clearAll || isReducedMotion()) return this.removeAll()
-
-            elements.wrapper.value.classList.add(config.animations.value.clearAll)
-            elements.wrapper.value.onanimationend = () => this.removeAll()
-         }
-      },
+      /* -------------------------------------------------------------------------------------------------
+       * Timeouts
+       * -----------------------------------------------------------------------------------------------*/
       pauseTimeouts() {
-         if (this.data.value.length === 0 || this.arePaused) return
+         if (this.entries.value.length === 0 || this.paused) return
 
-         const pausedAt = performance.now()
+         const pausedAt = Date.now()
 
          this.updateAll((item) => {
-            clearTimeout(item.timeoutId)
+            clearTimeout(item.timeout as number)
 
+            console.log('Pause timeouts -', 'Prev elapsed:', item.elapsed)
             console.log(
-               'Pausing timeouts, ' + (pausedAt - item.resumedAt + item.elapsed) + 'ms elapsed'
+               'Pause timeouts -',
+               'New elapsed:',
+               pausedAt - (item.resumedAt ?? item.createdAt) + (item.elapsed ?? 0)
             )
+            console.log('- - - - - - - - - - - - - -')
 
             return {
                ...item,
-               elapsed: pausedAt - item.resumedAt + item.elapsed,
+               elapsed: pausedAt - (item.resumedAt ?? item.createdAt) + (item.elapsed ?? 0),
             }
          })
 
-         nextTick(() => (this.arePaused = true))
+         this.paused = true
       },
       resumeTimeouts() {
-         if (this.data.value.length === 0 || !this.arePaused) return
+         if (this.entries.value.length === 0 || !this.paused) return
 
          this.updateAll((item) => {
-            const newTimeout = item.duration + FIXED_TIMEOUT_INCREMENT - item.elapsed
+            clearTimeout(item.timeout as number)
+            /**
+             * 'elapsed' may be equal to 'undefined' if a notification
+             * is pushed while the stream is paused as 'pausedTimeouts' won't be called.
+             *
+             * To keep leave animation order coherent with the creation time and to avoid
+             * notifications to be dismissed at the same time, we calculate a normalized
+             * elapsed time ranging from 200ms to 1200ms.
+             */
+            if (item.elapsed === undefined) {
+               const createdAtStamps = this.entries.value.map(({ createdAt }) => createdAt)
 
-            console.log('Resuming timeouts, prev elapsed ' + item.elapsed)
-            console.log('Resuming timeouts, new timeout ' + newTimeout + 'ms left')
+               const maxStamp = Math.max(...createdAtStamps)
+               const minStamp = Math.min(...createdAtStamps)
+
+               if (minStamp === maxStamp) {
+                  item.elapsed = 1200
+               } else {
+                  const normalizedCreatedAt = (item.createdAt - minStamp) / (maxStamp - minStamp)
+                  item.elapsed = normalizedCreatedAt * (1200 - 200) + 200
+               }
+            }
+
+            let newTimeout = item.duration - item.elapsed
+
+            console.log('Resume timeouts -', 'Elapsed:', item.elapsed)
+            console.log('Resume timeouts -', 'New timeout:', item.duration - item.elapsed)
+            console.log('- - - - - - - - - - - - - -')
 
             return {
                ...item,
-               resumedAt: performance.now(),
-               timeoutId:
+               resumedAt: Date.now(),
+               timeout:
                   item.duration === Infinity
                      ? undefined
-                     : items.playLeaveTimeout(item.id, newTimeout),
+                     : window.setTimeout(() => this.playLeave(item.id), newTimeout),
             }
          })
 
-         nextTick(() => (this.arePaused = false))
+         this.paused = false
       },
+   }
+
+   const elements = {
+      wrapper: ref<HTMLElement | null>(null),
+      items: ref<HTMLElement[]>([]),
+      /* -------------------------------------------------------------------------------------------------
+       * Transition data
+       * -----------------------------------------------------------------------------------------------*/
+      transitionData: null as null | { duration: string; easing: string },
+      getTransitionData() {
+         if (!this.transitionData) this.syncTransitionData()
+         return this.transitionData
+      },
+      syncTransitionData() {
+         const animEl = this.wrapper.value?.querySelector(`.${config.animations.value.enter}`)
+
+         if (!animEl) {
+            this.transitionData = { duration: '0s', easing: 'ease' }
+         } else {
+            const style = getComputedStyle(animEl)
+
+            this.transitionData = {
+               duration: style.animationDuration,
+               easing: style.animationTimingFunction,
+            }
+         }
+      },
+      /* -------------------------------------------------------------------------------------------------
+       * Imperative transitions and animations
+       * -----------------------------------------------------------------------------------------------*/
       updatePositions(type = TType.PUSH) {
-         const sortedItems = elements.items.value.sort(
+         const sortedItems = this.items.value.sort(
             (a, b) => +b.dataset.notivueId! - +a.dataset.notivueId!
          )
 
@@ -158,108 +272,29 @@ export function createStore(userConfig: NotivueConfig) {
                continue
             }
 
-            items.update(currId, {
-               transitionStyles: {
-                  transitionDuration: elements.getAnimationData()!.duration,
-                  transitionTimingFunction: elements.getAnimationData()!.easing,
-                  ...(type === TType.HEIGHT ? { transitionProperty: 'all' } : {}),
-                  ...(isReduced ? { transition: 'none' } : {}),
+            Object.assign(el.style, {
+               transitionDuration: this.getTransitionData()!.duration,
+               transitionTimingFunction: this.getTransitionData()!.easing,
+               ...(type === TType.HEIGHT ? { transitionProperty: 'all' } : {}),
+               ...(isReduced ? { transition: 'none' } : {}),
 
-                  transform: `translate3d(0, ${accPrevHeights}px, 0)`,
-               },
+               transform: `translate3d(0, ${accPrevHeights}px, 0)`,
             })
 
             accPrevHeights += (config.isTopAlign.value ? 1 : -1) * el.clientHeight
          }
       },
-      push<T extends Obj = Obj>(incomingOptions: UserPushOptionsWithInternals<T>) {
-         const createdAt = Date.now()
-         const resumedAt = performance.now()
+      clearWrapper() {
+         if (this.wrapper.value) {
+            if (!config.animations.value.clearAll || isReducedMotion()) return items.removeAll()
 
-         const notification = mergeNotificationOptions<T>(
-            config.notifications.value,
-            incomingOptions
-         )
-
-         const createLeaveTimeout = () => {
-            if (notification.duration === Infinity || this.arePaused) return undefined
-            this.playLeaveTimeout(notification.id, notification.duration)
-         }
-
-         if (
-            ([NKeys.PROMISE_REJECT, NKeys.PROMISE_RESOLVE] as string[]).includes(
-               incomingOptions.type
-            )
-         ) {
-            this.update(notification.id, {
-               ...notification,
-               createdAt,
-               resumedAt,
-               timeoutId: createLeaveTimeout(),
-            })
-         } else {
-            const limit = 3 // config.limit.value
-
-            const shouldEnqueue =
-               'isEnqueued' &&
-               notification.type !== NKeys.PROMISE &&
-               (this.enqueued.length > 0 || this.data.value.length >= limit)
-
-            if (!shouldEnqueue && this.data.value.length >= limit) {
-               const additionalItems = this.data.value.slice(limit - 1)
-               additionalItems.forEach(({ id }) => this.playLeave(id))
-            }
-
-            const item = {
-               ...(notification as typeof notification & { props: T }),
-               createdAt,
-               resumedAt,
-               elapsed: 0,
-               timeoutId: shouldEnqueue ? createLeaveTimeout : createLeaveTimeout(),
-               clear: () => this.playLeave(notification.id),
-               destroy: () => this.remove(notification.id),
-            }
-
-            if (shouldEnqueue) this.enqueued.push(item)
-            else this.set(item)
+            this.wrapper.value.classList.add(config.animations.value.clearAll)
+            this.wrapper.value.onanimationend = () => items.removeAll()
          }
       },
    }
 
-   const elements = {
-      wrapper: ref<HTMLElement | null>(null),
-      items: ref<HTMLElement[]>([]),
-      /**
-       * Gets CSS animation duration and easing on first push and stores them.
-       * Returns the stored values which are applied to internal reposition transitions.
-       */
-      animationData: null as null | { duration: string; easing: string },
-      setAnimationData() {
-         const animEl = this.wrapper.value?.querySelector(`.${config.animations.value.enter}`)
+   const push = createPush(items, elements)
 
-         if (!animEl) {
-            this.animationData = { duration: '0s', easing: 'ease' }
-         } else {
-            const style = getComputedStyle(animEl)
-
-            this.animationData = {
-               duration: style.animationDuration,
-               easing: style.animationTimingFunction,
-            }
-         }
-      },
-      getAnimationData() {
-         if (!this.animationData) this.setAnimationData()
-         return this.animationData
-      },
-   }
-
-   const push = createPush(items)
-
-   return {
-      config,
-      elements,
-      items,
-      push,
-   }
+   return { config, elements, items, queue, push }
 }

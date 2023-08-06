@@ -50,20 +50,17 @@ useRepositioning()
          :style="styles.ol"
          v-bind="{ ...mouseEvents, ...touchEvents }"
          :class="class"
-         v-if="items.data.value.length > 0"
+         v-if="items.entries.value.length > 0"
       >
          <!-- List Item -->
          <li
-            v-for="(item, index) in items.data.value"
+            v-for="(item, index) in items.entries.value"
             :key="item.id"
             :data-notivue-id="item.id"
-            :aria-setsize="items.data.value.length"
+            :aria-setsize="items.entries.value.length"
             :aria-posinset="index + 1"
             :ref="elements.items"
-            :style="{
-               ...item.transitionStyles,
-               ...styles.li,
-            }"
+            :style="styles.li"
          >
             <!-- Notification Container -->
             <div
