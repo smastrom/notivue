@@ -24,6 +24,11 @@ export function createStore(userConfig: NotivueConfig) {
       entries: shallowRef<StoreItem[]>([]),
       queue: shallowRef<StoreItem[]>([]),
       paused: ref(false),
+      reset() {
+         this.clearItems()
+         this.clearQueue()
+         this.paused.value = false
+      },
       /* ====================================================================================
        * Core Methods
        * ==================================================================================== */
@@ -31,7 +36,7 @@ export function createStore(userConfig: NotivueConfig) {
          this.entries.value.unshift(item)
          triggerRef(this.entries)
 
-         this.playEnter(item.id)
+         this.addEnterClass(item.id)
          items.updatePositions()
       },
       get(id: string) {
@@ -56,19 +61,17 @@ export function createStore(userConfig: NotivueConfig) {
          })
 
          if (config.enqueue.value && this.queue.value.length > 0) this.addFromQueue()
-         if (this.entries.value.length === 0) this.paused.value = false
+         if (this.entries.value.length === 0) this.reset()
       },
-      removeAll() {
-         this.paused.value = false
+      clearItems() {
          this.entries.value = []
-         this.clearQueue()
       },
       /* ====================================================================================
        * Queue Methods
        * ==================================================================================== */
       addToQueue(item: StoreItem) {
-         this.entries.value.push(item)
-         triggerRef(this.entries)
+         this.queue.value.push(item)
+         triggerRef(this.queue)
       },
       addFromQueue() {
          const nextItem = {
@@ -81,10 +84,10 @@ export function createStore(userConfig: NotivueConfig) {
          this.removeFromQueue(nextItem.id)
       },
       removeFromQueue(id: string) {
-         this.entries.value = this.entries.value.filter(({ id: _id }) => id !== _id)
+         this.queue.value = this.queue.value.filter(({ id: _id }) => id !== _id)
       },
       clearQueue() {
-         this.entries.value = []
+         this.queue.value = []
       },
       /* ====================================================================================
        * Push proxy - Creates, updates or enqueues a pushed notification
@@ -95,29 +98,30 @@ export function createStore(userConfig: NotivueConfig) {
 
          const createTimeout = () => {
             if (entry.duration === Infinity || this.paused.value) return undefined
-            return window.setTimeout(() => this.playLeave(entry.id), entry.duration)
+            return window.setTimeout(() => this.addLeaveClass(entry.id), entry.duration)
          }
 
          if ([NKeys.PROMISE_REJECT, NKeys.PROMISE_RESOLVE].includes(incomingOptions.type)) {
             this.update(entry.id, { ...entry, createdAt, timeout: createTimeout() })
          } else {
-            const hasReachedLimit = this.entries.value.length >= config.limit.value
+            const isQueueActive = config.enqueue.value
             const hasEnqueuedItems = this.queue.value.length > 0
+            const hasReachedLimit = this.entries.value.length >= config.limit.value
             const isNotPromise = entry.type !== NKeys.PROMISE
 
             const shouldEnqueue =
-               config.enqueue.value && isNotPromise && (hasEnqueuedItems || hasReachedLimit)
+               isQueueActive && isNotPromise && (hasEnqueuedItems || hasReachedLimit)
 
-            if (!shouldEnqueue && hasReachedLimit) {
+            if (!isQueueActive && hasReachedLimit) {
                const exceedingItems = this.entries.value.slice(config.limit.value - 1)
-               exceedingItems.forEach(({ id }) => this.playLeave(id))
+               exceedingItems.forEach(({ id }) => this.addLeaveClass(id))
             }
 
             const item = {
                ...entry,
                createdAt,
                timeout: shouldEnqueue ? createTimeout : createTimeout(),
-               clear: () => this.playLeave(entry.id),
+               clear: () => this.addLeaveClass(entry.id),
                destroy: () => this.remove(entry.id),
             } as StoreItem<T>
 
@@ -194,7 +198,7 @@ export function createStore(userConfig: NotivueConfig) {
                timeout:
                   item.duration === Infinity
                      ? undefined
-                     : window.setTimeout(() => this.playLeave(item.id), newTimeout),
+                     : window.setTimeout(() => this.addLeaveClass(item.id), newTimeout),
             }
          })
 
@@ -215,13 +219,13 @@ export function createStore(userConfig: NotivueConfig) {
             },
          })
       },
-      playEnter(id: string) {
+      addEnterClass(id: string) {
          if (isReducedMotion()) return // Will be positioned by setPositions...
 
          this.updateClass(id, config.animations.value.enter)
          items.updatePositions()
       },
-      playLeave(id: string) {
+      addLeaveClass(id: string) {
          if (!config.animations.value.leave || isReducedMotion()) return this.remove(id)
 
          this.updateClass(id, config.animations.value.leave, () => this.remove(id))
@@ -248,7 +252,6 @@ export function createStore(userConfig: NotivueConfig) {
                transitionStyles: {
                   transitionDuration: elements.getTransitionData()!.duration,
                   transitionTimingFunction: elements.getTransitionData()!.easing,
-
                   ...(type === TType.HEIGHT ? { transitionProperty: 'all' } : {}),
                   ...(isReduced ? { transition: 'none' } : {}),
 
@@ -292,12 +295,12 @@ export function createStore(userConfig: NotivueConfig) {
       /* ====================================================================================
        * Imperative animations
        * ==================================================================================== */
-      clearWrapper() {
+      addClearAllClass() {
          if (this.wrapper.value) {
-            if (!config.animations.value.clearAll || isReducedMotion()) return items.removeAll()
+            if (!config.animations.value.clearAll || isReducedMotion()) return items.reset()
 
             this.wrapper.value.classList.add(config.animations.value.clearAll)
-            this.wrapper.value.onanimationend = () => items.removeAll()
+            this.wrapper.value.onanimationend = () => items.reset()
          }
       },
    }

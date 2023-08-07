@@ -16,7 +16,7 @@ export function createPush(
 
       items.pushProxy({ ...options, id, type })
 
-      return { id, clear: () => items.playLeave(id), destroy: () => items.remove(id) }
+      return { id, clear: () => items.addLeaveClass(id), destroy: () => items.remove(id) }
    }
 
    return {
@@ -34,8 +34,8 @@ export function createPush(
             destroy,
          }
       },
-      clearAll: () => elements.clearWrapper(),
-      destroyAll: () => items.removeAll(),
+      clearAll: () => elements.addClearAllClass(),
+      destroyAll: () => items.reset(),
    }
 }
 
