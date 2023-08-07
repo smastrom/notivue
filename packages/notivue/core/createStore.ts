@@ -22,7 +22,6 @@ export function createStore(userConfig: NotivueConfig) {
 
    const queue = {
       entries: shallowRef<StoreItem[]>([]),
-
       add(item: StoreItem) {
          this.entries.value.push(item)
          triggerRef(this.entries)
@@ -46,7 +45,7 @@ export function createStore(userConfig: NotivueConfig) {
          triggerRef(this.entries)
 
          this.playEnter(item.id)
-         elements.updatePositions()
+         items.updatePositions()
       },
       addFromQueue() {
          const nextItem = {
@@ -127,33 +126,6 @@ export function createStore(userConfig: NotivueConfig) {
          }
       },
       /* -------------------------------------------------------------------------------------------------
-       * Animations
-       * -----------------------------------------------------------------------------------------------*/
-      updateAnimation(id: string, animationClass: string | undefined, onEnd = () => {}) {
-         if (!animationClass) return onEnd()
-
-         this.update(id, {
-            animationClass,
-            onAnimationstart: (event: AnimationEvent) => event.stopPropagation(),
-            onAnimationend: (event: AnimationEvent) => {
-               event.stopPropagation()
-               onEnd()
-            },
-         })
-      },
-      playEnter(id: string) {
-         if (isReducedMotion()) return // Will be positioned by setPositions...
-
-         this.updateAnimation(id, config.animations.value.enter)
-         elements.updatePositions()
-      },
-      playLeave(id: string) {
-         if (!config.animations.value.leave || isReducedMotion()) return this.remove(id)
-
-         this.updateAnimation(id, config.animations.value.leave, () => this.remove(id))
-         elements.updatePositions()
-      },
-      /* -------------------------------------------------------------------------------------------------
        * Timeouts
        * -----------------------------------------------------------------------------------------------*/
       pauseTimeouts() {
@@ -225,11 +197,73 @@ export function createStore(userConfig: NotivueConfig) {
 
          this.paused = false
       },
+      /* -------------------------------------------------------------------------------------------------
+       * Animations - Classes
+       * -----------------------------------------------------------------------------------------------*/
+      updateClass(id: string, animationClass: string | undefined, onEnd = () => {}) {
+         if (!animationClass) return onEnd()
+
+         this.update(id, {
+            animationClass,
+            onAnimationstart: (event: AnimationEvent) => event.stopPropagation(),
+            onAnimationend: (event: AnimationEvent) => {
+               event.stopPropagation()
+               onEnd()
+            },
+         })
+      },
+      playEnter(id: string) {
+         if (isReducedMotion()) return // Will be positioned by setPositions...
+
+         this.updateClass(id, config.animations.value.enter)
+         items.updatePositions()
+      },
+      playLeave(id: string) {
+         if (!config.animations.value.leave || isReducedMotion()) return this.remove(id)
+
+         this.updateClass(id, config.animations.value.leave, () => this.remove(id))
+         items.updatePositions()
+      },
+      /* -------------------------------------------------------------------------------------------------
+       * Transitions - Styles
+       * -----------------------------------------------------------------------------------------------*/
+      updatePositions(type = TType.PUSH) {
+         const sortedItems = elements.getSortedItems()
+         const isReduced = isReducedMotion() || type === TType.SILENT
+
+         let accPrevHeights = 0
+
+         for (const el of sortedItems) {
+            const currId = el.dataset.notivueId!
+            const item = this.get(currId)
+
+            if (!el || !item || item.animationClass === config.animations.value.leave) {
+               continue
+            }
+
+            this.update(currId, {
+               transitionStyles: {
+                  transitionDuration: elements.getTransitionData()!.duration,
+                  transitionTimingFunction: elements.getTransitionData()!.easing,
+
+                  ...(type === TType.HEIGHT ? { transitionProperty: 'all' } : {}),
+                  ...(isReduced ? { transition: 'none' } : {}),
+
+                  transform: `translate3d(0, ${accPrevHeights}px, 0)`,
+               },
+            })
+
+            accPrevHeights += (config.isTopAlign.value ? 1 : -1) * el.clientHeight
+         }
+      },
    }
 
    const elements = {
       wrapper: ref<HTMLElement | null>(null),
       items: ref<HTMLElement[]>([]),
+      getSortedItems() {
+         return elements.items.value.sort((a, b) => +b.dataset.notivueId! - +a.dataset.notivueId!)
+      },
       /* -------------------------------------------------------------------------------------------------
        * Transition data
        * -----------------------------------------------------------------------------------------------*/
@@ -253,37 +287,8 @@ export function createStore(userConfig: NotivueConfig) {
          }
       },
       /* -------------------------------------------------------------------------------------------------
-       * Imperative transitions and animations
+       * Imperative animations
        * -----------------------------------------------------------------------------------------------*/
-      updatePositions(type = TType.PUSH) {
-         const sortedItems = this.items.value.sort(
-            (a, b) => +b.dataset.notivueId! - +a.dataset.notivueId!
-         )
-
-         const isReduced = isReducedMotion() || type === TType.SILENT
-
-         let accPrevHeights = 0
-
-         for (const el of sortedItems) {
-            const currId = el.dataset.notivueId!
-            const item = items.get(currId)
-
-            if (!el || !item || item.animationClass === config.animations.value.leave) {
-               continue
-            }
-
-            Object.assign(el.style, {
-               transitionDuration: this.getTransitionData()!.duration,
-               transitionTimingFunction: this.getTransitionData()!.easing,
-               ...(type === TType.HEIGHT ? { transitionProperty: 'all' } : {}),
-               ...(isReduced ? { transition: 'none' } : {}),
-
-               transform: `translate3d(0, ${accPrevHeights}px, 0)`,
-            })
-
-            accPrevHeights += (config.isTopAlign.value ? 1 : -1) * el.clientHeight
-         }
-      },
       clearWrapper() {
          if (this.wrapper.value) {
             if (!config.animations.value.clearAll || isReducedMotion()) return items.removeAll()

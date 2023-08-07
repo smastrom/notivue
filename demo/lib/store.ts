@@ -6,6 +6,7 @@ export const store = reactive({
    position: 'top-center' as Position,
    maxWidth: '100%',
    theme: 'lightTheme' as ThemeNames,
+   enqueue: false,
    renderTitles: false,
    emojis: false,
    outlinedIcons: false,
@@ -66,6 +67,10 @@ export function toggleRenderTitles() {
 export function setTheme(themeName: ThemeNames) {
    document.documentElement.setAttribute('data-theme', themeName.replace('Theme', ''))
    store.theme = themeName
+}
+
+export function toggleQueue() {
+   store.enqueue = !store.enqueue
 }
 
 export function toggleOutlinedIcons() {

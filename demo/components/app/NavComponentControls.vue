@@ -1,20 +1,24 @@
 <script setup lang="ts">
-import { watch } from 'vue'
-import { useNotivue, usePush } from 'notivue'
+import { computed, watch } from 'vue'
+import { useNotifications, useNotivue, usePush } from 'notivue'
 
 import {
    store,
    toggleRenderTitles as _toggleRenderTitles,
    toggleRTL as _toggleRTL,
+   toggleQueue as _toggleQueue,
    toggleOutlinedIcons,
    toggleEmojis,
    messages,
    toggleSwipe,
-} from '../../lib/store'
-import { isMobile } from '../../lib/utils'
+} from '@/lib/store'
+import { isMobile } from '@/lib/utils'
 
-const config = useNotivue()
 const push = usePush()
+const config = useNotivue()
+const { queue } = useNotifications()
+
+const enqueuedLength = computed(() => queue.value.length)
 
 function togglePauseOnHover() {
    config.pauseOnHover.value = !config.pauseOnHover.value
@@ -24,18 +28,26 @@ function togglePauseOnTouch() {
    config.pauseOnTouch.value = !config.pauseOnTouch.value
 }
 
-async function toggleRenderTitles() {
-   _toggleRenderTitles()
-
+function clearAllAndPushOne() {
    push.destroyAll()
    push.success(messages.value.success)
 }
 
+function toggleQueue() {
+   _toggleQueue()
+   config.limit.value = store.enqueue ? 1 : Infinity
+
+   clearAllAndPushOne()
+}
+
+async function toggleRenderTitles() {
+   _toggleRenderTitles()
+   clearAllAndPushOne()
+}
+
 function toggleRTL() {
    _toggleRTL()
-
-   push.destroyAll()
-   push.success(messages.value.success)
+   clearAllAndPushOne()
 }
 
 watch(
@@ -94,6 +106,15 @@ watch(
          @click="toggleSwipe"
       >
          Clear on Swipe
+      </div>
+      <div
+         class="ButtonBase SwitchButton"
+         role="switch"
+         :aria-checked="store.enqueue"
+         aria-label="Enqueue"
+         @click="toggleQueue"
+      >
+         Enqueue ({{ enqueuedLength }})
       </div>
       <div
          class="ButtonBase SwitchButton"

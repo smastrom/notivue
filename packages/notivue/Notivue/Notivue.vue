@@ -60,7 +60,10 @@ useRepositioning()
             :aria-setsize="items.entries.value.length"
             :aria-posinset="index + 1"
             :ref="elements.items"
-            :style="styles.li"
+            :style="{
+               ...styles.li,
+               ...item.transitionStyles,
+            }"
          >
             <!-- Notification Container -->
             <div

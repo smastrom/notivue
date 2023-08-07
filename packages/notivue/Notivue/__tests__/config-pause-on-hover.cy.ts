@@ -1,7 +1,5 @@
 import Notivue from './components/Notivue.vue'
 
-import { FIXED_TIMEOUT_INCREMENT } from '@/core/constants'
-
 import type { VueWrapper } from '@vue/test-utils'
 
 describe('Pause on hover', () => {
@@ -24,7 +22,7 @@ describe('Pause on hover', () => {
 
          .get('body')
          .realMouseMove(50, 50, { position: 'bottomRight' })
-         .wait(2000 + FIXED_TIMEOUT_INCREMENT)
+         .wait(2000)
 
          .get('.Notification')
          .should('not.exist')

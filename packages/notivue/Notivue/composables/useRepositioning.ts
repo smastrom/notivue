@@ -2,7 +2,7 @@ import { watch } from 'vue'
 
 import { useWindowSize } from './useWindowSize'
 import { useResizeObserver } from './useResizeObserver'
-import { useNotivue, useItems, useElements } from '@/core/useStore'
+import { useNotivue, useItems, useElements, useStore } from '@/core/useStore'
 
 import { TransitionType as TType } from '@/core/constants'
 
@@ -14,7 +14,7 @@ export function useRepositioning() {
 
    // 1. Items 'length' change
    watch(
-      () => items.data.value.length,
+      () => items.entries.value.length,
       () => items.updatePositions(TType.PUSH),
       { flush: 'post' }
    )

@@ -1,7 +1,5 @@
 import Notivue from './components/Notivue.vue'
 
-import { FIXED_TIMEOUT_INCREMENT } from '@/core/constants'
-
 describe('Pause on focus', () => {
    beforeEach(() => {
       cy.throwIfDurationMismatch(6000)
@@ -22,7 +20,7 @@ describe('Pause on focus', () => {
 
          .get('.ClearButton')
          .blur()
-         .wait(2000 + FIXED_TIMEOUT_INCREMENT)
+         .wait(2000)
 
          .get('.Notification')
          .should('not.exist')
