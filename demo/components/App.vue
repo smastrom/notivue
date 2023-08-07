@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { watchEffect } from 'vue'
-import { vDraggable } from '@neodrag/vue'
 
 import {
    Notifications,
@@ -14,52 +13,51 @@ import {
    type NotivueSlot,
 } from 'notivue'
 import { store } from '@/lib/store'
-import { useDragOptions } from '@/lib/useDragOptions'
 
-import Nav from './app/Nav.vue'
-import Background from './app/Background.vue'
-import CustomStatic from './custom-components/CustomStatic.vue'
-import CustomPromise from './custom-components/CustomPromise.vue'
+import Nav from './nav/Nav.vue'
+import Background from './shared/Background.vue'
+import CustomStatic from './custom-notifications/CustomStatic.vue'
+import CustomPromise from './custom-notifications/CustomPromise.vue'
+import NotivueSwipe from '@/Notivue/NotivueSwipe.vue'
 
-import type { CustomPromiseProps, CustomProps } from './app/NavPushCustom.vue'
+import type { CustomPromiseProps, CustomProps } from './nav/NavPushCustom.vue'
 
 watchEffect(() => document.documentElement.style.setProperty('--nv-root-width', store.maxWidth))
 
 const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme } as const
-
-const emojiIcons = {
-   success: '✅',
-   error: '⛔️',
-   warning: '🤌',
-   info: '💡',
-   promise: '🌀',
-   'promise-resolve': '✅',
-   'promise-reject': '⛔️',
-   close: store.rtl ? 'إغلاق' : 'Close',
-}
-
-const getDragOptions = useDragOptions('.Notivue__close')
 </script>
 
 <template>
    <Notivue :class="{ CenterOnMobile: store.centerOnMobile }" v-slot="item">
-      <Notifications
-         v-draggable="store.enableSwipe ? getDragOptions(item) : { disabled: true }"
-         v-if="!item.props.isCustom && !item.props.isFileUpload"
+      <NotivueSwipe
          :item="item"
-         :theme="themes[store.theme]"
-         :icons="store.outlinedIcons ? outlinedIcons : store.emojis ? emojiIcons : undefined"
-      />
+         :disabled="!store.enableSwipe"
+         v-if="!item.props.isCustom && !item.props.isFileUpload"
+      >
+         <Notifications
+            :item="item"
+            :theme="themes[store.theme]"
+            :icons="store.outlinedIcons ? outlinedIcons : undefined"
+         />
+      </NotivueSwipe>
 
-      <CustomStatic
+      <NotivueSwipe
+         :item="item"
+         :disabled="!store.enableSwipe"
+         exclude=".Button"
          v-if="(item.props as CustomProps).isCustom"
-         :item="item as NotivueSlot<CustomProps>"
-      />
+      >
+         <CustomStatic :item="item as NotivueSlot<CustomProps>" />
+      </NotivueSwipe>
 
-      <CustomPromise
+      <NotivueSwipe
+         :item="item"
+         :disabled="!store.enableSwipe"
+         exclude=".Close"
          v-if="(item.props as CustomPromiseProps).isFileUpload"
-         :item="item as NotivueSlot<CustomPromiseProps>"
-      />
+      >
+         <CustomPromise :item="item as NotivueSlot<CustomPromiseProps>" />
+      </NotivueSwipe>
    </Notivue>
 
    <Background />
@@ -67,18 +65,6 @@ const getDragOptions = useDragOptions('.Notivue__close')
 </template>
 
 <style>
-.Notivue__drag {
-   cursor: grab;
-}
-
-.Notivue__content * {
-   user-select: none;
-}
-
-.Notivue__notification * {
-   touch-action: none !important;
-}
-
 @media (max-width: 768px) {
    .CenterOnMobile {
       --nv-root-x-align: center;

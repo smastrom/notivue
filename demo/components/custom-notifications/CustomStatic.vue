@@ -1,9 +1,5 @@
 <script setup lang="ts">
 import { formatDistanceToNow as toNow } from 'date-fns'
-import { vDraggable } from '@neodrag/vue'
-
-import { store } from '@/lib/store'
-import { useDragOptions } from '@/lib/useDragOptions'
 
 import type { NotivueSlot } from 'notivue'
 import type { CustomProps } from '../app/NavPushCustom.vue'
@@ -11,15 +7,10 @@ import type { CustomProps } from '../app/NavPushCustom.vue'
 defineProps<{
    item: NotivueSlot<CustomProps>
 }>()
-
-const getDragOptions = useDragOptions('.Buttons')
 </script>
 
 <template>
-   <div
-      class="Notification"
-      v-draggable="store.enableSwipe ? getDragOptions(item) : { disabled: true }"
-   >
+   <div class="Notification">
       <div class="Avatar">
          <img :src="item.props.profilePicture" alt="profile" class="Picture" />
          <span class="OnlineDot" />

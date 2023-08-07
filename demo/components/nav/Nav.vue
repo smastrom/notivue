@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref, onUpdated } from 'vue'
 import { usePush } from 'notivue'
 
-import NavComponentControls from './NavComponentControls.vue'
-import NavThemesControls from './NavThemesControls.vue'
+import NavNotivueControls from './NavNotivueControls.vue'
+import NavNotificationsThemes from './NavNotificationsThemes.vue'
 import NavPushStatic from './NavPushStatic.vue'
 import NavPushCustom from './NavPushCustom.vue'
-import NavPositionControls from './NavPositionControls.vue'
+import NavNotivuePosition from './NavNotivuePosition.vue'
 import ButtonGroup from '../shared/ButtonGroup.vue'
 import Button from '../shared/Button.vue'
 import DismissIcon from '../icons/DismissIcon.vue'
 import DestroyIcon from '../icons/DestroyIcon.vue'
+import NavNotificationsCustomization from './NavNotificationsCustomization.vue'
 
 const push = usePush()
 </script>
@@ -19,11 +19,11 @@ const push = usePush()
    <nav dir="ltr">
       <div class="Container">
          <ButtonGroup name="Position">
-            <NavPositionControls />
+            <NavNotivuePosition />
          </ButtonGroup>
 
          <ButtonGroup name="Controls">
-            <NavComponentControls />
+            <NavNotivueControls />
          </ButtonGroup>
 
          <div class="DefaultComponent">
@@ -32,7 +32,11 @@ const push = usePush()
             </ButtonGroup>
 
             <ButtonGroup name="Theme">
-               <NavThemesControls />
+               <NavNotificationsThemes />
+            </ButtonGroup>
+
+            <ButtonGroup name="Features">
+               <NavNotificationsCustomization />
             </ButtonGroup>
          </div>
 
@@ -60,7 +64,7 @@ nav {
    display: flex;
    justify-content: center;
    width: 100%;
-   z-index: 99999;
+   z-index: 9999;
    bottom: 0;
    left: 0;
    height: 260px;
@@ -74,11 +78,12 @@ nav {
 
 .Container {
    position: relative;
-   overflow: auto;
+   overflow-x: auto;
+   overflow-y: hidden;
    display: grid;
    grid-auto-flow: column;
    gap: 50px;
-   width: 820px;
+   width: 900px;
 }
 
 .DefaultComponent {

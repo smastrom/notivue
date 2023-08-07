@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { formatDistanceToNow as toNow } from 'date-fns'
-import { vDraggable } from '@neodrag/vue'
-
-import { store } from '@/lib/store'
-import { useDragOptions } from '@/lib/useDragOptions'
 
 import CloseIcon from '../icons/CloseIcon.vue'
 
@@ -16,15 +12,10 @@ const props = defineProps<{
 }>()
 
 const isPromise = computed(() => props.item.type === 'promise')
-
-const getDragOptions = useDragOptions('.Close')
 </script>
 
 <template>
-   <div
-      class="Notification"
-      v-draggable="store.enableSwipe ? getDragOptions(item) : { disabled: true }"
-   >
+   <div class="Notification">
       <div class="Header">
          <div class="Title">
             <h3>{{ item.message }}</h3>

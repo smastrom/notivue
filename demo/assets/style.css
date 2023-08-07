@@ -24,6 +24,7 @@
    -webkit-font-smoothing: antialiased;
    -moz-osx-font-smoothing: grayscale;
    -webkit-text-size-adjust: 100%;
+   --app-font-family: 'PT Sans Narrow', Avenir, Helvetica, Arial, sans-serif;
 }
 
 html {
@@ -90,7 +91,7 @@ body {
 }
 
 #app {
-   font-family: 'PT Sans Narrow', Avenir, Helvetica, Arial, sans-serif;
+   font-family: var(--app-font-family);
 }
 
 * {
@@ -110,7 +111,7 @@ body {
    cursor: pointer;
    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.03);
    transition: transform 100ms ease-in-out;
-   font-family: 'PT Sans Narrow', Avenir, Helvetica, Arial, sans-serif;
+   font-family: var(--app-font-family);
    font-weight: 700;
    color: var(--button-color);
    white-space: nowrap;
@@ -122,7 +123,7 @@ body {
    }
 }
 
-.ButtonBase_Disabled {
+.ButtonBase:disabled {
    opacity: 0.5;
    cursor: not-allowed;
 
@@ -161,4 +162,15 @@ body {
 
 p {
    margin: 0;
+}
+
+.Tippy {
+   background-color: white;
+   padding: 0.5rem 0.75rem;
+   border-radius: 5px;
+   font-weight: 600;
+   line-height: 1.5;
+   color: var(--button-color);
+   font-family: var(--app-font-family);
+   box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.03);
 }

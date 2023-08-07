@@ -40,15 +40,15 @@ importers:
 
    demo:
       dependencies:
-         '@neodrag/vue':
-            specifier: ^2.0.3
-            version: 2.0.3
          date-fns:
             specifier: ^2.30.0
             version: 2.30.0
          vue:
             specifier: ^3.3.4
             version: 3.3.4
+         vue-tippy:
+            specifier: v6
+            version: 6.3.0(vue@3.3.4)
       devDependencies:
          '@types/node':
             specifier: ^18.16.19
@@ -856,10 +856,10 @@ packages:
          }
       dev: true
 
-   /@neodrag/vue@2.0.3:
+   /@popperjs/core@2.11.8:
       resolution:
          {
-            integrity: sha512-UktYcpfNAGZ7/U+Ir6bTfco6Q8t/Id8IgtUHaiJlp93UBXgeBYTev7o+N1Svr91eSRb9sax5wh0Tqj6q+1LX+g==,
+            integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==,
          }
       dev: false
 
@@ -3723,6 +3723,15 @@ packages:
          }
       dev: true
 
+   /tippy.js@6.3.7:
+      resolution:
+         {
+            integrity: sha512-E1d3oP2emgJ9dRQZdf3Kkn0qJgI6ZLpyS5z6ZkY1DF3kaQaBsGZsndEpHwx+eC+tYM41HaSNvNtLx8tU57FzTQ==,
+         }
+      dependencies:
+         '@popperjs/core': 2.11.8
+      dev: false
+
    /tmp@0.2.1:
       resolution:
          {
@@ -3880,7 +3889,7 @@ packages:
          vue-tsc: 1.8.4(typescript@4.9.5)
       optionalDependencies:
          rollup: 3.27.1
-         vite: 4.4.1(@types/node@18.16.19)(lightningcss@1.21.5)
+         vite: 4.4.8(@types/node@18.16.19)
       transitivePeerDependencies:
          - '@types/node'
          - less
@@ -3931,6 +3940,47 @@ packages:
       optionalDependencies:
          fsevents: 2.3.2
       dev: true
+
+   /vite@4.4.8(@types/node@18.16.19):
+      resolution:
+         {
+            integrity: sha512-LONawOUUjxQridNWGQlNizfKH89qPigK36XhMI7COMGztz8KNY0JHim7/xDd71CZwGT4HtSRgI7Hy+RlhG0Gvg==,
+         }
+      engines: { node: ^14.18.0 || >=16.0.0 }
+      hasBin: true
+      requiresBuild: true
+      peerDependencies:
+         '@types/node': '>= 14'
+         less: '*'
+         lightningcss: ^1.21.0
+         sass: '*'
+         stylus: '*'
+         sugarss: '*'
+         terser: ^5.4.0
+      peerDependenciesMeta:
+         '@types/node':
+            optional: true
+         less:
+            optional: true
+         lightningcss:
+            optional: true
+         sass:
+            optional: true
+         stylus:
+            optional: true
+         sugarss:
+            optional: true
+         terser:
+            optional: true
+      dependencies:
+         '@types/node': 18.16.19
+         esbuild: 0.18.17
+         postcss: 8.4.27
+         rollup: 3.27.1
+      optionalDependencies:
+         fsevents: 2.3.2
+      dev: true
+      optional: true
 
    /vite@4.4.8(@types/node@18.17.1):
       resolution:
@@ -3988,6 +4038,18 @@ packages:
          de-indent: 1.0.2
          he: 1.2.0
       dev: true
+
+   /vue-tippy@6.3.0(vue@3.3.4):
+      resolution:
+         {
+            integrity: sha512-HBW4b9IAyXkuvU/Xo2jA9kKJg3TzlxORpa3Tdo9vGyhiGJzQPO2An3pOE4NCn1TOFV35OkRXlu98tjw4qCa/YA==,
+         }
+      peerDependencies:
+         vue: ^3.2.0
+      dependencies:
+         tippy.js: 6.3.7
+         vue: 3.3.4
+      dev: false
 
    /vue-tsc@1.8.4(typescript@4.9.5):
       resolution:

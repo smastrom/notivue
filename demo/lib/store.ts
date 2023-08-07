@@ -6,9 +6,7 @@ export const store = reactive({
    position: 'top-center' as Position,
    maxWidth: '100%',
    theme: 'lightTheme' as ThemeNames,
-   enqueue: false,
    renderTitles: false,
-   emojis: false,
    outlinedIcons: false,
    rtl: false,
    centerOnMobile: false,
@@ -57,7 +55,7 @@ export const messages = computed(
 )
 
 export function setFullWidth() {
-   store.maxWidth = store.maxWidth === '100%' ? '820px' : '100%'
+   store.maxWidth = store.maxWidth === '100%' ? '900px' : '100%'
 }
 
 export function toggleRenderTitles() {
@@ -69,24 +67,8 @@ export function setTheme(themeName: ThemeNames) {
    store.theme = themeName
 }
 
-export function toggleQueue() {
-   store.enqueue = !store.enqueue
-}
-
 export function toggleOutlinedIcons() {
-   if (store.emojis) {
-      store.emojis = !store.emojis
-   }
-
    store.outlinedIcons = !store.outlinedIcons
-}
-
-export function toggleEmojis() {
-   if (store.outlinedIcons) {
-      store.outlinedIcons = !store.outlinedIcons
-   }
-
-   store.emojis = !store.emojis
 }
 
 export function toggleRTL() {

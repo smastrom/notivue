@@ -2,10 +2,10 @@
 import { usePush } from 'notivue'
 
 import { getRandomInt } from '@/lib/utils'
+import { setTheme, store, toggleRTL } from '@/lib/store'
 
 import VueIcon from '../icons/VueIcon.vue'
 import Button from '../shared/Button.vue'
-import { setTheme, store, toggleRTL } from '@/lib/store'
 
 import profilePicture from '../../assets/profile-picture.jpg?url'
 
