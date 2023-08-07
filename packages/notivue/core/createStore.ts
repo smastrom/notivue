@@ -20,42 +20,19 @@ export const storeInjectionKey = Symbol('') as InjectionKey<ReturnType<typeof cr
 export function createStore(userConfig: NotivueConfig) {
    const config = getConfig(userConfig)
 
-   const queue = {
-      entries: shallowRef<StoreItem[]>([]),
-      add(item: StoreItem) {
-         this.entries.value.push(item)
-         triggerRef(this.entries)
-      },
-      remove(id: string) {
-         this.entries.value = this.entries.value.filter(({ id: _id }) => id !== _id)
-      },
-      removeAll() {
-         this.entries.value = []
-      },
-   }
-
    const items = {
       entries: shallowRef<StoreItem[]>([]),
+      queue: shallowRef<StoreItem[]>([]),
       paused: ref(false),
-      /* -------------------------------------------------------------------------------------------------
+      /* ====================================================================================
        * Core Methods
-       * -----------------------------------------------------------------------------------------------*/
+       * ==================================================================================== */
       add(item: StoreItem) {
          this.entries.value.unshift(item)
          triggerRef(this.entries)
 
          this.playEnter(item.id)
          items.updatePositions()
-      },
-      addFromQueue() {
-         const nextItem = {
-            ...queue.entries.value[0],
-            timeout: (queue.entries.value[0].timeout as () => void)(),
-            createdAt: Date.now(),
-         }
-
-         this.add(nextItem)
-         queue.remove(nextItem.id)
       },
       get(id: string) {
          return this.entries.value.find(({ id: _id }) => id === _id)
@@ -69,24 +46,49 @@ export function createStore(userConfig: NotivueConfig) {
       },
       remove(id: string) {
          const isLast = id === this.entries.value[this.entries.value.length - 1].id
-         if (isLast) this.resumeTimeouts()
+         if (isLast && (config.pauseOnHover.value || config.pauseOnTouch.value)) {
+            this.resumeTimeouts()
+         }
 
          this.entries.value = this.entries.value.filter(({ timeout, id: _id }) => {
             if (id !== _id) return true
             return clearTimeout(timeout as number), false
          })
 
-         if (config.enqueue && queue.entries.value.length > 0) this.addFromQueue()
+         if (config.enqueue.value && this.queue.value.length > 0) this.addFromQueue()
          if (this.entries.value.length === 0) this.paused.value = false
       },
       removeAll() {
          this.paused.value = false
          this.entries.value = []
-         queue.removeAll()
+         this.clearQueue()
       },
-      /* -------------------------------------------------------------------------------------------------
+      /* ====================================================================================
+       * Queue Methods
+       * ==================================================================================== */
+      addToQueue(item: StoreItem) {
+         this.entries.value.push(item)
+         triggerRef(this.entries)
+      },
+      addFromQueue() {
+         const nextItem = {
+            ...this.queue.value[0],
+            timeout: (this.queue.value[0].timeout as () => void)(),
+            createdAt: Date.now(),
+         }
+
+         this.add(nextItem)
+         this.removeFromQueue(nextItem.id)
+      },
+      removeFromQueue(id: string) {
+         this.entries.value = this.entries.value.filter(({ id: _id }) => id !== _id)
+      },
+      clearQueue() {
+         this.entries.value = []
+      },
+      /* ====================================================================================
        * Push proxy - Creates, updates or enqueues a pushed notification
-       * -----------------------------------------------------------------------------------------------*/
+       * ==================================================================================== */
       pushProxy<T extends Obj = Obj>(incomingOptions: UserPushOptionsWithInternals<T>) {
          const createdAt = Date.now()
          const entry = mergeOptions<T>(config.notifications.value, incomingOptions)
@@ -100,7 +102,7 @@ export function createStore(userConfig: NotivueConfig) {
             this.update(entry.id, { ...entry, createdAt, timeout: createTimeout() })
          } else {
             const hasReachedLimit = this.entries.value.length >= config.limit.value
-            const hasEnqueuedItems = queue.entries.value.length > 0
+            const hasEnqueuedItems = this.queue.value.length > 0
             const isNotPromise = entry.type !== NKeys.PROMISE
 
             const shouldEnqueue =
@@ -120,15 +122,15 @@ export function createStore(userConfig: NotivueConfig) {
             } as StoreItem<T>
 
             if (shouldEnqueue) {
-               queue.add(item)
+               this.addToQueue(item)
             } else {
                this.add(item)
             }
          }
       },
-      /* -------------------------------------------------------------------------------------------------
+      /* ====================================================================================
        * Timeouts
-       * -----------------------------------------------------------------------------------------------*/
+       * ==================================================================================== */
       pauseTimeouts() {
          if (this.entries.value.length === 0 || this.paused.value) return
 
@@ -198,9 +200,9 @@ export function createStore(userConfig: NotivueConfig) {
 
          this.paused.value = false
       },
-      /* -------------------------------------------------------------------------------------------------
+      /* ====================================================================================
        * Animations - Classes
-       * -----------------------------------------------------------------------------------------------*/
+       * ==================================================================================== */
       updateClass(id: string, animationClass: string | undefined, onEnd = () => {}) {
          if (!animationClass) return onEnd()
 
@@ -225,9 +227,9 @@ export function createStore(userConfig: NotivueConfig) {
          this.updateClass(id, config.animations.value.leave, () => this.remove(id))
          items.updatePositions()
       },
-      /* -------------------------------------------------------------------------------------------------
+      /* ====================================================================================
        * Transitions - Styles
-       * -----------------------------------------------------------------------------------------------*/
+       * ==================================================================================== */
       updatePositions(type = TType.PUSH) {
          const sortedItems = elements.getSortedItems()
          const isReduced = isReducedMotion() || type === TType.SILENT
@@ -265,9 +267,9 @@ export function createStore(userConfig: NotivueConfig) {
       getSortedItems() {
          return elements.items.value.sort((a, b) => +b.dataset.notivueId! - +a.dataset.notivueId!)
       },
-      /* -------------------------------------------------------------------------------------------------
+      /* ====================================================================================
        * Transition data
-       * -----------------------------------------------------------------------------------------------*/
+       * ==================================================================================== */
       transitionData: null as null | { duration: string; easing: string },
       getTransitionData() {
          if (!this.transitionData) this.syncTransitionData()
@@ -287,9 +289,9 @@ export function createStore(userConfig: NotivueConfig) {
             }
          }
       },
-      /* -------------------------------------------------------------------------------------------------
+      /* ====================================================================================
        * Imperative animations
-       * -----------------------------------------------------------------------------------------------*/
+       * ==================================================================================== */
       clearWrapper() {
          if (this.wrapper.value) {
             if (!config.animations.value.clearAll || isReducedMotion()) return items.removeAll()
@@ -302,5 +304,5 @@ export function createStore(userConfig: NotivueConfig) {
 
    const push = createPush(items, elements)
 
-   return { config, elements, items, queue, push }
+   return { config, elements, items, push }
 }

@@ -59,6 +59,6 @@ export function useNotifications(): {
 
    return {
       entries: computed(() => store.items.entries.value),
-      queue: computed(() => store.queue.entries.value),
+      queue: computed(() => store.items.queue.value),
    }
 }
