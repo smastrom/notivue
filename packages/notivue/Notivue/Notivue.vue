@@ -2,20 +2,18 @@
 import { Teleport, type Component } from 'vue'
 
 import { useNotivue, useItems, useElements } from '@/core/useStore'
-
 import { useMouseEvents } from './composables/useMouseEvents'
 import { useTouchEvents } from './composables/useTouchEvents'
 import { useNotivueStyles, visuallyHidden } from './composables/useNotivueStyles'
 import { useRepositioning } from './composables/useRepositioning'
 import { useVisibilityChange } from './composables/useVisibilityChange'
 import { useFocusEvents } from './composables/useFocusEvents'
-
 import { getSlotContext } from './utils'
 
 import type { NotivueSlot } from 'notivue'
 
 defineProps<{
-   class?: string
+   class?: string | Record<string, boolean> | (string | Record<string, boolean>)[]
 }>()
 
 defineSlots<{

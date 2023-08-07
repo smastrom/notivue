@@ -36,7 +36,7 @@ export function createStore(userConfig: NotivueConfig) {
 
    const items = {
       entries: shallowRef<StoreItem[]>([]),
-      paused: false,
+      paused: ref(false),
       /* -------------------------------------------------------------------------------------------------
        * Core Methods
        * -----------------------------------------------------------------------------------------------*/
@@ -68,14 +68,19 @@ export function createStore(userConfig: NotivueConfig) {
          this.entries.value = this.entries.value.map(updateItem)
       },
       remove(id: string) {
+         const isLast = id === this.entries.value[this.entries.value.length - 1].id
+         if (isLast) this.resumeTimeouts()
+
          this.entries.value = this.entries.value.filter(({ timeout, id: _id }) => {
             if (id !== _id) return true
             return clearTimeout(timeout as number), false
          })
 
          if (config.enqueue && queue.entries.value.length > 0) this.addFromQueue()
+         if (this.entries.value.length === 0) this.paused.value = false
       },
       removeAll() {
+         this.paused.value = false
          this.entries.value = []
          queue.removeAll()
       },
@@ -87,23 +92,19 @@ export function createStore(userConfig: NotivueConfig) {
          const entry = mergeOptions<T>(config.notifications.value, incomingOptions)
 
          const createTimeout = () => {
-            if (entry.duration === Infinity || this.paused) return undefined
+            if (entry.duration === Infinity || this.paused.value) return undefined
             return window.setTimeout(() => this.playLeave(entry.id), entry.duration)
          }
 
          if ([NKeys.PROMISE_REJECT, NKeys.PROMISE_RESOLVE].includes(incomingOptions.type)) {
-            this.update(entry.id, {
-               ...entry,
-               createdAt,
-               timeout: createTimeout(),
-            })
+            this.update(entry.id, { ...entry, createdAt, timeout: createTimeout() })
          } else {
             const hasReachedLimit = this.entries.value.length >= config.limit.value
             const hasEnqueuedItems = queue.entries.value.length > 0
             const isNotPromise = entry.type !== NKeys.PROMISE
 
             const shouldEnqueue =
-               config.enqueue && isNotPromise && (hasEnqueuedItems || hasReachedLimit)
+               config.enqueue.value && isNotPromise && (hasEnqueuedItems || hasReachedLimit)
 
             if (!shouldEnqueue && hasReachedLimit) {
                const exceedingItems = this.entries.value.slice(config.limit.value - 1)
@@ -129,7 +130,7 @@ export function createStore(userConfig: NotivueConfig) {
        * Timeouts
        * -----------------------------------------------------------------------------------------------*/
       pauseTimeouts() {
-         if (this.entries.value.length === 0 || this.paused) return
+         if (this.entries.value.length === 0 || this.paused.value) return
 
          const pausedAt = Date.now()
 
@@ -150,10 +151,10 @@ export function createStore(userConfig: NotivueConfig) {
             }
          })
 
-         this.paused = true
+         this.paused.value = true
       },
       resumeTimeouts() {
-         if (this.entries.value.length === 0 || !this.paused) return
+         if (this.entries.value.length === 0 || !this.paused.value) return
 
          this.updateAll((item) => {
             clearTimeout(item.timeout as number)
@@ -195,7 +196,7 @@ export function createStore(userConfig: NotivueConfig) {
             }
          })
 
-         this.paused = false
+         this.paused.value = false
       },
       /* -------------------------------------------------------------------------------------------------
        * Animations - Classes
