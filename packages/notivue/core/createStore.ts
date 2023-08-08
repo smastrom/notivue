@@ -1,4 +1,4 @@
-import { nextTick, ref, shallowRef, triggerRef, type InjectionKey, watch } from 'vue'
+import { nextTick, ref, shallowRef, triggerRef, watch, type InjectionKey } from 'vue'
 
 import { getConfig } from './config'
 import { mergeNotificationOptions as mergeOptions } from './options'

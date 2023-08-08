@@ -26,14 +26,16 @@ enum LeaveType {
 
 const props = withDefaults(
    defineProps<{
-      /** Notivue store item. */
+      /** Notivue's exposed notification item. */
       item: NotivueSlot
-      /** querySelectorAll string to exclude elements from swipe. */
+      /** A [querySelectorAll](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll) string that specifies elements to be exempted from the swipe action. */
       exclude?: string
-      /** Whether to disable clear on swipe */
+      /** Whether to disable the swipe gesture or not. Useful for disabling the behavior on desktop devices, for example. */
       disabled?: boolean
+      /** Fraction of notification's width needed to be swiped for clearing. For instance, a threshold of 0.5 indicates 50% of the notification's width must be swiped. */
+      threshold?: number
    }>(),
-   { exclude: '.Notivue__close', disabled: false }
+   { exclude: '.Notivue__close', disabled: false, threshold: 0.5 }
 )
 
 const isPromise = computed(() => props.item.type === NType.PROMISE)
@@ -48,6 +50,9 @@ const lastItemContainer = computed(() => elements.items.value[elements.items.val
 // Internal
 
 const isDisabled = toRef(props, 'disabled')
+const threshold = toRef(props, 'threshold')
+const exclude = toRef(props, 'exclude')
+
 const itemRef = ref<HTMLElement | null>(null)
 
 const state = reactive({
@@ -102,6 +107,13 @@ function setDragStyles() {
       userSelect: 'none',
       cursor: 'grab',
    })
+
+   itemRef.value.querySelectorAll('*').forEach((el) => {
+      if (el instanceof HTMLElement) {
+         el.style.touchAction = 'none'
+         el.style.userSelect = 'none'
+      }
+   })
 }
 
 // Event handlers
@@ -118,8 +130,8 @@ function onPointerDown(e: PointerEvent) {
    if (state.isPressed) return
    if (!itemRef.value) return
 
-   if (props.exclude) {
-      const excludedEls = Array.from(itemRef.value.querySelectorAll(props.exclude))
+   if (exclude.value) {
+      const excludedEls = Array.from(itemRef.value.querySelectorAll(exclude.value))
       if (excludedEls.includes(e.target as HTMLElement)) return
    }
 
@@ -138,10 +150,10 @@ function onPointerMove(e: PointerEvent) {
    setStyles({
       transition: 'none',
       transform: `translate3d(${state.currX}px, 0px, 0px)`,
-      opacity: `${1 - Math.abs(state.currX) / (state.targetWidth * 0.75)}`,
+      opacity: `${1 - Math.abs(state.currX) / (state.targetWidth * 0.65)}`,
    })
 
-   if (Math.abs(state.currX) > state.targetWidth / 2) {
+   if (Math.abs(state.currX) > state.targetWidth * threshold.value) {
       handleTimeouts(e.clientX, LeaveType.CLEAR)
       props.item.clear()
    }
