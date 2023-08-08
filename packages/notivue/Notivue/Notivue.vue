@@ -29,8 +29,6 @@ const styles = useNotivueStyles()
 const mouseEvents = useMouseEvents()
 const touchEvents = useTouchEvents()
 
-useFocusEvents()
-
 useVisibilityChange({
    onHidden: () =>
       config.pauseOnTabChange.value ? items.pauseTimeouts() : elements.addClearAllClass(),
