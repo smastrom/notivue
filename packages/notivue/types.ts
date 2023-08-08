@@ -82,7 +82,7 @@ export interface HiddenInternalItemData {
    timeout: number | undefined | (() => void) | void
    elapsed: number
    resumedAt: number
-   transitionStyles?: CSSProperties
+   positionStyles?: CSSProperties
    animationClass?: string
    onAnimationstart?: (event: AnimationEvent) => void
    onAnimationend?: (event: AnimationEvent) => void

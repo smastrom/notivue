@@ -32,7 +32,8 @@ const touchEvents = useTouchEvents()
 useFocusEvents()
 
 useVisibilityChange({
-   onHidden: () => (config.pauseOnTabChange.value ? items.pauseTimeouts() : items.removeAll()),
+   onHidden: () =>
+      config.pauseOnTabChange.value ? items.pauseTimeouts() : elements.addClearAllClass(),
    onVisible: () => (config.pauseOnTabChange.value ? items.resumeTimeouts() : {}),
 })
 
@@ -60,7 +61,7 @@ useRepositioning()
             :ref="elements.items"
             :style="{
                ...styles.li,
-               ...item.transitionStyles,
+               ...item.positionStyles,
             }"
          >
             <!-- Notification Container -->

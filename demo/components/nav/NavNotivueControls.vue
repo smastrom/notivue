@@ -50,7 +50,6 @@ function toggleQueue() {
       config.limit.value = 1
    }
 
-   push.destroyAll()
    push.info({
       title: `Enqueue ${config.enqueue.value ? 'enabled' : 'disabled'}`,
       message: config.enqueue.value
@@ -74,7 +73,6 @@ watch(
    (isEnabled) => {
       if (store.rtl) toggleRTL()
 
-      push.destroyAll()
       push.info({
          title: `Swipe to clear ${isEnabled ? 'enabled' : 'disabled'}`,
          message: isEnabled
@@ -97,7 +95,6 @@ watch(
 
       if (store.rtl) toggleRTL()
 
-      push.destroyAll()
       push.info({
          title: 'Limit updated!',
          message: message + ' Any limit can be set.',
@@ -139,6 +136,14 @@ watch(
          Clear on Swipe
       </button>
 
+      <select class="ButtonBase Select" v-model="config.limit.value" aria-label="Limit">
+         <option selected :value="Infinity">Unlimited</option>
+         <option :value="1">Limit - 1</option>
+         <option :value="3">Limit - 3</option>
+         <option :value="5">Limit - 5</option>
+         <option :value="10">Limit - 10</option>
+      </select>
+
       <button
          class="ButtonBase SwitchButton"
          role="switch"
@@ -149,14 +154,6 @@ watch(
       >
          Enqueue ({{ enqueuedLength }})
       </button>
-
-      <select class="ButtonBase Select" v-model="config.limit.value" aria-label="Limit">
-         <option selected :value="Infinity">Unlimited</option>
-         <option :value="1">Limit - 1</option>
-         <option :value="3">Limit - 3</option>
-         <option :value="5">Limit - 5</option>
-         <option :value="10">Limit - 10</option>
-      </select>
    </div>
 </template>
 

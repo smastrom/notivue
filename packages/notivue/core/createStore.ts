@@ -1,4 +1,4 @@
-import { ref, shallowRef, triggerRef, type InjectionKey } from 'vue'
+import { nextTick, ref, shallowRef, triggerRef, type InjectionKey, watch } from 'vue'
 
 import { getConfig } from './config'
 import { mergeNotificationOptions as mergeOptions } from './options'
@@ -24,13 +24,16 @@ export function createStore(userConfig: NotivueConfig) {
       entries: shallowRef<StoreItem[]>([]),
       queue: shallowRef<StoreItem[]>([]),
       paused: ref(false),
+      resetPause() {
+         this.paused.value = false
+      },
       reset() {
          this.clearItems()
          this.clearQueue()
-         this.paused.value = false
+         this.resetPause()
       },
       /* ====================================================================================
-       * Core Methods
+       * Active items methods
        * ==================================================================================== */
       add(item: StoreItem) {
          this.entries.value.unshift(item)
@@ -42,17 +45,17 @@ export function createStore(userConfig: NotivueConfig) {
       get(id: string) {
          return this.entries.value.find(({ id: _id }) => id === _id)
       },
-      update(id: string, options: DeepPartial<StoreItem>) {
-         Object.assign(this.get(id) ?? {}, options)
+      update(id: string, newOptions: DeepPartial<StoreItem>) {
+         Object.assign(this.get(id) ?? {}, newOptions)
          triggerRef(this.entries)
       },
       updateAll(updateItem: (item: StoreItem) => StoreItem) {
          this.entries.value = this.entries.value.map(updateItem)
       },
       remove(id: string) {
-         const isLast = id === this.entries.value[this.entries.value.length - 1].id
-         if (isLast && (config.pauseOnHover.value || config.pauseOnTouch.value)) {
-            this.resumeTimeouts()
+         if (config.pauseOnHover.value || config.pauseOnTouch.value) {
+            const isRemovingLast = id === this.entries.value[this.entries.value.length - 1].id
+            if (isRemovingLast) this.resumeTimeouts()
          }
 
          this.entries.value = this.entries.value.filter(({ timeout, id: _id }) => {
@@ -60,41 +63,51 @@ export function createStore(userConfig: NotivueConfig) {
             return clearTimeout(timeout as number), false
          })
 
-         if (config.enqueue.value && this.queue.value.length > 0) this.addFromQueue()
-         if (this.entries.value.length === 0) this.reset()
+         const shouldDequeue = config.enqueue.value && this.queue.value.length > 0
+         if (shouldDequeue) this.addFromQueue()
       },
       clearItems() {
          this.entries.value = []
       },
       /* ====================================================================================
-       * Queue Methods
+       * Queued items methods
        * ==================================================================================== */
-      addToQueue(item: StoreItem) {
+      addQueueItem(item: StoreItem) {
          this.queue.value.push(item)
          triggerRef(this.queue)
       },
+      getQueueItem(id: string) {
+         return this.queue.value.find(({ id: _id }) => id === _id)
+      },
+      updateQueueItem(id: string, newOptions: DeepPartial<StoreItem>) {
+         Object.assign(this.getQueueItem(id) ?? {}, newOptions)
+         triggerRef(this.queue)
+      },
+      removeQueueItem(id: string) {
+         this.queue.value = this.queue.value.filter(({ id: _id }) => id !== _id)
+      },
       addFromQueue() {
-         const nextItem = {
+         const firstQueueItem = {
             ...this.queue.value[0],
             timeout: (this.queue.value[0].timeout as () => void)(),
             createdAt: Date.now(),
          }
 
-         this.add(nextItem)
-         this.removeFromQueue(nextItem.id)
-      },
-      removeFromQueue(id: string) {
-         this.queue.value = this.queue.value.filter(({ id: _id }) => id !== _id)
+         nextTick(() => {
+            this.removeQueueItem(firstQueueItem.id)
+            this.add(firstQueueItem)
+         })
       },
       clearQueue() {
          this.queue.value = []
       },
       /* ====================================================================================
-       * Push proxy - Creates, updates or enqueues a pushed notification
+       * Push Proxy - Creates, updates or enqueues a notification created using push methods
        * ==================================================================================== */
       pushProxy<T extends Obj = Obj>(incomingOptions: UserPushOptionsWithInternals<T>) {
          const createdAt = Date.now()
          const entry = mergeOptions<T>(config.notifications.value, incomingOptions)
+         const isQueueActive = config.enqueue.value
 
          const createTimeout = () => {
             if (entry.duration === Infinity || this.paused.value) return undefined
@@ -102,31 +115,33 @@ export function createStore(userConfig: NotivueConfig) {
          }
 
          if ([NKeys.PROMISE_REJECT, NKeys.PROMISE_RESOLVE].includes(incomingOptions.type)) {
-            this.update(entry.id, { ...entry, createdAt, timeout: createTimeout() })
-         } else {
-            const isQueueActive = config.enqueue.value
-            const hasEnqueuedItems = this.queue.value.length > 0
-            const hasReachedLimit = this.entries.value.length >= config.limit.value
-            const isNotPromise = entry.type !== NKeys.PROMISE
-
-            const shouldEnqueue =
-               isQueueActive && isNotPromise && (hasEnqueuedItems || hasReachedLimit)
-
-            if (!isQueueActive && hasReachedLimit) {
-               const exceedingItems = this.entries.value.slice(config.limit.value - 1)
-               exceedingItems.forEach(({ id }) => this.addLeaveClass(id))
+            if (isQueueActive && this.getQueueItem(entry.id)) {
+               this.updateQueueItem(entry.id, { ...entry, createdAt, timeout: createTimeout })
+            } else {
+               this.update(entry.id, { ...entry, createdAt, timeout: createTimeout() })
             }
+         } else {
+            const hasReachedLimit = this.entries.value.length >= config.limit.value
+            const shouldDiscard = !isQueueActive && hasReachedLimit
+
+            if (shouldDiscard) {
+               const exceedingItems = this.entries.value.slice(config.limit.value - 1)
+               exceedingItems.forEach(({ id }) => window.setTimeout(() => this.addLeaveClass(id)))
+            }
+
+            const hasEnqueuedItems = this.queue.value.length > 0
+            const shouldEnqueue = isQueueActive && (hasEnqueuedItems || hasReachedLimit)
 
             const item = {
                ...entry,
                createdAt,
-               timeout: shouldEnqueue ? createTimeout : createTimeout(),
+               timeout: shouldEnqueue ? createTimeout : createTimeout(), // Will be called when dequeued
                clear: () => this.addLeaveClass(entry.id),
                destroy: () => this.remove(entry.id),
             } as StoreItem<T>
 
             if (shouldEnqueue) {
-               this.addToQueue(item)
+               this.addQueueItem(item)
             } else {
                this.add(item)
             }
@@ -136,7 +151,7 @@ export function createStore(userConfig: NotivueConfig) {
        * Timeouts
        * ==================================================================================== */
       pauseTimeouts() {
-         if (this.entries.value.length === 0 || this.paused.value) return
+         if (this.paused.value) return
 
          const pausedAt = Date.now()
 
@@ -160,7 +175,7 @@ export function createStore(userConfig: NotivueConfig) {
          this.paused.value = true
       },
       resumeTimeouts() {
-         if (this.entries.value.length === 0 || !this.paused.value) return
+         if (!this.paused.value) return
 
          this.updateAll((item) => {
             clearTimeout(item.timeout as number)
@@ -222,11 +237,11 @@ export function createStore(userConfig: NotivueConfig) {
       addEnterClass(id: string) {
          if (isReducedMotion()) return // Will be positioned by setPositions...
 
-         this.updateClass(id, config.animations.value.enter)
+         this.updateClass(id, config.animations.value.enter) // ...same if class is undefined
          items.updatePositions()
       },
       addLeaveClass(id: string) {
-         if (!config.animations.value.leave || isReducedMotion()) return this.remove(id)
+         if (isReducedMotion()) return this.remove(id)
 
          this.updateClass(id, config.animations.value.leave, () => this.remove(id))
          items.updatePositions()
@@ -241,17 +256,18 @@ export function createStore(userConfig: NotivueConfig) {
          let accPrevHeights = 0
 
          for (const el of sortedItems) {
+            const leaveClassName = config.animations.value.leave
             const currId = el.dataset.notivueId!
             const item = this.get(currId)
 
-            if (!el || !item || item.animationClass === config.animations.value.leave) {
+            if (!el || !item || item.animationClass === leaveClassName) {
                continue
             }
 
             this.update(currId, {
-               transitionStyles: {
-                  transitionDuration: elements.getTransitionData()!.duration,
-                  transitionTimingFunction: elements.getTransitionData()!.easing,
+               positionStyles: {
+                  transitionDuration: elements.getTransitionData().duration,
+                  transitionTimingFunction: elements.getTransitionData().easing,
                   ...(type === TType.HEIGHT ? { transitionProperty: 'all' } : {}),
                   ...(isReduced ? { transition: 'none' } : {}),
 
@@ -276,7 +292,7 @@ export function createStore(userConfig: NotivueConfig) {
       transitionData: null as null | { duration: string; easing: string },
       getTransitionData() {
          if (!this.transitionData) this.syncTransitionData()
-         return this.transitionData
+         return this.transitionData as { duration: string; easing: string }
       },
       syncTransitionData() {
          const animEl = this.wrapper.value?.querySelector(`.${config.animations.value.enter}`)
@@ -292,8 +308,11 @@ export function createStore(userConfig: NotivueConfig) {
             }
          }
       },
+      resetTransitionData() {
+         this.transitionData = null
+      },
       /* ====================================================================================
-       * Imperative animations
+       * Imperative - Classes
        * ==================================================================================== */
       addClearAllClass() {
          if (this.wrapper.value) {
@@ -307,5 +326,27 @@ export function createStore(userConfig: NotivueConfig) {
 
    const push = createPush(items, elements)
 
-   return { config, elements, items, push }
+   // Side effects
+
+   watch(
+      () => [config.enqueue.value, config.limit.value, config.teleportTo.value],
+      () => items.reset(),
+      { flush: 'sync' }
+   )
+
+   watch(
+      () => items.entries.value.length === 0,
+      () => {
+         items.resetPause()
+         elements.resetTransitionData()
+      },
+      { flush: 'sync' }
+   )
+
+   return {
+      config,
+      elements,
+      items,
+      push,
+   }
 }

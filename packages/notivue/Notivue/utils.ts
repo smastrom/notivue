@@ -4,7 +4,7 @@ export const hiddenInternalKeys: (keyof HiddenInternalItemData)[] = [
    'timeout',
    'elapsed',
    'resumedAt',
-   'transitionStyles',
+   'positionStyles',
    'animationClass',
    'onAnimationstart',
    'onAnimationend',
