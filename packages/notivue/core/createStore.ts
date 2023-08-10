@@ -23,14 +23,25 @@ export function createStore(userConfig: NotivueConfig) {
    const items = {
       entries: shallowRef<StoreItem[]>([]),
       queue: shallowRef<StoreItem[]>([]),
-      paused: ref(false),
+      isStreamPaused: ref(false),
+      isStreamFocused: ref(false),
+      /* ====================================================================================
+       * UI Methods and Reset
+       * ==================================================================================== */
       resetPause() {
-         this.paused.value = false
+         this.isStreamPaused.value = false
+      },
+      setStreamFocus() {
+         this.isStreamFocused.value = true
+      },
+      resetStreamFocus() {
+         this.isStreamFocused.value = false
       },
       reset() {
          this.clearItems()
          this.clearQueue()
          this.resetPause()
+         this.resetStreamFocus()
       },
       /* ====================================================================================
        * Active items methods
@@ -53,11 +64,6 @@ export function createStore(userConfig: NotivueConfig) {
          this.entries.value = this.entries.value.map(updateItem)
       },
       remove(id: string) {
-         if (config.pauseOnHover.value || config.pauseOnTouch.value) {
-            const isRemovingLast = id === this.entries.value[this.entries.value.length - 1].id
-            if (isRemovingLast) this.resumeTimeouts()
-         }
-
          this.entries.value = this.entries.value.filter(({ timeout, id: _id }) => {
             if (id !== _id) return true
             return clearTimeout(timeout as number), false
@@ -110,7 +116,7 @@ export function createStore(userConfig: NotivueConfig) {
          const isQueueActive = config.enqueue.value
 
          const createTimeout = () => {
-            if (entry.duration === Infinity || this.paused.value) return undefined
+            if (entry.duration === Infinity || this.isStreamPaused.value) return undefined
             return window.setTimeout(() => this.addLeaveClass(entry.id), entry.duration)
          }
 
@@ -151,20 +157,14 @@ export function createStore(userConfig: NotivueConfig) {
        * Timeouts
        * ==================================================================================== */
       pauseTimeouts() {
-         if (this.paused.value) return
+         if (this.entries.value.length === 0) return
+         if (this.isStreamPaused.value) return
 
          const pausedAt = Date.now()
 
+         console.log('Pausing timeouts')
          this.updateAll((item) => {
             clearTimeout(item.timeout as number)
-
-            console.log('Pause timeouts -', 'Prev elapsed:', item.elapsed)
-            console.log(
-               'Pause timeouts -',
-               'New elapsed:',
-               pausedAt - (item.resumedAt ?? item.createdAt) + (item.elapsed ?? 0)
-            )
-            console.log('- - - - - - - - - - - - - -')
 
             return {
                ...item,
@@ -172,11 +172,13 @@ export function createStore(userConfig: NotivueConfig) {
             }
          })
 
-         this.paused.value = true
+         this.isStreamPaused.value = true
       },
       resumeTimeouts() {
-         if (!this.paused.value) return
+         if (this.entries.value.length === 0) return
+         if (!this.isStreamPaused.value) return
 
+         console.log('Resuming timeouts')
          this.updateAll((item) => {
             clearTimeout(item.timeout as number)
             /**
@@ -203,10 +205,6 @@ export function createStore(userConfig: NotivueConfig) {
 
             let newTimeout = item.duration - item.elapsed
 
-            console.log('Resume timeouts -', 'Elapsed:', item.elapsed)
-            console.log('Resume timeouts -', 'New timeout:', item.duration - item.elapsed)
-            console.log('- - - - - - - - - - - - - -')
-
             return {
                ...item,
                resumedAt: Date.now(),
@@ -217,10 +215,10 @@ export function createStore(userConfig: NotivueConfig) {
             }
          })
 
-         this.paused.value = false
+         this.isStreamPaused.value = false
       },
       /* ====================================================================================
-       * Animations - Classes
+       * Reactive Classes - Animations
        * ==================================================================================== */
       updateClass(id: string, animationClass: string | undefined, onEnd = () => {}) {
          if (!animationClass) return onEnd()
@@ -247,7 +245,7 @@ export function createStore(userConfig: NotivueConfig) {
          items.updatePositions()
       },
       /* ====================================================================================
-       * Transitions - Styles
+       * Reactive Styles - Positions
        * ==================================================================================== */
       updatePositions(type = TType.PUSH) {
          const sortedItems = elements.getSortedItems()
@@ -283,8 +281,9 @@ export function createStore(userConfig: NotivueConfig) {
    const elements = {
       wrapper: ref<HTMLElement | null>(null),
       items: ref<HTMLElement[]>([]),
+      containers: ref<HTMLElement[]>([]),
       getSortedItems() {
-         return elements.items.value.sort((a, b) => +b.dataset.notivueId! - +a.dataset.notivueId!)
+         return this.items.value.sort((a, b) => +b.dataset.notivueId! - +a.dataset.notivueId!)
       },
       /* ====================================================================================
        * Transition data
@@ -295,7 +294,8 @@ export function createStore(userConfig: NotivueConfig) {
          return this.transitionData as { duration: string; easing: string }
       },
       syncTransitionData() {
-         const animEl = this.wrapper.value?.querySelector(`.${config.animations.value.enter}`)
+         const enterClass = config.animations.value.enter
+         const animEl = enterClass ? this.wrapper.value?.querySelector(`.${enterClass}`) : null
 
          if (!animEl) {
             this.transitionData = { duration: '0s', easing: 'ease' }
@@ -312,7 +312,7 @@ export function createStore(userConfig: NotivueConfig) {
          this.transitionData = null
       },
       /* ====================================================================================
-       * Imperative - Classes
+       * Imperative Classes - Animations
        * ==================================================================================== */
       addClearAllClass() {
          if (this.wrapper.value) {
@@ -335,12 +335,14 @@ export function createStore(userConfig: NotivueConfig) {
    )
 
    watch(
-      () => items.entries.value.length === 0,
+      () => items.entries.value.length === 0 && items.queue.value.length === 0,
       () => {
-         items.resetPause()
+         console.log('Reset from watcher!')
+
          elements.resetTransitionData()
-      },
-      { flush: 'sync' }
+         items.resetPause()
+         items.resetStreamFocus()
+      }
    )
 
    return {
