@@ -18,7 +18,7 @@ function setConfigTheme(themeKey: ThemeNames) {
 
 <template>
    <div class="Controls">
-      <div
+      <button
          v-for="themeName in themeNames"
          :key="themeName"
          class="ButtonBase SwitchButton"
@@ -28,7 +28,7 @@ function setConfigTheme(themeKey: ThemeNames) {
          @click="setConfigTheme(themeName)"
       >
          {{ themeName.replace('Theme', '') }}
-      </div>
+      </button>
    </div>
 </template>
 

@@ -9,6 +9,8 @@ export default defineConfig({
       alias: {
          '@/core': resolve(__dirname, './core'),
          '@/Notivue': resolve(__dirname, './Notivue'),
+         '@/NotivueSwipe': resolve(__dirname, './NotivueSwipe'),
+         '@/NotivueKeyboard': resolve(__dirname, './NotivueKeyboard'),
          '@/Notifications': resolve(__dirname, './Notifications'),
          notivue: resolve(__dirname, './index.ts'),
       },
@@ -28,9 +30,10 @@ export default defineConfig({
             },
          },
          plugins: [
+            // @ts-ignore
             terser({
                compress: {
-                  drop_console: false,
+                  drop_console: true,
                   defaults: true,
                   passes: 2,
                   ecma: 2020,

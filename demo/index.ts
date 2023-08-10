@@ -8,4 +8,12 @@ import '@/Notifications/notifications.css'
 
 import './assets/style.css'
 
-createApp(App).use(notivue).mount('#app')
+createApp(App)
+   .use(notivue, {
+      notifications: {
+         global: {
+            /* duration: Infinity, */
+         },
+      },
+   })
+   .mount('#app')

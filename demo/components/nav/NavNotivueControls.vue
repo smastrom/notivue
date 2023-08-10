@@ -59,7 +59,7 @@ function toggleQueue() {
 }
 
 watch(
-   () => (!config.pauseOnHover.value || !config.pauseOnTouch.value) && store.enableSwipe,
+   () => !config.pauseOnHover.value && store.enableSwipe,
    (isPauseOnHoverDisabled) => {
       if (isPauseOnHoverDisabled) {
          store.enableSwipe = false

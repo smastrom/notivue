@@ -2,11 +2,14 @@
 import { formatDistanceToNow as toNow } from 'date-fns'
 
 import type { NotivueSlot } from 'notivue'
-import type { CustomProps } from '../app/NavPushCustom.vue'
+import type { CustomProps } from '../nav/NavPushCustom.vue'
+import { useNotivueKeyboard } from '@/NotivueKeyboard/useNotivueKeyboard'
 
 defineProps<{
    item: NotivueSlot<CustomProps>
 }>()
+
+const { tabIndex } = useNotivueKeyboard()
 </script>
 
 <template>
@@ -18,18 +21,32 @@ defineProps<{
       <div class="Content">
          <div class="Details">
             <time>{{ toNow(item.createdAt) }} ago</time>
-            <div>
+            <p>
                <span class="FakeLink">{{ item.props.name }}</span>
                {{ item.message.replace(item.props.name, '') }}
-            </div>
+            </p>
          </div>
          <nav class="Buttons">
-            <button @click="item.clear" class="Button ButtonReverse">Deny</button>
-            <button @click="item.clear" class="Button">Accept</button>
+            <button @click="item.clear" class="Button ButtonReverse" :tabIndex="tabIndex">
+               Deny
+            </button>
+            <button @click="item.clear" class="Button" :tabIndex="tabIndex">Accept</button>
          </nav>
       </div>
    </div>
 </template>
+
+<style>
+[data-notivue-id]:focus-visible {
+   outline: none;
+
+   & .Notification {
+      outline: none;
+      box-shadow: 0px 0px 0px 2px #fff, 0px 0px 0px 5px #438bff;
+      border-radius: 10px;
+   }
+}
+</style>
 
 <style scoped>
 .Notification {
@@ -125,6 +142,12 @@ defineProps<{
 
    &:hover {
       opacity: 0.5;
+   }
+
+   &:focus-visible {
+      transition: none;
+      outline: none;
+      box-shadow: 0px 0px 0px 2px #fff, 0px 0px 0px 4px #438bff;
    }
 }
 

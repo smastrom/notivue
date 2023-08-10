@@ -8,6 +8,7 @@ import VueIcon from '../icons/VueIcon.vue'
 import Button from '../shared/Button.vue'
 
 import profilePicture from '../../assets/profile-picture.jpg?url'
+import { onBeforeUnmount, onMounted } from 'vue'
 
 const push = usePush()
 
@@ -41,8 +42,24 @@ function customPush() {
          profilePicture,
          isCustom: true,
       },
+      ariaRole: 'alert',
+      ariaLive: 'assertive',
    })
 }
+
+function pushUsingComboKey(e: KeyboardEvent) {
+   if (e.key === 'p') {
+      customPush()
+   }
+}
+
+onMounted(() => {
+   document.addEventListener('keydown', pushUsingComboKey)
+})
+
+onBeforeUnmount(() => {
+   document.removeEventListener('keydown', pushUsingComboKey)
+})
 
 async function customAsync() {
    resetOptions()

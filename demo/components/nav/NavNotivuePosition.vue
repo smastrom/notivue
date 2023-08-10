@@ -50,7 +50,7 @@ function setPosition(position: Position) {
 
 <template>
    <div role="radiogroup" aria-label="Position">
-      <div
+      <button
          class="ButtonBase SwitchButton"
          v-for="position in positions"
          :key="position.label"
@@ -61,9 +61,9 @@ function setPosition(position: Position) {
          :aria-checked="config.position.value === position.value"
       >
          <ArrowIcon :rotate="position.rotate" />
-      </div>
+      </button>
 
-      <div
+      <button
          class="ButtonBase SwitchButton Switch"
          role="switch"
          :aria-checked="isFullWidth"
@@ -71,8 +71,8 @@ function setPosition(position: Position) {
          @click="setFullWidth"
       >
          Full Width
-      </div>
-      <div
+      </button>
+      <button
          class="ButtonBase SwitchButton Switch"
          role="switch"
          :aria-checked="store.centerOnMobile"
@@ -80,7 +80,7 @@ function setPosition(position: Position) {
          @click="toggleCenterOnMobile"
       >
          Center on Mobile
-      </div>
+      </button>
    </div>
 </template>
 

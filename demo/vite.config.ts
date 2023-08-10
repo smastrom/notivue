@@ -22,6 +22,8 @@ export default defineConfig({
          notivue: resolve(__dirname, '../packages/notivue/index.ts'),
          '@/core': resolve(__dirname, '../packages/notivue/core'),
          '@/Notivue': resolve(__dirname, '../packages/notivue/Notivue'),
+         '@/NotivueSwipe': resolve(__dirname, '../packages/notivue/NotivueSwipe'),
+         '@/NotivueKeyboard': resolve(__dirname, '../packages/notivue/NotivueKeyboard'),
          '@/Notifications': resolve(__dirname, '../packages/notivue/Notifications'),
       },
    },

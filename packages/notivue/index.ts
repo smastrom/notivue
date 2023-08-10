@@ -5,7 +5,11 @@ export {
    useNotivue as useNotivueConfig,
    useNotifications,
 } from '@/core/useStore'
+
 export { default as Notivue } from '@/Notivue/Notivue.vue'
+
+export { default as NotivueSwipe } from '@/NotivueSwipe/NotivueSwipe.vue'
+export { default as NotivueKeyboard } from '@/NotivueKeyboard/NotivueKeyboard.vue'
 
 export { default as Notifications } from '@/Notifications/Notifications.vue'
 export {

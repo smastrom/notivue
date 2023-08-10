@@ -29,7 +29,7 @@ function toggleRTL() {
 
 <template>
    <div class="Controls">
-      <div
+      <button
          class="ButtonBase SwitchButton"
          role="switch"
          :aria-checked="store.renderTitles"
@@ -37,8 +37,8 @@ function toggleRTL() {
          @click="toggleRenderTitles"
       >
          Titles
-      </div>
-      <div
+      </button>
+      <button
          class="ButtonBase SwitchButton"
          role="switch"
          :aria-checked="store.outlinedIcons"
@@ -46,8 +46,8 @@ function toggleRTL() {
          @click="toggleOutlinedIcons"
       >
          Outlined
-      </div>
-      <div
+      </button>
+      <button
          class="ButtonBase SwitchButton"
          role="switch"
          :aria-checked="store.rtl"
@@ -55,7 +55,7 @@ function toggleRTL() {
          @click="toggleRTL"
       >
          RTL
-      </div>
+      </button>
    </div>
 </template>
 

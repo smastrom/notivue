@@ -5,7 +5,7 @@ import { formatDistanceToNow as toNow } from 'date-fns'
 import CloseIcon from '../icons/CloseIcon.vue'
 
 import type { NotivueSlot } from 'notivue'
-import type { CustomPromiseProps } from '../app/NavPushCustom.vue'
+import type { CustomPromiseProps } from '../nav/NavPushCustom.vue'
 
 const props = defineProps<{
    item: NotivueSlot<CustomPromiseProps>

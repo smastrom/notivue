@@ -18,6 +18,8 @@
          "notivue": ["../packages/notivue/index.ts"],
          "@/core/*": ["../packages/notivue/core/*"],
          "@/Notivue/*": ["../packages/notivue/Notivue/*"],
+         "@/NotivueSwipe/*": ["../packages/notivue/NotivueSwipe/*"],
+         "@/NotivueKeyboard/*": ["../packages/notivue/NotivueKeyboard/*"],
          "@/Notifications/*": ["../packages/notivue/Notifications/*"],
          "@/types": ["../packages/notivue/types.ts"]
       }
