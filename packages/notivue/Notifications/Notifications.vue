@@ -22,7 +22,7 @@ const closeIcon = computed(() => props.icons.close)
 </script>
 
 <template>
-   <div :class="Cx.NOTIFICATION" :data-notivue="item.type" :style="theme">
+   <div :class="Cx.NOTIFICATION" :data-notivue="item.type" :style="theme" tabindex="-1">
       <template v-if="icon">
          <Component
             v-if="typeof icon === 'object'"
@@ -43,6 +43,7 @@ const closeIcon = computed(() => props.icons.close)
       <button
          v-if="closeIcon && item.type !== 'promise'"
          :class="Cx.CLOSE"
+         tabindex="-1"
          @click="item.clear"
          :aria-label="props.closeAriaLabel"
       >
