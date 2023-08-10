@@ -15,7 +15,9 @@ import { usePush, type PushOptions } from 'notivue'
 
 import { useElements, useItems } from '@/core/useStore'
 import { focusableEls, keyboardInjectionKey } from './constants'
-import { useEventDevice } from './useEventDevice'
+import { useFocusDevice } from './useFocusDevice'
+
+import type { TabIndexValue, AriaHiddenValue } from './types'
 
 // Props
 
@@ -39,24 +41,23 @@ const props = withDefaults(
        *
        * @default "You're exiting the notifications stream. Press CTRL + N to navigate it again."
        */
-      leaveAnnouncement?: string
+      leaveMessage?: string
       /**
        * Text to be announced when attempting to navigate the stream but no candidates are available.
        *
        * @default "No notifications to navigate"
        */
-      negativeAnnouncement?: string
+      emptyMessage?: string
    }>(),
    {
       comboKey: 'n',
       handleClicks: true,
-      leaveAnnouncement:
-         "You're exiting the notifications stream. Press CTRL + N to navigate it again.",
-      negativeAnnouncement: 'No notifications to navigate',
+      leaveMessage: "You're exiting the notifications stream. Press CTRL + N to navigate it again.",
+      emptyMessage: 'No notifications to navigate',
    }
 )
 
-const { comboKey, handleClicks, leaveAnnouncement, negativeAnnouncement } = toRefs(props)
+const { comboKey, handleClicks, leaveMessage, emptyMessage } = toRefs(props)
 
 // Slots
 
@@ -67,7 +68,7 @@ defineSlots<{
 // Computed
 
 const leavePushOptions = computed<PushOptions>(() => ({
-   message: leaveAnnouncement.value,
+   message: leaveMessage.value,
    ariaRole: 'alert',
    ariaLive: 'assertive',
    props: {
@@ -75,8 +76,8 @@ const leavePushOptions = computed<PushOptions>(() => ({
    },
 }))
 
-const noNotificationsPushOptions = computed<PushOptions>(() => ({
-   message: negativeAnnouncement.value,
+const emptyPushOptions = computed<PushOptions>(() => ({
+   message: emptyMessage.value,
    ariaRole: 'alert',
    ariaLive: 'assertive',
    props: {
@@ -92,18 +93,18 @@ const push = usePush()
 
 // Internal State
 
-const { isKeyboard } = useEventDevice()
+const { isKeyboard } = useFocusDevice()
 
 const candidateContainers = ref<HTMLElement[]>([])
 
-const tabIndex = ref<0 | -1>(-1)
-const ariaHidden = ref<'true' | 'false'>('false')
+const tabIndex = ref<TabIndexValue>(-1)
+const ariaHidden = ref<AriaHiddenValue>('false')
 
-function setTabIndex(value: -1 | 0) {
+function setTabIndex(value: TabIndexValue) {
    tabIndex.value = value
 }
 
-function setAriaHidden(value: 'true' | 'false') {
+function setAriaHidden(value: AriaHiddenValue) {
    ariaHidden.value = value
 }
 
@@ -231,7 +232,7 @@ function onComboKeyDown(e: KeyboardEvent) {
          if (candidateContainers.value.length > 0) {
             candidateContainers.value[0].focus()
          } else {
-            push.info(noNotificationsPushOptions.value)
+            push.info(emptyPushOptions.value)
          }
       }
    }
@@ -268,7 +269,6 @@ function onCandidatesKeydown(e: KeyboardEvent) {
          (!e.shiftKey && e.key === 'Tab' && isLastElement)
 
       if (isLeavingStream) {
-         e.preventDefault()
          onStreamLeave()
       }
 
@@ -289,9 +289,10 @@ function onCandidatesKeydown(e: KeyboardEvent) {
       }
 
       if (e.key === 'Escape') {
-         e.preventDefault()
          onStreamLeave()
       }
+
+      e.preventDefault()
    }
 }
 

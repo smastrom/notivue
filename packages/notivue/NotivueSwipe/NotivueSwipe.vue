@@ -68,6 +68,8 @@ const lastItemContainer = computed(() => elements.items.value[elements.items.val
 
 // Internal
 
+const RETURN_DUR = 300
+
 const itemRef = ref<HTMLElement | null>(null)
 
 const state = shallowReactive({
@@ -78,7 +80,7 @@ const state = shallowReactive({
    isPressed: false,
    isClearing: false,
    startX: 0,
-   currX: 0,
+   currentX: 0,
 })
 
 const styles = shallowRef<CSSProperties>({})
@@ -145,6 +147,14 @@ function setTargetPosition() {
    })
 }
 
+function setReturnStyles() {
+   setStyles({
+      transition: isReducedMotion() ? 'none' : `${RETURN_DUR}ms cubic-bezier(0.76, 0, 0.24, 1)`,
+      transform: `translate3d(0px, 0px, 0px)`,
+      opacity: '1',
+   })
+}
+
 function isPointerInside(e: PointerEvent) {
    return e.clientX > state.targetLeft && e.clientX < state.targetRight
 }
@@ -193,15 +203,15 @@ function onPointerMove(e: PointerEvent) {
 
    setStyles({
       transition: 'none',
-      transform: `translate3d(${state.currX}px, 0px, 0px)`,
-      opacity: `${1 - Math.abs(state.currX) / (state.targetWidth * 0.65)}`,
+      transform: `translate3d(${state.currentX}px, 0px, 0px)`,
+      opacity: `${1 - Math.abs(state.currentX) / (state.targetWidth * 0.65)}`,
    })
 
    setState({
-      currX: e.clientX - state.startX,
+      currentX: e.clientX - state.startX,
    })
 
-   if (Math.abs(state.currX) > state.targetWidth * threshold.value) {
+   if (Math.abs(state.currentX) > state.targetWidth * threshold.value) {
       state.isClearing = true
       onPointerMoveClear(e)
    }
@@ -229,17 +239,6 @@ function onPointerMoveClear(e: PointerEvent) {
 /**
  * Never triggered if the notification has been closed on pointer move.
  */
-
-const RETURN_DUR = 300
-
-function setReturnStyles() {
-   setStyles({
-      transition: isReducedMotion() ? 'none' : `${RETURN_DUR}ms cubic-bezier(0.76, 0, 0.24, 1)`,
-      transform: `translate3d(0px, 0px, 0px)`,
-      opacity: '1',
-   })
-}
-
 function onPointerUp(e: PointerEvent) {
    if (!shouldSwipe(e)) return
 
@@ -258,7 +257,7 @@ function onPointerUp(e: PointerEvent) {
 
    setState({
       startX: 0,
-      currX: 0,
+      currentX: 0,
       isPressed: false,
       isLocked: true,
    })
@@ -278,7 +277,7 @@ function onPointerLeave(e: PointerEvent) {
 
    setState({
       startX: 0,
-      currX: 0,
+      currentX: 0,
       isPressed: false,
       isLocked: false,
    })
@@ -290,27 +289,32 @@ function onPointerLeave(e: PointerEvent) {
  * Lifecycle / Watchers
  * ==================================================================================== */
 
-function addListeners() {
-   if (!itemRef.value) return
+const events = [
+   ['pointerenter', onPointerEnter],
+   ['pointerdown', onPointerDown],
+   ['pointermove', onPointerMove],
+   ['pointerup', onPointerUp],
+   ['pointerleave', onPointerLeave],
+] as const
 
+function addListeners() {
    window.addEventListener('resize', setTargetPosition)
 
-   itemRef.value.addEventListener('pointerenter', onPointerEnter)
-   itemRef.value.addEventListener('pointerdown', onPointerDown)
-   itemRef.value.addEventListener('pointermove', onPointerMove)
-   itemRef.value.addEventListener('pointerup', onPointerUp)
-   itemRef.value.addEventListener('pointerleave', onPointerLeave)
+   if (!itemRef.value) return
+
+   events.forEach(([event, handler]) => {
+      itemRef.value!.addEventListener(event, handler)
+   })
 }
 
 function removeListeners() {
-   if (!itemRef.value) return
-
    window.removeEventListener('resize', setTargetPosition)
 
-   itemRef.value.removeEventListener('pointerenter', onPointerEnter)
-   itemRef.value.removeEventListener('pointermove', onPointerMove)
-   itemRef.value.removeEventListener('pointerup', onPointerUp)
-   itemRef.value.removeEventListener('pointerleave', onPointerLeave)
+   if (!itemRef.value) return
+
+   events.forEach(([event, handler]) => {
+      itemRef.value!.removeEventListener(event, handler)
+   })
 }
 
 watch(

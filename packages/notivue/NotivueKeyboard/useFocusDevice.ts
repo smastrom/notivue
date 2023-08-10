@@ -1,6 +1,6 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 
-export function useEventDevice() {
+export function useFocusDevice() {
    const isKeyboard = ref(false)
 
    const setKeyboardFocus = () => (isKeyboard.value = true)
