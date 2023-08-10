@@ -85,6 +85,7 @@ onBeforeUnmount(() => {
          >
             <!-- Notification Container -->
             <div
+               v-if="!item.ariaLiveOnly"
                :tabIndex="props.tabIndex"
                :data-notivue-id="item.id"
                :ref="elements.containers"

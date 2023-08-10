@@ -42,7 +42,6 @@ export interface NotivueConfigRequired {
    pauseOnTabChange: boolean
    /** Wheter to enqueue notifications when limit is reached. */
    enqueue: boolean
-
    /** Position of notifications, one of 'top-left', 'top-center', 'top-right', 'bottom-left', 'bottom-center', 'bottom-right'. */
    position: Position
    /** Notification options for each type. */
@@ -95,8 +94,15 @@ export interface PushProps<T extends Obj = Obj> {
    props?: T
 }
 
+export interface PushSpecificOptions {
+   skipQueue?: boolean
+   ariaLiveOnly?: boolean
+}
+
 /** Defined by the user when calling push() */
-export type UserPushOptions<T extends Obj = Obj> = Partial<NotificationOptions> & PushProps<T>
+export type UserPushOptions<T extends Obj = Obj> = Partial<NotificationOptions> &
+   PushProps<T> &
+   PushSpecificOptions
 
 /** Added in background after calling push() */
 export type InternalPushOptions = { id: string; type: NotificationType }
@@ -108,7 +114,8 @@ export type UserPushOptionsWithInternals<T extends Obj = Obj> = UserPushOptions<
 export type StoreItem<T extends Obj = Obj> = DeepRequired<NotificationOptions> &
    Required<PushProps<T>> &
    InternalPushOptions &
-   InternalItemData
+   InternalItemData &
+   PushSpecificOptions
 
 /** Portion of the store item exposed to slot */
 export type NotivueSlot<T extends Obj = Obj> = Omit<StoreItem<T>, keyof HiddenInternalItemData>

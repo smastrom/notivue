@@ -114,6 +114,7 @@ export function createStore(userConfig: NotivueConfig) {
          const createdAt = Date.now()
          const entry = mergeOptions<T>(config.notifications.value, incomingOptions)
          const isQueueActive = config.enqueue.value
+         const shouldSkipQueue = incomingOptions.skipQueue
 
          const createTimeout = () => {
             if (entry.duration === Infinity || this.isStreamPaused.value) return undefined
@@ -136,7 +137,8 @@ export function createStore(userConfig: NotivueConfig) {
             }
 
             const hasEnqueuedItems = this.queue.value.length > 0
-            const shouldEnqueue = isQueueActive && (hasEnqueuedItems || hasReachedLimit)
+            const shouldEnqueue =
+               isQueueActive && (hasEnqueuedItems || hasReachedLimit) && !shouldSkipQueue
 
             const item = {
                ...entry,
