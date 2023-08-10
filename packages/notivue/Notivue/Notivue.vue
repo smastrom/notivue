@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Teleport, onBeforeUnmount, type Component } from 'vue'
+import { Teleport, onBeforeUnmount, type Component, getCurrentInstance } from 'vue'
 
 import { useNotivue, useItems, useElements } from '@/core/useStore'
 import { useMouseEvents } from './composables/useMouseEvents'
@@ -10,6 +10,7 @@ import { useVisibilityChange } from './composables/useVisibilityChange'
 import { getSlotContext } from './utils'
 
 import type { NotivueSlot } from 'notivue'
+import type { ContainerTabIndexMap } from '@/NotivueKeyboard/types'
 
 // Props
 
@@ -21,15 +22,18 @@ const props = withDefaults(
        */
       renderAriaLive?: boolean
       /**
-       * Aria-live aria-hidden dynamic attribute. Only needed if using NotivueKeyboard.
+       * Aria-live region aria-hidden dynamic attribute. Only needed if using NotivueKeyboard.
        */
-      ariaHidden?: 'true' | 'false'
+      ariaLiveHidden?: 'true' | 'false'
       /**
-       * Notification container dynamic tabIndex. Only needed if using NotivueKeyboard.
+       * Notification containers tabIndex map. Only needed if using NotivueKeyboard.
        */
-      tabIndex?: 0 | -1
+      containersTabIndex?: ContainerTabIndexMap
    }>(),
-   { renderAriaLive: true, ariaHidden: 'false', tabIndex: -1 }
+   {
+      renderAriaLive: true,
+      ariaLiveHidden: 'false',
+   }
 )
 
 defineSlots<{
@@ -62,18 +66,18 @@ onBeforeUnmount(() => {
    <Teleport :to="config.teleportTo.value">
       <!-- List Container -->
       <ol
-         :data-notivue-top="config.isTopAlign.value"
+         v-if="items.entries.value.length > 0"
+         v-bind="{ ...mouseEvents, ...touchEvents }"
+         :data-notivue-align="config.isTopAlign.value ? 'top' : 'bottom'"
          :ref="elements.wrapper"
          :style="styles.ol"
-         v-bind="{ ...mouseEvents, ...touchEvents }"
          :class="props.class"
-         v-if="items.entries.value.length > 0"
       >
          <!-- List Item -->
          <li
             v-for="(item, index) in items.entries.value"
-            :key="item.id"
             tabindex="-1"
+            :key="item.id"
             :data-notivue-id="item.id"
             :aria-setsize="items.entries.value.length"
             :aria-posinset="index + 1"
@@ -86,8 +90,8 @@ onBeforeUnmount(() => {
             <!-- Notification Container -->
             <div
                v-if="!item.ariaLiveOnly"
-               :tabIndex="props.tabIndex"
-               :data-notivue-id="item.id"
+               :tabindex="containersTabIndex?.[item.id] ?? -1"
+               :data-notivue-container="item.id"
                :ref="elements.containers"
                :style="styles.item"
                :class="item.animationClass"
@@ -103,9 +107,9 @@ onBeforeUnmount(() => {
                v-if="props.renderAriaLive"
                aria-atomic="true"
                :aria-live="item.ariaLive"
+               :aria-hidden="props.ariaLiveHidden"
                :role="item.ariaRole"
                :style="visuallyHidden"
-               :aria-hidden="props.ariaHidden"
             >
                {{ item.title ? `${item.title}: ` : '' }}{{ item.message }}
             </div>

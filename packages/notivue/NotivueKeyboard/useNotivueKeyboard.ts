@@ -1,4 +1,4 @@
-import { inject, ref } from 'vue'
+import { inject, ref, computed } from 'vue'
 
 import { keyboardInjectionKey } from './constants'
 import { isSSR } from '@/core/utils'
@@ -9,7 +9,8 @@ export function useNotivueKeyboard(): NotivueKeyboardData {
    if (isSSR) {
       return {
          tabIndex: ref(-1),
-         ariaHidden: ref('false'),
+         ariaLiveHidden: ref('false'),
+         containersTabIndex: computed(() => ({})),
       }
    }
 

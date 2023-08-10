@@ -8,7 +8,9 @@ import {
    toRefs,
    provide,
    watchEffect,
+   nextTick,
    type Component,
+   cloneVNode,
 } from 'vue'
 
 import { usePush, type PushOptions } from 'notivue'
@@ -17,7 +19,7 @@ import { useElements, useItems } from '@/core/useStore'
 import { focusableEls, keyboardInjectionKey } from './constants'
 import { useFocusDevice } from './useFocusDevice'
 
-import type { TabIndexValue, AriaHiddenValue } from './types'
+import type { TabIndexValue, AriaHiddenValue, ContainerTabIndexMap } from './types'
 
 // Props
 
@@ -62,7 +64,11 @@ const { comboKey, handleClicks, leaveMessage, emptyMessage } = toRefs(props)
 // Slots
 
 defineSlots<{
-   default(props: { tabIndex: 0 | -1; ariaHidden: 'true' | 'false' }): Component
+   default(props: {
+      tabIndex: 0 | -1
+      ariaLiveHidden: 'true' | 'false'
+      containersTabIndex: ContainerTabIndexMap
+   }): Component
 }>()
 
 // Computed
@@ -95,22 +101,37 @@ const push = usePush()
 
 const { isKeyboard } = useFocusDevice()
 
+const candidateIds = ref({ qualified: [] as string[], unqualified: [] as string[] })
 const candidateContainers = ref<HTMLElement[]>([])
 
 const tabIndex = ref<TabIndexValue>(-1)
-const ariaHidden = ref<AriaHiddenValue>('false')
+const ariaLiveHidden = ref<AriaHiddenValue>('false')
 
 function setTabIndex(value: TabIndexValue) {
    tabIndex.value = value
 }
 
-function setAriaHidden(value: AriaHiddenValue) {
-   ariaHidden.value = value
+function setAriaLiveHidden(value: AriaHiddenValue) {
+   ariaLiveHidden.value = value
 }
 
+// Computed
+
+const containersTabIndex = computed(() => {
+   const map = {} as ContainerTabIndexMap
+
+   candidateIds.value.qualified.forEach((id) => (map[id] = tabIndex.value))
+   candidateIds.value.unqualified.forEach((id) => (map[id] = -1))
+
+   return map
+})
+
+// Provide
+
 provide(keyboardInjectionKey, {
+   containersTabIndex,
    tabIndex,
-   ariaHidden,
+   ariaLiveHidden,
 })
 
 // Non-Reactive
@@ -125,17 +146,27 @@ let lastElement: HTMLElement | null = null
 function setCandidates(newContainers: HTMLElement[]) {
    let newCandidateContainers: HTMLElement[] = []
 
-   elements.getSortedItems.call({ items: { value: newContainers } }).forEach((container, index) => {
-      const innerFocusableEls = Array.from(container.querySelectorAll(focusableEls)).filter(
-         (el) => el instanceof HTMLElement
-      ) as HTMLElement[]
+   const newIds = { qualified: [] as string[], unqualified: [] as string[] }
 
-      if (innerFocusableEls.length > 1) {
-         newCandidateContainers.push(container)
-         lastElement = innerFocusableEls.at(-1) as HTMLElement
-      }
-   })
+   newContainers
+      .map((container) => ({ id: container.dataset.notivueContainer!, container }))
+      .sort((a, b) => +b.id - +a.id)
+      .forEach(({ id, container }) => {
+         const innerFocusableEls = Array.from(container.querySelectorAll(focusableEls)).filter(
+            (el) => el instanceof HTMLElement
+         ) as HTMLElement[]
 
+         if (innerFocusableEls.length > 1) {
+            newIds.qualified.push(id)
+            newCandidateContainers.push(container)
+
+            lastElement = innerFocusableEls.at(-1) as HTMLElement
+         } else {
+            newIds.unqualified.push(id)
+         }
+      })
+
+   candidateIds.value = newIds
    candidateContainers.value = newCandidateContainers
 }
 
@@ -149,7 +180,7 @@ if (import.meta.env.DEV) {
          {
             isKeyboard: isKeyboard.value,
             'items.isStreamFocused': items.isStreamFocused.value,
-            ariaHidden: ariaHidden.value,
+            ariaLiveHidden: ariaLiveHidden.value,
             tabIndex: tabIndex.value,
          },
       ]
@@ -181,6 +212,7 @@ if (import.meta.env.DEV) {
  * This callback is fired in any of the above cases before keydown,
  * pointer and focus events, also if using devices different than keyboard.
  */
+
 function trackStreamFocus(event: FocusEvent) {
    const stream = elements.wrapper.value
    if (!stream) return
@@ -201,7 +233,7 @@ function trackStreamFocus(event: FocusEvent) {
 
          items.setStreamFocus()
          items.pauseTimeouts()
-         setAriaHidden('true')
+         setAriaLiveHidden('true')
          setTabIndex(0)
       }
    } else {
@@ -212,7 +244,7 @@ function trackStreamFocus(event: FocusEvent) {
 
          items.resetStreamFocus()
          items.resumeTimeouts()
-         setAriaHidden('false')
+         setAriaLiveHidden('false')
          setTabIndex(-1)
       }
    }
@@ -269,6 +301,7 @@ function onCandidatesKeydown(e: KeyboardEvent) {
          (!e.shiftKey && e.key === 'Tab' && isLastElement)
 
       if (isLeavingStream) {
+         e.preventDefault()
          onStreamLeave()
       }
 
@@ -278,6 +311,7 @@ function onCandidatesKeydown(e: KeyboardEvent) {
          e.target instanceof HTMLButtonElement || e.target instanceof HTMLAnchorElement
 
       if (isClickable && (e.key === ' ' || e.key === 'Enter')) {
+         e.preventDefault()
          e.target.click()
 
          const nextContainer = candidateContainers.value[currCandidateIndex + 1]
@@ -289,10 +323,9 @@ function onCandidatesKeydown(e: KeyboardEvent) {
       }
 
       if (e.key === 'Escape') {
+         e.preventDefault()
          onStreamLeave()
       }
-
-      e.preventDefault()
    }
 }
 
@@ -354,5 +387,5 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-   <slot v-bind="{ ariaHidden, tabIndex }" />
+   <slot v-bind="{ ariaLiveHidden, tabIndex, containersTabIndex }" />
 </template>

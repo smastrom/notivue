@@ -29,11 +29,11 @@ const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme }
 </script>
 
 <template>
-   <NotivueKeyboard v-slot="{ tabIndex, ariaHidden }">
+   <NotivueKeyboard v-slot="{ containersTabIndex, ariaLiveHidden }">
       <Notivue
          :class="{ CenterOnMobile: store.centerOnMobile }"
-         :ariaHidden="ariaHidden"
-         :tabIndex="tabIndex"
+         :ariaLiveHidden="ariaLiveHidden"
+         :containersTabIndex="containersTabIndex"
          v-slot="item"
       >
          <!-- <div class="VisuallyHidden" v-if="item.props.isNotivueKeyboard" /> -->
@@ -81,7 +81,7 @@ const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme }
    --nv-root-bottom: 260px;
 }
 
-[data-notivue-top='false'] {
+[data-notivue-align='bottom'] {
    --nv-root-top: 0px;
 }
 
