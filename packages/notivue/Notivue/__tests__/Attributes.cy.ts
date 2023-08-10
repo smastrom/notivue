@@ -18,6 +18,6 @@ it('Notivue attributes are added correctly', () => {
       .invoke('attr', 'data-notivue-id')
       .should('exist')
       .get('ol')
-      .invoke('attr', 'data-notivue-top')
+      .invoke('attr', 'data-notivue-align')
       .should('exist')
 })

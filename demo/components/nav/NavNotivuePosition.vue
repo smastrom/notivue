@@ -50,8 +50,8 @@ function setPosition(position: Position) {
 
 <template>
    <div role="radiogroup" aria-label="Position">
-      <button
-         class="ButtonBase SwitchButton"
+      <div
+         class="ButtonBase SwitchButton SquaredSwitch"
          v-for="position in positions"
          :key="position.label"
          role="radio"
@@ -61,7 +61,7 @@ function setPosition(position: Position) {
          :aria-checked="config.position.value === position.value"
       >
          <ArrowIcon :rotate="position.rotate" />
-      </button>
+      </div>
 
       <button
          class="ButtonBase SwitchButton Switch"

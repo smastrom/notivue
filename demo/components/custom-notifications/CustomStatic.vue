@@ -37,7 +37,7 @@ const { tabIndex } = useNotivueKeyboard()
 </template>
 
 <style>
-[data-notivue-id]:focus-visible {
+[data-notivue-container]:focus-visible {
    outline: none;
 
    & .Notification {
