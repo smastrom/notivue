@@ -30,7 +30,7 @@ const props = withDefaults(
       /** A [querySelectorAll](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll)
        * string that specifies elements to be exempted from the swipe action.
        *
-       * @default `a, button`
+       * @default "a, button"
        */
       exclude?: string
       /** Whether to disable the swipe gesture or not.
@@ -46,7 +46,7 @@ const props = withDefaults(
        */
       threshold?: number
    }>(),
-   { exclude: 'a, button', disabled: false, threshold: 0.5 }
+   { touchOnly: false, exclude: 'a, button', disabled: false, threshold: 0.5 }
 )
 
 const touchOnly = toRef(props, 'touchOnly')
@@ -115,7 +115,7 @@ function setDragStyles() {
          el.style.touchAction = 'none'
          el.style.userSelect = 'none'
       }
-   }) // TODO: Maybe find a better way to do this
+   }) // Could this be done the Vue way?
 }
 
 function resetDragStyles() {
@@ -222,12 +222,7 @@ function onPointerMoveClear(e: PointerEvent) {
 
    if (isMouse(e) && isPointerInside(e)) {
       const isLastItem = lastItemContainer.value.contains(itemRef.value)
-
-      if (isLastItem) {
-         items.resumeTimeouts()
-      } else {
-         items.pauseTimeouts()
-      }
+      if (!isLastItem) items.pauseTimeouts()
    } else {
       items.resumeTimeouts()
    }

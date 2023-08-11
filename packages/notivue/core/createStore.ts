@@ -26,7 +26,7 @@ export function createStore(userConfig: NotivueConfig) {
       isStreamPaused: ref(false),
       isStreamFocused: ref(false),
       /* ====================================================================================
-       * UI Methods and Reset
+       * Interaction states and store reset
        * ==================================================================================== */
       resetPause() {
          this.isStreamPaused.value = false
@@ -108,10 +108,19 @@ export function createStore(userConfig: NotivueConfig) {
          this.queue.value = []
       },
       /* ====================================================================================
+       * Proxies - Used by push methods
+       *
+       * Clear Proxy - Removes a notification and resumes timesouts if needed
        * Push Proxy - Creates, updates or enqueues a notification created using push methods
        * ==================================================================================== */
+      clearProxy(id: string, isDestroy = false) {
+         const isLast = this.entries.value.length > 1 && this.entries.value.at(-1)?.id === id
+         if (isLast) this.resumeTimeouts()
+         isDestroy ? this.remove(id) : this.addLeaveClass(id)
+      },
       pushProxy<T extends Obj = Obj>(incomingOptions: UserPushOptionsWithInternals<T>) {
          const createdAt = Date.now()
+
          const entry = mergeOptions<T>(config.notifications.value, incomingOptions)
          const isQueueActive = config.enqueue.value
          const shouldSkipQueue = incomingOptions.skipQueue
@@ -144,8 +153,8 @@ export function createStore(userConfig: NotivueConfig) {
                ...entry,
                createdAt,
                timeout: shouldEnqueue ? createTimeout : createTimeout(), // Will be called when dequeued
-               clear: () => this.addLeaveClass(entry.id),
-               destroy: () => this.remove(entry.id),
+               clear: () => this.clearProxy(entry.id),
+               destroy: () => this.clearProxy(entry.id, true),
             } as StoreItem<T>
 
             if (shouldEnqueue) {
@@ -220,7 +229,7 @@ export function createStore(userConfig: NotivueConfig) {
          this.isStreamPaused.value = false
       },
       /* ====================================================================================
-       * Reactive Classes - Animations
+       * Reactive classes - Animations
        * ==================================================================================== */
       updateClass(id: string, animationClass: string | undefined, onEnd = () => {}) {
          if (!animationClass) return onEnd()
@@ -240,6 +249,12 @@ export function createStore(userConfig: NotivueConfig) {
          this.updateClass(id, config.animations.value.enter) // ...same if class is undefined
          items.updatePositions()
       },
+      removeClick(id: string) {
+         if (id === this.entries.value.at(-1)?.id) {
+            items.resumeTimeouts()
+         }
+         this.addLeaveClass(id)
+      },
       addLeaveClass(id: string) {
          if (isReducedMotion()) return this.remove(id)
 
@@ -247,7 +262,7 @@ export function createStore(userConfig: NotivueConfig) {
          items.updatePositions()
       },
       /* ====================================================================================
-       * Reactive Styles - Positions
+       * Reactive styles - Positions
        * ==================================================================================== */
       updatePositions(type = TType.PUSH) {
          const sortedItems = elements.getSortedItems()
@@ -314,7 +329,7 @@ export function createStore(userConfig: NotivueConfig) {
          this.transitionData = null
       },
       /* ====================================================================================
-       * Imperative Classes - Animations
+       * Imperative - Animations
        * ==================================================================================== */
       addClearAllClass() {
          if (this.wrapper.value) {
@@ -339,7 +354,7 @@ export function createStore(userConfig: NotivueConfig) {
    watch(
       () => items.entries.value.length === 0 && items.queue.value.length === 0,
       () => {
-         console.log('Reset from watcher!')
+         console.log('Store reset!')
 
          elements.resetTransitionData()
          items.resetPause()
