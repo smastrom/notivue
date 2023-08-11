@@ -136,14 +136,6 @@ watch(
          Clear on Swipe
       </button>
 
-      <select class="ButtonBase Select" v-model="config.limit.value" aria-label="Limit">
-         <option selected :value="Infinity">Unlimited</option>
-         <option :value="1">Limit - 1</option>
-         <option :value="3">Limit - 3</option>
-         <option :value="5">Limit - 5</option>
-         <option :value="10">Limit - 10</option>
-      </select>
-
       <button
          class="ButtonBase SwitchButton"
          role="switch"
@@ -154,6 +146,16 @@ watch(
       >
          Enqueue ({{ enqueuedLength }})
       </button>
+
+      <hr />
+
+      <select class="ButtonBase Select" v-model="config.limit.value" aria-label="Limit">
+         <option selected :value="Infinity">Unlimited</option>
+         <option :value="1">Limit - 1</option>
+         <option :value="3">Limit - 3</option>
+         <option :value="5">Limit - 5</option>
+         <option :value="10">Limit - 10</option>
+      </select>
    </div>
 </template>
 
@@ -167,5 +169,11 @@ watch(
 .Select {
    text-align: center;
    padding-left: 1.25em;
+}
+
+hr {
+   margin: 0.25rem 0;
+   border: none;
+   border-bottom: 1px solid var(--divider-color);
 }
 </style>

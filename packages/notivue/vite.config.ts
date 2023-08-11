@@ -4,6 +4,14 @@ import dts from 'vite-plugin-dts'
 import terser from '@rollup/plugin-terser'
 import { resolve } from 'path'
 
+export const terserConf = {
+   compress: {
+      drop_console: true,
+      defaults: true,
+      passes: 2,
+   },
+}
+
 export default defineConfig({
    resolve: {
       alias: {
@@ -29,26 +37,27 @@ export default defineConfig({
                vue: 'Vue',
             },
          },
-         plugins: [
-            // @ts-ignore
-            terser({
-               compress: {
-                  drop_console: true,
-                  defaults: true,
-                  passes: 2,
-                  ecma: 2020,
-               },
-            }),
-         ],
+         plugins: [terser(terserConf)],
       },
    },
    plugins: [
-      // @ts-ignore
       dts({
          staticImport: true,
          insertTypesEntry: true,
          rollupTypes: true,
       }),
       vue(),
+      postBuild(),
    ],
 })
+
+function postBuild() {
+   return {
+      name: 'post-build',
+      buildEnd() {
+         if (!terserConf.compress.drop_console) {
+            throw new Error('terserConf.compress.drop_console must be true')
+         }
+      },
+   }
+}

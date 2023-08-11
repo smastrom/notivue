@@ -44,6 +44,7 @@ html {
    --logo-fill: #455162;
    --logo-stroke: #1e2226;
    --links-color: #424850;
+   --divider-color: #b6c5d8;
 
    background: var(--background-color);
    background: var(--background-gradient);
@@ -61,6 +62,7 @@ html[data-theme='dark'] {
    --logo-fill: #7b7b7b;
    --logo-stroke: #141414;
    --links-color: #d7d7d7;
+   --divider-color: #ffffff4a;
 
    background: var(--background-color);
    background-color: var(--background-color);
@@ -78,6 +80,7 @@ html[data-theme='slate'] {
    --logo-fill: #878b92;
    --logo-stroke: #141414;
    --links-color: #d7d7d7;
+   --divider-color: #ffffff4a;
 
    background: var(--background-color);
    background-color: var(--background-color);

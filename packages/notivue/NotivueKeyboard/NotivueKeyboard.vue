@@ -18,45 +18,16 @@ import { useElements, useItems } from '@/core/useStore'
 import { focusableEls, keyboardInjectionKey } from './constants'
 import { useFocusDevice } from './useFocusDevice'
 
-import type { TabIndexValue, ContainerTabIndexMap } from './types'
+import type { TabIndexValue, ContainerTabIndexMap, NotivueKeyboardProps } from './types'
 
 // Props
 
-const props = withDefaults(
-   defineProps<{
-      /**
-       * Key to combine with Shift to enter or exit the stream.
-       *
-       * @default "n"
-       */
-      comboKey?: string
-      /**
-       * Whether to focus next candidate or exit the stream after pressing
-       * any button or link inside a notification.
-       *
-       * @default true
-       */
-      handleClicks?: boolean
-      /**
-       * Text to be announced when leaving the stream
-       *
-       * @default "You're exiting the notifications stream. Press CTRL + N to navigate it again."
-       */
-      leaveMessage?: string
-      /**
-       * Text to be announced when attempting to navigate the stream but no candidates are available.
-       *
-       * @default "No notifications to navigate"
-       */
-      emptyMessage?: string
-   }>(),
-   {
-      comboKey: 'n',
-      handleClicks: true,
-      leaveMessage: "You're exiting the notifications stream. Press CTRL + N to navigate it again.",
-      emptyMessage: 'No notifications to navigate',
-   }
-)
+const props = withDefaults(defineProps<NotivueKeyboardProps>(), {
+   comboKey: 'n',
+   handleClicks: true,
+   leaveMessage: "You're exiting the notifications stream. Press CTRL + N to navigate it again.",
+   emptyMessage: 'No notifications to navigate',
+})
 
 const { comboKey, handleClicks, leaveMessage, emptyMessage } = toRefs(props)
 

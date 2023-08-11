@@ -15,13 +15,15 @@ import type { ContainerTabIndexMap } from '@/NotivueKeyboard/types'
 
 // Props
 
-const props = defineProps<{
+interface NotivueProps {
    class?: string | Record<string, boolean> | (string | Record<string, boolean>)[]
    /**
     * Notification containers tabIndex map. Only needed if using NotivueKeyboard.
     */
    containersTabIndex?: ContainerTabIndexMap
-}>()
+}
+
+const props = defineProps<NotivueProps>()
 
 defineSlots<{
    default(item: NotivueSlot & { key?: string }): Component

@@ -18,8 +18,9 @@ export default defineConfig({
       alias: {
          '@/lib': resolve(__dirname, './lib'),
          '@/components': resolve(__dirname, './components'),
-
          notivue: resolve(__dirname, '../packages/notivue/index.ts'),
+
+         // Needed in dev mode
          '@/core': resolve(__dirname, '../packages/notivue/core'),
          '@/Notivue': resolve(__dirname, '../packages/notivue/Notivue'),
          '@/NotivueSwipe': resolve(__dirname, '../packages/notivue/NotivueSwipe'),
