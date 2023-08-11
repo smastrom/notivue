@@ -12,12 +12,20 @@ it('Notivue attributes are added correctly', () => {
    )
 
       .clickRandomStatic()
+
       .get('ol')
       .should('have.class', 'CustomClass')
-      .get('li')
-      .invoke('attr', 'data-notivue-id')
-      .should('exist')
-      .get('ol')
       .invoke('attr', 'data-notivue-align')
+      .should('exist')
+
+      .get('li')
+      .and('have.attr', 'tabindex', '-1')
+      .invoke('attr', 'data-notivue-id')
+
+      .get('li > div')
+      .invoke('attr', 'data-notivue-container')
+      .should('exist')
+      .get('li > div')
+      .invoke('attr', 'tabindex')
       .should('exist')
 })

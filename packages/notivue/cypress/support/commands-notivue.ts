@@ -2,14 +2,23 @@
 
 import { mount } from 'cypress/vue'
 
-import { notivueCypress } from '@/core/notivue'
 import { DEFAULT_DURATION } from '@/core/constants'
+import { createStore, storeInjectionKey } from '@/core/createStore'
 import { parseText } from './utils'
 
-import type { NotivueConfig } from 'index'
+import type { Plugin } from 'vue'
+import type { NotivueConfig } from 'notivue'
 
 type MountParams = Parameters<typeof mount>
 type OptionsParam = MountParams[1]
+
+function notivue(config: NotivueConfig = {}): Plugin {
+   return {
+      install(app) {
+         app.provide(storeInjectionKey, createStore(config))
+      },
+   }
+}
 
 declare global {
    namespace Cypress {
@@ -25,7 +34,7 @@ declare global {
          clickAllStatic(): Chainable<any>
          clickAll(): Chainable<any>
          getNotifications(): Chainable<any>
-         getAriaLive(): Chainable<any>
+         getContainer(): Chainable<any>
          checkSlotAgainst(obj: Record<string, any>): Chainable<any>
          checkSlotPropsAgainst(obj: Record<string, any>): Chainable<any>
          checkAnimations(
@@ -43,7 +52,7 @@ Cypress.Commands.add(
    (component, notivueOptions: { config: NotivueConfig } = { config: {} }, options = {}) => {
       options.global = options.global || {}
       options.global.plugins = options.global.plugins || []
-      options.global.plugins.push(notivueCypress(notivueOptions.config))
+      options.global.plugins.push(notivue(notivueOptions.config))
 
       return mount(component, options).then(({ wrapper }) => {
          return cy.wrap(wrapper).as('vue')
@@ -88,8 +97,8 @@ Cypress.Commands.add('clickAll', () => {
 
 Cypress.Commands.add('getNotifications', () => cy.get('li > div > div:first-of-type'))
 
-Cypress.Commands.add('getAriaLive', () => {
-   return cy.get('li > div > div:last-of-type')
+Cypress.Commands.add('getContainer', () => {
+   return cy.get('li > div')
 })
 
 Cypress.Commands.add('checkSlotAgainst', (obj: Record<string, any>) =>
