@@ -21,7 +21,7 @@ const { tabIndex } = useNotivueKeyboard()
       <div class="Content">
          <div class="Details">
             <time>{{ toNow(item.createdAt) }} ago</time>
-            <p>
+            <p :aria-live="item.ariaLive" :role="item.ariaRole">
                <span class="FakeLink">{{ item.props.name }}</span>
                {{ item.message.replace(item.props.name, '') }}
             </p>

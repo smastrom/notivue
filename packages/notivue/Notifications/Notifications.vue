@@ -35,7 +35,7 @@ const closeIcon = computed(() => props.icons.close)
          </div>
       </template>
 
-      <div :class="Cx.CONTENT">
+      <div :class="Cx.CONTENT" :aria-live="item.ariaLive" :role="item.ariaRole">
          <h3 v-if="item.title" :class="Cx.TITLE" v-text="item.title" />
          <p :class="Cx.MESSAGE" v-text="item.message" />
       </div>

@@ -7,10 +7,9 @@ import {
    watch,
    toRefs,
    provide,
+   readonly,
    watchEffect,
-   nextTick,
    type Component,
-   cloneVNode,
 } from 'vue'
 
 import { usePush, type PushOptions } from 'notivue'
@@ -19,7 +18,7 @@ import { useElements, useItems } from '@/core/useStore'
 import { focusableEls, keyboardInjectionKey } from './constants'
 import { useFocusDevice } from './useFocusDevice'
 
-import type { TabIndexValue, AriaHiddenValue, ContainerTabIndexMap } from './types'
+import type { TabIndexValue, ContainerTabIndexMap } from './types'
 
 // Props
 
@@ -64,31 +63,28 @@ const { comboKey, handleClicks, leaveMessage, emptyMessage } = toRefs(props)
 // Slots
 
 defineSlots<{
-   default(props: {
-      tabIndex: 0 | -1
-      ariaLiveHidden: 'true' | 'false'
-      containersTabIndex: ContainerTabIndexMap
-   }): Component
+   default(props: { tabIndex: 0 | -1; containersTabIndex: ContainerTabIndexMap }): Component
 }>()
 
 // Computed
 
-const leavePushOptions = computed<PushOptions>(() => ({
-   message: leaveMessage.value,
+const sharedOptions = {
    ariaRole: 'alert',
    ariaLive: 'assertive',
+   skipQueue: true,
    props: {
       isNotivueKeyboard: true,
    },
+} as const
+
+const leavePushOptions = computed<PushOptions>(() => ({
+   message: leaveMessage.value,
+   ...sharedOptions,
 }))
 
 const emptyPushOptions = computed<PushOptions>(() => ({
    message: emptyMessage.value,
-   ariaRole: 'alert',
-   ariaLive: 'assertive',
-   props: {
-      isNotivueKeyboard: true,
-   },
+   ...sharedOptions,
 }))
 
 // Store
@@ -105,14 +101,9 @@ const candidateIds = ref({ qualified: [] as string[], unqualified: [] as string[
 const candidateContainers = ref<HTMLElement[]>([])
 
 const tabIndex = ref<TabIndexValue>(-1)
-const ariaLiveHidden = ref<AriaHiddenValue>('false')
 
 function setTabIndex(value: TabIndexValue) {
    tabIndex.value = value
-}
-
-function setAriaLiveHidden(value: AriaHiddenValue) {
-   ariaLiveHidden.value = value
 }
 
 // Computed
@@ -130,8 +121,7 @@ const containersTabIndex = computed(() => {
 
 provide(keyboardInjectionKey, {
    containersTabIndex,
-   tabIndex,
-   ariaLiveHidden,
+   tabIndex: readonly(tabIndex),
 })
 
 // Non-Reactive
@@ -180,7 +170,6 @@ if (import.meta.env.DEV) {
          {
             isKeyboard: isKeyboard.value,
             'items.isStreamFocused': items.isStreamFocused.value,
-            ariaLiveHidden: ariaLiveHidden.value,
             tabIndex: tabIndex.value,
          },
       ]
@@ -233,7 +222,6 @@ function trackStreamFocus(event: FocusEvent) {
 
          items.setStreamFocus()
          items.pauseTimeouts()
-         setAriaLiveHidden('true')
          setTabIndex(0)
       }
    } else {
@@ -244,8 +232,9 @@ function trackStreamFocus(event: FocusEvent) {
 
          items.resetStreamFocus()
          items.resumeTimeouts()
-         setAriaLiveHidden('false')
          setTabIndex(-1)
+
+         push.info(leavePushOptions.value)
       }
    }
 }
@@ -258,7 +247,6 @@ function onComboKeyDown(e: KeyboardEvent) {
       e.preventDefault()
 
       if (items.isStreamFocused.value) {
-         push.info(leavePushOptions.value)
          relatedTarget?.focus()
       } else {
          if (candidateContainers.value.length > 0) {
@@ -290,7 +278,6 @@ function onCandidatesKeydown(e: KeyboardEvent) {
 
    if (isNavigatingCandidates) {
       function onStreamLeave() {
-         push.info(leavePushOptions.value)
          relatedTarget?.focus()
       }
 
@@ -336,7 +323,6 @@ function onCandidatesKeydown(e: KeyboardEvent) {
 watch(
    elements.containers,
    (newContainers) => {
-      // console.log('Setting candidates!')
       setCandidates(newContainers)
    },
    { deep: true }
@@ -387,5 +373,5 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-   <slot v-bind="{ ariaLiveHidden, tabIndex, containersTabIndex }" />
+   <slot v-bind="{ containersTabIndex, tabIndex }" />
 </template>

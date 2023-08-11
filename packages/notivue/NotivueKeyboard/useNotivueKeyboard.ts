@@ -9,7 +9,6 @@ export function useNotivueKeyboard(): NotivueKeyboardData {
    if (isSSR) {
       return {
          tabIndex: ref(-1),
-         ariaLiveHidden: ref('false'),
          containersTabIndex: computed(() => ({})),
       }
    }

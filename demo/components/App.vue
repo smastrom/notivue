@@ -29,10 +29,9 @@ const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme }
 </script>
 
 <template>
-   <NotivueKeyboard v-slot="{ containersTabIndex, ariaLiveHidden }">
+   <NotivueKeyboard v-slot="{ containersTabIndex }">
       <Notivue
          :class="{ CenterOnMobile: store.centerOnMobile }"
-         :ariaLiveHidden="ariaLiveHidden"
          :containersTabIndex="containersTabIndex"
          v-slot="item"
       >

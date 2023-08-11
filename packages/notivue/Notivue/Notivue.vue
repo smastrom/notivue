@@ -1,40 +1,27 @@
 <script setup lang="ts">
-import { Teleport, onBeforeUnmount, type Component, getCurrentInstance } from 'vue'
+import { Teleport, onBeforeUnmount, type Component } from 'vue'
 
 import { useNotivue, useItems, useElements } from '@/core/useStore'
+
 import { useMouseEvents } from './composables/useMouseEvents'
 import { useTouchEvents } from './composables/useTouchEvents'
-import { useNotivueStyles, visuallyHidden } from './composables/useNotivueStyles'
+import { useNotivueStyles } from './composables/useNotivueStyles'
 import { useRepositioning } from './composables/useRepositioning'
 import { useVisibilityChange } from './composables/useVisibilityChange'
-import { getSlotContext } from './utils'
+import { getSlotContext, getAriaLabel } from './utils'
 
 import type { NotivueSlot } from 'notivue'
 import type { ContainerTabIndexMap } from '@/NotivueKeyboard/types'
 
 // Props
 
-const props = withDefaults(
-   defineProps<{
-      class?: string | Record<string, boolean> | (string | Record<string, boolean>)[]
-      /**
-       * Whether to render the aria-live region.
-       */
-      renderAriaLive?: boolean
-      /**
-       * Aria-live region aria-hidden dynamic attribute. Only needed if using NotivueKeyboard.
-       */
-      ariaLiveHidden?: 'true' | 'false'
-      /**
-       * Notification containers tabIndex map. Only needed if using NotivueKeyboard.
-       */
-      containersTabIndex?: ContainerTabIndexMap
-   }>(),
-   {
-      renderAriaLive: true,
-      ariaLiveHidden: 'false',
-   }
-)
+const props = defineProps<{
+   class?: string | Record<string, boolean> | (string | Record<string, boolean>)[]
+   /**
+    * Notification containers tabIndex map. Only needed if using NotivueKeyboard.
+    */
+   containersTabIndex?: ContainerTabIndexMap
+}>()
 
 defineSlots<{
    default(item: NotivueSlot & { key?: string }): Component
@@ -66,6 +53,7 @@ onBeforeUnmount(() => {
    <Teleport :to="config.teleportTo.value">
       <!-- List Container -->
       <ol
+         aria-label="Notifications List"
          v-if="items.entries.value.length > 0"
          v-bind="{ ...mouseEvents, ...touchEvents }"
          :data-notivue-align="config.isTopAlign.value ? 'top' : 'bottom'"
@@ -89,7 +77,7 @@ onBeforeUnmount(() => {
          >
             <!-- Notification Container -->
             <div
-               v-if="!item.ariaLiveOnly"
+               :aria-label="getAriaLabel(item)"
                :tabindex="containersTabIndex?.[item.id] ?? -1"
                :data-notivue-container="item.id"
                :ref="elements.containers"
@@ -100,18 +88,6 @@ onBeforeUnmount(() => {
             >
                <!-- Notification -->
                <slot v-bind="getSlotContext(item)" :key="`${item.id}_${item.type}`" />
-            </div>
-
-            <!-- Aria Live -->
-            <div
-               v-if="props.renderAriaLive"
-               aria-atomic="true"
-               :aria-live="item.ariaLive"
-               :aria-hidden="props.ariaLiveHidden"
-               :role="item.ariaRole"
-               :style="visuallyHidden"
-            >
-               {{ item.title ? `${item.title}: ` : '' }}{{ item.message }}
             </div>
          </li>
       </ol>

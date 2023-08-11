@@ -96,7 +96,6 @@ export interface PushProps<T extends Obj = Obj> {
 
 export interface PushSpecificOptions {
    skipQueue?: boolean
-   ariaLiveOnly?: boolean
 }
 
 /** Defined by the user when calling push() */
@@ -136,6 +135,7 @@ export type PushPromise = <T extends Obj = Obj>(
 export interface ClearFunctions {
    clear: () => void
    destroy: () => void
+   playLeave: () => void
 }
 
 export interface Push {

@@ -17,3 +17,7 @@ export function getSlotContext(item: StoreItem): NotivueSlot {
       )
    ) as NotivueSlot
 }
+
+export function getAriaLabel(item: NotivueSlot) {
+   return `${item.title ? `${item.title}: ` : ''}${item.message}`
+}

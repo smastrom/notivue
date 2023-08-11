@@ -18,7 +18,7 @@ const isPromise = computed(() => props.item.type === 'promise')
    <div class="Notification">
       <div class="Header">
          <div class="Title">
-            <h3>{{ item.message }}</h3>
+            <h3 :aria-live="item.ariaLive" :role="item.ariaRole">{{ item.message }}</h3>
             <button class="Close" @click="item.clear" v-if="!isPromise">
                <CloseIcon />
             </button>
