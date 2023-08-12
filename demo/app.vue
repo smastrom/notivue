@@ -39,7 +39,6 @@ const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme }
             <NotivueSwipe
                :item="item"
                :disabled="!state.enableSwipe"
-               exclude=".Button"
                v-if="(item.props as CustomProps).isCustom"
             >
                <CustomStatic :item="item as NotivueSlot<CustomProps>" />
@@ -48,7 +47,6 @@ const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme }
             <NotivueSwipe
                :item="item"
                :disabled="!state.enableSwipe"
-               exclude=".Close"
                v-else-if="(item.props as CustomPromiseProps).isFileUpload"
             >
                <CustomPromise :item="item as NotivueSlot<CustomPromiseProps>" />

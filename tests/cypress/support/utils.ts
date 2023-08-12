@@ -14,6 +14,10 @@ export const RESOLVE_REJECT_DELAY = 2000
  */
 export const GENERIC_UPDATE_DELAY = 1000
 
+export const SWIPE_NOTIFICATION_WIDTH = 300
+
+export const DEFAULT_ENTER_LEAVE_ANIM_DURATION = 300
+
 function randomId() {
    return Math.random().toString(36).substr(2, 9)
 }
