@@ -1,14 +1,12 @@
 import { defaultNotificationOptions as defaultOptions } from '@/core/options'
 import { RESOLVE_REJECT_DELAY } from '@/support/utils'
 
-import Notivue from './components/Notivue.vue'
-
 describe('Default options match the slot content', () => {
    const { success, error, warning, info, promise } = defaultOptions
 
    describe('First-level notifications', () => {
       it('Success', () => {
-         cy.mount(Notivue)
+         cy.mountNotivue()
 
             .get('.Success')
             .click()
@@ -16,7 +14,7 @@ describe('Default options match the slot content', () => {
       })
 
       it('Error', () => {
-         cy.mount(Notivue)
+         cy.mountNotivue()
 
             .get('.Error')
             .click()
@@ -24,7 +22,7 @@ describe('Default options match the slot content', () => {
       })
 
       it('Warning', () => {
-         cy.mount(Notivue)
+         cy.mountNotivue()
 
             .get('.Warning')
             .click()
@@ -32,7 +30,7 @@ describe('Default options match the slot content', () => {
       })
 
       it('Info', () => {
-         cy.mount(Notivue)
+         cy.mountNotivue()
 
             .get('.Info')
             .click()
@@ -40,7 +38,7 @@ describe('Default options match the slot content', () => {
       })
 
       it('Promise', () => {
-         cy.mount(Notivue)
+         cy.mountNotivue()
 
             .get('.Promise')
             .click()
@@ -53,20 +51,19 @@ describe('Default options match the slot content', () => {
       const promiseReject = defaultOptions['promise-reject']
 
       it('Promise - Resolve', () => {
-         cy.mount(Notivue)
+         cy.mountNotivue()
 
             .get('.PushPromiseAndResolve')
             .click()
-            .wait(RESOLVE_REJECT_DELAY) // Wait for resolve
+            .wait(RESOLVE_REJECT_DELAY)
             .checkSlotAgainst(promiseResolve)
       })
 
       it('Promise - Reject', () => {
-         cy.mount(Notivue)
-
+         cy.mountNotivue()
             .get('.PushPromiseAndReject')
             .click()
-            .wait(RESOLVE_REJECT_DELAY) // Wait for reject
+            .wait(RESOLVE_REJECT_DELAY)
             .checkSlotAgainst(promiseReject)
       })
    })

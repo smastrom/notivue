@@ -1,20 +1,16 @@
-import Notivue from './components/Notivue.vue'
+import Notivue, { CyProps } from './components/Notivue.vue'
 
 import { Classes } from '@/Notifications/constants'
 
 it('All elements are accessible', () => {
-   cy.mount(
-      Notivue,
-      { config: {} },
-      {
-         props: {
-            options: {
-               title: 'Success',
-               message: 'This is a success message',
-            },
-         } as any,
-      }
-   )
+   cy.mountNotifications({
+      props: {
+         options: {
+            title: 'Success',
+            message: 'This is a success message',
+         },
+      },
+   })
 
       .get('.Success')
       .click()

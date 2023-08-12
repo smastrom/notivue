@@ -1,15 +1,11 @@
 import Notivue from './components/Notivue.vue'
 
 it('Notivue attributes are added correctly', () => {
-   cy.mount(
-      Notivue,
-      { config: {} },
-      {
-         props: {
-            class: 'CustomClass',
-         } as any,
-      }
-   )
+   cy.mountNotivue({
+      props: {
+         class: 'CustomClass',
+      },
+   })
 
       .clickRandomStatic()
 

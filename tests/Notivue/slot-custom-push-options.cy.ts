@@ -1,7 +1,5 @@
 import { RESOLVE_REJECT_DELAY, getRandomOptions } from '@/support/utils'
 
-import Notivue from './components/Notivue.vue'
-
 const config = getRandomOptions()
 const options = getRandomOptions()
 
@@ -18,10 +16,10 @@ const notivueConfig = {
 }
 
 describe('Push notification options have higher priority over config', () => {
-   const componentConfig = [{ config: notivueConfig }, { props: { options } } as any]
+   const componentConf = { config: notivueConfig, props: { options } }
 
    it('Success', () => {
-      cy.mount(Notivue, ...componentConfig)
+      cy.mountNotivue(componentConf)
 
          .get('.Success')
          .click()
@@ -29,7 +27,7 @@ describe('Push notification options have higher priority over config', () => {
    })
 
    it('Error', () => {
-      cy.mount(Notivue, ...componentConfig)
+      cy.mountNotivue(componentConf)
 
          .get('.Error')
          .click()
@@ -37,7 +35,7 @@ describe('Push notification options have higher priority over config', () => {
    })
 
    it('Warning', () => {
-      cy.mount(Notivue, ...componentConfig)
+      cy.mountNotivue(componentConf)
 
          .get('.Warning')
          .click()
@@ -45,7 +43,7 @@ describe('Push notification options have higher priority over config', () => {
    })
 
    it('Info', () => {
-      cy.mount(Notivue, ...componentConfig)
+      cy.mountNotivue(componentConf)
 
          .get('.Info')
          .click()
@@ -53,7 +51,7 @@ describe('Push notification options have higher priority over config', () => {
    })
 
    it('Promise', () => {
-      cy.mount(Notivue, ...componentConfig)
+      cy.mountNotivue(componentConf)
 
          .get('.Promise')
          .click()
@@ -61,7 +59,7 @@ describe('Push notification options have higher priority over config', () => {
    })
 
    it('Promise - Resolve', () => {
-      cy.mount(Notivue, ...componentConfig)
+      cy.mountNotivue(componentConf)
 
          .get('.PushPromiseAndResolve')
          .click()
@@ -69,7 +67,7 @@ describe('Push notification options have higher priority over config', () => {
    })
 
    it('Promise - Reject', () => {
-      cy.mount(Notivue, ...componentConfig)
+      cy.mountNotivue(componentConf)
 
          .get('.PushPromiseAndReject')
          .click()
@@ -97,22 +95,20 @@ describe('Push notification options are merged properly with config', () => {
    delete someNewOptions.ariaLive
    delete someNewOptions.ariaRole
 
-   const componentConfig = [
-      { config: notivueConfig },
-      {
-         props: {
-            options: someOptions,
-            // Passed to .resolve() and .reject() methods
-            newOptions: someNewOptions,
-         },
-      } as any,
-   ]
+   const componentConf = {
+      config: notivueConfig,
+      props: {
+         options: someOptions,
+         // Passed to .resolve() and .reject() methods
+         newOptions: someNewOptions,
+      },
+   } as any
 
    describe('First-level Notifications', () => {
       const expectedOptions = { ...config, ...someOptions }
 
       it('Success', () => {
-         cy.mount(Notivue, ...componentConfig)
+         cy.mountNotivue(componentConf)
 
             .get('.Success')
             .click()
@@ -120,7 +116,7 @@ describe('Push notification options are merged properly with config', () => {
       })
 
       it('Error', () => {
-         cy.mount(Notivue, ...componentConfig)
+         cy.mountNotivue(componentConf)
 
             .get('.Error')
             .click()
@@ -128,7 +124,7 @@ describe('Push notification options are merged properly with config', () => {
       })
 
       it('Warning', () => {
-         cy.mount(Notivue, ...componentConfig)
+         cy.mountNotivue(componentConf)
 
             .get('.Warning')
             .click()
@@ -136,7 +132,7 @@ describe('Push notification options are merged properly with config', () => {
       })
 
       it('Info', () => {
-         cy.mount(Notivue, ...componentConfig)
+         cy.mountNotivue(componentConf)
 
             .get('.Info')
             .click()
@@ -144,7 +140,7 @@ describe('Push notification options are merged properly with config', () => {
       })
 
       it('Promise', () => {
-         cy.mount(Notivue, ...componentConfig)
+         cy.mountNotivue(componentConf)
 
             .get('.Promise')
             .click()
@@ -156,7 +152,7 @@ describe('Push notification options are merged properly with config', () => {
       const expectedOptions = { ...config, ...someNewOptions }
 
       it('Promise - Resolve', () => {
-         cy.mount(Notivue, ...componentConfig)
+         cy.mountNotivue(componentConf)
 
             .get('.PushPromiseAndResolve')
             .click()
@@ -165,7 +161,7 @@ describe('Push notification options are merged properly with config', () => {
       })
 
       it('Promise - Reject', () => {
-         cy.mount(Notivue, ...componentConfig)
+         cy.mountNotivue(componentConf)
 
             .get('.PushPromiseAndReject')
             .click()

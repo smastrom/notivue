@@ -16,6 +16,7 @@ export default defineConfig({
             resolve: {
                alias: {
                   '@/support': resolve(__dirname, './cypress/support'),
+                  '@/tests': resolve(__dirname, './'),
 
                   '@/core': resolve(__dirname, '../packages/notivue/core'),
                   '@/Notivue': resolve(__dirname, '../packages/notivue/Notivue'),

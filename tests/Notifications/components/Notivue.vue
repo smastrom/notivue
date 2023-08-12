@@ -10,19 +10,21 @@ import {
 
 const push = usePush()
 
-const cyProps = defineProps<{
+export interface CyNotificationsProps {
    options?: UserPushOptions
    icons?: NotivueIcons
    theme?: NotivueTheme
-}>()
+}
+
+const cyProps = defineProps<CyNotificationsProps>()
 </script>
 
 <template>
    <div>
       <Notivue v-slot="item">
-         <Notifications :item="item" :icons="icons" :theme="theme" />
+         <Notifications :item="item" :icons="cyProps.icons" :theme="cyProps.theme" />
       </Notivue>
 
-      <button class="Success" @click="push.success(options ?? {})">Success</button>
+      <button class="Success" @click="push.success(cyProps.options ?? {})">Success</button>
    </div>
 </template>

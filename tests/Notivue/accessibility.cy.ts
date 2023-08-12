@@ -1,7 +1,5 @@
-import Notivue from './components/Notivue.vue'
-
 it('All elements should be accessible', () => {
-   cy.mount(Notivue).clickRandomStatic()
+   cy.mountNotivue().clickRandomStatic()
 
    cy.injectAxe()
    cy.checkA11y('.Root')
@@ -9,7 +7,7 @@ it('All elements should be accessible', () => {
 
 describe('Aria label', () => {
    it('Message is always renderd', () => {
-      cy.mount(Notivue, {
+      cy.mountNotivue({
          config: {
             notifications: {
                global: { message: 'This is a message' },
@@ -23,7 +21,7 @@ describe('Aria label', () => {
    })
 
    it('Title is rendered along with the message if defined', () => {
-      cy.mount(Notivue, {
+      cy.mountNotivue({
          config: {
             notifications: {
                global: { title: 'This is a title', message: 'This is a message' },

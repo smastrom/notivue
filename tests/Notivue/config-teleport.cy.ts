@@ -4,7 +4,7 @@ import type { VueWrapper } from '@vue/test-utils'
 
 describe('Teleport', () => {
    it('By default is teleported to body', () => {
-      cy.mount(Notivue)
+      cy.mountNotivue()
 
          .clickRandomStatic()
 
@@ -14,7 +14,7 @@ describe('Teleport', () => {
    })
 
    it('Can teleport to different element', () => {
-      cy.mount(Notivue, { config: { teleportTo: 'html' } })
+      cy.mountNotivue({ config: { teleportTo: 'html' } })
 
          .clickRandomStatic()
 
@@ -28,7 +28,7 @@ describe('Teleport', () => {
    })
 
    it('Can update teleport config dynamically', () => {
-      cy.mount(Notivue)
+      cy.mountNotivue()
          .get<VueWrapper>('@vue')
          .then((wrapper) => wrapper.setProps({ teleportTo: 'html' }))
 

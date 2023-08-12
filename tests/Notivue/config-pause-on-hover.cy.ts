@@ -4,11 +4,11 @@ import type { VueWrapper } from '@vue/test-utils'
 
 describe('Pause on hover', () => {
    beforeEach(() => {
-      cy.log('cypress-real-events is only supported in Chrome').throwIfDurationMismatch(6000)
+      cy.throwIfDurationMismatch(6000)
    })
 
    it('Can pause and resume notifications', () => {
-      cy.mount(Notivue)
+      cy.mountNotivue()
 
          .clickRandomStatic()
          .wait(4000) // Remaining time 2000ms
@@ -29,7 +29,7 @@ describe('Pause on hover', () => {
    })
 
    it('Should not pause notifications if pauseOnHover is false', () => {
-      cy.mount(Notivue, { config: { pauseOnHover: false } })
+      cy.mountNotivue({ config: { pauseOnHover: false } })
 
          .clickRandomStatic()
          .wait(4000) // Remaining: 2000ms
@@ -43,7 +43,7 @@ describe('Pause on hover', () => {
    })
 
    it('Should update config dynamically and work', () => {
-      cy.mount(Notivue, { config: { pauseOnHover: false } })
+      cy.mountNotivue({ config: { pauseOnHover: false } })
 
          .get<VueWrapper>('@vue')
          .then((wrapper) => wrapper.setProps({ pauseOnHover: true }))

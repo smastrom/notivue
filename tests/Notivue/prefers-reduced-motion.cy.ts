@@ -1,5 +1,3 @@
-import Notivue from './components/Notivue.vue'
-
 describe('prefers-reduced-motion', () => {
    beforeEach(() => {
       cy.stub(window, 'matchMedia').withArgs('(prefers-reduced-motion: reduce)').returns({
@@ -8,7 +6,7 @@ describe('prefers-reduced-motion', () => {
    })
 
    it('Should not add enter/leave animation classes', () => {
-      cy.mount(Notivue)
+      cy.mountNotivue()
          .get('.PushAndRenderClear')
          .click()
          .get('.Notivue__enter')
@@ -21,7 +19,7 @@ describe('prefers-reduced-motion', () => {
    })
 
    it('Should not add clearAll animation', () => {
-      cy.mount(Notivue)
+      cy.mountNotivue()
          .clickRandomStatic()
          .get('.ClearAll')
          .click()
@@ -30,7 +28,7 @@ describe('prefers-reduced-motion', () => {
    })
 
    it('No transition should be applied', () => {
-      cy.mount(Notivue)
+      cy.mountNotivue()
          .clickRandomStatic()
          .click()
          .getNotifications()

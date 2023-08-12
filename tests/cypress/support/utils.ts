@@ -1,8 +1,18 @@
+import { UserPushOptions } from 'notivue'
+
 export function parseText(subject: any) {
    return JSON.parse(subject.text()) as Record<string, any>
 }
 
-export const RESOLVE_REJECT_DELAY = 1000
+export const RESOLVE_REJECT_DELAY = 2000
+
+/**
+ * Delay called before clearing, destroying or updating
+ * some Notivue tests notifications.
+ *
+ * Needed just to see the change in the UI
+ */
+export const GENERIC_UPDATE_DELAY = 1000
 
 function randomId() {
    return Math.random().toString(36).substr(2, 9)
@@ -15,7 +25,7 @@ export function getRandomOptions() {
       duration: Math.floor(Math.random() * 10000),
       ariaLive: randomId(),
       ariaRole: randomId(),
-   }
+   } as UserPushOptions
 }
 
 export const randomProps = {

@@ -13,6 +13,7 @@
       "baseUrl": ".",
       "paths": {
          "@/support/*": ["./cypress/support/*"],
+         "@/tests/*": ["./*"],
 
          "@/core/*": ["../packages/notivue/core/*"],
          "@/Notivue/*": ["../packages/notivue/Notivue/*"],

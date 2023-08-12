@@ -1,41 +1,20 @@
-/// <reference types="cypress" />
-
-import { mount } from 'cypress/vue'
-
 import { DEFAULT_DURATION } from '@/core/constants'
-
-import { createStore, storeInjectionKey } from '@/core/createStore'
-
-import { notivue } from 'notivue'
-
 import { parseText } from './utils'
 
-import type { Plugin } from 'vue'
+import Notivue, { type CyNotivueProps } from '@/tests/Notivue/components/Notivue.vue'
+
 import type { NotivueConfig } from 'notivue'
 
-type MountParams = Parameters<typeof mount>
-type OptionsParam = MountParams[1]
-
-function notivueCypress(config: NotivueConfig = {}): Plugin {
-   return {
-      install(app) {
-         app.use(notivue, config)
-      },
-   }
-}
+type MountNotificationsOptions = { config?: NotivueConfig; props?: CyNotivueProps }
 
 declare global {
    namespace Cypress {
       interface Chainable {
-         mount(
-            component: any,
-            notivueOptions?: { config: NotivueConfig },
-            options?: OptionsParam
-         ): Chainable<any>
          throwIfDurationMismatch(duration: number): void
          clickRandomStatic(): Chainable<any>
          clickAllStatic(): Chainable<any>
          clickAll(): Chainable<any>
+         mountNotivue(options?: MountNotificationsOptions): Chainable<any>
          getNotifications(): Chainable<any>
          getContainer(): Chainable<any>
          checkSlotAgainst(obj: Record<string, any>): Chainable<any>
@@ -51,14 +30,11 @@ declare global {
 }
 
 Cypress.Commands.add(
-   'mount',
-   (component, notivueOptions: { config: NotivueConfig } = { config: {} }, options = {}) => {
-      options.global = options.global || {}
-      options.global.plugins = options.global.plugins || []
-      options.global.plugins.push(notivueCypress(notivueOptions.config))
-
-      return mount(component, options).then(({ wrapper }) => {
-         return cy.wrap(wrapper).as('vue')
+   'mountNotivue',
+   ({ config = {}, props = {} }: MountNotificationsOptions = { config: {}, props: {} }) => {
+      cy.mount<CyNotivueProps>(Notivue, {
+         config,
+         props,
       })
    }
 )

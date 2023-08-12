@@ -1,7 +1,5 @@
 import { RESOLVE_REJECT_DELAY, getRandomOptions } from '@/support/utils'
 
-import Notivue from './components/Notivue.vue'
-
 const globalOptions = getRandomOptions()
 const options = getRandomOptions()
 const newOptions = getRandomOptions()
@@ -18,16 +16,15 @@ describe('Global options have higher priority over defaults', () => {
             info: options,
             promise: options,
 
-            // Use different options since options should be different
             'promise-resolve': newOptions,
             'promise-reject': newOptions,
          },
-      } as any,
+      },
    }
 
    describe('First-level notifications', () => {
       it('Success', () => {
-         cy.mount(Notivue, customConfig)
+         cy.mountNotivue(customConfig)
 
             .get('.Success')
             .click()
@@ -35,7 +32,7 @@ describe('Global options have higher priority over defaults', () => {
       })
 
       it('Error', () => {
-         cy.mount(Notivue, customConfig)
+         cy.mountNotivue(customConfig)
 
             .get('.Error')
             .click()
@@ -43,7 +40,7 @@ describe('Global options have higher priority over defaults', () => {
       })
 
       it('Warning', () => {
-         cy.mount(Notivue, customConfig)
+         cy.mountNotivue(customConfig)
 
             .get('.Warning')
             .click()
@@ -51,7 +48,7 @@ describe('Global options have higher priority over defaults', () => {
       })
 
       it('Info', () => {
-         cy.mount(Notivue, customConfig)
+         cy.mountNotivue(customConfig)
 
             .get('.Info')
             .click()
@@ -59,7 +56,7 @@ describe('Global options have higher priority over defaults', () => {
       })
 
       it('Promise', () => {
-         cy.mount(Notivue, customConfig)
+         cy.mountNotivue(customConfig)
 
             .get('.Promise')
             .click()
@@ -69,40 +66,36 @@ describe('Global options have higher priority over defaults', () => {
 
    describe('Promise - Resolve / Reject', () => {
       it('Promise - Resolve', () => {
-         cy.mount(Notivue, customConfig)
+         cy.mountNotivue(customConfig)
 
             .get('.PushPromiseAndResolve')
             .click()
-            .wait(1000) // Wait for resolve
             .checkSlotAgainst(globalOptions)
       })
 
       it('Promise - Reject', () => {
-         cy.mount(Notivue, customConfig)
+         cy.mountNotivue(customConfig)
 
             .get('.PushPromiseAndReject')
             .click()
-            .wait(1000) // Wait for reject
             .checkSlotAgainst(globalOptions)
       })
    })
 })
 
 describe('Push options have higher priority over globals', () => {
-   const componentConfig = [
-      { config: { notifications: globalOptions } },
-      {
-         props: {
-            options,
-            // Passed as new options to .resolve()  and .reject()
-            newOptions,
-         },
-      } as any,
-   ]
+   const componentConf = {
+      config: { notifications: { global: globalOptions } },
+      props: {
+         options,
+         // Passed as new options to .resolve()  and .reject()
+         newOptions,
+      },
+   }
 
    describe('First-level notifications', () => {
       it('Success', () => {
-         cy.mount(Notivue, ...componentConfig)
+         cy.mountNotivue(componentConf)
 
             .get('.Success')
             .click()
@@ -110,7 +103,7 @@ describe('Push options have higher priority over globals', () => {
       })
 
       it('Error', () => {
-         cy.mount(Notivue, ...componentConfig)
+         cy.mountNotivue(componentConf)
 
             .get('.Error')
             .click()
@@ -118,7 +111,7 @@ describe('Push options have higher priority over globals', () => {
       })
 
       it('Warning', () => {
-         cy.mount(Notivue, ...componentConfig)
+         cy.mountNotivue(componentConf)
 
             .get('.Warning')
             .click()
@@ -126,7 +119,7 @@ describe('Push options have higher priority over globals', () => {
       })
 
       it('Info', () => {
-         cy.mount(Notivue, ...componentConfig)
+         cy.mountNotivue(componentConf)
 
             .get('.Info')
             .click()
@@ -134,7 +127,7 @@ describe('Push options have higher priority over globals', () => {
       })
 
       it('Promise', () => {
-         cy.mount(Notivue, ...componentConfig)
+         cy.mountNotivue(componentConf)
 
             .get('.Promise')
             .click()
@@ -144,20 +137,20 @@ describe('Push options have higher priority over globals', () => {
 
    describe('Promise - Resolve / Reject', () => {
       it('Promise - Resolve', () => {
-         cy.mount(Notivue, ...componentConfig)
+         cy.mountNotivue(componentConf)
 
             .get('.PushPromiseAndResolve')
             .click()
-            .wait(RESOLVE_REJECT_DELAY) // Wait for resolve
+            .wait(RESOLVE_REJECT_DELAY)
             .checkSlotAgainst(newOptions)
       })
 
       it('Promise - Reject', () => {
-         cy.mount(Notivue, ...componentConfig)
+         cy.mountNotivue(componentConf)
 
             .get('.PushPromiseAndReject')
             .click()
-            .wait(RESOLVE_REJECT_DELAY) // Wait for reject
+            .wait(RESOLVE_REJECT_DELAY)
             .checkSlotAgainst(newOptions)
       })
    })

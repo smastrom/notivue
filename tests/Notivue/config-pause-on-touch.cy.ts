@@ -1,5 +1,3 @@
-import Notivue from './components/Notivue.vue'
-
 import type { VueWrapper } from '@vue/test-utils'
 
 describe('Pause on touch', () => {
@@ -7,8 +5,8 @@ describe('Pause on touch', () => {
       cy.throwIfDurationMismatch(6000)
    })
 
-   it('Touch - Can pause and resume notifications', () => {
-      cy.mount(Notivue)
+   it('Can pause and resume notifications', () => {
+      cy.mountNotivue()
 
          .clickRandomStatic()
          .wait(4000) // Remaining: 2000ms
@@ -24,8 +22,8 @@ describe('Pause on touch', () => {
          .should('not.exist')
    })
 
-   it('Touch - Should not pause notifications if pauseOnTouch is false', () => {
-      cy.mount(Notivue, { config: { pauseOnTouch: false } })
+   it('Should not pause notifications if pauseOnTouch is false', () => {
+      cy.mountNotivue({ config: { pauseOnTouch: false } })
 
          .clickRandomStatic()
          .wait(4000) // Remaining: 2000ms
@@ -38,8 +36,8 @@ describe('Pause on touch', () => {
          .should('not.exist')
    })
 
-   it('Touch - Should update config dynamically and work', () => {
-      cy.mount(Notivue, { config: { pauseOnTouch: false } })
+   it('Should update config dynamically and work', () => {
+      cy.mountNotivue({ config: { pauseOnTouch: false } })
 
          .get<VueWrapper>('@vue')
          .then((wrapper) => wrapper.setProps({ pauseOnTouch: true }))

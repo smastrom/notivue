@@ -1,10 +1,8 @@
 import { DEFAULT_DURATION } from '@/core/constants'
 
-import Notivue from './components/Notivue.vue'
-
 describe('Push', () => {
    it('Can push any type of notification', () => {
-      cy.mount(Notivue)
+      cy.mountNotivue()
          .clickAll()
 
          .getNotifications()
@@ -12,7 +10,7 @@ describe('Push', () => {
    })
 
    it('Dismisses any static notification', () => {
-      cy.mount(Notivue)
+      cy.mountNotivue()
          .clickAllStatic()
 
          .getNotifications()
@@ -25,7 +23,7 @@ describe('Push', () => {
    })
 
    it('Updates and dismisses promises', () => {
-      cy.mount(Notivue)
+      cy.mountNotivue()
 
          .get('.RandomPromise')
          .click()
@@ -37,7 +35,7 @@ describe('Push', () => {
    })
 
    it('Clears all notifications', () => {
-      cy.mount(Notivue)
+      cy.mountNotivue()
          .clickAll()
 
          .get('.ClearAll')
@@ -48,7 +46,7 @@ describe('Push', () => {
    })
 
    it('Destroys all notifications', () => {
-      cy.mount(Notivue)
+      cy.mountNotivue()
          .clickAll()
 
          .get('.DestroyAll')
@@ -59,7 +57,7 @@ describe('Push', () => {
    })
 
    it('Clears single notification', () => {
-      cy.mount(Notivue)
+      cy.mountNotivue()
 
          .get('.PushAndClear')
          .click()
@@ -69,7 +67,7 @@ describe('Push', () => {
    })
 
    it('Destroys single notification', () => {
-      cy.mount(Notivue)
+      cy.mountNotivue()
 
          .get('.PushAndDestroy')
          .click()

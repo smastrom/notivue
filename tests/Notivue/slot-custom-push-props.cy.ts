@@ -1,20 +1,15 @@
 import { RESOLVE_REJECT_DELAY, randomProps, randomProps2 } from '@/support/utils'
 
-import Notivue from './components/Notivue.vue'
-
 describe('Custom props match the slot content', () => {
    describe('First-level notifications', () => {
-      const componentConfig = [
-         { config: {} },
-         {
-            props: {
-               options: { props: randomProps },
-            },
-         } as any,
-      ]
+      const componentConf = {
+         props: {
+            options: { props: randomProps },
+         },
+      }
 
       it('Success', () => {
-         cy.mount(Notivue, ...componentConfig)
+         cy.mountNotivue(componentConf)
 
             .get('.Success')
             .click()
@@ -22,7 +17,7 @@ describe('Custom props match the slot content', () => {
       })
 
       it('Error', () => {
-         cy.mount(Notivue, ...componentConfig)
+         cy.mountNotivue(componentConf)
 
             .get('.Error')
             .click()
@@ -30,7 +25,7 @@ describe('Custom props match the slot content', () => {
       })
 
       it('Warning', () => {
-         cy.mount(Notivue, ...componentConfig)
+         cy.mountNotivue(componentConf)
 
             .get('.Warning')
             .click()
@@ -38,7 +33,7 @@ describe('Custom props match the slot content', () => {
       })
 
       it('Info', () => {
-         cy.mount(Notivue, ...componentConfig)
+         cy.mountNotivue(componentConf)
 
             .get('.Info')
             .click()
@@ -46,7 +41,7 @@ describe('Custom props match the slot content', () => {
       })
 
       it('Promise', () => {
-         cy.mount(Notivue, ...componentConfig)
+         cy.mountNotivue(componentConf)
 
             .get('.Promise')
             .click()
@@ -55,19 +50,16 @@ describe('Custom props match the slot content', () => {
    })
 
    describe('Promise - Resolve / Reject', () => {
-      const componentConfig = [
-         { config: {} },
-         {
-            props: {
-               options: { props: randomProps },
-               // Passed new options to .resolve() and .reject() to make sure they are updated
-               newOptions: { props: randomProps2 },
-            },
-         } as any,
-      ]
+      const componentConf = {
+         props: {
+            options: { props: randomProps },
+            // Pass new options to .resolve() and .reject()
+            newOptions: { props: randomProps2 },
+         },
+      }
 
       it('Promise - Resolve', () => {
-         cy.mount(Notivue, ...componentConfig)
+         cy.mountNotivue(componentConf)
 
             .get('.PushPromiseAndResolve')
             .click()
@@ -76,7 +68,7 @@ describe('Custom props match the slot content', () => {
       })
 
       it('Promise - Reject', () => {
-         cy.mount(Notivue, ...componentConfig)
+         cy.mountNotivue(componentConf)
 
             .get('.PushPromiseAndReject')
             .click()

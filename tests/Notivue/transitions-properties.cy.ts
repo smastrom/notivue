@@ -1,7 +1,5 @@
-import Notivue from './components/Notivue.vue'
-
 it('Transition properties are inherited correctly from CSS animations', () => {
-   cy.mount(Notivue, {
+   cy.mountNotivue({
       config: {
          animations: {
             enter: 'fade-in-test-prop',

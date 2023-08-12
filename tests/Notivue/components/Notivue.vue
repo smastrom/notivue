@@ -3,11 +3,22 @@ import { usePush, useNotivue, Notivue, type UserPushOptions, Push } from 'notivu
 
 import { toRef, watch, shallowRef, type Ref } from 'vue'
 
-import { RESOLVE_REJECT_DELAY } from '@/support/utils'
+import { GENERIC_UPDATE_DELAY, RESOLVE_REJECT_DELAY } from '@/support/utils'
 
-const config = useNotivue()
-
-const push = usePush()
+export interface CyNotivueProps {
+   options?: UserPushOptions
+   newOptions?: UserPushOptions
+   class?: string
+   pauseOnTouch?: boolean
+   pauseOnHover?: boolean
+   animations?: {
+      enter: string
+      leave: string
+      clearAll: string
+   }
+   teleportTo?: string
+   limit?: number
+}
 
 const cyProps = defineProps<{
    options?: UserPushOptions
@@ -23,6 +34,10 @@ const cyProps = defineProps<{
    teleportTo?: string
    limit?: number
 }>()
+
+const config = useNotivue()
+
+const push = usePush()
 
 const rPauseOnTouch = toRef(cyProps, 'pauseOnTouch')
 const rPauseOnHover = toRef(cyProps, 'pauseOnHover')
@@ -58,7 +73,7 @@ async function randomPromise() {
 
    try {
       await new Promise((resolve, reject) =>
-         setTimeout(Math.random() > 0.5 ? resolve : reject, 3000)
+         setTimeout(Math.random() > 0.5 ? resolve : reject, GENERIC_UPDATE_DELAY)
       )
       promise.resolve(cyProps.options ?? {})
    } catch (error) {
@@ -68,7 +83,7 @@ async function randomPromise() {
 
 function pushAndClear() {
    const notification = push.success(cyProps.options ?? {})
-   setTimeout(() => notification.clear(), 1000)
+   setTimeout(() => notification.clear(), GENERIC_UPDATE_DELAY)
 }
 
 const toBeCleared = shallowRef(null) as unknown as Ref<ReturnType<Push['success']>>
@@ -79,7 +94,7 @@ function pushAndRenderClear() {
 
 function pushAndDestroy() {
    const notification = push.success(cyProps.options ?? {})
-   setTimeout(() => notification.destroy(), 1000)
+   setTimeout(() => notification.destroy(), GENERIC_UPDATE_DELAY)
 }
 
 async function pushPromiseAndResolve() {

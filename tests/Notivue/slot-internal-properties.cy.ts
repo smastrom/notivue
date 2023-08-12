@@ -1,10 +1,8 @@
 import { parseText } from '@/support/utils'
 import { hiddenInternalKeys } from '@/Notivue/utils'
 
-import Notivue from './components/Notivue.vue'
-
 it('Hidden internal properties are never defined', () => {
-   cy.mount(Notivue)
+   cy.mountNotivue()
 
       .clickRandomStatic()
       .getNotifications()
@@ -12,7 +10,7 @@ it('Hidden internal properties are never defined', () => {
 })
 
 it('Exposed internal properties are always defined', () => {
-   cy.mount(Notivue)
+   cy.mountNotivue()
 
       .clickRandomStatic()
       .getNotifications()

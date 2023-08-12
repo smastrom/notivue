@@ -1,22 +1,16 @@
 import { NotivueIcons, outlinedIcons } from 'notivue'
 
-import Notivue from './components/Notivue.vue'
-
 import { Classes } from '@/Notifications/constants'
 
 it('All elements are rendered and only exists one element per class', () => {
-   cy.mount(
-      Notivue,
-      { config: {} },
-      {
-         props: {
-            options: {
-               title: 'Success',
-               message: 'This is a success message',
-            },
-         } as any,
-      }
-   )
+   cy.mountNotifications({
+      props: {
+         options: {
+            title: 'Success',
+            message: 'This is a success message',
+         },
+      },
+   })
 
       .get('.Success')
       .click()
@@ -27,7 +21,7 @@ it('All elements are rendered and only exists one element per class', () => {
 })
 
 it('Title is not rendered by default (if empty string) while all other elements are', () => {
-   cy.mount(Notivue, { config: {} })
+   cy.mountNotifications()
 
       .get('.Success')
       .click()
@@ -42,22 +36,19 @@ it('Title is not rendered by default (if empty string) while all other elements 
 })
 
 function getIconConfig(iconObj: NotivueIcons) {
-   return [
-      { config: {} },
-      {
-         props: {
-            icons: {
-               ...outlinedIcons,
-               ...iconObj,
-            },
+   return {
+      props: {
+         icons: {
+            ...outlinedIcons,
+            ...iconObj,
          },
-      } as any,
-   ]
+      },
+   }
 }
 
 describe('Icons', () => {
    it('Icon is not rendered if null', () => {
-      cy.mount(Notivue, ...getIconConfig({ success: null }))
+      cy.mountNotifications(getIconConfig({ success: null }))
 
          .get('.Success')
          .click()
@@ -67,7 +58,7 @@ describe('Icons', () => {
    })
 
    it('Text icons are rendered properly', () => {
-      cy.mount(Notivue, ...getIconConfig({ success: 'SOMETEXT' }))
+      cy.mountNotifications(getIconConfig({ success: 'SOMETEXT' }))
 
          .get('.Success')
          .click()
@@ -82,7 +73,7 @@ describe('Icons', () => {
 })
 
 it('Close button is not render if null', () => {
-   cy.mount(Notivue, ...getIconConfig({ close: null }))
+   cy.mountNotifications(getIconConfig({ close: null }))
 
       .get('.Success')
       .click()

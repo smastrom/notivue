@@ -1,8 +1,6 @@
-import Notivue from './components/Notivue.vue'
-
 describe('Transition styles are injected correctly', () => {
    it('Top alignment', () => {
-      cy.mount(Notivue)
+      cy.mountNotivue()
 
       for (let i = 0; i < 20; i++) cy.clickRandomStatic()
 
@@ -18,7 +16,7 @@ describe('Transition styles are injected correctly', () => {
    })
 
    it('Bottom alignment', () => {
-      cy.mount(Notivue, { config: { position: 'bottom-center' } })
+      cy.mountNotivue({ config: { position: 'bottom-center' } })
 
       for (let i = 0; i < 20; i++) cy.clickRandomStatic()
 
