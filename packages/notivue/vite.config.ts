@@ -31,7 +31,7 @@ export default defineConfig({
          entry: 'index.ts',
          name: 'Notivue',
          fileName: 'index',
-         formats: ['es', 'cjs'],
+         formats: ['es' /* 'cjs' */],
       },
       rollupOptions: {
          external: ['vue'],

@@ -31,15 +31,14 @@
    "exports": {
       ".": {
          "types": "./dist/index.d.ts",
-         "import": "./dist/index.mjs",
-         "require": "./dist/index.js"
+         "import": "./dist/index.js"
       },
       "./notifications.css": "./dist/Notifications/notifications.css",
       "./animations.css": "./dist/core/animations.css"
    },
-   "main": "dist/index.js",
-   "module": "dist/index.mjs",
+   "module": "dist/index.js",
    "types": "dist/index.d.ts",
+   "type": "module",
    "files": [
       "dist/*",
       "*.d.ts"
