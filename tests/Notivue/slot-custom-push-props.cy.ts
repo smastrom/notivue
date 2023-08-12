@@ -1,4 +1,4 @@
-import { RESOLVE_REJECT_DELAY, randomProps, randomProps2 } from '../../cypress/support/utils'
+import { RESOLVE_REJECT_DELAY, randomProps, randomProps2 } from '@/support/utils'
 
 import Notivue from './components/Notivue.vue'
 

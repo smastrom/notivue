@@ -1,5 +1,5 @@
 import { defaultNotificationOptions as defaultOptions } from '@/core/options'
-import { RESOLVE_REJECT_DELAY } from '../../cypress/support/utils'
+import { RESOLVE_REJECT_DELAY } from '@/support/utils'
 
 import Notivue from './components/Notivue.vue'
 

@@ -18,10 +18,5 @@ jobs:
               run_install: false
          - name: Install dependencies
            run: pnpm install
-         - name: Chrome tests
-           uses: cypress-io/github-action@v5
-           with:
-              working-directory: packages/notivue
-              install: false
-              component: true
-              browser: chrome
+         - name: Cypress
+           run: pnpm run test

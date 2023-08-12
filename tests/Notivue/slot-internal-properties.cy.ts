@@ -1,5 +1,5 @@
-import { parseText } from '../../cypress/support/utils'
-import { hiddenInternalKeys } from '../utils'
+import { parseText } from '@/support/utils'
+import { hiddenInternalKeys } from '@/Notivue/utils'
 
 import Notivue from './components/Notivue.vue'
 

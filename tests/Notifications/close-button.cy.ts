@@ -1,6 +1,6 @@
 import Notivue from './components/Notivue.vue'
 
-import { Classes } from '../constants'
+import { Classes } from '@/Notifications/constants'
 
 it('Close button dismisses notification', () => {
    cy.mount(Notivue)

@@ -1,7 +1,7 @@
 import Notivue from './components/Notivue.vue'
 
 import { lightTheme, darkTheme, pastelTheme, materialTheme, slateTheme } from 'notivue'
-import { Classes } from '../constants'
+import { Classes } from '@/Notifications/constants'
 
 describe('Themes', () => {
    it('All themes are injected properly', () => {

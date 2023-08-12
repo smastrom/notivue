@@ -11,10 +11,10 @@
       "preview": "pnpm -C demo run preview",
       "build": "pnpm -C packages/notivue run build",
       "build:demo": "pnpm -C demo run build",
-      "test": "pnpm -C tests run test",
+      "test": "pnpm -C packages/notivue run build && pnpm -C tests install && pnpm -C tests run test",
+      "test:gui": "pnpm -C packages/notivue run build && concurrently \"pnpm -C packages/notivue run watch\" \"pnpm -C tests install && pnpm -C tests run test:gui\"",
       "prepare": "husky install",
-      "pretty-quick": "pretty-quick",
-      "test:gui": "pnpm -C packages/notivue run build && concurrently \"pnpm -C packages/notivue run watch\" \"pnpm -C tests install && pnpm -C tests run test:gui\""
+      "pretty-quick": "pretty-quick"
    },
    "devDependencies": {
       "@types/node": "^18.17.5",

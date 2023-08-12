@@ -1,5 +1,3 @@
-import { defaultConfig } from '@/core/config'
-
 import Notivue from './components/Notivue.vue'
 
 it('All elements should be accessible', () => {

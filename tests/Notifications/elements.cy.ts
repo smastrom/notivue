@@ -2,7 +2,7 @@ import { NotivueIcons, outlinedIcons } from 'notivue'
 
 import Notivue from './components/Notivue.vue'
 
-import { Classes } from '../constants'
+import { Classes } from '@/Notifications/constants'
 
 it('All elements are rendered and only exists one element per class', () => {
    cy.mount(
