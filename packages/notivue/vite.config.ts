@@ -1,8 +1,9 @@
 import { defineConfig } from 'vite'
+import { fileURLToPath } from 'url'
+
 import vue from '@vitejs/plugin-vue'
 import dts from 'vite-plugin-dts'
 import terser from '@rollup/plugin-terser'
-import { resolve } from 'path'
 
 export const terserConf = {
    compress: {
@@ -14,15 +15,17 @@ export const terserConf = {
 
 const isWatch = process.argv.includes('--watch')
 
+const path = (url: string) => fileURLToPath(new URL(url, import.meta.url))
+
 export default defineConfig({
    resolve: {
       alias: {
-         '@/core': resolve(__dirname, './core'),
-         '@/Notivue': resolve(__dirname, './Notivue'),
-         '@/NotivueSwipe': resolve(__dirname, './NotivueSwipe'),
-         '@/NotivueKeyboard': resolve(__dirname, './NotivueKeyboard'),
-         '@/Notifications': resolve(__dirname, './Notifications'),
-         notivue: resolve(__dirname, './index.ts'),
+         '@/core': path('./core'),
+         '@/Notivue': path('./Notivue'),
+         '@/NotivueSwipe': path('./NotivueSwipe'),
+         '@/NotivueKeyboard': path('./NotivueKeyboard'),
+         '@/Notifications': path('./Notifications'),
+         notivue: path('./index.ts'),
       },
    },
    build: {
@@ -31,7 +34,7 @@ export default defineConfig({
          entry: 'index.ts',
          name: 'Notivue',
          fileName: 'index',
-         formats: ['es' /* 'cjs' */],
+         formats: ['es'],
       },
       rollupOptions: {
          external: ['vue'],

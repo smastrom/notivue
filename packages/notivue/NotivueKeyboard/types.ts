@@ -39,5 +39,5 @@ export interface NotivueKeyboardProps {
     *
     * @default true
     */
-   renderMessage: true
+   renderMessage?: boolean
 }

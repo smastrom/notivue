@@ -17,7 +17,6 @@
          "@/NotivueSwipe/*": ["NotivueSwipe/*"],
          "@/NotivueKeyboard/*": ["NotivueKeyboard/*"],
          "@/Notifications/*": ["Notifications/*"],
-         "@/types": ["types.ts"],
          "notivue": ["index.ts"]
       }
    },
