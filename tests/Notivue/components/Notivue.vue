@@ -9,6 +9,7 @@ export interface CyNotivueProps {
    options?: UserPushOptions
    newOptions?: UserPushOptions
    class?: string
+   enqueue?: boolean
    pauseOnTouch?: boolean
    pauseOnHover?: boolean
    animations?: {
@@ -20,20 +21,7 @@ export interface CyNotivueProps {
    limit?: number
 }
 
-const cyProps = defineProps<{
-   options?: UserPushOptions
-   newOptions?: UserPushOptions
-   class?: string
-   pauseOnTouch?: boolean
-   pauseOnHover?: boolean
-   animations?: {
-      enter: string
-      leave: string
-      clearAll: string
-   }
-   teleportTo?: string
-   limit?: number
-}>()
+const cyProps = defineProps<CyNotivueProps>()
 
 const config = useNotivue()
 
@@ -44,6 +32,7 @@ const rPauseOnHover = toRef(cyProps, 'pauseOnHover')
 const rAnimations = toRef(cyProps, 'animations')
 const rTeleportTo = toRef(cyProps, 'teleportTo')
 const rLimit = toRef(cyProps, 'limit')
+const rEnqueue = toRef(cyProps, 'enqueue')
 
 watch(rPauseOnTouch, (newValue) => {
    config.pauseOnTouch.value = newValue
@@ -68,6 +57,11 @@ watch(rLimit, (newValue) => {
    config.limit.value = newValue
 })
 
+watch(rEnqueue, (newValue) => {
+   if (!newValue) return
+   config.enqueue.value = newValue
+})
+
 async function randomPromise() {
    const promise = push.promise(cyProps.options ?? {})
 
@@ -86,6 +80,10 @@ function pushAndClear() {
    setTimeout(() => notification.clear(), GENERIC_UPDATE_DELAY)
 }
 
+function pushAriaLiveOnly() {
+   push.success({ title: 'Title', message: 'Message', ariaLiveOnly: true })
+}
+
 const toBeCleared = shallowRef(null) as unknown as Ref<ReturnType<Push['success']>>
 
 function pushAndRenderClear() {
@@ -95,6 +93,10 @@ function pushAndRenderClear() {
 function pushAndDestroy() {
    const notification = push.success(cyProps.options ?? {})
    setTimeout(() => notification.destroy(), GENERIC_UPDATE_DELAY)
+}
+
+function pushSkipQueue() {
+   push.success(cyProps.options ?? { skipQueue: true })
 }
 
 async function pushPromiseAndResolve() {
@@ -131,6 +133,9 @@ async function pushPromiseAndReject() {
 
       <button class="PushAndClear" @click="pushAndClear">Push and Clear</button>
       <button class="PushAndDestroy" @click="pushAndDestroy">Push and Destroy</button>
+
+      <button class="PushAriaLiveOnly" @click="pushAriaLiveOnly">Push Aria Live Only</button>
+      <button class="PushSkipQueue" @click="pushSkipQueue">Push and skip queue</button>
 
       <button class="PushAndRenderClear" @click="pushAndRenderClear">Push and Render Clear</button>
       <button v-if="toBeCleared" class="RenderedClear" @click="toBeCleared.clear">Clear</button>

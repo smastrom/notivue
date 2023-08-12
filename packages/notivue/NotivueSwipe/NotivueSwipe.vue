@@ -92,7 +92,7 @@ function setDragStyles() {
          el.style.touchAction = 'none'
          el.style.userSelect = 'none'
       }
-   }) // Could this be done the Vue way?
+   })
 }
 
 function resetDragStyles() {

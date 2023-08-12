@@ -12,7 +12,6 @@ const props = withDefaults(
       item: NotivueSlot
       icons?: NotivueIcons
       theme?: NotivueTheme
-      closeAriaLabel?: string
    }>(),
    { icons: () => filledIcons, theme: () => lightTheme, closeAriaLabel: 'Close' }
 )
@@ -45,7 +44,6 @@ const closeIcon = computed(() => props.icons.close)
          :class="Cx.CLOSE"
          tabindex="-1"
          @click="item.clear"
-         :aria-label="props.closeAriaLabel"
       >
          <Component v-if="typeof closeIcon === 'object'" :is="closeIcon" :class="Cx.CLOSE_ICON" />
          <div v-else-if="typeof closeIcon === 'string'" aria-hidden="true" v-text="closeIcon" />
