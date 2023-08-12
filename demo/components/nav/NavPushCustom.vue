@@ -7,8 +7,7 @@ import { setTheme, store, toggleRTL } from '@/lib/store'
 import VueIcon from '../icons/VueIcon.vue'
 import Button from '../shared/Button.vue'
 
-import profilePicture from '../../assets/profile-picture.jpg?url'
-import { onBeforeUnmount, onMounted } from 'vue'
+import profilePicture from '@/assets/profile-picture.jpg?url'
 
 const push = usePush()
 

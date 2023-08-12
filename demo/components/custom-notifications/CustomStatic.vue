@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { formatDistanceToNow as toNow } from 'date-fns'
 
-import type { NotivueSlot } from 'notivue'
+import { useNotivueKeyboard, type NotivueSlot } from 'notivue'
+
 import type { CustomProps } from '../nav/NavPushCustom.vue'
-import { useNotivueKeyboard } from '@/NotivueKeyboard/useNotivueKeyboard'
 
 defineProps<{
    item: NotivueSlot<CustomProps>

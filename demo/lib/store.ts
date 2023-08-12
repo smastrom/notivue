@@ -1,5 +1,3 @@
-import { reactive, computed } from 'vue'
-
 import type { Position, ThemeNames } from 'notivue'
 
 export const store = reactive({

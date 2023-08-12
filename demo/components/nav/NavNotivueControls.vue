@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue'
 import { useNotifications, useNotivue, usePush } from 'notivue'
 
 import {
@@ -9,7 +8,7 @@ import {
    toggleSwipe,
    toggleRTL,
 } from '@/lib/store'
-import { isMobile } from '@/lib/utils'
+import { isDesktop } from '@/lib/utils'
 
 const push = usePush()
 const config = useNotivue()
@@ -106,25 +105,27 @@ watch(
 <template>
    <div class="Controls">
       <button
-         v-if="isMobile"
-         class="ButtonBase SwitchButton"
-         role="switch"
-         :aria-checked="config.pauseOnTouch.value"
-         aria-label="Pause on Touch"
-         @click="togglePauseOnTouch"
-      >
-         Pause on Touch
-      </button>
-      <button
-         v-else
+         v-if="isDesktop"
          class="ButtonBase SwitchButton"
          role="switch"
          :aria-checked="config.pauseOnHover.value"
          aria-label="Pause on Hover"
          @click="togglePauseOnHover"
       >
+         Pause on Touch
+      </button>
+
+      <button
+         v-else
+         class="ButtonBase SwitchButton"
+         role="switch"
+         :aria-checked="config.pauseOnTouch.value"
+         aria-label="Pause on Touch"
+         @click="togglePauseOnTouch"
+      >
          Pause on Hover
       </button>
+
       <button
          class="ButtonBase SwitchButton"
          :disabled="!config.pauseOnHover.value || !config.pauseOnTouch.value"

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import { useNotivue, type Position } from 'notivue'
 
 import { store, setFullWidth, toggleCenterOnMobile } from '@/lib/store'

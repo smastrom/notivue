@@ -15,11 +15,11 @@ type NotivueStore = ReturnType<typeof createStore>
  */
 
 export function useElements() {
-   return useStore().elements
+   return useStore()?.elements
 }
 
 export function useItems() {
-   return useStore().items
+   return useStore()?.items
 }
 
 export function useStore(): NotivueStore {

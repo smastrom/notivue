@@ -13,15 +13,17 @@ import {
    type NotivueSlot,
 } from 'notivue'
 import { store } from '@/lib/store'
+import { isSSR } from '@/lib/utils'
 
-import Nav from './nav/Nav.vue'
-import Background from './shared/Background.vue'
-import CustomStatic from './custom-notifications/CustomStatic.vue'
-import CustomPromise from './custom-notifications/CustomPromise.vue'
+import Nav from '@/components/nav/Nav.vue'
+import Background from '@/components/shared/Background.vue'
+import CustomStatic from '@/components/custom-notifications/CustomStatic.vue'
+import CustomPromise from '@/components/custom-notifications/CustomPromise.vue'
 
-import type { CustomPromiseProps, CustomProps } from './nav/NavPushCustom.vue'
+import type { CustomPromiseProps, CustomProps } from '@/components/nav/NavPushCustom.vue'
 
-watchEffect(() => document.documentElement.style.setProperty('--nv-root-width', store.maxWidth))
+!isSSR &&
+   watchEffect(() => document.documentElement.style.setProperty('--nv-root-width', store.maxWidth))
 
 const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme } as const
 </script>
@@ -61,11 +63,10 @@ const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme }
             </NotivueSwipe>
          </Notivue>
       </NotivueKeyboard>
-
-      <Background />
-
-      <Nav />
    </ClientOnly>
+
+   <Background />
+   <Nav />
 </template>
 
 <style>

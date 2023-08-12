@@ -87,6 +87,7 @@ nav {
       text-decoration-style: dotted;
       text-underline-offset: 0.25em;
       transition: opacity 100ms ease-out;
+      font-family: var(--app-font-family);
 
       &:hover {
          opacity: 1;

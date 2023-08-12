@@ -12,6 +12,8 @@ export const terserConf = {
    },
 }
 
+const isWatch = process.argv.includes('--watch')
+
 export default defineConfig({
    resolve: {
       alias: {
@@ -24,6 +26,7 @@ export default defineConfig({
       },
    },
    build: {
+      emptyOutDir: isWatch ? false : true,
       lib: {
          entry: 'index.ts',
          name: 'Notivue',
@@ -37,13 +40,11 @@ export default defineConfig({
                vue: 'Vue',
             },
          },
-         plugins: [terser(terserConf)],
+         plugins: [isWatch ? undefined : terser(terserConf)],
       },
    },
    plugins: [
       dts({
-         staticImport: true,
-         insertTypesEntry: true,
          rollupTypes: true,
       }),
       vue(),

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type ThemeNames } from 'notivue'
+import type { ThemeNames } from 'notivue'
 
 import { setTheme, store } from '@/lib/store'
 
