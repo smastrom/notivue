@@ -34,4 +34,10 @@ export interface NotivueKeyboardProps {
     * @default "No notifications to navigate"
     */
    emptyMessage?: string
+   /**
+    * Whether to render the enter/leave notification or just announce it via screen reader.
+    *
+    * @default true
+    */
+   renderMessage: true
 }

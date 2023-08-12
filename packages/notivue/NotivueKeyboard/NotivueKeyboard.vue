@@ -27,9 +27,10 @@ const props = withDefaults(defineProps<NotivueKeyboardProps>(), {
    handleClicks: true,
    leaveMessage: "You're exiting the notifications stream. Press CTRL + N to navigate it again.",
    emptyMessage: 'No notifications to navigate',
+   renderMessage: true,
 })
 
-const { comboKey, handleClicks, leaveMessage, emptyMessage } = toRefs(props)
+const { comboKey, handleClicks, leaveMessage, emptyMessage, renderMessage } = toRefs(props)
 
 // Slots
 
@@ -43,6 +44,7 @@ const sharedOptions = {
    ariaRole: 'alert',
    ariaLive: 'assertive',
    skipQueue: true,
+   ariaLiveOnly: !renderMessage.value,
    props: {
       isNotivueKeyboard: true,
    },
