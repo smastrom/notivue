@@ -1,23 +1,16 @@
 <script setup lang="ts">
 import { useNotifications, useNotivue, usePush } from 'notivue'
 
-import {
-   store,
-   toggleRenderTitles as _toggleRenderTitles,
-   toggleRTL as _toggleRTL,
-   toggleSwipe,
-   toggleRTL,
-} from '@/lib/store'
-import { isDesktop } from '@/lib/utils'
-
 const push = usePush()
 const config = useNotivue()
 const { queue } = useNotifications()
 
+const { state, actions } = useStore()
+
 const enqueuedLength = computed(() => queue.value.length)
 
 function togglePauseOnHover() {
-   store.rtl = false
+   state.rtl = false
    config.pauseOnHover.value = !config.pauseOnHover.value
 
    push.info({
@@ -29,7 +22,7 @@ function togglePauseOnHover() {
 }
 
 function togglePauseOnTouch() {
-   if (store.rtl) toggleRTL()
+   if (state.rtl) actions.toggleRTL()
 
    config.pauseOnTouch.value = !config.pauseOnTouch.value
 
@@ -42,7 +35,7 @@ function togglePauseOnTouch() {
 }
 
 function toggleQueue() {
-   if (store.rtl) toggleRTL()
+   if (state.rtl) actions.toggleRTL()
    config.enqueue.value = !config.enqueue.value
 
    if (config.enqueue.value && config.limit.value === Infinity) {
@@ -58,19 +51,19 @@ function toggleQueue() {
 }
 
 watch(
-   () => !config.pauseOnHover.value && store.enableSwipe,
+   () => !config.pauseOnHover.value && state.enableSwipe,
    (isPauseOnHoverDisabled) => {
       if (isPauseOnHoverDisabled) {
-         store.enableSwipe = false
+         state.enableSwipe = false
       }
    },
    { flush: 'post' }
 )
 
 watch(
-   () => store.enableSwipe,
+   () => state.enableSwipe,
    (isEnabled) => {
-      if (store.rtl) toggleRTL()
+      if (state.rtl) actions.toggleRTL()
 
       push.info({
          title: `Swipe to clear ${isEnabled ? 'enabled' : 'disabled'}`,
@@ -92,7 +85,7 @@ watch(
             ? 'Unlimited notifications will be displayed.'
             : `Maximum ${newLimit} notifications will be displayed.`
 
-      if (store.rtl) toggleRTL()
+      if (state.rtl) actions.toggleRTL()
 
       push.info({
          title: 'Limit updated!',
@@ -128,11 +121,11 @@ watch(
 
       <button
          class="ButtonBase SwitchButton"
-         :disabled="!config.pauseOnHover.value || !config.pauseOnTouch.value"
+         :disabled="!config.pauseOnHover.value"
          role="switch"
-         :aria-checked="store.enableSwipe"
+         :aria-checked="state.enableSwipe"
          aria-label="Clear on Swipe"
-         @click="toggleSwipe"
+         @click="actions.toggleSwipe"
       >
          Clear on Swipe
       </button>

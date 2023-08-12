@@ -1,5 +1,4 @@
-import { fileURLToPath } from 'url'
-import { getHead } from './lib/utils'
+import { getHead } from './utils/head'
 
 import nesting from 'postcss-nesting'
 
@@ -19,7 +18,4 @@ export default defineNuxtConfig({
       },
    },
    css: ['assets/style.css', 'notivue/notifications.css', 'notivue/animations.css'],
-   alias: {
-      '@/lib': fileURLToPath(new URL('./lib', import.meta.url)),
-   },
 })

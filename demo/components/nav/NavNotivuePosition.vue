@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useNotivue, type Position } from 'notivue'
 
-import { store, setFullWidth, toggleCenterOnMobile } from '@/lib/store'
-
 import ArrowIcon from '../icons/ArrowIcon.vue'
+
+const { state, actions } = useStore()
 
 const positions = [
    {
@@ -38,7 +38,7 @@ const positions = [
    },
 ]
 
-const isFullWidth = computed(() => store.maxWidth === '100%')
+const isFullWidth = computed(() => state.maxWidth === '100%')
 
 const config = useNotivue()
 
@@ -67,16 +67,16 @@ function setPosition(position: Position) {
          role="switch"
          :aria-checked="isFullWidth"
          aria-label="Full Width"
-         @click="setFullWidth"
+         @click="actions.setFullWidth"
       >
          Full Width
       </button>
       <button
          class="ButtonBase SwitchButton Switch"
          role="switch"
-         :aria-checked="store.centerOnMobile"
+         :aria-checked="state.centerOnMobile"
          aria-label="Center on Mobile"
-         @click="toggleCenterOnMobile"
+         @click="actions.toggleCenterOnMobile"
       >
          Center on Mobile
       </button>

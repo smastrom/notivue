@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { usePush } from 'notivue'
 
-import { messages } from '@/lib/store'
-import { getRandomInt } from '@/lib/utils'
-
 import Button from '../shared/Button.vue'
 import SuccessIcon from '../icons/SuccessIcon.vue'
 import PromiseIcon from '../icons/PromiseIcon.vue'
@@ -11,6 +8,10 @@ import InfoIcon from '../icons/InfoIcon.vue'
 import WarnIcon from '../icons/WarnIcon.vue'
 
 const push = usePush()
+
+const {
+   computed: { messages },
+} = useStore()
 
 async function asyncPush() {
    const promise = push.promise(messages.value.promise)

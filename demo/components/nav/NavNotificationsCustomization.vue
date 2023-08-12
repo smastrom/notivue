@@ -1,28 +1,22 @@
 <script setup lang="ts">
 import { usePush } from 'notivue'
 
-import {
-   store,
-   toggleRenderTitles as _toggleRenderTitles,
-   toggleRTL as _toggleRTL,
-   toggleOutlinedIcons,
-   messages,
-} from '@/lib/store'
-
 const push = usePush()
+
+const { state, actions, computed } = useStore()
 
 function clearAllAndPushOne() {
    push.destroyAll()
-   push.success(messages.value.success)
+   push.success(computed.messages.value.success)
 }
 
 async function toggleRenderTitles() {
-   _toggleRenderTitles()
+   actions.toggleRenderTitles()
    clearAllAndPushOne()
 }
 
 function toggleRTL() {
-   _toggleRTL()
+   actions.toggleRTL()
    clearAllAndPushOne()
 }
 </script>
@@ -32,7 +26,7 @@ function toggleRTL() {
       <button
          class="ButtonBase SwitchButton"
          role="switch"
-         :aria-checked="store.renderTitles"
+         :aria-checked="state.renderTitles"
          aria-label="Render Titles"
          @click="toggleRenderTitles"
       >
@@ -41,16 +35,16 @@ function toggleRTL() {
       <button
          class="ButtonBase SwitchButton"
          role="switch"
-         :aria-checked="store.outlinedIcons"
+         :aria-checked="state.outlinedIcons"
          aria-label="Outline Icons"
-         @click="toggleOutlinedIcons"
+         @click="actions.toggleOutlinedIcons"
       >
          Outlined
       </button>
       <button
          class="ButtonBase SwitchButton"
          role="switch"
-         :aria-checked="store.rtl"
+         :aria-checked="state.rtl"
          aria-label="RTL Direction"
          @click="toggleRTL"
       >
@@ -66,3 +60,4 @@ function toggleRTL() {
    grid-auto-flow: row;
 }
 </style>
+utils/store

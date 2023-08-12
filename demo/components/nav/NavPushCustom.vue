@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { usePush } from 'notivue'
 
-import { getRandomInt } from '@/lib/utils'
-import { setTheme, store, toggleRTL } from '@/lib/store'
-
 import VueIcon from '../icons/VueIcon.vue'
 import Button from '../shared/Button.vue'
 
 import profilePicture from '@/assets/profile-picture.jpg?url'
 
 const push = usePush()
+
+const { state, actions } = useStore()
 
 export interface CustomProps {
    name: string
@@ -23,11 +22,11 @@ export interface CustomPromiseProps {
 }
 
 function resetOptions() {
-   if (store.rtl) {
+   if (state.rtl) {
       push.destroyAll()
-      toggleRTL()
+      actions.toggleRTL()
    }
-   setTheme('lightTheme')
+   actions.setTheme('lightTheme')
 }
 
 function customPush() {

@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import type { ThemeNames } from 'notivue'
 
-import { setTheme, store } from '@/lib/store'
-
 const themeNames = [
    'lightTheme',
    'pastelTheme',
@@ -11,8 +9,10 @@ const themeNames = [
    'slateTheme',
 ] as const
 
+const { state, actions } = useStore()
+
 function setConfigTheme(themeKey: ThemeNames) {
-   setTheme(themeKey)
+   actions.setTheme(themeKey)
 }
 </script>
 
@@ -23,7 +23,7 @@ function setConfigTheme(themeKey: ThemeNames) {
          :key="themeName"
          class="ButtonBase SwitchButton"
          role="switch"
-         :aria-checked="store.theme === themeName"
+         :aria-checked="state.theme === themeName"
          :aria-label="themeName"
          @click="setConfigTheme(themeName)"
       >
@@ -39,3 +39,4 @@ function setConfigTheme(themeKey: ThemeNames) {
    grid-auto-flow: row;
 }
 </style>
+utils/store

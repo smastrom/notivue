@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { usePush } from 'notivue'
 
-import NavNotivueControls from './NavNotivueControls.vue'
+import NavNotivueConfig from './NavNotivueConfig.vue'
 import NavNotificationsThemes from './NavNotificationsThemes.vue'
 import NavPushStatic from './NavPushStatic.vue'
 import NavPushCustom from './NavPushCustom.vue'
@@ -23,7 +23,7 @@ const push = usePush()
          </ButtonGroup>
 
          <ButtonGroup name="Controls">
-            <NavNotivueControls />
+            <NavNotivueConfig />
          </ButtonGroup>
 
          <div class="DefaultComponent">

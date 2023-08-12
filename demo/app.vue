@@ -12,8 +12,6 @@ import {
    outlinedIcons,
    type NotivueSlot,
 } from 'notivue'
-import { store } from '@/lib/store'
-import { isSSR } from '@/lib/utils'
 
 import Nav from '@/components/nav/Nav.vue'
 import Background from '@/components/shared/Background.vue'
@@ -22,8 +20,10 @@ import CustomPromise from '@/components/custom-notifications/CustomPromise.vue'
 
 import type { CustomPromiseProps, CustomProps } from '@/components/nav/NavPushCustom.vue'
 
+const { state } = useStore()
+
 !isSSR &&
-   watchEffect(() => document.documentElement.style.setProperty('--nv-root-width', store.maxWidth))
+   watchEffect(() => document.documentElement.style.setProperty('--nv-root-width', state.maxWidth))
 
 const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme } as const
 </script>
@@ -32,13 +32,13 @@ const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme }
    <ClientOnly>
       <NotivueKeyboard v-slot="{ containersTabIndex }">
          <Notivue
-            :class="{ CenterOnMobile: store.centerOnMobile }"
+            :class="{ CenterOnMobile: state.centerOnMobile }"
             :containersTabIndex="containersTabIndex"
             v-slot="item"
          >
             <NotivueSwipe
                :item="item"
-               :disabled="!store.enableSwipe"
+               :disabled="!state.enableSwipe"
                exclude=".Button"
                v-if="(item.props as CustomProps).isCustom"
             >
@@ -47,18 +47,18 @@ const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme }
 
             <NotivueSwipe
                :item="item"
-               :disabled="!store.enableSwipe"
+               :disabled="!state.enableSwipe"
                exclude=".Close"
                v-else-if="(item.props as CustomPromiseProps).isFileUpload"
             >
                <CustomPromise :item="item as NotivueSlot<CustomPromiseProps>" />
             </NotivueSwipe>
 
-            <NotivueSwipe :item="item" :disabled="!store.enableSwipe" v-else>
+            <NotivueSwipe :item="item" :disabled="!state.enableSwipe" v-else>
                <Notifications
                   :item="item"
-                  :theme="themes[store.theme]"
-                  :icons="store.outlinedIcons ? outlinedIcons : undefined"
+                  :theme="themes[state.theme]"
+                  :icons="state.outlinedIcons ? outlinedIcons : undefined"
                />
             </NotivueSwipe>
          </Notivue>
@@ -66,6 +66,7 @@ const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme }
    </ClientOnly>
 
    <Background />
+
    <Nav />
 </template>
 
