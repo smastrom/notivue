@@ -23,8 +23,11 @@ describe('Enqueue', () => {
          cy.clickRandomStatic()
 
          if (i === 2 || i === 5 || i === 8) {
-            cy.get('.ClearButton').eq(0).click()
-            cy.getNotifications().should('have.length', limit, { timeout: 0 })
+            cy.get('.ClearButton')
+               .eq(0)
+               .click()
+               .getNotifications()
+               .should('have.length', limit, { timeout: 0 })
          }
       }
    })

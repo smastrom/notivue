@@ -12,6 +12,7 @@ const props = withDefaults(
       item: NotivueSlot
       icons?: NotivueIcons
       theme?: NotivueTheme
+      closeAriaLabel?: string
    }>(),
    { icons: () => filledIcons, theme: () => lightTheme, closeAriaLabel: 'Close' }
 )
@@ -42,6 +43,7 @@ const closeIcon = computed(() => props.icons.close)
       <button
          v-if="closeIcon && item.type !== 'promise'"
          :class="Cx.CLOSE"
+         :aria-label="closeAriaLabel"
          tabindex="-1"
          @click="item.clear"
       >

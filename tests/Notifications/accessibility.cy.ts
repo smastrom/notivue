@@ -1,13 +1,11 @@
-import Notivue, { CyProps } from './components/Notivue.vue'
-
 import { Classes } from '@/Notifications/constants'
 
 it('All elements are accessible', () => {
    cy.mountNotifications({
       props: {
          options: {
-            title: 'Success',
-            message: 'This is a success message',
+            ariaRole: 'alert',
+            ariaLive: 'assertive',
          },
       },
    })
@@ -17,4 +15,8 @@ it('All elements are accessible', () => {
 
    cy.injectAxe()
    cy.checkA11y(`.${Classes.NOTIFICATION}`)
+
+   cy.get('.Notivue__content')
+      .should('have.attr', 'role', 'alert')
+      .and('have.attr', 'aria-live', 'assertive')
 })
