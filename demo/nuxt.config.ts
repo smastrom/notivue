@@ -3,6 +3,7 @@ import { getHead } from './utils/head'
 import nesting from 'postcss-nesting'
 
 export default defineNuxtConfig({
+   modules: ['floating-vue/nuxt'],
    ssr: true,
    devtools: {
       enabled: true,

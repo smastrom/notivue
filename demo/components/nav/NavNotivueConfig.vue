@@ -93,6 +93,15 @@ watch(
       })
    }
 )
+
+const queueTooltipMessage = computed(() => {
+   if (config.limit.value === Infinity) {
+      const action = config.enqueue.value ? 'use' : 'enable'
+      return `To ${action} this feature, select a limit below.`
+   }
+
+   return config.enqueue.value ? 'Deactivate the queue' : 'Activate the queue'
+})
 </script>
 
 <template>
@@ -130,16 +139,22 @@ watch(
          Clear on Swipe
       </button>
 
-      <button
-         class="ButtonBase SwitchButton"
-         role="switch"
-         :aria-checked="config.enqueue.value"
-         aria-label="Enqueue"
-         @click="toggleQueue"
-         :disabled="config.limit.value === Infinity"
-      >
-         Enqueue ({{ enqueuedLength }})
-      </button>
+      <VTooltip>
+         <button
+            class="ButtonBase SwitchButton ButtonTooltip"
+            role="switch"
+            :aria-checked="config.enqueue.value"
+            aria-label="Enqueue"
+            @click="toggleQueue"
+            :disabled="config.limit.value === Infinity"
+         >
+            Enqueue ({{ enqueuedLength }})
+         </button>
+
+         <template #popper placement="left">
+            {{ queueTooltipMessage }}
+         </template>
+      </VTooltip>
 
       <hr />
 
@@ -165,9 +180,30 @@ watch(
    padding-left: 1.25em;
 }
 
+.ButtonTooltip {
+   width: 100%;
+}
+
 hr {
    margin: 0.25rem 0;
    border: none;
    border-bottom: 1px solid var(--divider-color);
+}
+</style>
+
+<style>
+.v-popper__wrapper {
+   max-width: 160px;
+}
+
+.v-popper__inner {
+   background: var(--button-bg-color) !important;
+   color: var(--button-color) !important;
+   font-size: 0.825rem !important;
+   line-height: 1.35;
+}
+
+.v-popper__arrow-outer {
+   border-color: var(--button-bg-color) !important;
 }
 </style>

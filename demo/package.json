@@ -1,5 +1,5 @@
 {
-   "name": "nuxt-app",
+   "name": "notivue-demo",
    "private": true,
    "scripts": {
       "build": "nuxt build",
@@ -11,12 +11,13 @@
    "devDependencies": {
       "@nuxt/devalue": "2.0.2",
       "@types/node": "^18.17.3",
-      "notivue": "workspace:*",
       "nuxt": "^3.6.5",
-      "postcss-nesting": "^12.0.1"
+      "postcss-nesting": "^12.0.1",
+      "@nuxt/devtools": "^0.8.0"
    },
    "dependencies": {
-      "@nuxt/devtools": "^0.8.0",
-      "date-fns": "^2.30.0"
+      "notivue": "workspace:*",
+      "date-fns": "^2.30.0",
+      "floating-vue": "2.0.0-beta.24"
    }
 }
