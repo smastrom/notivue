@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Teleport, onBeforeUnmount, type Component } from 'vue'
 
+import AriaLive from './AriaLive.vue'
+
 import { useNotivue, useItems, useElements } from '@/core/useStore'
 
 import { useMouseEvents } from './composables/useMouseEvents'
@@ -21,9 +23,17 @@ interface NotivueProps {
     * Notification containers tabIndex map. Only needed if using NotivueKeyboard.
     */
    containersTabIndex?: ContainerTabIndexMap
+   /**
+    * Aria label for the list container. Only effective if using NotivueKeyboard.
+    *
+    * @default 'Notifications List'
+    */
+   listAriaLabel?: string
 }
 
-const props = defineProps<NotivueProps>()
+const props = withDefaults(defineProps<NotivueProps>(), {
+   listAriaLabel: 'Notifications List',
+})
 
 defineSlots<{
    default(item: NotivueSlot & { key?: string }): Component
@@ -55,7 +65,7 @@ onBeforeUnmount(() => {
    <Teleport :to="config.teleportTo.value">
       <!-- List Container -->
       <ol
-         aria-label="Notifications List"
+         :aria-label="props.listAriaLabel"
          v-if="items.entries.value.length > 0"
          v-bind="{ ...mouseEvents, ...touchEvents }"
          :data-notivue-align="config.isTopAlign.value ? 'top' : 'bottom'"
@@ -77,8 +87,12 @@ onBeforeUnmount(() => {
                ...item.positionStyles,
             }"
          >
+            <!-- ariaLiveOnly Push Option -->
+            <AriaLive v-if="item.ariaLiveOnly" :item="item" />
+
             <!-- Notification Container -->
             <div
+               v-else
                :aria-label="getAriaLabel(item)"
                :tabindex="containersTabIndex?.[item.id] ?? -1"
                :data-notivue-container="item.id"

@@ -96,6 +96,7 @@ export interface PushProps<T extends Obj = Obj> {
 
 export interface PushSpecificOptions {
    skipQueue?: boolean
+   ariaLiveOnly?: boolean
 }
 
 /** Defined by the user when calling push() */
