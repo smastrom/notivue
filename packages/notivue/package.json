@@ -49,18 +49,11 @@
       "build": "rm -rf dist && vue-tsc && vite build && pnpm run build:css",
       "watch": "rm -rf dist && concurrently \"vite build --watch\" \"pnpm run build:css --watch\"",
       "build:css": "esbuild ./Notifications/notifications.css ./core/animations.css --bundle --outdir=dist --minify --target=chrome58,edge16,firefox57,node12,safari11",
-      "postbuild": "pnpm pack",
-      "test": "cypress run --component --browser chrome",
-      "test:gui": "cypress open --component --browser chrome"
+      "postbuild": "pnpm pack"
    },
    "devDependencies": {
       "@rollup/plugin-terser": "^0.4.3",
-      "@vue/test-utils": "^2.4.0",
-      "axe-core": "^4.7.2",
       "concurrently": "^8.2.0",
-      "cypress": "^12.17.0",
-      "cypress-axe": "^1.4.0",
-      "cypress-real-events": "^1.8.1",
       "typescript": "^5.1.6",
       "vite": "^4.4.9",
       "esbuild": "^0.19.1",

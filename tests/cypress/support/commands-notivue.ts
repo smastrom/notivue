@@ -3,7 +3,11 @@
 import { mount } from 'cypress/vue'
 
 import { DEFAULT_DURATION } from '@/core/constants'
+
 import { createStore, storeInjectionKey } from '@/core/createStore'
+
+import { notivue } from 'notivue'
+
 import { parseText } from './utils'
 
 import type { Plugin } from 'vue'
@@ -12,10 +16,10 @@ import type { NotivueConfig } from 'notivue'
 type MountParams = Parameters<typeof mount>
 type OptionsParam = MountParams[1]
 
-function notivue(config: NotivueConfig = {}): Plugin {
+function notivueCypress(config: NotivueConfig = {}): Plugin {
    return {
       install(app) {
-         app.provide(storeInjectionKey, createStore(config))
+         app.use(notivue, config)
       },
    }
 }
@@ -29,7 +33,6 @@ declare global {
             options?: OptionsParam
          ): Chainable<any>
          throwIfDurationMismatch(duration: number): void
-
          clickRandomStatic(): Chainable<any>
          clickAllStatic(): Chainable<any>
          clickAll(): Chainable<any>
@@ -52,7 +55,7 @@ Cypress.Commands.add(
    (component, notivueOptions: { config: NotivueConfig } = { config: {} }, options = {}) => {
       options.global = options.global || {}
       options.global.plugins = options.global.plugins || []
-      options.global.plugins.push(notivue(notivueOptions.config))
+      options.global.plugins.push(notivueCypress(notivueOptions.config))
 
       return mount(component, options).then(({ wrapper }) => {
          return cy.wrap(wrapper).as('vue')

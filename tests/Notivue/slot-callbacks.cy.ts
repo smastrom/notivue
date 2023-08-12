@@ -3,7 +3,6 @@ import Notivue from './components/Notivue.vue'
 describe('Clear and destroy callbacks work', () => {
    it('Clear', () => {
       cy.mount(Notivue)
-
          .clickRandomStatic()
          .get('.ClearButton')
          .click()

@@ -1,0 +1,25 @@
+{
+   "compilerOptions": {
+      "target": "ES2020",
+      "module": "ES2020",
+      "moduleResolution": "Node",
+      "strict": true,
+      "resolveJsonModule": true,
+      "isolatedModules": true,
+      "esModuleInterop": true,
+      "lib": ["ESNext", "DOM"],
+      "skipLibCheck": true,
+      "noEmit": true,
+      "baseUrl": ".",
+      "paths": {
+         "@/support/*": ["./cypress/support/*"],
+
+         "@/core/*": ["../packages/notivue/core/*"],
+         "@/Notivue/*": ["../packages/notivue/Notivue/*"],
+         "@/NotivueSwipe/*": ["../packages/notivue/NotivueSwipe/*"],
+         "@/NotivueKeyboard/*": ["../packages/notivue/NotivueKeyboard/*"],
+         "@/Notifications/*": ["../packages/notivue/Notifications/*"]
+      }
+   },
+   "include": ["."]
+}
