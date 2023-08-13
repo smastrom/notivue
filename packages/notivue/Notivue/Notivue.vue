@@ -13,7 +13,7 @@ import { useVisibilityChange } from './composables/useVisibilityChange'
 import { getSlotContext, getAriaLabel } from './utils'
 
 import type { NotivueSlot } from 'notivue'
-import type { ContainerTabIndexMap } from '@/NotivueKeyboard/types'
+import type { ContainersTabIndexMap } from '@/NotivueKeyboard/types'
 
 // Props
 
@@ -22,17 +22,17 @@ interface NotivueProps {
    /**
     * Notification containers tabIndex map. Only needed if using NotivueKeyboard.
     */
-   containersTabIndex?: ContainerTabIndexMap
+   containersTabIndex?: ContainersTabIndexMap
    /**
     * Aria label for the list container. Only effective if using NotivueKeyboard.
     *
-    * @default 'Notifications List'
+    * @default 'Notifications'
     */
    listAriaLabel?: string
 }
 
 const props = withDefaults(defineProps<NotivueProps>(), {
-   listAriaLabel: 'Notifications List',
+   listAriaLabel: 'Notifications',
 })
 
 defineSlots<{

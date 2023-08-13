@@ -18,7 +18,7 @@ import { useElements, useItems } from '@/core/useStore'
 import { focusableEls, keyboardInjectionKey } from './constants'
 import { useFocusDevice } from './useFocusDevice'
 
-import type { TabIndexValue, ContainerTabIndexMap, NotivueKeyboardProps } from './types'
+import type { TabIndexValue, ContainersTabIndexMap, NotivueKeyboardProps } from './types'
 
 // Props
 
@@ -35,7 +35,7 @@ const { comboKey, handleClicks, leaveMessage, emptyMessage, renderMessage } = to
 // Slots
 
 defineSlots<{
-   default(props: { tabIndex: 0 | -1; containersTabIndex: ContainerTabIndexMap }): Component
+   default(props: { tabIndex: 0 | -1; containersTabIndex: ContainersTabIndexMap }): Component
 }>()
 
 // Computed
@@ -82,7 +82,7 @@ function setTabIndex(value: TabIndexValue) {
 // Computed
 
 const containersTabIndex = computed(() => {
-   const map = {} as ContainerTabIndexMap
+   const map = {} as ContainersTabIndexMap
 
    candidateIds.value.qualified.forEach((id) => (map[id] = tabIndex.value))
    candidateIds.value.unqualified.forEach((id) => (map[id] = -1))

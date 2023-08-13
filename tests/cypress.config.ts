@@ -8,6 +8,7 @@ export default defineConfig({
    video: false,
    viewportWidth: 1280,
    viewportHeight: 720,
+   experimentalMemoryManagement: true,
    component: {
       devServer: {
          framework: 'vue',
@@ -20,8 +21,6 @@ export default defineConfig({
 
                   '@/core': resolve(__dirname, '../packages/notivue/core'),
                   '@/Notivue': resolve(__dirname, '../packages/notivue/Notivue'),
-                  '@/NotivueSwipe': resolve(__dirname, '../packages/notivue/NotivueSwipe'),
-                  '@/NotivueKeyboard': resolve(__dirname, '../packages/notivue/NotivueKeyboard'),
                   '@/Notifications': resolve(__dirname, '../packages/notivue/Notifications'),
                },
             },
