@@ -110,7 +110,7 @@ export function createStore(userConfig: NotivueConfig) {
       /* ====================================================================================
        * Proxies - Used by push methods
        *
-       * Clear Proxy - Removes a notification and resumes timesouts if needed
+       * Clear Proxy - Removes a notification and resumes timeouts if needed
        * Push Proxy - Creates, updates or enqueues a notification created using push methods
        * ==================================================================================== */
       clearProxy(id: string, isDestroy = false) {

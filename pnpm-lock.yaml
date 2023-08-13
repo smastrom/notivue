@@ -68,9 +68,6 @@ importers:
 
    packages/notivue:
       devDependencies:
-         '@rollup/plugin-terser':
-            specifier: ^0.4.3
-            version: 0.4.3(rollup@3.28.0)
          concurrently:
             specifier: ^8.2.0
             version: 8.2.0

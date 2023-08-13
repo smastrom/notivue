@@ -20,7 +20,6 @@ export function createPush(
          id,
          clear: () => items.clearProxy(id),
          destroy: () => items.clearProxy(id, true),
-         playLeave: () => items.addLeaveClass(id),
       }
    }
 
@@ -30,14 +29,13 @@ export function createPush(
       warning: (options) => push(options, NKeys.WARNING),
       info: (options) => push(options, NKeys.INFO),
       promise: (options) => {
-         const { id, clear, destroy, playLeave } = push(options, NKeys.PROMISE)
+         const { id, clear, destroy } = push(options, NKeys.PROMISE)
 
          return {
             resolve: (options) => push(options, NKeys.PROMISE_RESOLVE, id),
             reject: (options) => push(options, NKeys.PROMISE_REJECT, id),
             clear,
             destroy,
-            playLeave,
          }
       },
       clearAll: () => elements.addClearAllClass(),

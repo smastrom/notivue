@@ -1,21 +1,13 @@
-import { defineConfig } from 'vite'
+import { defineConfig, transformWithEsbuild } from 'vite'
 import { fileURLToPath } from 'url'
+import { readFileSync, writeFileSync } from 'fs'
 
 import vue from '@vitejs/plugin-vue'
 import dts from 'vite-plugin-dts'
-import terser from '@rollup/plugin-terser'
-
-export const terserConf = {
-   compress: {
-      drop_console: true,
-      defaults: true,
-      passes: 2,
-   },
-}
-
-const isWatch = process.argv.includes('--watch')
 
 const path = (url: string) => fileURLToPath(new URL(url, import.meta.url))
+
+const isFinalBundle = !process.argv.includes('--watch')
 
 export default defineConfig({
    resolve: {
@@ -29,7 +21,7 @@ export default defineConfig({
       },
    },
    build: {
-      emptyOutDir: isWatch ? false : true,
+      emptyOutDir: isFinalBundle,
       lib: {
          entry: 'index.ts',
          name: 'Notivue',
@@ -43,7 +35,6 @@ export default defineConfig({
                vue: 'Vue',
             },
          },
-         plugins: [isWatch ? undefined : terser(terserConf)],
       },
    },
    plugins: [
@@ -51,17 +42,26 @@ export default defineConfig({
          rollupTypes: true,
       }),
       vue(),
-      postBuild(),
+      onBundleClose(),
    ],
 })
 
-function postBuild() {
+/**
+ * Esbuild options defined in vite config are somehow
+ * ignored or do not work so let's do it manually.
+ */
+function onBundleClose() {
    return {
-      name: 'post-build',
-      buildEnd() {
-         if (!terserConf.compress.drop_console) {
-            throw new Error('terserConf.compress.drop_console must be true')
-         }
+      name: 'esbuild-minify',
+      async closeBundle() {
+         const module = readFileSync('dist/index.js', { encoding: 'utf8' }).toString()
+         const { code } = await transformWithEsbuild(module, 'index.js', {
+            minifyWhitespace: true,
+            target: 'es2020',
+            drop: isFinalBundle ? ['console'] : [],
+         })
+
+         writeFileSync('dist/index.js', code)
       },
    }
 }

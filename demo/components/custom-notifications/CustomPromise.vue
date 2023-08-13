@@ -55,7 +55,6 @@ const isPromise = computed(() => props.item.type === 'promise')
    width: 360px;
    max-width: 100%;
    gap: 10px;
-   user-select: none;
 }
 
 .Header {
