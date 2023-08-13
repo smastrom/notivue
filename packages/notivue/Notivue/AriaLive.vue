@@ -24,7 +24,6 @@ const visuallyHidden: CSSProperties = {
 <template>
    <div
       :style="visuallyHidden"
-      aria-atomic="true"
       :role="props.item.ariaRole"
       :aria-live="props.item.ariaLive"
       :key="`${item.id}_${item.type}`"

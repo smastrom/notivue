@@ -16,10 +16,6 @@ describe('Push-specific options', () => {
          .get('li > div')
          .invoke('attr', 'aria-live')
          .should('not.be.undefined')
-
-         .get('li > div')
-         .invoke('attr', 'aria-atomic')
-         .should('not.be.undefined')
    })
 
    it('Can push notifications that skip the queue', () => {
