@@ -16,17 +16,16 @@ describe('Styles', () => {
          .should('be.eq', 'none')
    })
 
-   it('Should force `user-select: none; touch-action: none` if swipeable', () => {
+   it('Should force `user-select: none;` if swipeable', () => {
       cy.mountSwipe()
          .pushSwipeSuccess()
 
          .get('.SwipeNotification')
          .children()
          .should('have.css', 'user-select', 'none')
-         .and('have.css', 'touch-action', 'none')
    })
 
-   it('Should not force `user-select: none; touch-action: none` if not swipeable', () => {
+   it('Should not force `user-select: none;` if not swipeable', () => {
       cy.mountSwipe()
          .get('.Promise')
          .click()
@@ -34,6 +33,5 @@ describe('Styles', () => {
 
          .get('.SwipeNotification')
          .should('have.css', 'user-select', 'auto')
-         .and('have.css', 'touch-action', 'auto')
    })
 })

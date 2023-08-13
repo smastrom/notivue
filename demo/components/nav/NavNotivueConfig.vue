@@ -43,10 +43,10 @@ function toggleQueue() {
    }
 
    push.info({
-      title: `Enqueue ${config.enqueue.value ? 'enabled' : 'disabled'}`,
+      title: `Queue ${config.enqueue.value ? 'enabled' : 'disabled'}`,
       message: config.enqueue.value
-         ? 'Notifications will be queued if limit is reached.'
-         : 'Notifications will be discarded if limit is reached.',
+         ? 'Notifications will be queued once the limit is reached.'
+         : 'Notifications will be discarded once the limit is reached.',
    })
 }
 

@@ -63,6 +63,7 @@ describe('Push notification options have higher priority over config', () => {
 
          .get('.PushPromiseAndResolve')
          .click()
+         .wait(RESOLVE_REJECT_DELAY)
          .checkSlotAgainst(options)
    })
 
@@ -71,6 +72,7 @@ describe('Push notification options have higher priority over config', () => {
 
          .get('.PushPromiseAndReject')
          .click()
+         .wait(RESOLVE_REJECT_DELAY)
          .checkSlotAgainst(options)
    })
 })

@@ -9,8 +9,8 @@ export {
 export { default as Notivue } from '@/Notivue/Notivue.vue'
 
 export { default as NotivueSwipe } from '@/NotivueSwipe/NotivueSwipe.vue'
-export { default as NotivueKeyboard } from '@/NotivueKeyboard/NotivueKeyboard.vue'
 
+export { default as NotivueKeyboard } from '@/NotivueKeyboard/NotivueKeyboard.vue'
 export { useNotivueKeyboard } from '@/NotivueKeyboard/useNotivueKeyboard'
 
 export { default as Notifications } from '@/Notifications/Notifications.vue'

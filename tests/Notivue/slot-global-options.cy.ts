@@ -70,6 +70,7 @@ describe('Global options have higher priority over defaults', () => {
 
             .get('.PushPromiseAndResolve')
             .click()
+            .wait(RESOLVE_REJECT_DELAY)
             .checkSlotAgainst(globalOptions)
       })
 
@@ -78,6 +79,7 @@ describe('Global options have higher priority over defaults', () => {
 
             .get('.PushPromiseAndReject')
             .click()
+            .wait(RESOLVE_REJECT_DELAY)
             .checkSlotAgainst(globalOptions)
       })
    })
