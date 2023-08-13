@@ -1,7 +1,7 @@
 import { NotificationTypeKeys as NKeys } from './constants'
 import { createStore } from './createStore'
 
-import type { NotificationType, Push, PushOptions } from 'notivue'
+import type { NotificationType, Push, PushParameter } from 'notivue'
 
 export function createPush(
    items: ReturnType<typeof createStore>['items'],
@@ -9,7 +9,7 @@ export function createPush(
 ): Push {
    let createCount = 0
 
-   function push(options: PushOptions, type: NotificationType, id = `${createCount++}`) {
+   function push(options: PushParameter, type: NotificationType, id = `${createCount++}`) {
       if (typeof options === 'string') {
          options = { message: options }
       }

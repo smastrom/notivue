@@ -4,7 +4,17 @@ export type TabIndexValue = 0 | -1
 export type ContainersTabIndexMap = Record<string, TabIndexValue>
 
 export interface NotivueKeyboardData {
-   tabIndex: Ref<TabIndexValue>
+   /**
+    * Reactive tab index value for the custom notification focusable elements tabindex.
+    *
+    * Meant to be added to the custom notification elements via `:tabindex="elementsTabIndex"`.
+    */
+   elementsTabIndex: Ref<TabIndexValue>
+   /**
+    * Reactive map of tab index values for the notification containers.
+    *
+    * Meant to be passed as prop to Notivue via `:containersTabIndex="containersTabIndex"`.
+    */
    containersTabIndex: ComputedRef<ContainersTabIndexMap>
 }
 
@@ -39,5 +49,5 @@ export interface NotivueKeyboardProps {
     *
     * @default true
     */
-   renderMessage?: boolean
+   renderAnnouncement?: boolean
 }

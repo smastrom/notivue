@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { usePush, useNotivue, Notivue, type UserPushOptions, Push } from 'notivue'
+import { usePush, useNotivue, Notivue, type PushOptions, Push } from 'notivue'
 
 import { toRef, watch, shallowRef, type Ref } from 'vue'
 
 import { GENERIC_UPDATE_DELAY, RESOLVE_REJECT_DELAY } from '@/support/utils'
 
 export interface CyNotivueProps {
-   options?: UserPushOptions
-   newOptions?: UserPushOptions
+   options?: PushOptions
+   newOptions?: PushOptions
    class?: string
    enqueue?: boolean
    pauseOnTouch?: boolean

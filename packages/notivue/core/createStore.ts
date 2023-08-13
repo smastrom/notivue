@@ -7,13 +7,7 @@ import { isReducedMotion } from './utils'
 
 import { NotificationTypeKeys as NKeys, TransitionType as TType } from './constants'
 
-import type {
-   DeepPartial,
-   StoreItem,
-   NotivueConfig,
-   UserPushOptionsWithInternals,
-   Obj,
-} from 'notivue'
+import type { DeepPartial, StoreItem, NotivueConfig, PushOptionsWithInternals, Obj } from 'notivue'
 
 export const storeInjectionKey = Symbol('') as InjectionKey<ReturnType<typeof createStore>>
 
@@ -118,7 +112,7 @@ export function createStore(userConfig: NotivueConfig) {
          if (isLast) this.resumeTimeouts()
          isDestroy ? this.remove(id) : this.addLeaveClass(id)
       },
-      pushProxy<T extends Obj = Obj>(incomingOptions: UserPushOptionsWithInternals<T>) {
+      pushProxy<T extends Obj = Obj>(incomingOptions: PushOptionsWithInternals<T>) {
          const createdAt = Date.now()
 
          const entry = mergeOptions<T>(config.notifications.value, incomingOptions)

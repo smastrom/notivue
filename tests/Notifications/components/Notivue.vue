@@ -5,13 +5,13 @@ import {
    Notifications,
    NotivueIcons,
    NotivueTheme,
-   type UserPushOptions,
+   type PushOptions,
 } from 'notivue'
 
 const push = usePush()
 
 export interface CyNotificationsProps {
-   options?: UserPushOptions
+   options?: PushOptions
    icons?: NotivueIcons
    theme?: NotivueTheme
 }

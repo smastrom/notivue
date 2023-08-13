@@ -2,18 +2,22 @@ import { inject, computed, ComputedRef } from 'vue'
 
 import { createPushSSR } from './createPush'
 import { isSSR, toShallowRefs } from './utils'
-import { createStore, storeInjectionKey } from './createStore'
+import { storeInjectionKey } from './createStore'
 import { defaultConfig } from './config'
-import { StoreItem } from 'notivue'
+import { getSlotContext } from '@/Notivue/utils'
 
-type NotivueStore = ReturnType<typeof createStore>
+import type {
+   NotivueStore,
+   NotivueReactiveConfig,
+   NotivueComputedEntries,
+   NotivueSlot,
+} from 'notivue'
 
 /**
  * Used internally by Notivue.vue, since the component should
  * be wrapped in a ClientOnly component there's no need to
  * check for SSR.
  */
-
 export function useElements() {
    return useStore()?.elements
 }
@@ -31,8 +35,7 @@ export function useStore(): NotivueStore {
  * are exposed to the user. In such case we return an object
  * with the same shape.
  */
-
-export function useNotivue(): NotivueStore['config'] {
+export function useNotivue(): NotivueReactiveConfig {
    if (isSSR) return toShallowRefs({ ...defaultConfig, isTopAlign: true }) as NotivueStore['config']
 
    return useStore().config
@@ -44,21 +47,18 @@ export function usePush() {
    return useStore().push
 }
 
-export function useNotifications(): {
-   entries: ComputedRef<StoreItem[]>
-   queue: ComputedRef<StoreItem[]>
-} {
+export function useNotifications(): NotivueComputedEntries {
    if (isSSR) {
       return {
-         entries: computed(() => [] as StoreItem[]),
-         queue: computed(() => [] as StoreItem[]),
+         entries: computed(() => [] as NotivueSlot[]),
+         queue: computed(() => [] as NotivueSlot[]),
       }
    }
 
    const store = useStore()
 
    return {
-      entries: computed(() => store.items.entries.value),
-      queue: computed(() => store.items.queue.value),
+      entries: computed(() => store.items.entries.value.map(getSlotContext)),
+      queue: computed(() => store.items.queue.value.map(getSlotContext)),
    }
 }

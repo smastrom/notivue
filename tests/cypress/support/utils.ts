@@ -1,4 +1,4 @@
-import { UserPushOptions } from 'notivue'
+import { PushOptions } from 'notivue'
 
 export function parseText(subject: any) {
    return JSON.parse(subject.text()) as Record<string, any>
@@ -33,7 +33,7 @@ export function getRandomOptions() {
       duration: Math.floor(Math.random() * 10000),
       ariaLive: randomId(),
       ariaRole: randomId(),
-   } as UserPushOptions
+   } as PushOptions
 }
 
 export const randomProps = {

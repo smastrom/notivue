@@ -20,7 +20,9 @@ import type { ContainersTabIndexMap } from '@/NotivueKeyboard/types'
 interface NotivueProps {
    class?: string | Record<string, boolean> | (string | Record<string, boolean>)[]
    /**
-    * Notification containers tabIndex map. Only needed if using NotivueKeyboard.
+    * Notification containers reactive tabindex map. Only needed if using NotivueKeyboard.
+    *
+    * @default undefined
     */
    containersTabIndex?: ContainersTabIndexMap
    /**

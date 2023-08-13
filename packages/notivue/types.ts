@@ -1,4 +1,6 @@
-import type { Component, CSSProperties } from 'vue'
+import type { Component, ComputedRef, CSSProperties } from 'vue'
+
+import { createStore } from './core/createStore'
 
 // Utils
 
@@ -31,7 +33,7 @@ export type NotivueIcons = Partial<
 
 // Config
 
-export type NotificationOptionsField = Record<NotificationType | 'global', NotificationOptions>
+export type NotificationTypesOptions = Record<NotificationType | 'global', NotificationOptions>
 
 export interface NotivueConfigRequired {
    /** Whether to pause all notifications when hovering over them with mouse. */
@@ -45,7 +47,7 @@ export interface NotivueConfigRequired {
    /** Position of notifications, one of 'top-left', 'top-center', 'top-right', 'bottom-left', 'bottom-center', 'bottom-right'. */
    position: Position
    /** Notification options for each type. */
-   notifications: NotificationOptionsField
+   notifications: NotificationTypesOptions
    /** Animation classes for `enter`, `leave` and `clearAll`. */
    animations: Partial<{ enter: string; leave: string; clearAll: string }>
    /** Tag or element to which the stream will be teleported. */
@@ -71,9 +73,12 @@ export interface NotificationOptions {
 
 // Store Item
 
-export interface ExposedInternalItemData {
+export interface NotificationClearMethods {
    clear: () => void
    destroy: () => void
+}
+
+export interface ExposedInternalItemData extends NotificationClearMethods {
    createdAt: number
 }
 
@@ -100,15 +105,14 @@ export interface PushSpecificOptions {
 }
 
 /** Defined by the user when calling push() */
-export type UserPushOptions<T extends Obj = Obj> = Partial<NotificationOptions> &
+export type PushOptions<T extends Obj = Obj> = Partial<NotificationOptions> &
    PushProps<T> &
    PushSpecificOptions
 
 /** Added in background after calling push() */
 export type InternalPushOptions = { id: string; type: NotificationType }
 
-export type UserPushOptionsWithInternals<T extends Obj = Obj> = UserPushOptions<T> &
-   InternalPushOptions
+export type PushOptionsWithInternals<T extends Obj = Obj> = PushOptions<T> & InternalPushOptions
 
 /** Final shape of the store item */
 export type StoreItem<T extends Obj = Obj> = DeepRequired<NotificationOptions> &
@@ -122,21 +126,20 @@ export type NotivueSlot<T extends Obj = Obj> = Omit<StoreItem<T>, keyof HiddenIn
 
 // Push
 
-export type PushOptions<T extends Obj = Obj> = UserPushOptions<T> | NotificationOptions['message']
+export type PushParameter<T extends Obj = Obj> = PushOptions<T> | NotificationOptions['message']
 
-export type PushStatic = <T extends Obj = Obj>(options: PushOptions<T>) => ClearFunctions
+export type PushStatic = <T extends Obj = Obj>(
+   options: PushParameter<T>
+) => NotificationClearMethods
+
+export interface PushPromiseReturn {
+   resolve: <T extends Obj = Obj>(options: PushParameter<T>) => NotificationClearMethods
+   reject: <T extends Obj = Obj>(options: PushParameter<T>) => NotificationClearMethods
+}
 
 export type PushPromise = <T extends Obj = Obj>(
-   options: PushOptions<T>
-) => ClearFunctions & {
-   resolve: <T extends Obj = Obj>(options: PushOptions<T>) => ClearFunctions
-   reject: <T extends Obj = Obj>(options: PushOptions<T>) => ClearFunctions
-}
-
-export interface ClearFunctions {
-   clear: () => void
-   destroy: () => void
-}
+   options: PushParameter<T>
+) => NotificationClearMethods & PushPromiseReturn
 
 export interface Push {
    success: PushStatic
@@ -167,7 +170,6 @@ type ThemeLayoutVars =
    | '--nv-title-size'
    | '--nv-message-size'
    | '--nv-shadow'
-   // New
    | '--nv-tip-width'
    | '--nv-y-align'
 
@@ -207,3 +209,20 @@ type ThemeVars =
    | WarningColorsVars
    | InfoColorsVars
    | PromiseColorsVars
+
+// Exported Composables
+
+export type NotivueStore = ReturnType<typeof createStore>
+export type NotivueReactiveConfig = NotivueStore['config']
+
+export interface NotivueComputedEntries {
+   entries: ComputedRef<NotivueSlot[]>
+   queue: ComputedRef<NotivueSlot[]>
+}
+
+// Aliases prev 1.2.0
+
+export type UserPushOptions = PushOptions
+export type ClearFunctions = NotificationClearMethods
+export type ClearMethods = NotificationClearMethods
+export type NotificationOptionsField = NotificationTypesOptions

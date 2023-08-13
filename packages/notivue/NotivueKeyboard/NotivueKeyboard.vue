@@ -27,15 +27,18 @@ const props = withDefaults(defineProps<NotivueKeyboardProps>(), {
    handleClicks: true,
    leaveMessage: "You're exiting the notifications stream. Press CTRL + N to navigate it again.",
    emptyMessage: 'No notifications to navigate',
-   renderMessage: true,
+   renderAnnouncement: true,
 })
 
-const { comboKey, handleClicks, leaveMessage, emptyMessage, renderMessage } = toRefs(props)
+const { comboKey, handleClicks, leaveMessage, emptyMessage, renderAnnouncement } = toRefs(props)
 
 // Slots
 
 defineSlots<{
-   default(props: { tabIndex: 0 | -1; containersTabIndex: ContainersTabIndexMap }): Component
+   default(props: {
+      elementsTabIndex: TabIndexValue
+      containersTabIndex: ContainersTabIndexMap
+   }): Component
 }>()
 
 // Computed
@@ -44,7 +47,7 @@ const sharedOptions = {
    ariaRole: 'alert',
    ariaLive: 'assertive',
    skipQueue: true,
-   ariaLiveOnly: !renderMessage.value,
+   ariaLiveOnly: !renderAnnouncement.value,
    props: {
       isNotivueKeyboard: true,
    },
@@ -73,10 +76,10 @@ const { isKeyboard } = useFocusDevice()
 const candidateIds = ref({ qualified: [] as string[], unqualified: [] as string[] })
 const candidateContainers = ref<HTMLElement[]>([])
 
-const tabIndex = ref<TabIndexValue>(-1)
+const elementsTabIndex = ref<TabIndexValue>(-1)
 
 function setTabIndex(value: TabIndexValue) {
-   tabIndex.value = value
+   elementsTabIndex.value = value
 }
 
 // Computed
@@ -84,7 +87,7 @@ function setTabIndex(value: TabIndexValue) {
 const containersTabIndex = computed(() => {
    const map = {} as ContainersTabIndexMap
 
-   candidateIds.value.qualified.forEach((id) => (map[id] = tabIndex.value))
+   candidateIds.value.qualified.forEach((id) => (map[id] = elementsTabIndex.value))
    candidateIds.value.unqualified.forEach((id) => (map[id] = -1))
 
    return map
@@ -94,7 +97,7 @@ const containersTabIndex = computed(() => {
 
 provide(keyboardInjectionKey, {
    containersTabIndex,
-   tabIndex: readonly(tabIndex),
+   elementsTabIndex: readonly(elementsTabIndex),
 })
 
 // Non-Reactive
@@ -143,7 +146,7 @@ if (import.meta.env.DEV) {
          {
             isKeyboard: isKeyboard.value,
             'items.isStreamFocused': items.isStreamFocused.value,
-            tabIndex: tabIndex.value,
+            tabIndex: elementsTabIndex.value,
          },
       ]
       console.table(table)
@@ -346,5 +349,5 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-   <slot v-bind="{ containersTabIndex, tabIndex }" />
+   <slot v-bind="{ containersTabIndex, elementsTabIndex }" />
 </template>

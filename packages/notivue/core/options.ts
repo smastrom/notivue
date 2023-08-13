@@ -3,8 +3,8 @@ import { DEFAULT_DURATION, NotificationTypeKeys as NKeys } from './constants'
 import type {
    Obj,
    NotificationOptions,
-   UserPushOptionsWithInternals,
-   NotificationOptionsField,
+   PushOptionsWithInternals,
+   NotificationTypesOptions,
 } from 'notivue'
 
 export const success: NotificationOptions = {
@@ -43,11 +43,11 @@ export const defaultNotificationOptions = {
    [NKeys.PROMISE]: promise,
    [NKeys.PROMISE_RESOLVE]: success,
    [NKeys.PROMISE_REJECT]: error,
-} as NotificationOptionsField
+} as NotificationTypesOptions
 
 export function mergeNotificationOptions<T extends Obj = Obj>(
-   optionsFromConfig: NotificationOptionsField,
-   optionsFromPush: UserPushOptionsWithInternals<T>
+   optionsFromConfig: NotificationTypesOptions,
+   optionsFromPush: PushOptionsWithInternals<T>
 ) {
    if (!optionsFromPush.props) {
       optionsFromPush.props = {} as T
