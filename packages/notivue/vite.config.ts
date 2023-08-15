@@ -1,6 +1,5 @@
-import { defineConfig, transformWithEsbuild } from 'vite'
+import { defineConfig } from 'vite'
 import { fileURLToPath } from 'url'
-import { readFileSync, writeFileSync } from 'fs'
 
 import vue from '@vitejs/plugin-vue'
 import dts from 'vite-plugin-dts'
@@ -19,6 +18,9 @@ export default defineConfig({
          '@/Notifications': path('./Notifications'),
          notivue: path('./index.ts'),
       },
+   },
+   esbuild: {
+      drop: isFinalBundle ? ['console'] : [],
    },
    build: {
       emptyOutDir: isFinalBundle,
@@ -42,26 +44,5 @@ export default defineConfig({
          rollupTypes: true,
       }),
       vue(),
-      onBundleClose(),
    ],
 })
-
-/**
- * Esbuild options defined in vite config are somehow
- * ignored or do not work so let's do it manually.
- */
-function onBundleClose() {
-   return {
-      name: 'esbuild-minify',
-      async closeBundle() {
-         const module = readFileSync('dist/index.js', { encoding: 'utf8' }).toString()
-         const { code } = await transformWithEsbuild(module, 'index.js', {
-            minifyWhitespace: true,
-            target: 'es2020',
-            drop: isFinalBundle ? ['console'] : [],
-         })
-
-         writeFileSync('dist/index.js', code)
-      },
-   }
-}

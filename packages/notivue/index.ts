@@ -24,3 +24,5 @@ export {
 export { filledIcons, outlinedIcons } from '@/Notifications/icons'
 
 export * from './types'
+export * from './NotivueSwipe/types'
+export * from './NotivueKeyboard/types'

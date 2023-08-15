@@ -1,4 +1,4 @@
-import type { StoreItem, NotivueSlot, HiddenInternalItemData } from 'notivue'
+import type { StoreItem, NotivueItem, HiddenInternalItemData } from 'notivue'
 
 export const hiddenInternalKeys: (keyof HiddenInternalItemData)[] = [
    'timeout',
@@ -10,14 +10,14 @@ export const hiddenInternalKeys: (keyof HiddenInternalItemData)[] = [
    'onAnimationend',
 ]
 
-export function getSlotContext(item: StoreItem): NotivueSlot {
+export function getSlotContext(item: StoreItem): NotivueItem {
    return Object.fromEntries(
       Object.entries(item).filter(
          ([key]) => !hiddenInternalKeys.includes(key as keyof HiddenInternalItemData)
       )
-   ) as NotivueSlot
+   ) as NotivueItem
 }
 
-export function getAriaLabel(item: NotivueSlot) {
+export function getAriaLabel(item: NotivueItem) {
    return `${item.title ? `${item.title}: ` : ''}${item.message}`
 }
