@@ -2,11 +2,9 @@ import { Classes } from '@/Notifications/constants'
 
 it('All elements are accessible', () => {
    cy.mountNotifications({
-      props: {
-         options: {
-            ariaRole: 'alert',
-            ariaLive: 'assertive',
-         },
+      options: {
+         ariaRole: 'alert',
+         ariaLive: 'assertive',
       },
    })
 

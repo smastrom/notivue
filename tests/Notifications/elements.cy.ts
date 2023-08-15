@@ -4,11 +4,9 @@ import { Classes } from '@/Notifications/constants'
 
 it('All elements are rendered and only exists one element per class', () => {
    cy.mountNotifications({
-      props: {
-         options: {
-            title: 'Success',
-            message: 'This is a success message',
-         },
+      options: {
+         title: 'Success',
+         message: 'This is a success message',
       },
    })
 
@@ -37,11 +35,9 @@ it('Title is not rendered by default (if empty string) while all other elements 
 
 function getIconConfig(iconObj: NotivueIcons) {
    return {
-      props: {
-         icons: {
-            ...outlinedIcons,
-            ...iconObj,
-         },
+      icons: {
+         ...outlinedIcons,
+         ...iconObj,
       },
    }
 }
