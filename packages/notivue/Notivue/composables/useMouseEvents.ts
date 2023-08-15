@@ -16,7 +16,7 @@ export function useMouseEvents() {
    }
 
    return computed(() =>
-      config.pauseOnHover.value
+      config.pauseOnHover.value && !items.isStreamFocused.value
          ? {
               onPointerenter: pauseHover,
               onPointerleave: resumeHover,

@@ -1,8 +1,8 @@
-[data-notivue-top='true'] .Notivue__enter {
+[data-notivue-align='top'] .Notivue__enter {
    --notivue-ty: -80px;
 }
 
-[data-notivue-top='false'] .Notivue__enter {
+[data-notivue-align='bottom'] .Notivue__enter {
    --notivue-ty: 80px;
 }
 

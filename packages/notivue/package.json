@@ -1,6 +1,6 @@
 {
    "name": "notivue",
-   "version": "1.1.4",
+   "version": "1.2.0",
    "private": false,
    "description": "Fully-featured toast notification system for Vue and Nuxt.",
    "keywords": [
@@ -14,7 +14,7 @@
       "toasts",
       "notivue"
    ],
-   "homepage": "https://notivue.netlify.app/",
+   "homepage": "https://notivue.pages.dev/",
    "bugs": {
       "url": "https://github.com/smastrom/notivue/issues"
    },
@@ -31,43 +31,32 @@
    "exports": {
       ".": {
          "types": "./dist/index.d.ts",
-         "import": "./dist/index.mjs",
-         "require": "./dist/index.js"
+         "import": "./dist/index.js"
       },
       "./notifications.css": "./dist/Notifications/notifications.css",
       "./animations.css": "./dist/core/animations.css"
    },
-   "main": "dist/index.js",
-   "module": "dist/index.mjs",
+   "module": "dist/index.js",
    "types": "dist/index.d.ts",
+   "type": "module",
    "files": [
       "dist/*",
       "*.d.ts"
    ],
    "scripts": {
-      "dev": "pnpm --C \"../../demo\" run dev",
       "prebuild": "cp ../../README.md .",
-      "build": "rimraf dist && vue-tsc && vite build && pnpm run build:css",
-      "build:css": "esbuild ./Notifications/notifications.css ./core/animations.css --bundle --outdir=dist --minify --target=chrome58,edge16,firefox57,node12,safari11 --log-level=error",
-      "postbuild": "pnpm pack",
-      "test": "cypress run --component --browser chrome",
-      "test:gui": "cypress open --component --browser chrome"
+      "build": "rm -rf dist && vue-tsc && vite build && pnpm run build:css",
+      "watch": "rm -rf dist && concurrently \"vite build --watch\" \"pnpm run build:css --watch\"",
+      "build:css": "esbuild ./Notifications/notifications.css ./core/animations.css --bundle --outdir=dist --minify --target=chrome58,edge16,firefox57,node12,safari11",
+      "postbuild": " rm -f *.tgz && pnpm pack && ./scripts/verify-tarball.sh"
    },
    "devDependencies": {
-      "@rollup/plugin-terser": "^0.4.3",
-      "@types/node": "^18.16.19",
-      "@vitejs/plugin-vue": "^4.2.3",
-      "@vue/test-utils": "^2.4.0",
-      "axe-core": "^4.7.2",
-      "cypress": "^12.17.0",
-      "cypress-axe": "^1.4.0",
-      "cypress-real-events": "^1.8.1",
-      "esbuild": "^0.18.11",
-      "rimraf": "^4.4.1",
-      "typescript": "^4.9.5",
-      "vite": "^4.4.1",
-      "vite-plugin-dts": "^3.2.0",
+      "concurrently": "^8.2.0",
+      "esbuild": "^0.19.2",
+      "typescript": "^5.1.6",
+      "vite": "^4.4.9",
       "vue": "^3.3.4",
-      "vue-tsc": "^1.8.4"
+      "vue-tsc": "^1.8.8",
+      "@types/node": "^18.17.0"
    }
 }

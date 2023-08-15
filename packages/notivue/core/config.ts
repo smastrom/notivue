@@ -11,6 +11,7 @@ export const defaultConfig: NotivueConfigRequired = {
    pauseOnHover: true,
    pauseOnTouch: true,
    pauseOnTabChange: true,
+   enqueue: false,
    position: 'top-center',
    teleportTo: 'body',
    notifications: defaultNotificationOptions,

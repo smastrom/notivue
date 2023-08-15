@@ -1,0 +1,26 @@
+{
+   "compilerOptions": {
+      "target": "ES2018",
+      "module": "ESNext",
+      "moduleResolution": "Node",
+      "strict": true,
+      "resolveJsonModule": true,
+      "isolatedModules": true,
+      "esModuleInterop": true,
+      "lib": ["ESNext", "DOM"],
+      "skipLibCheck": true,
+      "noEmit": true,
+      "baseUrl": ".",
+      "paths": {
+         "@/support/*": ["./cypress/support/*"],
+         "@/tests/*": ["./*"],
+
+         "@/core/*": ["../packages/notivue/core/*"],
+         "@/Notivue/*": ["../packages/notivue/Notivue/*"],
+         "@/NotivueSwipe/*": ["../packages/notivue/NotivueSwipe/*"],
+         "@/NotivueKeyboard/*": ["../packages/notivue/NotivueKeyboard/*"],
+         "@/Notifications/*": ["../packages/notivue/Notifications/*"]
+      }
+   },
+   "include": ["."]
+}

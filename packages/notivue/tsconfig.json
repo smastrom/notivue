@@ -10,13 +10,13 @@
       "lib": ["ESNext", "DOM"],
       "skipLibCheck": true,
       "noEmit": true,
-      "rootDir": ".",
       "baseUrl": ".",
       "paths": {
          "@/core/*": ["core/*"],
          "@/Notivue/*": ["Notivue/*"],
+         "@/NotivueSwipe/*": ["NotivueSwipe/*"],
+         "@/NotivueKeyboard/*": ["NotivueKeyboard/*"],
          "@/Notifications/*": ["Notifications/*"],
-         "@/types": ["types.ts"],
          "notivue": ["index.ts"]
       }
    },
