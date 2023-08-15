@@ -24,6 +24,7 @@
    -webkit-font-smoothing: antialiased;
    -moz-osx-font-smoothing: grayscale;
    -webkit-text-size-adjust: 100%;
+   --app-font-family: 'PT Sans Narrow', Avenir, Helvetica, Arial, sans-serif;
 }
 
 html {
@@ -34,32 +35,34 @@ html {
    );
    --background-color: #fff;
    --button-bg-color: #fff;
-   --button-color: #6b7a90;
-   --button-active-bg-color: #6b7a90;
+   --button-color: #5d6a7e;
+   --button-active-bg-color: #5d6a7e;
    --button-active-color: #fff;
    --nav-border-color: #fff;
    --nav-bg-color: hsla(0, 0%, 100%, 0.35);
-   --legend-title-color: #6b7a90;
+   --legend-title-color: #5d6a7e;
    --logo-fill: #455162;
    --logo-stroke: #1e2226;
    --links-color: #424850;
+   --divider-color: #b6c5d8;
 
    background: var(--background-color);
    background: var(--background-gradient);
 }
 
 html[data-theme='dark'] {
-   --background-color: #343434;
-   --button-bg-color: #2f2f2f;
+   --background-color: #171717;
+   --button-bg-color: #171717;
    --button-color: #7f7f7f;
    --button-active-bg-color: #545454;
-   --button-active-color: #fff;
-   --nav-border-color: #595959;
-   --nav-bg-color: rgba(86, 86, 86, 0.35);
-   --legend-title-color: #fff;
+   --button-active-color: #cacaca;
+   --nav-border-color: #313131;
+   --nav-bg-color: rgba(55, 55, 55, 0.36);
+   --legend-title-color: #d0d0d0;
    --logo-fill: #7b7b7b;
    --logo-stroke: #141414;
-   --links-color: #d7d7d7;
+   --links-color: #d0d0d0;
+   --divider-color: #313131;
 
    background: var(--background-color);
    background-color: var(--background-color);
@@ -77,6 +80,7 @@ html[data-theme='slate'] {
    --logo-fill: #878b92;
    --logo-stroke: #141414;
    --links-color: #d7d7d7;
+   --divider-color: #ffffff4a;
 
    background: var(--background-color);
    background-color: var(--background-color);
@@ -90,7 +94,7 @@ body {
 }
 
 #app {
-   font-family: 'PT Sans Narrow', Avenir, Helvetica, Arial, sans-serif;
+   font-family: var(--app-font-family);
 }
 
 * {
@@ -110,7 +114,7 @@ body {
    cursor: pointer;
    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.03);
    transition: transform 100ms ease-in-out;
-   font-family: 'PT Sans Narrow', Avenir, Helvetica, Arial, sans-serif;
+   font-family: var(--app-font-family);
    font-weight: 700;
    color: var(--button-color);
    white-space: nowrap;
@@ -122,7 +126,7 @@ body {
    }
 }
 
-.ButtonBase_Disabled {
+.ButtonBase:disabled {
    opacity: 0.5;
    cursor: not-allowed;
 
@@ -161,4 +165,15 @@ body {
 
 p {
    margin: 0;
+}
+
+.Tippy {
+   background-color: white;
+   padding: 0.5rem 0.75rem;
+   border-radius: 5px;
+   font-weight: 600;
+   line-height: 1.5;
+   color: var(--button-color);
+   font-family: var(--app-font-family);
+   box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.03);
 }

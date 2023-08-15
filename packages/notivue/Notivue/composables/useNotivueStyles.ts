@@ -28,16 +28,6 @@ const rootOffsets = {
    left: 'var(--nv-root-left, 1.25rem)',
 }
 
-export const visuallyHidden: CSSProperties = {
-   ...absolute,
-   clip: 'rect(0 0 0 0)',
-   clipPath: 'inset(50%)',
-   height: '1px',
-   overflow: 'hidden',
-   whiteSpace: 'nowrap',
-   width: '1px',
-}
-
 const staticStyles: Record<NotivueElements, CSSProperties> = {
    ol: {
       ...boxSizing,

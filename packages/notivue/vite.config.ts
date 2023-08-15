@@ -1,24 +1,34 @@
 import { defineConfig } from 'vite'
+import { fileURLToPath } from 'url'
+
 import vue from '@vitejs/plugin-vue'
 import dts from 'vite-plugin-dts'
-import terser from '@rollup/plugin-terser'
-import { resolve } from 'path'
+
+const path = (url: string) => fileURLToPath(new URL(url, import.meta.url))
+
+const isFinalBundle = !process.argv.includes('--watch')
 
 export default defineConfig({
    resolve: {
       alias: {
-         '@/core': resolve(__dirname, './core'),
-         '@/Notivue': resolve(__dirname, './Notivue'),
-         '@/Notifications': resolve(__dirname, './Notifications'),
-         notivue: resolve(__dirname, './index.ts'),
+         '@/core': path('./core'),
+         '@/Notivue': path('./Notivue'),
+         '@/NotivueSwipe': path('./NotivueSwipe'),
+         '@/NotivueKeyboard': path('./NotivueKeyboard'),
+         '@/Notifications': path('./Notifications'),
+         notivue: path('./index.ts'),
       },
    },
+   esbuild: {
+      drop: isFinalBundle ? ['console'] : [],
+   },
    build: {
+      emptyOutDir: isFinalBundle,
       lib: {
          entry: 'index.ts',
          name: 'Notivue',
          fileName: 'index',
-         formats: ['es', 'cjs'],
+         formats: ['es'],
       },
       rollupOptions: {
          external: ['vue'],
@@ -27,23 +37,10 @@ export default defineConfig({
                vue: 'Vue',
             },
          },
-         plugins: [
-            terser({
-               compress: {
-                  drop_console: false,
-                  defaults: true,
-                  passes: 2,
-                  ecma: 2020,
-               },
-            }),
-         ],
       },
    },
    plugins: [
-      // @ts-ignore
       dts({
-         staticImport: true,
-         insertTypesEntry: true,
          rollupTypes: true,
       }),
       vue(),

@@ -5,11 +5,11 @@ import { Classes as Cx } from './constants'
 import { filledIcons } from './icons'
 import { lightTheme } from './themes'
 
-import type { NotivueIcons, NotivueSlot, NotivueTheme } from 'notivue'
+import type { NotivueIcons, NotivueItem, NotivueTheme } from 'notivue'
 
 const props = withDefaults(
    defineProps<{
-      item: NotivueSlot
+      item: NotivueItem
       icons?: NotivueIcons
       theme?: NotivueTheme
       closeAriaLabel?: string
@@ -22,7 +22,7 @@ const closeIcon = computed(() => props.icons.close)
 </script>
 
 <template>
-   <div :class="Cx.NOTIFICATION" :data-notivue="item.type" :style="theme">
+   <div :class="Cx.NOTIFICATION" :data-notivue="item.type" :style="theme" tabindex="-1">
       <template v-if="icon">
          <Component
             v-if="typeof icon === 'object'"
@@ -35,7 +35,7 @@ const closeIcon = computed(() => props.icons.close)
          </div>
       </template>
 
-      <div :class="Cx.CONTENT">
+      <div :class="Cx.CONTENT" :aria-live="item.ariaLive" :role="item.ariaRole">
          <h3 v-if="item.title" :class="Cx.TITLE" v-text="item.title" />
          <p :class="Cx.MESSAGE" v-text="item.message" />
       </div>
@@ -43,8 +43,10 @@ const closeIcon = computed(() => props.icons.close)
       <button
          v-if="closeIcon && item.type !== 'promise'"
          :class="Cx.CLOSE"
+         :aria-label="closeAriaLabel"
+         type="button"
+         tabindex="-1"
          @click="item.clear"
-         :aria-label="props.closeAriaLabel"
       >
          <Component v-if="typeof closeIcon === 'object'" :is="closeIcon" :class="Cx.CLOSE_ICON" />
          <div v-else-if="typeof closeIcon === 'string'" aria-hidden="true" v-text="closeIcon" />

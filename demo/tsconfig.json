@@ -1,26 +1,3 @@
 {
-   "compilerOptions": {
-      "target": "ESNext",
-      "module": "ESNext",
-      "moduleResolution": "Node",
-      "strict": true,
-      "resolveJsonModule": true,
-      "isolatedModules": true,
-      "esModuleInterop": true,
-      "lib": ["ESNext", "DOM"],
-      "skipLibCheck": true,
-      "noEmit": true,
-      "baseUrl": ".",
-      "paths": {
-         "@/components/*": ["components/*"],
-         "@/lib/*": ["lib/*"],
-
-         "notivue": ["../packages/notivue/index.ts"],
-         "@/core/*": ["../packages/notivue/core/*"],
-         "@/Notivue/*": ["../packages/notivue/Notivue/*"],
-         "@/Notifications/*": ["../packages/notivue/Notifications/*"],
-         "@/types": ["../packages/notivue/types.ts"]
-      }
-   },
-   "include": ["."]
+   "extends": "./.nuxt/tsconfig.json"
 }

@@ -1,10 +1,14 @@
 <div align="center">
 
+![notivue](https://i.ibb.co/CJCG2Hq/readme-header.png)
+
+<br />
+
 # Notivue
 
 ### Fully-featured notification system for Vue and Nuxt.
 
-[Live Demo](https://notivue.netlify.app) - [Documentation](https://notivuedocs.netlify.app)
+[Live Demo](https://notivue.pages.dev) - [Documentation](https://notivuedocs.netlify.app)
 
 **Examples**
 
@@ -23,8 +27,11 @@ _Granularly include only the features you need_
 **🧚‍♂️ Zero deps and lightweight**  
 _From ~4 KB (gzipped)_
 
+**💊 Drop-in components to enhance notifications**  
+_NotivueSwipe, NotivueKeyboard, all optional and customizable_
+
 **🎢 Slick transitions and animations**  
-_Customize any animation_
+_Customize any animation with CSS_
 
 **🧩 Custom Components API**  
 _Use your own components while Notivue handles the rest_
@@ -36,7 +43,7 @@ _Update pending notifications with ease_
 _Themes, icons, rtl support and much more_
 
 **♿️ Fully accessible**  
-_Built-in screen reader and reduced motion support_
+_Built-in screen reader, reduced motion, and keyboard support_
 
 <br />
 
@@ -90,10 +97,16 @@ import { Notivue, Notifications } from 'notivue'
 Or roll your own:
 
 ```vue
+<script setup>
+import { Notivue } from 'notivue'
+</script>
+
 <template>
   <Notivue v-slot="item">
     <div class="rounded-full flex py-2 pl-3 bg-slate-700 text-slate-50 text-sm">
-      {{ item.message }}
+      <p :role="item.ariaRole" :aria-live="item.ariaLive">
+        {{ item.message }}
+      </p>
 
       <button
         @click="item.clear"
@@ -120,7 +133,7 @@ Or roll your own:
 </template>
 ```
 
-Animations, repositioning, pausing, timeouts, and ARIA live regions are always handled by `<Notivue />` when using custom components, so don't worry about anything else besides building the component itself.
+> Animations, repositioning, queueing, pausing, clear on swipe and any other core feature will always be handled by `<Notivue />` when using custom components, so don't worry about anything else besides building the component itself.
 
 ### 2. Push notifications from any component
 

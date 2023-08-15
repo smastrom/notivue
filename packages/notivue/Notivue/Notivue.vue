@@ -1,72 +1,104 @@
 <script setup lang="ts">
-import { Teleport, type Component } from 'vue'
+import { Teleport, onBeforeUnmount, type Component } from 'vue'
+
+import AriaLive from './AriaLive.vue'
 
 import { useNotivue, useItems, useElements } from '@/core/useStore'
 
 import { useMouseEvents } from './composables/useMouseEvents'
 import { useTouchEvents } from './composables/useTouchEvents'
-import { useNotivueStyles, visuallyHidden } from './composables/useNotivueStyles'
+import { useNotivueStyles } from './composables/useNotivueStyles'
 import { useRepositioning } from './composables/useRepositioning'
 import { useVisibilityChange } from './composables/useVisibilityChange'
-import { useFocusEvents } from './composables/useFocusEvents'
+import { getSlotContext, getAriaLabel } from './utils'
 
-import { getSlotContext } from './utils'
+import type { NotivueItem } from 'notivue'
+import type { ContainersTabIndexMap } from '@/NotivueKeyboard/types'
 
-import type { NotivueSlot } from 'notivue'
+// Props
 
-defineProps<{
-   class?: string
-}>()
+interface NotivueProps {
+   class?: string | Record<string, boolean> | (string | Record<string, boolean>)[]
+   /**
+    * Notification containers reactive tabindex map. Only needed if using NotivueKeyboard.
+    *
+    * @default undefined
+    */
+   containersTabIndex?: ContainersTabIndexMap
+   /**
+    * Aria label for the list container. Only effective if using NotivueKeyboard.
+    *
+    * @default 'Notifications'
+    */
+   listAriaLabel?: string
+}
+
+const props = withDefaults(defineProps<NotivueProps>(), {
+   listAriaLabel: 'Notifications',
+})
 
 defineSlots<{
-   default(item: NotivueSlot & { key?: string }): Component
+   default(item: NotivueItem & { key?: string }): Component
 }>()
+
+// Store
 
 const config = useNotivue()
 const items = useItems()
 const elements = useElements()
 
-const styles = useNotivueStyles()
+// Notivue Composables
 
+const styles = useNotivueStyles()
 const mouseEvents = useMouseEvents()
 const touchEvents = useTouchEvents()
 
-useFocusEvents()
-
-useVisibilityChange({
-   onHidden: () => (config.pauseOnTabChange.value ? items.pauseTimeouts() : items.removeAll()),
-   onVisible: () => (config.pauseOnTabChange.value ? items.resumeTimeouts() : {}),
-})
-
+useVisibilityChange()
 useRepositioning()
+
+// Lifecycle
+
+onBeforeUnmount(() => {
+   items.reset()
+})
 </script>
 
 <template>
    <Teleport :to="config.teleportTo.value">
       <!-- List Container -->
       <ol
-         :data-notivue-top="config.isTopAlign.value"
+         :aria-label="props.listAriaLabel"
+         v-if="items.entries.value.length > 0"
+         v-bind="{ ...mouseEvents, ...touchEvents }"
+         :data-notivue-align="config.isTopAlign.value ? 'top' : 'bottom'"
          :ref="elements.wrapper"
          :style="styles.ol"
-         v-bind="{ ...mouseEvents, ...touchEvents }"
-         :class="class"
-         v-if="items.data.value.length > 0"
+         :class="props.class"
       >
          <!-- List Item -->
          <li
-            v-for="(item, index) in items.data.value"
+            v-for="(item, index) in items.entries.value"
+            tabindex="-1"
             :key="item.id"
             :data-notivue-id="item.id"
-            :aria-setsize="items.data.value.length"
+            :aria-setsize="items.entries.value.length"
             :aria-posinset="index + 1"
             :ref="elements.items"
             :style="{
-               ...item.transitionStyles,
                ...styles.li,
+               ...item.positionStyles,
             }"
          >
+            <!-- ariaLiveOnly Push Option -->
+            <AriaLive v-if="item.ariaLiveOnly" :item="item" />
+
             <!-- Notification Container -->
             <div
+               v-else
+               :aria-label="getAriaLabel(item)"
+               :tabindex="containersTabIndex?.[item.id] ?? -1"
+               :data-notivue-container="item.id"
+               :ref="elements.containers"
                :style="styles.item"
                :class="item.animationClass"
                @animationstart="item.onAnimationstart"
@@ -74,16 +106,6 @@ useRepositioning()
             >
                <!-- Notification -->
                <slot v-bind="getSlotContext(item)" :key="`${item.id}_${item.type}`" />
-
-               <!-- Aria Live -->
-               <div
-                  aria-atomic="true"
-                  :aria-live="item.ariaLive"
-                  :role="item.ariaRole"
-                  :style="visuallyHidden"
-               >
-                  <div>{{ item.title ? `${item.title}: ` : '' }}{{ item.message }}</div>
-               </div>
             </div>
          </li>
       </ol>

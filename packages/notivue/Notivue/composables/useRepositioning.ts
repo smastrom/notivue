@@ -14,7 +14,7 @@ export function useRepositioning() {
 
    // 1. Items 'length' change
    watch(
-      () => items.data.value.length,
+      () => items.entries.value.length,
       () => items.updatePositions(TType.PUSH),
       { flush: 'post' }
    )
