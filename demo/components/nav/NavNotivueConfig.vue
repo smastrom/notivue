@@ -159,7 +159,7 @@ const queueTooltipMessage = computed(() => {
       <hr />
 
       <select class="ButtonBase Select" v-model="config.limit.value" aria-label="Limit">
-         <option selected :value="Infinity">Unlimited</option>
+         <option selected :value="Infinity">No Limit</option>
          <option :value="1">Limit - 1</option>
          <option :value="3">Limit - 3</option>
          <option :value="5">Limit - 5</option>
@@ -177,7 +177,16 @@ const queueTooltipMessage = computed(() => {
 
 .Select {
    text-align: center;
-   padding-left: 1.25em;
+   display: flex;
+   justify-items: center;
+
+   -webkit-appearance: none;
+   appearance: none;
+
+   background-image: url("data:image/svg+xml;charset=utf8, %3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+   background-position: right 0.45em top 50%;
+   background-repeat: no-repeat;
+   background-size: auto 1rem;
 }
 
 .ButtonTooltip {
@@ -186,7 +195,7 @@ const queueTooltipMessage = computed(() => {
 
 hr {
    margin: 0.25rem 0;
-   border: none;
+   border: 0;
    border-bottom: 1px solid var(--divider-color);
 }
 </style>
