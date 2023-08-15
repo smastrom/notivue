@@ -81,8 +81,8 @@ export const darkTheme: NotivueTheme = {
    ...layout,
    '--nv-border-width': '1px',
    // Global
-   '--nv-global-bg': '#464646',
-   '--nv-global-border': '#696969',
+   '--nv-global-bg': '#1F1F1F',
+   '--nv-global-border': '#313131',
    '--nv-global-fg': '#D0D0D0',
    // Scoped
    '--nv-success-accent': '#8EF997',
