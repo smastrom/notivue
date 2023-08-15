@@ -2,7 +2,6 @@ import { defineConfig } from 'cypress'
 import { resolve } from 'path'
 
 import vue from '@vitejs/plugin-vue'
-import vueJsx from '@vitejs/plugin-vue-jsx'
 
 export default defineConfig({
    video: false,
@@ -24,7 +23,7 @@ export default defineConfig({
                   '@/Notifications': resolve(__dirname, '../packages/notivue/Notifications'),
                },
             },
-            plugins: [vue(), vueJsx()],
+            plugins: [vue()],
          },
       },
       setupNodeEvents(on) {

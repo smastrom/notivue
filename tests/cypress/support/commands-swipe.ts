@@ -1,30 +1,26 @@
-import type { NotivueConfig } from 'notivue'
+import { mount } from 'cypress/vue'
+import { notivuePlugin } from './utils'
 
 import Notivue, { type CyNotivueSwipeProps } from '@/tests/NotivueSwipe/components/Notivue.vue'
 
-import { DEFAULT_ENTER_LEAVE_ANIM_DURATION } from '@/support/utils'
-
-type MountNotificationsOptions = { config?: NotivueConfig; props?: CyNotivueSwipeProps }
+import { DEFAULT_ENTER_LEAVE_ANIM_DURATION as ANIM_DUR } from '@/support/utils'
 
 declare global {
    namespace Cypress {
       interface Chainable {
-         mountSwipe(options?: MountNotificationsOptions): Chainable<any>
+         mountSwipe(props?: CyNotivueSwipeProps): Chainable<any>
          pushSwipeSuccess(): Chainable<any>
       }
    }
 }
 
-Cypress.Commands.add(
-   'mountSwipe',
-   ({ config = {}, props = {} }: MountNotificationsOptions = { config: {}, props: {} }) => {
-      cy.mount<CyNotivueSwipeProps>(Notivue, {
-         config,
-         props,
-      })
-   }
-)
+Cypress.Commands.add('mountSwipe', (props = {}) => {
+   return mount(Notivue, {
+      global: {
+         plugins: [notivuePlugin()],
+      },
+      props,
+   })
+})
 
-Cypress.Commands.add('pushSwipeSuccess', () =>
-   cy.get('.Success').click().wait(DEFAULT_ENTER_LEAVE_ANIM_DURATION)
-)
+Cypress.Commands.add('pushSwipeSuccess', () => cy.get('.Success').click().wait(ANIM_DUR))

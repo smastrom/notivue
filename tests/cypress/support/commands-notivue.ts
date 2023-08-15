@@ -1,3 +1,6 @@
+import { mount } from 'cypress/vue'
+import { notivuePlugin } from './utils'
+
 import { DEFAULT_DURATION } from '@/core/constants'
 import { parseText } from './utils'
 
@@ -32,9 +35,13 @@ declare global {
 Cypress.Commands.add(
    'mountNotivue',
    ({ config = {}, props = {} }: MountNotificationsOptions = { config: {}, props: {} }) => {
-      cy.mount<CyNotivueProps>(Notivue, {
-         config,
+      return mount(Notivue, {
+         global: {
+            plugins: [notivuePlugin(config)],
+         },
          props,
+      }).then(({ wrapper }) => {
+         return cy.wrap(wrapper).as('vue')
       })
    }
 )

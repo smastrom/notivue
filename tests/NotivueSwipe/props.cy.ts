@@ -10,7 +10,7 @@ import { SWIPE_NOTIFICATION_WIDTH as WIDTH } from '@/support/utils'
 if (!Cypress.env('CYPRESS_SKIP_BUGGED_CI_TEST')) {
    describe('Props', () => {
       it('Should not swipe if disabled', () => {
-         cy.mountSwipe({ props: { disabled: true } })
+         cy.mountSwipe({ disabled: true })
             .pushSwipeSuccess()
 
             .get('.SwipeNotification')
@@ -19,7 +19,7 @@ if (!Cypress.env('CYPRESS_SKIP_BUGGED_CI_TEST')) {
       })
 
       it('Should clear with a lower threshold', () => {
-         cy.mountSwipe({ props: { threshold: 0.3 } })
+         cy.mountSwipe({ threshold: 0.3 })
             .pushSwipeSuccess()
 
             .get('.SwipeNotification')
@@ -30,7 +30,7 @@ if (!Cypress.env('CYPRESS_SKIP_BUGGED_CI_TEST')) {
       })
 
       it('Should swipe if swiping excluded element', () => {
-         cy.mountSwipe({ props: { exclude: '.CloseButton' } })
+         cy.mountSwipe({ exclude: '.CloseButton' })
             .pushSwipeSuccess()
 
             .get('.CloseButton')
