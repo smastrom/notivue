@@ -95,6 +95,8 @@ function setDragStyles() {
 function resetDragStyles() {
    if (!itemRef.value) return
 
+   resetStyles()
+
    itemRef.value.querySelectorAll('*').forEach((el) => {
       if (el instanceof HTMLElement) el.style.userSelect = 'auto'
    })

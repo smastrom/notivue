@@ -236,8 +236,8 @@ function onStreamLeave() {
 
 /**
  * This is needed to track whether the user is leaving the stream
- * using TAB or SHIFT + TAB. In any other case, we know exactly
- * when the user is leaving the stream, so we don't need this.
+ * using TAB or SHIFT + TAB. In any other case, we manually
+ * toggle the state so this shouldn't be triggered.
  */
 let isManualLeave = false
 
@@ -252,7 +252,6 @@ watch(
          if (isManualLeave) return (isManualLeave = false)
 
          if (!stream?.contains(e.relatedTarget as HTMLElement)) {
-            console.log('Leaving automatically!')
             onStreamLeave()
          }
       }
