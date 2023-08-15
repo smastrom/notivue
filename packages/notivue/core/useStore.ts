@@ -10,7 +10,7 @@ import type {
    NotivueStore,
    NotivueReactiveConfig,
    NotivueComputedEntries,
-   NotivueSlot,
+   NotivueItem,
 } from 'notivue'
 
 /**
@@ -50,8 +50,8 @@ export function usePush() {
 export function useNotifications(): NotivueComputedEntries {
    if (isSSR) {
       return {
-         entries: computed(() => [] as NotivueSlot[]),
-         queue: computed(() => [] as NotivueSlot[]),
+         entries: computed(() => [] as NotivueItem[]),
+         queue: computed(() => [] as NotivueItem[]),
       }
    }
 

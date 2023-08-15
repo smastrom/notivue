@@ -12,7 +12,7 @@ import { useRepositioning } from './composables/useRepositioning'
 import { useVisibilityChange } from './composables/useVisibilityChange'
 import { getSlotContext, getAriaLabel } from './utils'
 
-import type { NotivueSlot } from 'notivue'
+import type { NotivueItem } from 'notivue'
 import type { ContainersTabIndexMap } from '@/NotivueKeyboard/types'
 
 // Props
@@ -38,7 +38,7 @@ const props = withDefaults(defineProps<NotivueProps>(), {
 })
 
 defineSlots<{
-   default(item: NotivueSlot & { key?: string }): Component
+   default(item: NotivueItem & { key?: string }): Component
 }>()
 
 // Store

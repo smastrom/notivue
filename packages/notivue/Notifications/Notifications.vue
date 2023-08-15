@@ -5,11 +5,11 @@ import { Classes as Cx } from './constants'
 import { filledIcons } from './icons'
 import { lightTheme } from './themes'
 
-import type { NotivueIcons, NotivueSlot, NotivueTheme } from 'notivue'
+import type { NotivueIcons, NotivueItem, NotivueTheme } from 'notivue'
 
 const props = withDefaults(
    defineProps<{
-      item: NotivueSlot
+      item: NotivueItem
       icons?: NotivueIcons
       theme?: NotivueTheme
       closeAriaLabel?: string
@@ -44,6 +44,7 @@ const closeIcon = computed(() => props.icons.close)
          v-if="closeIcon && item.type !== 'promise'"
          :class="Cx.CLOSE"
          :aria-label="closeAriaLabel"
+         type="button"
          tabindex="-1"
          @click="item.clear"
       >

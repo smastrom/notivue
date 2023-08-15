@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { getAriaLabel as getAriaLiveContent } from './utils'
 
-import type { NotivueSlot } from 'notivue'
+import type { NotivueItem } from 'notivue'
 import type { CSSProperties } from 'vue'
 
 const props = defineProps<{
-   item: NotivueSlot
+   item: NotivueItem
 }>()
 
 const visuallyHidden: CSSProperties = {

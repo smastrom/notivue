@@ -1,8 +1,8 @@
-import type { NotivueSlot } from 'notivue'
+import type { NotivueItem } from 'notivue'
 
 export interface NotivueSwipeProps {
    /** Notivue's exposed notification item. */
-   item: NotivueSlot
+   item: NotivueItem
    /**
     * Whether to enable clear on swipe only on touch interactions.
     */

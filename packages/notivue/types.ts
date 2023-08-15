@@ -122,7 +122,7 @@ export type StoreItem<T extends Obj = Obj> = DeepRequired<NotificationOptions> &
    PushSpecificOptions
 
 /** Portion of the store item exposed to slot */
-export type NotivueSlot<T extends Obj = Obj> = Omit<StoreItem<T>, keyof HiddenInternalItemData>
+export type NotivueItem<T extends Obj = Obj> = Omit<StoreItem<T>, keyof HiddenInternalItemData>
 
 // Push
 
@@ -216,12 +216,13 @@ export type NotivueStore = ReturnType<typeof createStore>
 export type NotivueReactiveConfig = NotivueStore['config']
 
 export interface NotivueComputedEntries {
-   entries: ComputedRef<NotivueSlot[]>
-   queue: ComputedRef<NotivueSlot[]>
+   entries: ComputedRef<NotivueItem[]>
+   queue: ComputedRef<NotivueItem[]>
 }
 
 // Aliases prev 1.2.0
 
+export type NotivueSlot = NotivueItem
 export type UserPushOptions = PushOptions
 export type ClearFunctions = NotificationClearMethods
 export type ClearMethods = NotificationClearMethods

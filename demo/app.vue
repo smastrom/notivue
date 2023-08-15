@@ -10,7 +10,7 @@ import {
    darkTheme,
    slateTheme,
    outlinedIcons,
-   type NotivueSlot,
+   type NotivueItem,
 } from 'notivue'
 
 import Nav from '@/components/nav/Nav.vue'
@@ -41,7 +41,7 @@ const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme }
                :disabled="!state.enableSwipe"
                v-if="(item.props as CustomProps).isCustom"
             >
-               <CustomStatic :item="item as NotivueSlot<CustomProps>" />
+               <CustomStatic :item="item as NotivueItem<CustomProps>" />
             </NotivueSwipe>
 
             <NotivueSwipe
@@ -49,7 +49,7 @@ const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme }
                :disabled="!state.enableSwipe"
                v-else-if="(item.props as CustomPromiseProps).isFileUpload"
             >
-               <CustomPromise :item="item as NotivueSlot<CustomPromiseProps>" />
+               <CustomPromise :item="item as NotivueItem<CustomPromiseProps>" />
             </NotivueSwipe>
 
             <NotivueSwipe :item="item" :disabled="!state.enableSwipe" v-else>

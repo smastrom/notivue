@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { formatDistanceToNow as toNow } from 'date-fns'
 
-import { useNotivueKeyboard, type NotivueSlot } from 'notivue'
+import { useNotivueKeyboard, type NotivueItem } from 'notivue'
 
 import type { CustomProps } from '../nav/NavPushCustom.vue'
 
 defineProps<{
-   item: NotivueSlot<CustomProps>
+   item: NotivueItem<CustomProps>
 }>()
 
-const { tabIndex } = useNotivueKeyboard()
+const { elementsTabIndex } = useNotivueKeyboard()
 </script>
 
 <template>
@@ -27,10 +27,17 @@ const { tabIndex } = useNotivueKeyboard()
             </p>
          </div>
          <nav class="Buttons">
-            <button @click="item.clear" class="Button ButtonReverse" :tabIndex="tabIndex">
+            <button
+               role="button"
+               @click="item.clear"
+               class="Button ButtonReverse"
+               :tabIndex="elementsTabIndex"
+            >
                Deny
             </button>
-            <button @click="item.clear" class="Button" :tabIndex="tabIndex">Accept</button>
+            <button role="button" @click="item.clear" class="Button" :tabIndex="elementsTabIndex">
+               Accept
+            </button>
          </nav>
       </div>
    </div>
