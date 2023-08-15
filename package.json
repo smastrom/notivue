@@ -12,13 +12,14 @@
       "build": "pnpm -C packages/notivue run build",
       "build:demo": "pnpm -C demo run build",
       "test": "pnpm run build && pnpm -C tests install && pnpm -C tests run test",
-      "test:gui": "pnpm -C packages/notivue run build && concurrently \"pnpm -C packages/notivue run watch\" \"pnpm -C tests install && pnpm -C tests run test:gui\"",
+      "test:gui": "pnpm -C packages/notivue run build && concurrently \"pnpm -C packages/notivue run watch\" \" pnpm -C tests install && pnpm -C tests run test:gui\"",
       "prepare": "husky install",
       "pretty-quick": "pretty-quick"
    },
    "devDependencies": {
       "@types/node": "^18.17.5",
       "@vitejs/plugin-vue": "^4.2.3",
+      "cypress": "^12.17.3",
       "husky": "^8.0.3",
       "prettier": "^2.8.8",
       "pretty-quick": "^3.1.3",
@@ -26,7 +27,6 @@
       "vite": "^4.4.9",
       "vite-plugin-dts": "^3.5.2",
       "vue": "^3.3.4",
-      "vue-tsc": "^1.8.8",
-      "cypress": "^12.17.0"
+      "vue-tsc": "^1.8.8"
    }
 }
