@@ -1,10 +1,6 @@
 <div align="center">
 
----
-
 ![notivue](https://i.ibb.co/CJCG2Hq/readme-header.png)
-
----
 
 <br />
 

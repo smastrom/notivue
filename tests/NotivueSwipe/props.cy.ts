@@ -2,11 +2,11 @@ import { SWIPE_NOTIFICATION_WIDTH as WIDTH } from '@/support/utils'
 
 /**
  * Don't know why this test hangs the whole github action
- * but works and succeeds locally.
+ * even if it works and succeeds locally.
  *
- * Disabling it for now.
+ * Skipping it for now.
+ *
  */
-
 if (!Cypress.env('CYPRESS_SKIP_BUGGED_CI_TEST')) {
    describe('Props', () => {
       it('Should not swipe if disabled', () => {
