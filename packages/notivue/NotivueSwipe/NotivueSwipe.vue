@@ -88,7 +88,10 @@ function setDragStyles() {
    })
 
    itemRef.value.querySelectorAll('*').forEach((el) => {
-      if (el instanceof HTMLElement) el.style.userSelect = 'none'
+      if (el instanceof HTMLElement) {
+         el.style.userSelect = 'none'
+         el.style.touchAction = 'none'
+      }
    })
 }
 
@@ -98,7 +101,10 @@ function resetDragStyles() {
    resetStyles()
 
    itemRef.value.querySelectorAll('*').forEach((el) => {
-      if (el instanceof HTMLElement) el.style.userSelect = 'auto'
+      if (el instanceof HTMLElement) {
+         el.style.userSelect = 'auto'
+         el.style.touchAction = 'auto'
+      }
    })
 }
 
