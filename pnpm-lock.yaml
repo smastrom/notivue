@@ -14,7 +14,7 @@ importers:
             specifier: ^4.2.3
             version: 4.2.3(vite@4.4.9)(vue@3.3.4)
          cypress:
-            specifier: ^12.17.3
+            specifier: ^12.17.0
             version: 12.17.3
          husky:
             specifier: ^8.0.3
@@ -37,9 +37,6 @@ importers:
          vue:
             specifier: ^3.3.4
             version: 3.3.4
-         vue-tsc:
-            specifier: ^1.8.8
-            version: 1.8.8(typescript@5.1.6)
 
    demo:
       dependencies:
@@ -60,17 +57,20 @@ importers:
             specifier: ^0.8.0
             version: 0.8.0(nuxt@3.6.5)(vite@4.4.9)
          '@types/node':
-            specifier: ^18.17.5
+            specifier: ^18.17.3
             version: 18.17.5
          nuxt:
             specifier: ^3.6.5
-            version: 3.6.5(@types/node@18.17.5)(typescript@5.1.6)(vue-tsc@1.8.8)
+            version: 3.6.5(@types/node@18.17.5)(typescript@5.1.6)
          postcss-nesting:
             specifier: ^12.0.1
             version: 12.0.1(postcss@8.4.27)
 
    packages/notivue:
       devDependencies:
+         '@types/node':
+            specifier: ^18.17.0
+            version: 18.17.5
          concurrently:
             specifier: ^8.2.0
             version: 8.2.0
@@ -97,7 +97,7 @@ importers:
             version: link:../packages/notivue
       devDependencies:
          '@types/node':
-            specifier: ^18.17.5
+            specifier: ^18.17.0
             version: 18.17.5
          '@vitejs/plugin-vue':
             specifier: ^4.2.3
@@ -124,13 +124,13 @@ importers:
             specifier: ^5.1.6
             version: 5.1.6
          vite:
-            specifier: ^4.4.9
+            specifier: ^4.4.6
             version: 4.4.9(@types/node@18.17.5)
          vue:
             specifier: ^3.3.4
             version: 3.3.4
          vue-tsc:
-            specifier: ^1.8.8
+            specifier: ^1.8.6
             version: 1.8.8(typescript@5.1.6)
 
 packages:
@@ -1776,7 +1776,7 @@ packages:
          '@nuxt/kit': 3.6.5
          '@nuxt/schema': 3.6.5
          execa: 7.2.0
-         nuxt: 3.6.5(@types/node@18.17.5)(typescript@5.1.6)(vue-tsc@1.8.8)
+         nuxt: 3.6.5(@types/node@18.17.5)(typescript@5.1.6)
          vite: 4.4.9(@types/node@18.17.5)
       transitivePeerDependencies:
          - rollup
@@ -1832,7 +1832,7 @@ packages:
          launch-editor: 2.6.0
          local-pkg: 0.4.3
          magicast: 0.2.10
-         nuxt: 3.6.5(@types/node@18.17.5)(typescript@5.1.6)(vue-tsc@1.8.8)
+         nuxt: 3.6.5(@types/node@18.17.5)(typescript@5.1.6)
          nypm: 0.2.2
          pacote: 15.2.0
          pathe: 1.1.1
@@ -1947,7 +1947,7 @@ packages:
          }
       dev: true
 
-   /@nuxt/vite-builder@3.6.5(@types/node@18.17.5)(typescript@5.1.6)(vue-tsc@1.8.8)(vue@3.3.4):
+   /@nuxt/vite-builder@3.6.5(@types/node@18.17.5)(typescript@5.1.6)(vue@3.3.4):
       resolution:
          {
             integrity: sha512-pwSpt257ApCp3XWUs8vrC7X9QHeHUv5PbbIR3+5w0n5f95XPNOQWDJa2fTPX/H6oaRJCPYAsBPqiQhQ7qW/NZQ==,
@@ -1989,13 +1989,14 @@ packages:
          unplugin: 1.4.0
          vite: 4.3.9(@types/node@18.17.5)
          vite-node: 0.33.0(@types/node@18.17.5)
-         vite-plugin-checker: 0.6.1(typescript@5.1.6)(vite@4.3.9)(vue-tsc@1.8.8)
+         vite-plugin-checker: 0.6.1(typescript@5.1.6)(vite@4.3.9)
          vue: 3.3.4
          vue-bundle-renderer: 1.0.3
       transitivePeerDependencies:
          - '@types/node'
          - eslint
          - less
+         - lightningcss
          - meow
          - optionator
          - rollup
@@ -4152,13 +4153,6 @@ packages:
          }
       dev: true
 
-   /core-util-is@1.0.3:
-      resolution:
-         {
-            integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==,
-         }
-      dev: true
-
    /crc-32@1.2.2:
       resolution:
          {
@@ -4513,7 +4507,7 @@ packages:
          supports-color:
             optional: true
       dependencies:
-         ms: 2.1.2
+         ms: 2.1.3
          supports-color: 8.1.1
       dev: true
 
@@ -6167,7 +6161,7 @@ packages:
             integrity: sha512-Fl70vYtsAFb/C06PTS9dZBo7ihau+Tu/DNCk/OyHhea07S+aeMWpFFkUaXRa8fI+ScZbEI8dfSxwY7gxZ9SAVQ==,
          }
       dependencies:
-         ms: 2.1.3
+         ms: 2.1.2
       dev: true
 
    /husky@8.0.3:
@@ -7918,7 +7912,7 @@ packages:
          fsevents: 2.3.2
       dev: true
 
-   /nuxt@3.6.5(@types/node@18.17.5)(typescript@5.1.6)(vue-tsc@1.8.8):
+   /nuxt@3.6.5(@types/node@18.17.5)(typescript@5.1.6):
       resolution:
          {
             integrity: sha512-0A7V8B1HrIXX9IlqPc2w+5ZPXi+7MYa9QVhtuGYuLvjRKoSFANhCoMPRP6pKdoxigM1MBxhLue2VmHA/VbtJCw==,
@@ -7937,7 +7931,7 @@ packages:
          '@nuxt/schema': 3.6.5
          '@nuxt/telemetry': 2.4.1
          '@nuxt/ui-templates': 1.3.1
-         '@nuxt/vite-builder': 3.6.5(@types/node@18.17.5)(typescript@5.1.6)(vue-tsc@1.8.8)(vue@3.3.4)
+         '@nuxt/vite-builder': 3.6.5(@types/node@18.17.5)(typescript@5.1.6)(vue@3.3.4)
          '@types/node': 18.17.5
          '@unhead/ssr': 1.3.3
          '@unhead/vue': 1.3.3(vue@3.3.4)
@@ -8001,6 +7995,7 @@ packages:
          - eslint
          - idb-keyval
          - less
+         - lightningcss
          - meow
          - optionator
          - rollup
@@ -9121,7 +9116,7 @@ packages:
             integrity: sha512-8p0AUk4XODgIewSi0l8Epjs+EVnWiK7NoDIEGU0HhE7+ZyY8D1IMY7odu5lRrFXGg71L15KG8QrPmum45RTtdA==,
          }
       dependencies:
-         core-util-is: 1.0.3
+         core-util-is: 1.0.2
          inherits: 2.0.4
          isarray: 1.0.0
          process-nextick-args: 2.0.1
@@ -10652,10 +10647,11 @@ packages:
          mlly: 1.4.0
          pathe: 1.1.1
          picocolors: 1.0.0
-         vite: 4.3.9(@types/node@18.17.5)
+         vite: 4.4.9(@types/node@18.17.5)
       transitivePeerDependencies:
          - '@types/node'
          - less
+         - lightningcss
          - sass
          - stylus
          - sugarss
@@ -10663,7 +10659,7 @@ packages:
          - terser
       dev: true
 
-   /vite-plugin-checker@0.6.1(typescript@5.1.6)(vite@4.3.9)(vue-tsc@1.8.8):
+   /vite-plugin-checker@0.6.1(typescript@5.1.6)(vite@4.3.9):
       resolution:
          {
             integrity: sha512-4fAiu3W/IwRJuJkkUZlWbLunSzsvijDf0eDN6g/MGh6BUK4SMclOTGbLJCPvdAcMOQvVmm8JyJeYLYd4//8CkA==,
@@ -10716,7 +10712,6 @@ packages:
          vscode-languageserver: 7.0.0
          vscode-languageserver-textdocument: 1.0.8
          vscode-uri: 3.0.7
-         vue-tsc: 1.8.8(typescript@5.1.6)
       dev: true
 
    /vite-plugin-dts@3.5.2(@types/node@18.17.5)(typescript@5.1.6)(vite@4.4.9):

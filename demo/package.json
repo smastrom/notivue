@@ -11,7 +11,7 @@
    "devDependencies": {
       "@nuxt/devalue": "2.0.2",
       "@nuxt/devtools": "^0.8.0",
-      "@types/node": "^18.17.5",
+      "@types/node": "^18.17.3",
       "nuxt": "^3.6.5",
       "postcss-nesting": "^12.0.1"
    },

@@ -24,7 +24,7 @@ jobs:
            uses: cypress-io/github-action@v5
            timeout-minutes: 10
            with:
-              env: CYPRESS_SKIP_BUGGED_CI_TEST=true
+              env: CYPRESS_SKIP_HANGING_CI_TEST=true
               component: true
               install: true
               project: ./tests

@@ -1,5 +1,9 @@
 <div align="center">
 
+![notivue](https://i.ibb.co/CJCG2Hq/readme-header.png)
+
+<br />
+
 # Notivue
 
 ### Fully-featured notification system for Vue and Nuxt.
@@ -90,10 +94,16 @@ import { Notivue, Notifications } from 'notivue'
 Or roll your own:
 
 ```vue
+<script setup>
+import { Notivue } from 'notivue'
+</script>
+
 <template>
   <Notivue v-slot="item">
     <div class="rounded-full flex py-2 pl-3 bg-slate-700 text-slate-50 text-sm">
-      {{ item.message }}
+      <p :role="item.ariaRole" :aria-live="item.ariaLive">
+        {{ item.message }}
+      </p>
 
       <button
         @click="item.clear"
@@ -120,7 +130,7 @@ Or roll your own:
 </template>
 ```
 
-Animations, repositioning, pausing, timeouts, and ARIA live regions are always handled by `<Notivue />` when using custom components, so don't worry about anything else besides building the component itself.
+Animations, repositioning, queueing, pausing, and clear on swipe are always handled by `<Notivue />` when using custom components, so don't worry about anything else besides building the component itself.
 
 ### 2. Push notifications from any component
 
