@@ -26,7 +26,7 @@ import type { TabIndexValue, ContainersTabIndexMap, NotivueKeyboardProps } from 
 const props = withDefaults(defineProps<NotivueKeyboardProps>(), {
    comboKey: 'n',
    handleClicks: true,
-   leaveMessage: "You're exiting the notifications stream. Press CTRL + N to navigate it again.",
+   leaveMessage: "You're leaving the notifications stream. Press Control + N to navigate it again.",
    emptyMessage: 'No notifications to navigate',
    renderAnnouncement: true,
 })

@@ -35,7 +35,7 @@ export interface NotivueKeyboardProps {
    /**
     * Text to be announced when leaving the stream
     *
-    * @default "You're exiting the notifications stream. Press CTRL + N to navigate it again."
+    * @default "You're leaving the notifications stream. Press Control + N to navigate it again."
     */
    leaveMessage?: string
    /**

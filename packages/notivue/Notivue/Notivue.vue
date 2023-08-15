@@ -28,7 +28,7 @@ interface NotivueProps {
    /**
     * Aria label for the list container. Only effective if using NotivueKeyboard.
     *
-    * @default 'Notifications'
+    * @default "Notifications"
     */
    listAriaLabel?: string
 }
