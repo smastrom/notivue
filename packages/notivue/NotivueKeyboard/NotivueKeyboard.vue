@@ -4,20 +4,20 @@ import {
    onMounted,
    ref,
    computed,
-   watch,
    toRefs,
    provide,
    readonly,
    nextTick,
+   watch,
    type Component,
 } from 'vue'
 
-import { usePush, type PushOptions } from 'notivue'
-
-import { useElements, useItems } from '@/core/useStore'
+import { useElements, useItems, usePush, useNotifications, useNotivue } from '@/core/useStore'
 import { focusableEls, keyboardInjectionKey } from './constants'
 import { useKeyboard } from './useKeyboard'
 import { useLastFocused } from './useLastFocused'
+
+import type { PushOptions } from 'notivue'
 
 import type { TabIndexValue, ContainersTabIndexMap, NotivueKeyboardProps } from './types'
 
@@ -70,13 +70,21 @@ const elements = useElements()
 const items = useItems()
 const push = usePush()
 
-// Internal State
+const { queue, entries } = useNotifications()
+
+const config = useNotivue()
+
+/* ====================================================================================
+ * Internal state
+ * ==================================================================================== */
 
 const { focusLastElement } = useLastFocused()
 const { isKeyboard } = useKeyboard()
 
 const candidateIds = ref({ qualified: [] as string[], unqualified: [] as string[] })
+
 const candidateContainers = ref<HTMLElement[]>([])
+const unqualifiedContainers = ref<HTMLElement[]>([])
 
 const elementsTabIndex = ref<TabIndexValue>(-1)
 
@@ -100,109 +108,7 @@ const containersTabIndex = computed(() => {
    return map
 })
 
-// Provide
-
-provide(keyboardInjectionKey, {
-   containersTabIndex,
-   elementsTabIndex: readonly(elementsTabIndex),
-})
-
-/* ====================================================================================
- * Candidates
- * ==================================================================================== */
-
-watch(
-   elements.containers,
-   (newContainers) => {
-      setCandidates(newContainers)
-   },
-   { deep: true }
-)
-
-function setCandidates(newContainers: HTMLElement[]) {
-   let newCandidateContainers: HTMLElement[] = []
-   let newInnerFocusableEls: HTMLElement[] = []
-
-   const newIds = { qualified: [] as string[], unqualified: [] as string[] }
-
-   newContainers
-      .map((container) => ({ id: container.dataset.notivueContainer!, container }))
-      .sort((a, b) => +b.id - +a.id)
-      .forEach(({ id, container }) => {
-         const innerFocusableEls = Array.from(container.querySelectorAll(focusableEls)).filter(
-            (el) => el instanceof HTMLElement
-         ) as HTMLElement[]
-
-         newInnerFocusableEls.push(...innerFocusableEls)
-
-         if (innerFocusableEls.length > 1) {
-            newIds.qualified.push(id)
-            newCandidateContainers.push(container)
-         } else {
-            newIds.unqualified.push(id)
-         }
-      })
-
-   candidateIds.value = newIds
-   candidateContainers.value = newCandidateContainers
-
-   allInnerFocusableEls = newInnerFocusableEls
-}
-
-/* ====================================================================================
- * Entering the Stream
- * ==================================================================================== */
-
-function onAllowedStreamNavigation(e: KeyboardEvent) {
-   if (!e.shiftKey && e.key === 'Tab' && candidateContainers.value.length > 0) {
-      e.preventDefault()
-
-      if (hasNeverTabbedStream) hasNeverTabbedStream = false
-
-      onStreamEnter()
-
-      nextTick(removeEnterListener)
-   }
-}
-
-function addEnterListener() {
-   removeEnterListener()
-   document.addEventListener('keydown', onAllowedStreamNavigation)
-}
-
-function removeEnterListener() {
-   document.removeEventListener('keydown', onAllowedStreamNavigation)
-}
-
-watch(
-   candidateContainers,
-   (currCandidates, prevCandidates, onCleanup) => {
-      const hasCandidates = currCandidates.length > 0
-      const isNewCandidate = currCandidates.some((container) => {
-         return !prevCandidates.some((prevContainer) => prevContainer === container)
-      })
-
-      const shouldFocusFirst = isNewCandidate && items.isStreamFocused.value
-
-      const shouldAddEnterListener =
-         (isNewCandidate && !items.isStreamFocused.value) || (hasCandidates && hasNeverTabbedStream)
-
-      if (shouldFocusFirst) {
-         currCandidates[0].focus()
-      } else if (shouldAddEnterListener) {
-         addEnterListener()
-      }
-
-      onCleanup(() => {
-         if (shouldAddEnterListener) removeEnterListener()
-      })
-   },
-   { flush: 'post' }
-)
-
-/* ====================================================================================
- * Re-entering, exiting the stream
- * ==================================================================================== */
+// Actions
 
 function onStreamEnter() {
    if (candidateContainers.value.length === 0) return
@@ -217,23 +123,152 @@ function onStreamEnter() {
    })
 }
 
-function onStreamLeave() {
+function onStreamLeave({ announce = true } = {}) {
    focusLastElement()
 
-   // State
    setTabIndex(-1)
 
    items.resetStreamFocus()
    items.resumeTimeouts()
 
-   // Announce
    push.info(leavePushOptions.value)
 }
 
+// Provide
+
+provide(keyboardInjectionKey, {
+   containersTabIndex,
+   elementsTabIndex: readonly(elementsTabIndex),
+})
+
+/* ====================================================================================
+ * Collect candidates/unqualified
+ * ==================================================================================== */
+
+watch(elements.containers, setCandidates, { deep: true })
+
+function setCandidates(newContainers: HTMLElement[]) {
+   const _ids = { qualified: [] as string[], unqualified: [] as string[] }
+
+   let _candidateContainers: HTMLElement[] = []
+   let _unqualifiedContainers: HTMLElement[] = []
+
+   let _focusableEls: HTMLElement[] = []
+
+   newContainers
+      .map((container) => ({ id: container.dataset.notivueContainer!, container }))
+      .sort((a, b) => +b.id - +a.id)
+      .forEach(({ id, container }) => {
+         const innerFocusableEls = Array.from(container.querySelectorAll(focusableEls)).filter(
+            (el) => el instanceof HTMLElement
+         ) as HTMLElement[]
+
+         _focusableEls.push(...innerFocusableEls)
+
+         if (innerFocusableEls.length > 1) {
+            _ids.qualified.push(id)
+            _candidateContainers.push(container)
+         } else {
+            _ids.unqualified.push(id)
+            _unqualifiedContainers.push(container)
+         }
+      })
+
+   candidateIds.value = _ids
+
+   candidateContainers.value = _candidateContainers
+   unqualifiedContainers.value = _unqualifiedContainers
+
+   allInnerFocusableEls = _focusableEls
+}
+
+/* ====================================================================================
+ * On new candidates-push behavior (enter the stream or focus the first)
+ * ==================================================================================== */
+
+watch(
+   candidateContainers,
+   (currCandidates, prevCandidates, onCleanup) => {
+      if (currCandidates.length === 0) return
+
+      const hasCandidates = currCandidates.length > 0
+      const isNewCandidate = currCandidates.some((container) => {
+         return !prevCandidates.some((prevContainer) => prevContainer === container)
+      })
+
+      const isAlreadyNavigating = isNewCandidate && items.isStreamFocused.value
+
+      const shouldAddEnterListener =
+         (isNewCandidate && !items.isStreamFocused.value) || (hasCandidates && hasNeverTabbedStream)
+
+      if (isAlreadyNavigating) {
+         currCandidates[0].focus()
+      } else if (shouldAddEnterListener) {
+         addEnterListener()
+      }
+
+      onCleanup(() => {
+         if (shouldAddEnterListener) removeEnterListener()
+      })
+   },
+   { flush: 'post' }
+)
+
+function onAllowedStreamNavigation(e: KeyboardEvent) {
+   if (!e.shiftKey && e.key === 'Tab' && candidateContainers.value.length > 0) {
+      e.preventDefault()
+
+      if (hasNeverTabbedStream) hasNeverTabbedStream = false
+
+      onStreamEnter()
+      nextTick(removeEnterListener)
+   }
+}
+
+function addEnterListener() {
+   removeEnterListener()
+   document.addEventListener('keydown', onAllowedStreamNavigation)
+}
+
+function removeEnterListener() {
+   document.removeEventListener('keydown', onAllowedStreamNavigation)
+}
+
+/* ====================================================================================
+ * Queue - On new unqualified-push behavior (leave the stream or focus the first candidate)
+ * ==================================================================================== */
+
 /**
- * This is needed to track whether the user is leaving the stream
- * using TAB or SHIFT + TAB. In any other case, we toggle
- * the state manually.
+ * If unqualified are pushed from the queue (after manual dismissal),
+ * we want to exit and resume timeouts if no candidates are left.
+ *
+ * In this case we do not announce the exit as it would be redundant.
+ * If a new candidate is pushed next, it can be focused with Tab as usual.
+ *
+ * If candidates are instead available, we simply move the focus to the first one.
+ */
+watch(
+   unqualifiedContainers,
+   (newUnqualified) => {
+      if (!config.enqueue.value || !items.isStreamFocused.value) return
+
+      if (newUnqualified.length > 0) {
+         if (candidateContainers.value.length > 0) {
+            candidateContainers.value[0].focus()
+         } else {
+            onStreamLeave({ announce: false })
+         }
+      }
+   },
+   { flush: 'post' }
+)
+
+/**
+ * Needed to track whether the user is leaving the stream
+ * using the keyboard (TAB or SHIFT+TAB)
+ *
+ * In any other case, we toggle the state manually (onKeydown)
+ * and do not use watchers.
  */
 let isManualLeave = false
 
@@ -261,6 +296,10 @@ watch(
    { immediate: true, flush: 'post' }
 )
 
+/* ====================================================================================
+ * Manually leaving the stream using events
+ * ==================================================================================== */
+
 function onCandidatesKeydown(e: KeyboardEvent) {
    let currCandidateIndex = 0
    const isNavigatingCandidates = candidateContainers.value.some((container, index) => {
@@ -283,17 +322,24 @@ function onCandidatesKeydown(e: KeyboardEvent) {
       const isClickable =
          e.target instanceof HTMLButtonElement || e.target instanceof HTMLAnchorElement
 
-      if (isClickable && (e.key === ' ' || e.key === 'Enter')) {
+      if (isClickable && (e.key === '\u00A0' || e.key === ' ' || e.key === 'Enter')) {
          e.preventDefault()
+
+         isManualLeave = true
          e.target.click()
 
+         /**
+          * If the queue has items, we simply do not perform any operation.
+          * Once the new candidate is pushed, it will be focused automatically.
+          */
+         if (queue.value.length > 0) return
+
          const nextContainer = candidateContainers.value[currCandidateIndex + 1]
+
          if (nextContainer) {
             nextContainer.focus()
          } else {
-            isManualLeave = true
-
-            return onStreamLeave()
+            onStreamLeave()
          }
       }
    }
@@ -321,7 +367,7 @@ function onComboKeyDown(e: KeyboardEvent) {
 }
 
 /**
- * If clicking any action with a device different than the keyboard,
+ * If clicking any action (even inside unqualified) with a device different than the keyboard,
  * we want to resume timeouts and disable stream tabbing.
  *
  * Same if clicking any element outside the stream.

@@ -1,4 +1,4 @@
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watchEffect } from 'vue'
 
 import { useElements } from '@/core/useStore'
 
@@ -10,9 +10,9 @@ export function useLastFocused() {
    function onFocusCapture(e: FocusEvent) {
       const isValidTarget = e.target instanceof HTMLElement
 
-      if (isValidTarget && !stream.value) lastFocused.value = e.target
+      if (isValidTarget && stream.value?.contains(e.target)) return
 
-      if (isValidTarget && stream.value && stream.value.contains(e.target)) return
+      if (isValidTarget) lastFocused.value = e.target
    }
 
    function focusLastElement() {
@@ -20,7 +20,6 @@ export function useLastFocused() {
 
       if (lastFocused.value) {
          lastFocused.value.focus()
-         //
       } else {
          /**
           * This may happen once in a lifetime, For example:
