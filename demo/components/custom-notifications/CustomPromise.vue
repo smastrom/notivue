@@ -73,6 +73,7 @@ const isPromise = computed(() => props.item.type === 'promise')
    outline: none;
    transition: opacity 100ms ease-out;
    padding: 5px;
+   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
    &:hover {
       opacity: 0.5;
