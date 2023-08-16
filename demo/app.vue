@@ -15,10 +15,16 @@ import {
 
 import Nav from '@/components/nav/Nav.vue'
 import Background from '@/components/shared/Background.vue'
-import CustomStatic from '@/components/custom-notifications/CustomStatic.vue'
+import CustomActions from '@/components/custom-notifications/CustomActions.vue'
 import CustomPromise from '@/components/custom-notifications/CustomPromise.vue'
+import CustomSimple from '@/components/custom-notifications/CustomSimple.vue'
+import QueueCount from '@/components/shared/QueueCount.vue'
 
-import type { CustomPromiseProps, CustomProps } from '@/components/nav/NavPushCustom.vue'
+import type {
+   CustomPromiseProps,
+   CustomActionProps,
+   CustomSimpleProps,
+} from '@/components/nav/NavPushCustom.vue'
 
 const { state } = useStore()
 
@@ -36,13 +42,10 @@ const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme }
             :containersTabIndex="containersTabIndex"
             v-slot="item"
          >
-            <NotivueSwipe
-               :item="item"
-               :disabled="!state.enableSwipe"
-               v-if="(item.props as CustomProps).isCustom"
-            >
-               <CustomStatic :item="item as NotivueItem<CustomProps>" />
-            </NotivueSwipe>
+            <CustomActions
+               :item="item as NotivueItem<CustomActionProps>"
+               v-if="(item.props as CustomActionProps).isCustom"
+            />
 
             <NotivueSwipe
                :item="item"
@@ -50,6 +53,14 @@ const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme }
                v-else-if="(item.props as CustomPromiseProps).isFileUpload"
             >
                <CustomPromise :item="item as NotivueItem<CustomPromiseProps>" />
+            </NotivueSwipe>
+
+            <NotivueSwipe
+               :item="item"
+               :disabled="!state.enableSwipe"
+               v-else-if="(item.props as CustomSimpleProps).isCustomSimple"
+            >
+               <CustomSimple :item="item as NotivueItem<CustomSimpleProps>" />
             </NotivueSwipe>
 
             <NotivueSwipe :item="item" :disabled="!state.enableSwipe" v-else>
@@ -63,9 +74,9 @@ const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme }
       </NotivueKeyboard>
    </ClientOnly>
 
-   <Background />
-
+   <QueueCount />
    <Nav />
+   <Background />
 </template>
 
 <style>
@@ -76,7 +87,7 @@ const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme }
 }
 
 :root {
-   --nv-root-bottom: 260px;
+   --nv-root-bottom: var(--nav-height);
 }
 
 [data-notivue-align='bottom'] {

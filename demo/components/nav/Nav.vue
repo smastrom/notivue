@@ -22,7 +22,7 @@ const push = usePush()
             <NavNotivuePosition />
          </ButtonGroup>
 
-         <ButtonGroup name="Controls">
+         <ButtonGroup name="Config">
             <NavNotivueConfig />
          </ButtonGroup>
 

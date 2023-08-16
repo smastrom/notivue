@@ -37,17 +37,6 @@ function togglePauseOnTouch() {
 function toggleQueue() {
    if (state.rtl) actions.toggleRTL()
    config.enqueue.value = !config.enqueue.value
-
-   if (config.enqueue.value && config.limit.value === Infinity) {
-      config.limit.value = 1
-   }
-
-   push.info({
-      title: `Queue ${config.enqueue.value ? 'enabled' : 'disabled'}`,
-      message: config.enqueue.value
-         ? 'Notifications will be queued once the limit is reached.'
-         : 'Notifications will be discarded once the limit is reached.',
-   })
 }
 
 watch(
@@ -56,8 +45,7 @@ watch(
       if (isPauseOnHoverDisabled) {
          state.enableSwipe = false
       }
-   },
-   { flush: 'post' }
+   }
 )
 
 watch(
@@ -71,26 +59,13 @@ watch(
             ? 'Swipe left or right on a notification to clear it.'
             : 'Enable it again to use it.',
       })
-   },
-   { flush: 'post' }
+   }
 )
 
 watch(
    () => config.limit.value,
-   (newLimit) => {
-      const message =
-         newLimit === 1
-            ? 'Maximum 1 notification will be displayed.'
-            : newLimit === Infinity
-            ? 'Unlimited notifications will be displayed.'
-            : `Maximum ${newLimit} notifications will be displayed.`
-
+   () => {
       if (state.rtl) actions.toggleRTL()
-
-      push.info({
-         title: 'Limit updated!',
-         message: message + ' Any limit can be set.',
-      })
    }
 )
 
@@ -140,7 +115,7 @@ const queueTooltipMessage = computed(() => {
          <button
             class="ButtonBase SwitchButton ButtonTooltip"
             role="switch"
-            :aria-checked="config.enqueue.value"
+            :aria-checked="config.enqueue.value && config.limit.value !== Infinity"
             @click="toggleQueue"
             :disabled="config.limit.value === Infinity"
          >

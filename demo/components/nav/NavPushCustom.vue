@@ -8,9 +8,9 @@ import profilePicture from '@/assets/profile-picture.jpg?url'
 
 const push = usePush()
 
-const { state, actions } = useStore()
+const { state, actions, computed } = useStore()
 
-export interface CustomProps {
+export interface CustomActionProps {
    name: string
    profilePicture: string
    isCustom: boolean
@@ -21,6 +21,10 @@ export interface CustomPromiseProps {
    fileName: string
 }
 
+export interface CustomSimpleProps {
+   isCustomSimple: boolean
+}
+
 function resetOptions() {
    if (state.rtl) {
       push.destroyAll()
@@ -29,10 +33,10 @@ function resetOptions() {
    actions.setTheme('lightTheme')
 }
 
-function customPush() {
+function pushActions() {
    resetOptions()
 
-   push.info<CustomProps>({
+   push.info<CustomActionProps>({
       title: 'New Message Request',
       message: `Stephanie LaGarde wants to send you a message.`,
       props: {
@@ -42,24 +46,22 @@ function customPush() {
       },
       ariaRole: 'alert',
       ariaLive: 'assertive',
+      duration: Infinity,
    })
 }
 
-function pushUsingComboKey(e: KeyboardEvent) {
-   if (e.key === 'p') {
-      customPush()
-   }
+function pushSimple() {
+   resetOptions()
+
+   push.success({
+      message: `Your message has been deleted.`,
+      props: {
+         isCustomSimple: true,
+      },
+   })
 }
 
-onMounted(() => {
-   document.addEventListener('keydown', pushUsingComboKey)
-})
-
-onBeforeUnmount(() => {
-   document.removeEventListener('keydown', pushUsingComboKey)
-})
-
-async function customAsync() {
+async function pushPromise() {
    resetOptions()
 
    const props = { isFileUpload: true, fileName: 'excel-sheet.xlsx' }
@@ -76,13 +78,32 @@ async function customAsync() {
       props,
    })
 }
+
+function pushUsingComboKey(e: KeyboardEvent) {
+   if (e.key === 'p') {
+      pushActions()
+   } else if (e.key === 's') {
+      push.success(computed.messages.value.success)
+   }
+}
+
+onMounted(() => {
+   document.addEventListener('keydown', pushUsingComboKey)
+})
+
+onBeforeUnmount(() => {
+   document.removeEventListener('keydown', pushUsingComboKey)
+})
 </script>
 
 <template>
-   <Button @click="customPush" text="Static">
+   <Button @click="pushActions" text="Actions">
       <VueIcon />
    </Button>
-   <Button @click="customAsync" text="Promise">
+   <Button @click="pushPromise" text="Promise">
+      <VueIcon />
+   </Button>
+   <Button @click="pushSimple" text="Simple">
       <VueIcon />
    </Button>
 </template>
