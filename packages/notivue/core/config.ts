@@ -23,7 +23,7 @@ export const defaultConfig: NotivueConfigRequired = {
    },
 }
 
-export function getConfig(userConfig: NotivueConfig) {
+export function getMergedConfig(userConfig: NotivueConfig) {
    const reactiveConfig = toShallowRefs(mergeDeep(defaultConfig, userConfig))
 
    return {

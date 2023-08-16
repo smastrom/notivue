@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { watch, shallowRef, type Ref, toRef, toRefs } from 'vue'
+import { shallowRef, toRefs, watchEffect, type Ref } from 'vue'
 
 import {
    usePush,
@@ -23,30 +23,16 @@ const cyProps = defineProps<CyNotivueProps>()
 const config = useNotivue()
 const push = usePush()
 
-const rPauseOnTouch = toRef(cyProps, 'pauseOnTouch')
-const rPauseOnHover = toRef(cyProps, 'pauseOnHover')
-const rTeleport = toRef(cyProps, 'teleportTo')
-const rLimit = toRef(cyProps, 'limit')
-const rAnimations = toRef(cyProps, 'animations')
-const rEnqueue = toRef(cyProps, 'enqueue')
+const { pauseOnTouch, pauseOnHover, teleportTo, limit, animations, enqueue } = toRefs(cyProps)
 
-watch(rPauseOnTouch, (newVal) => (config.pauseOnTouch.value = newVal))
-watch(rPauseOnHover, (newVal) => (config.pauseOnHover.value = newVal))
-
-watch(rAnimations, (newVal) => {
-   if (newVal) config.animations.value = newVal
-})
-
-watch(rTeleport, (newVal) => {
-   if (newVal) config.teleportTo.value = newVal as string
-})
-
-watch(rLimit, (newVal) => {
-   if (newVal) config.limit.value = newVal
-})
-
-watch(rEnqueue, (newVal) => {
-   if (newVal) config.enqueue.value = newVal
+watchEffect(() => {
+   if (animations?.value) config.animations.value = animations.value
+   if (pauseOnTouch?.value) config.pauseOnTouch.value = pauseOnTouch.value
+   if (pauseOnHover?.value) config.pauseOnHover.value = pauseOnHover.value
+   if (animations?.value) config.animations.value = animations.value
+   if (teleportTo?.value) config.teleportTo.value = teleportTo.value
+   if (limit?.value) config.limit.value = limit.value
+   if (enqueue?.value) config.enqueue.value = enqueue.value
 })
 
 async function randomPromise() {
