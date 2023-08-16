@@ -1,65 +1,52 @@
 <script setup lang="ts">
-import { usePush, useNotivue, Notivue, type PushOptions, Push } from 'notivue'
+import { watch, shallowRef, type Ref, toRef, toRefs } from 'vue'
 
-import { toRef, watch, shallowRef, type Ref } from 'vue'
+import {
+   usePush,
+   useNotivue,
+   Notivue,
+   type PushOptions,
+   type NotivueConfig,
+   type Push,
+} from 'notivue'
 
 import { GENERIC_UPDATE_DELAY, RESOLVE_REJECT_DELAY } from '@/support/utils'
 
-export interface CyNotivueProps {
+export type CyNotivueProps = {
+   class?: string
    options?: PushOptions
    newOptions?: PushOptions
-   class?: string
-   enqueue?: boolean
-   pauseOnTouch?: boolean
-   pauseOnHover?: boolean
-   animations?: {
-      enter: string
-      leave: string
-      clearAll: string
-   }
-   teleportTo?: string
-   limit?: number
-}
+} & NotivueConfig
 
 const cyProps = defineProps<CyNotivueProps>()
 
 const config = useNotivue()
-
 const push = usePush()
 
 const rPauseOnTouch = toRef(cyProps, 'pauseOnTouch')
 const rPauseOnHover = toRef(cyProps, 'pauseOnHover')
-const rAnimations = toRef(cyProps, 'animations')
-const rTeleportTo = toRef(cyProps, 'teleportTo')
+const rTeleport = toRef(cyProps, 'teleportTo')
 const rLimit = toRef(cyProps, 'limit')
+const rAnimations = toRef(cyProps, 'animations')
 const rEnqueue = toRef(cyProps, 'enqueue')
 
-watch(rPauseOnTouch, (newValue) => {
-   config.pauseOnTouch.value = newValue
+watch(rPauseOnTouch, (newVal) => (config.pauseOnTouch.value = newVal))
+watch(rPauseOnHover, (newVal) => (config.pauseOnHover.value = newVal))
+
+watch(rAnimations, (newVal) => {
+   if (newVal) config.animations.value = newVal
 })
 
-watch(rPauseOnHover, (newValue) => {
-   config.pauseOnHover.value = newValue
+watch(rTeleport, (newVal) => {
+   if (newVal) config.teleportTo.value = newVal as string
 })
 
-watch(rAnimations, (newValue) => {
-   if (!newValue) return
-   config.animations.value = newValue
+watch(rLimit, (newVal) => {
+   if (newVal) config.limit.value = newVal
 })
 
-watch(rTeleportTo, (newValue) => {
-   if (!newValue) return
-   config.teleportTo.value = newValue
-})
-
-watch(rLimit, (newValue) => {
-   if (!newValue) return
-   config.limit.value = newValue
-})
-
-watch(rEnqueue, (newValue) => {
-   if (!newValue) return
-   config.enqueue.value = newValue
+watch(rEnqueue, (newVal) => {
+   if (newVal) config.enqueue.value = newVal
 })
 
 async function randomPromise() {
