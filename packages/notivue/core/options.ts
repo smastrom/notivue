@@ -4,7 +4,7 @@ import type {
    Obj,
    NotificationOptions,
    PushOptionsWithInternals,
-   NotificationTypesOptions,
+   NotivueConfigRequired,
 } from 'notivue'
 
 export const success: NotificationOptions = {
@@ -43,10 +43,10 @@ export const defaultNotificationOptions = {
    [NKeys.PROMISE]: promise,
    [NKeys.PROMISE_RESOLVE]: success,
    [NKeys.PROMISE_REJECT]: error,
-} as NotificationTypesOptions
+} as NotivueConfigRequired['notifications']
 
 export function mergeNotificationOptions<T extends Obj = Obj>(
-   optionsFromConfig: NotificationTypesOptions,
+   mergedConfigOptions: NotivueConfigRequired['notifications'],
    optionsFromPush: PushOptionsWithInternals<T>
 ) {
    if (!optionsFromPush.props) {
@@ -54,8 +54,8 @@ export function mergeNotificationOptions<T extends Obj = Obj>(
    }
 
    return {
-      ...(optionsFromConfig[optionsFromPush.type] ?? optionsFromConfig.success),
-      ...optionsFromConfig.global,
+      ...(mergedConfigOptions[optionsFromPush.type] ?? mergedConfigOptions.success),
+      ...mergedConfigOptions.global,
       ...optionsFromPush,
    }
 }

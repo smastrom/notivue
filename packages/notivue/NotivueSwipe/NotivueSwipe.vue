@@ -33,7 +33,11 @@ const threshold = toRef(props, 'threshold')
 
 const isPromise = computed(() => props.item.type === NType.PROMISE)
 const isEnabled = computed(
-   () => !items.isStreamFocused.value && !isDisabledByUser.value && !isPromise.value
+   () =>
+      !items.isStreamFocused.value &&
+      !isDisabledByUser.value &&
+      !isPromise.value &&
+      props.item.duration < Infinity
 )
 
 // Store

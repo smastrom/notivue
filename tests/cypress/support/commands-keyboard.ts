@@ -17,7 +17,7 @@ declare global {
    }
 }
 
-Cypress.Commands.add('mountKeyboard', (props = {}) => {
+Cypress.Commands.add('mountKeyboard', (props = {} as CyNotivueKeyboardProps) => {
    return mount(Notivue, {
       global: {
          plugins: [notivuePlugin()],

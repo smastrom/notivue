@@ -7,9 +7,9 @@ describe('Actions', () => {
 
          .realPress('Tab')
          .realPress('Tab')
-         .realPress('Tab') // Go to last container
+         .realPress('Tab') // Go last action of first container
 
-         .pushCandidateSilently()
+         .pushCandidateSilently() // id: 3
 
          .focused()
          .should('have.data', 'notivueContainer', 3)
@@ -26,7 +26,7 @@ describe('Actions', () => {
          .realPress('Tab')
 
          .realPress('Tab')
-         .realPress('Tab') // Go to button of 2nd container
+         .realPress('Tab') // Go to action of 2nd container (id: 1)
 
          .realPress(Math.random() > 0.5 ? 'Space' : 'Enter')
 
@@ -46,7 +46,7 @@ describe('Actions', () => {
          .realPress('Tab')
 
          .realPress('Tab')
-         .realPress('Tab') // Go to button of last container
+         .realPress('Tab') // Go to action of last container
 
          .realPress(Math.random() > 0.5 ? 'Space' : 'Enter')
 
@@ -66,7 +66,7 @@ describe('Actions', () => {
          .realPress('Tab')
 
          .realPress('Tab')
-         .realPress('Tab') // Go to button of 2nd container
+         .realPress('Tab') // Go to action of 2nd container
 
          .focused()
          .realClick()

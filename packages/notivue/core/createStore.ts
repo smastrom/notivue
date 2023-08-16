@@ -1,6 +1,6 @@
 import { nextTick, ref, shallowRef, triggerRef, watch, type InjectionKey } from 'vue'
 
-import { getConfig } from './config'
+import { getMergedConfig } from './config'
 import { mergeNotificationOptions as mergeOptions } from './options'
 import { createPush } from './createPush'
 import { isReducedMotion } from './utils'
@@ -12,7 +12,7 @@ import type { DeepPartial, StoreItem, NotivueConfig, PushOptionsWithInternals, O
 export const storeInjectionKey = Symbol('') as InjectionKey<ReturnType<typeof createStore>>
 
 export function createStore(userConfig: NotivueConfig) {
-   const config = getConfig(userConfig)
+   const config = getMergedConfig(userConfig)
 
    const items = {
       entries: shallowRef<StoreItem[]>([]),

@@ -50,9 +50,9 @@
 <style scoped>
 .Wrapper {
    width: 100%;
-   padding: 20px;
-   height: calc(100vh - 200px);
-   height: calc(100svh - 200px);
+   padding: 1.25rem;
+   height: calc(100vh - var(--nav-height));
+   height: calc(100svh - var(--nav-height));
    display: flex;
    justify-content: center;
    align-items: center;
@@ -61,7 +61,7 @@
 .Container {
    display: flex;
    flex-direction: column;
-   gap: 20px;
+   gap: 2rem;
 }
 
 .Logo {

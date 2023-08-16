@@ -1,14 +1,30 @@
-import type { Component, ComputedRef, CSSProperties } from 'vue'
+import type { Component, ComputedRef, CSSProperties, ShallowRef } from 'vue'
 
 import { createStore } from './core/createStore'
 
 // Utils
 
-export type DeepRequired<T> = { [K in keyof T]: DeepRequired<T[K]> } & Required<T>
-export type DeepPartial<T> = { [P in keyof T]?: DeepPartial<T[P]> }
+type DeepRequired<T> = {
+   [K in keyof T]-?: T[K] extends object ? DeepRequired<T[K]> : T[K]
+}
+
+export type DeepPartial<T> = {
+   [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K]
+}
+
 export type Obj = Record<string, any>
 
+export type ToMappedRefs<T> = {
+   [K in keyof T]: ShallowRef<T[K]>
+}
+
 // Shared
+
+export type NotivueIcons = Partial<
+   Record<NotificationType | 'close', Component | string | null | undefined>
+>
+
+// Config
 
 export type NotificationType =
    | 'success'
@@ -27,49 +43,43 @@ export type Position =
    | 'bottom-center'
    | 'bottom-right'
 
-export type NotivueIcons = Partial<
-   Record<NotificationType | 'close', Component | string | null | undefined>
->
-
-// Config
-
-export type NotificationTypesOptions = Record<NotificationType | 'global', NotificationOptions>
-
-export interface NotivueConfigRequired {
-   /** Whether to pause all notifications when hovering over them with mouse. */
-   pauseOnHover: boolean
-   /** Whether to pause all notifications when tapping on them with touch devices. */
-   pauseOnTouch: boolean
-   /** Whether to pause all notifications when switching tabs or window. */
-   pauseOnTabChange: boolean
-   /** Wheter to enqueue notifications when limit is reached. */
-   enqueue: boolean
-   /** Position of notifications, one of 'top-left', 'top-center', 'top-right', 'bottom-left', 'bottom-center', 'bottom-right'. */
-   position: Position
-   /** Notification options for each type. */
-   notifications: NotificationTypesOptions
-   /** Animation classes for `enter`, `leave` and `clearAll`. */
-   animations: Partial<{ enter: string; leave: string; clearAll: string }>
-   /** Tag or element to which the stream will be teleported. */
-   teleportTo: string | HTMLElement
-   /** Notifications limit. Defaults to `Infinity`. */
-   limit: number
-}
-
-export type NotivueConfig = DeepPartial<NotivueConfigRequired>
+export type NotivueAnimations = { enter?: string; leave?: string; clearAll?: string }
 
 export interface NotificationOptions {
    /** String to use as default title, an empty string doesn't render the title. */
-   title: string
+   title?: string
    /** String to use as default message. */
-   message: string
+   message?: string
    /** Duration of the notification. */
-   duration: number
+   duration?: number
    /** Value of `aria-live` attribute. */
-   ariaLive: 'polite' | 'assertive'
+   ariaLive?: 'polite' | 'assertive'
    /** Value of `role` attribute. */
-   ariaRole: 'alert' | 'status'
+   ariaRole?: 'alert' | 'status'
 }
+
+export interface NotivueConfig {
+   /** Whether to pause all notifications when hovering over them with mouse. */
+   pauseOnHover?: boolean
+   /** Whether to pause all notifications when tapping on them with touch devices. */
+   pauseOnTouch?: boolean
+   /** Whether to pause all notifications when switching tabs or window. */
+   pauseOnTabChange?: boolean
+   /** Wheter to enqueue notifications when limit is reached. */
+   enqueue?: boolean
+   /** Position of notifications, one of 'top-left', 'top-center', 'top-right', 'bottom-left', 'bottom-center', 'bottom-right'. */
+   position?: Position
+   /** Notification options for each type. */
+   notifications?: Record<NotificationType | 'global', NotificationOptions>
+   /** Animation classes for `enter`, `leave` and `clearAll`. */
+   animations?: NotivueAnimations
+   /** Tag or element to which the stream will be teleported. */
+   teleportTo?: string | HTMLElement
+   /** Notifications limit. Defaults to `Infinity`. */
+   limit?: number
+}
+
+export type NotivueConfigRequired = DeepRequired<NotivueConfig>
 
 // Store Item
 
@@ -105,7 +115,7 @@ export interface PushSpecificOptions {
 }
 
 /** Defined by the user when calling push() */
-export type PushOptions<T extends Obj = Obj> = Partial<NotificationOptions> &
+export type PushOptions<T extends Obj = Obj> = NotificationOptions &
    PushProps<T> &
    PushSpecificOptions
 
@@ -226,4 +236,3 @@ export type NotivueSlot = NotivueItem
 export type UserPushOptions = PushOptions
 export type ClearFunctions = NotificationClearMethods
 export type ClearMethods = NotificationClearMethods
-export type NotificationOptionsField = NotificationTypesOptions

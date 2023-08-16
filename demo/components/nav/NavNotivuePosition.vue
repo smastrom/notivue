@@ -5,6 +5,8 @@ import ArrowIcon from '../icons/ArrowIcon.vue'
 
 const { state, actions } = useStore()
 
+const config = useNotivue()
+
 const positions = [
    {
       value: 'top-left',
@@ -39,8 +41,6 @@ const positions = [
 ]
 
 const isFullWidth = computed(() => state.maxWidth === '100%')
-
-const config = useNotivue()
 
 function setPosition(position: Position) {
    config.position.value = position

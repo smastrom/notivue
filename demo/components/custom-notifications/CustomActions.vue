@@ -3,10 +3,10 @@ import { formatDistanceToNow as toNow } from 'date-fns'
 
 import { useNotivueKeyboard, type NotivueItem } from 'notivue'
 
-import type { CustomProps } from '../nav/NavPushCustom.vue'
+import type { CustomActionProps } from '../nav/NavPushCustom.vue'
 
 defineProps<{
-   item: NotivueItem<CustomProps>
+   item: NotivueItem<CustomActionProps>
 }>()
 
 const { elementsTabIndex } = useNotivueKeyboard()
@@ -46,18 +46,17 @@ const { elementsTabIndex } = useNotivueKeyboard()
 <style>
 [data-notivue-container]:focus-visible {
    outline: none;
-
-   & .Notification {
-      outline: none;
-      box-shadow: 0px 0px 0px 2px #fff, 0px 0px 0px 5px #438bff;
-      border-radius: 10px;
-   }
 }
 </style>
 
 <style scoped>
+[data-notivue-container]:focus-visible .Notification {
+   outline: none;
+   border-radius: 10px;
+   box-shadow: var(--focus-ring-xl);
+}
+
 .Notification {
-   --blue-color: #438bff;
    width: 380px;
    max-width: 100%;
    display: flex;
@@ -97,7 +96,6 @@ const { elementsTabIndex } = useNotivueKeyboard()
 }
 
 .Content {
-   user-select: none;
    display: flex;
    gap: 10px;
    flex-direction: column;
@@ -124,7 +122,7 @@ const { elementsTabIndex } = useNotivueKeyboard()
    transition: color 100ms ease-out;
 
    &:hover {
-      color: var(--blue-color);
+      color: var(--royal-blue);
    }
 }
 
@@ -138,8 +136,9 @@ const { elementsTabIndex } = useNotivueKeyboard()
 .Button {
    padding: 0.3em 1em;
    border-radius: 7px;
-   border: 2px solid var(--blue-color);
-   background-color: var(--blue-color);
+   border: 2px solid var(--royal-blue);
+   background-color: var(--royal-blue);
+   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
    color: white;
    font-size: 0.9rem;
@@ -154,16 +153,16 @@ const { elementsTabIndex } = useNotivueKeyboard()
    &:focus-visible {
       transition: none;
       outline: none;
-      box-shadow: 0px 0px 0px 2px #fff, 0px 0px 0px 4px #438bff;
+      box-shadow: var(--focus-ring);
    }
 }
 
 .ButtonReverse {
    background-color: transparent;
-   color: var(--blue-color);
+   color: var(--royal-blue);
 
    &:hover {
-      background-color: var(--blue-color);
+      background-color: var(--royal-blue);
       color: white;
       opacity: 1;
    }

@@ -1,6 +1,6 @@
-import { shallowRef, type Ref } from 'vue'
+import { shallowRef } from 'vue'
 
-import type { DeepPartial } from 'notivue'
+import type { ToMappedRefs } from 'notivue'
 
 export const isSSR = typeof window === 'undefined'
 
@@ -10,25 +10,23 @@ export function isMouse(event: PointerEvent) {
 
 export function toShallowRefs<T extends Record<string, any>>(object: T) {
    return Object.entries(object).reduce(
-      (acc, [key, value]) => ({ ...acc, [key]: shallowRef(value) }),
-      {} as {
-         [K in keyof T]: Ref<T[K]>
-      }
-   )
+      (acc, [option, value]) => ({
+         ...acc,
+         [option]: shallowRef(value),
+      }),
+      {}
+   ) as ToMappedRefs<typeof object>
 }
 
-export function mergeDeep<T extends Record<string, any>>(target: T, source: DeepPartial<T>): T {
+export function mergeDeep<T>(target: T, source: Record<string, any>): T {
    const merged: T = { ...target }
 
    for (const key in source) {
       if (source.hasOwnProperty(key)) {
          if (source[key] && typeof source[key] === 'object') {
-            merged[key as keyof T] = mergeDeep(
-               target[key as keyof T],
-               source[key] as DeepPartial<T[keyof T]>
-            ) as T[keyof T]
+            merged[key as keyof T] = mergeDeep(target[key as keyof T], source[key]) as T[keyof T]
          } else {
-            merged[key as keyof T] = source[key] as T[keyof T]
+            merged[key as keyof T] = source[key]
          }
       }
    }

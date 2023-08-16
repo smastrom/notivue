@@ -1,19 +1,34 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount } from 'vue'
+import { onMounted, onBeforeUnmount, watchEffect } from 'vue'
 
-import { NotivueKeyboard, Notivue, usePush, type NotivueKeyboardProps } from 'notivue'
+import {
+   NotivueKeyboard,
+   Notivue,
+   usePush,
+   useNotivueConfig,
+   type NotivueKeyboardProps,
+} from 'notivue'
 
 import Candidate from './Candidate.vue'
 import Unqualified from './Unqualified.vue'
 
-export type CyNotivueKeyboardProps = NotivueKeyboardProps
+export type CyNotivueKeyboardProps = NotivueKeyboardProps & { enqueue?: boolean; limit?: number }
 
 const cyProps = withDefaults(defineProps<CyNotivueKeyboardProps>(), {
    handleClicks: true,
    renderAnnouncement: true,
+   enqueue: false,
+   limit: Infinity,
 })
 
 const push = usePush()
+
+const config = useNotivueConfig()
+
+watchEffect(() => {
+   config.enqueue.value = cyProps.enqueue
+   config.limit.value = cyProps.limit
+})
 
 function pushCandidate() {
    push.success({
@@ -24,10 +39,6 @@ function pushCandidate() {
       },
    })
 }
-
-onMounted(() => {
-   console.log(cyProps)
-})
 
 function pushUnqualified() {
    push.success({

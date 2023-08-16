@@ -22,7 +22,7 @@ const closeIcon = computed(() => props.icons.close)
 </script>
 
 <template>
-   <div :class="Cx.NOTIFICATION" :data-notivue="item.type" :style="theme" tabindex="-1">
+   <div :class="Cx.NOTIFICATION" :data-notivue="item.type" :style="theme">
       <template v-if="icon">
          <Component
             v-if="typeof icon === 'object'"

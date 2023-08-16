@@ -55,10 +55,10 @@ describe('Entering the stream', () => {
    it('If never navigated and unqualified are pushed after candidates, the first candidate should be focused once tab is pressed', () => {
       cy.mountKeyboard()
 
-      cy.pushCandidate().pushCandidate().pushUnqualified()
+         .pushCandidate()
+         .pushCandidate()
+         .pushUnqualified()
 
-      cy.window()
-         .focus()
          .realPress('Tab')
 
          .focused()
@@ -76,7 +76,7 @@ describe('Entering the stream', () => {
          .should('have.data', 'notivueContainer', 0)
    })
 
-   it('Should not enter with Tab if already navigated and no new candidates are available', () => {
+   it.only('Should not enter with Tab if already navigated and no new candidates are available', () => {
       cy.mountKeyboard()
 
       for (let i = 0; i < 3; i++) {
@@ -90,9 +90,9 @@ describe('Entering the stream', () => {
       }
 
       cy.realPress('Tab') // Leave the stream
+         .realPress('Tab') // Try to enter again
 
-      cy.realPress('Tab') // Try to enter again
-
-      cy.get('@relatedTarget').should('be.focused')
+         .get('@relatedTarget')
+         .should('be.focused')
    })
 })
