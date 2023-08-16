@@ -74,13 +74,17 @@ const queueTooltipMessage = computed(() => {
       const action = config.enqueue.value ? 'use' : 'enable'
       return `To ${action} this feature, select a limit below.`
    }
-
    return config.enqueue.value ? 'Deactivate the queue' : 'Activate the queue'
 })
+
+const isEnqueueDisabled = computed(() => config.limit.value === Infinity)
+const isSwipeDisabled = computed(() => !config.pauseOnHover.value)
 </script>
 
 <template>
    <div class="Controls">
+      <!-- Disabled must be toggled as a string (and not boolean), Nuxt bug? -->
+
       <button
          v-if="isDesktop"
          class="ButtonBase SwitchButton"
@@ -88,7 +92,7 @@ const queueTooltipMessage = computed(() => {
          :aria-checked="config.pauseOnHover.value"
          @click="togglePauseOnHover"
       >
-         Pause on Touch
+         Pause on Hover
       </button>
 
       <button
@@ -98,12 +102,12 @@ const queueTooltipMessage = computed(() => {
          :aria-checked="config.pauseOnTouch.value"
          @click="togglePauseOnTouch"
       >
-         Pause on Hover
+         Pause on Touch
       </button>
 
       <button
          class="ButtonBase SwitchButton"
-         :disabled="!config.pauseOnHover.value"
+         :disabled="isSwipeDisabled"
          role="switch"
          :aria-checked="state.enableSwipe"
          @click="actions.toggleSwipe"
@@ -115,9 +119,9 @@ const queueTooltipMessage = computed(() => {
          <button
             class="ButtonBase SwitchButton ButtonTooltip"
             role="switch"
-            :aria-checked="config.enqueue.value && config.limit.value !== Infinity"
+            :aria-checked="config.enqueue.value"
             @click="toggleQueue"
-            :disabled="config.limit.value === Infinity"
+            :disabled="isEnqueueDisabled"
          >
             Enqueue ({{ enqueuedLength }})
          </button>
