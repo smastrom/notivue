@@ -70,7 +70,7 @@ export interface NotivueConfig {
    /** Position of notifications, one of 'top-left', 'top-center', 'top-right', 'bottom-left', 'bottom-center', 'bottom-right'. */
    position?: Position
    /** Notification options for each type. */
-   notifications?: Record<NotificationType | 'global', NotificationOptions>
+   notifications?: Partial<Record<NotificationType | 'global', NotificationOptions>>
    /** Animation classes for `enter`, `leave` and `clearAll`. */
    animations?: NotivueAnimations
    /** Tag or element to which the stream will be teleported. */

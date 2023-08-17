@@ -52,7 +52,7 @@ export const pastelTheme: NotivueTheme = {
    '--nv-info-accent': '#1F70AC',
    '--nv-info-fg': '#1F70AC',
    // Promise
-   '--nv-promise-bg': '#F1F5F9',
+   '--nv-promise-bg': '#FFF',
    '--nv-promise-accent': '#334155',
    '--nv-promise-fg': '#334155',
 }
@@ -73,7 +73,7 @@ export const materialTheme: NotivueTheme = {
    '--nv-warning-fg': '#4F5358',
    '--nv-warning-border': '#4F5358',
    '--nv-promise-accent': '#64748B',
-   '--nv-promise-bg': '#f1F5F9',
+   '--nv-promise-bg': '#FFF',
    '--nv-promise-fg': '#334155',
 }
 

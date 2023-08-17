@@ -11,10 +11,10 @@ fi
 # Create temp directory
 mkdir -p $temp_dir
 
-declare -a files=("package/README.md" "package/package.json" "package/LICENSE" "package/dist/index.js" "package/dist/index.d.ts" "package/dist/core/animations.css" "package/dist/Notifications/notifications.css") 
+declare -a files=("README.md" "package.json" "LICENSE" "dist/index.js" "dist/index.d.ts" "dist/core/animations.css" "dist/Notifications/notifications.css")
 
 for file in "${files[@]}"; do
-    if ! tar tzf "$tar_file" | grep -qE "$file$"; then
+    if ! tar tzf "$tar_file" | grep -qE "package/$file$"; then
         echo "File $file not found in tarball."
         exit 1
     fi
