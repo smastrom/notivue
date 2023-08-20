@@ -44,8 +44,8 @@
 
    box-sizing: border-box;
    position: relative;
-   width: var(--nv-width);
-   max-width: 100%;
+   width: auto;
+   max-width: var(--nv-width);
    background-color: var(--nv-bg, var(--nv-global-bg));
    display: flex;
    align-items: var(--nv-y-align);
@@ -92,12 +92,14 @@
 }
 
 .Notivue__content {
+   --nv-content-spacing: calc(var(--nv-spacing) + var(--nv-spacing) * 0.15);
+
    display: flex;
    flex-direction: column;
    flex-grow: 1;
    text-align: inherit;
-   padding: var(--nv-spacing) 0;
-   padding-inline-end: var(--nv-spacing);
+   padding: var(--nv-content-spacing) 0;
+   padding-inline-end: var(--nv-content-spacing);
 }
 
 .Notivue__content-title {
@@ -122,11 +124,11 @@
 
 [dir='rtl'] {
    & .Notivue__content-message {
-      font-size: calc(var(--nv-message-size) + 0.2em);
+      font-size: calc(var(--nv-message-size) + 0.1em);
    }
 
    & .Notivue__content-title {
-      font-size: calc(var(--nv-title-size) + 0.2em);
+      font-size: calc(var(--nv-title-size) + 0.1em);
    }
 }
 
@@ -137,7 +139,7 @@
    font-weight: 700;
    border: none;
    background: none;
-   opacity: 0.5;
+   opacity: 0.65;
    line-height: 1;
    font-size: var(--nv-message-size);
    color: var(--nv-fg, var(--nv-global-fg));

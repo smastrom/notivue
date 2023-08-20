@@ -1,12 +1,12 @@
 import type { NotivueTheme } from 'notivue'
 
 const layout: NotivueTheme = {
-   '--nv-width': '350px',
-   '--nv-spacing': '0.5rem',
-   '--nv-radius': '0.5rem',
-   '--nv-icon-size': '1.2rem',
-   '--nv-title-size': '0.925rem',
-   '--nv-message-size': '0.925rem',
+   '--nv-width': '360px',
+   '--nv-spacing': '0.625rem',
+   '--nv-radius': '0.625rem',
+   '--nv-icon-size': '1.25rem',
+   '--nv-title-size': '1rem',
+   '--nv-message-size': '1rem',
    '--nv-tip-width': '0px',
    '--nv-y-align': 'center',
 }
@@ -19,9 +19,7 @@ export const lightTheme: NotivueTheme = {
    ...layout,
    ...shadow,
    // Global
-   '--nv-border-width': '0px',
    '--nv-global-bg': '#FFF',
-   '--nv-global-border': '#DEDEDE',
    '--nv-global-fg': '#171717',
    // Scoped
    '--nv-success-accent': '#28B780',
@@ -38,11 +36,11 @@ export const pastelTheme: NotivueTheme = {
    // Success
    '--nv-success-bg': '#E9FAEF',
    '--nv-success-accent': '#059669',
-   '--nv-success-fg': '#065F46',
+   '--nv-success-fg': '#057452',
    // Error
    '--nv-error-bg': '#FEEFEF',
    '--nv-error-accent': '#E6523C',
-   '--nv-error-fg': '#E6523C',
+   '--nv-error-fg': '#C5412C',
    // Warning
    '--nv-warning-bg': '#FFF0D8',
    '--nv-warning-accent': '#F48533',
@@ -62,12 +60,11 @@ export const materialTheme: NotivueTheme = {
    ...shadow,
    // Global
    '--nv-global-accent': '#FFF',
-   '--nv-global-border': '#DEDEDE',
-   '--nv-global-fg': '#FFF',
+   '--nv-global-fg': '#e7e7e7',
    // Scoped
-   '--nv-success-bg': '#209E74',
-   '--nv-error-bg': '#E6523C',
-   '--nv-info-bg': '#0B9DE6',
+   '--nv-success-bg': '#178570',
+   '--nv-error-bg': '#C94430',
+   '--nv-info-bg': '#117AAE',
    '--nv-warning-bg': '#FFE556',
    '--nv-warning-accent': '#4F5358',
    '--nv-warning-fg': '#4F5358',
@@ -82,7 +79,7 @@ export const darkTheme: NotivueTheme = {
    '--nv-border-width': '1px',
    // Global
    '--nv-global-bg': '#1F1F1F',
-   '--nv-global-border': '#313131',
+   '--nv-global-border': '#414141',
    '--nv-global-fg': '#D0D0D0',
    // Scoped
    '--nv-success-accent': '#8EF997',
