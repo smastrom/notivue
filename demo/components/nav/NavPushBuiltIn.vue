@@ -8,14 +8,33 @@ import InfoIcon from '../icons/InfoIcon.vue'
 import WarnIcon from '../icons/WarnIcon.vue'
 
 const push = usePush()
+const store = useStore()
 
 const {
    computed: { messages },
 } = useStore()
 
-async function asyncPush() {
-   const promise = push.promise(messages.value.promise)
+async function asyncRefPush() {
+   const initialMessage = ref(
+      store.state.rtl ? 'جاري تحميل الملفات...' : 'Preparing to upload files...'
+   )
+   const notification = push.promise({ message: initialMessage as any })
 
+   for (const i of [1, 2, 3, 4]) {
+      await new Promise((resolve) => setTimeout(resolve, getRandomInt(1000, 2000)))
+      initialMessage.value = store.state.rtl
+         ? `جاري تحميل الملف ${i}/4...`
+         : `Uploading file ${i}/4...`
+   }
+
+   await new Promise((resolve) => setTimeout(resolve, getRandomInt(1000, 2000)))
+   notification.resolve(store.state.rtl ? 'تم تحميل جميع الملفات!' : 'All files uploaded!')
+}
+
+async function asyncPush() {
+   if (Math.random() > 0.7) return asyncRefPush()
+
+   const promise = push.promise(messages.value.promise)
    await new Promise((resolve) => setTimeout(resolve, getRandomInt(2000, 4000)))
 
    if (Math.random() > 0.5) {

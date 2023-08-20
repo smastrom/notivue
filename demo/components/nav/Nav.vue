@@ -3,7 +3,7 @@ import { usePush } from 'notivue'
 
 import NavNotivueConfig from './NavNotivueConfig.vue'
 import NavNotificationsThemes from './NavNotificationsThemes.vue'
-import NavPushStatic from './NavPushStatic.vue'
+import NavPushBuiltIn from './NavPushBuiltIn.vue'
 import NavPushCustom from './NavPushCustom.vue'
 import NavNotivuePosition from './NavNotivuePosition.vue'
 import ButtonGroup from '../shared/ButtonGroup.vue'
@@ -28,7 +28,7 @@ const push = usePush()
 
          <div class="DefaultComponent">
             <ButtonGroup name="Push 👇" isPush>
-               <NavPushStatic />
+               <NavPushBuiltIn />
             </ButtonGroup>
 
             <ButtonGroup name="Theme">

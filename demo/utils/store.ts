@@ -92,9 +92,9 @@ export function createStore() {
                ),
             },
             promise: {
-               title: actions.getTitle(state.rtl ? 'وعد' : 'Promise'),
+               title: actions.getTitle(state.rtl ? 'إرسال...' : 'Sending...'),
                message: actions.getMsg(
-                  `We're sending your message, please wait...`,
+                  `We're sending your message, hold on...`,
                   'نحن نرسل رسالتك. سيستغرق ذلك لحظة أو اثنتين ...'
                ),
             },
