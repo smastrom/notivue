@@ -1,4 +1,4 @@
-import type { Component, ComputedRef, CSSProperties, ShallowRef } from 'vue'
+import type { Ref, Component, ComputedRef, CSSProperties, ShallowRef } from 'vue'
 
 import { createStore } from './core/createStore'
 
@@ -47,9 +47,9 @@ export type NotivueAnimations = { enter?: string; leave?: string; clearAll?: str
 
 export interface NotificationOptions {
    /** String to use as default title, an empty string doesn't render the title. */
-   title?: string
+   title?: string | Ref<string>
    /** String to use as default message. */
-   message?: string
+   message?: string | Ref<string>
    /** Duration of the notification. */
    duration?: number
    /** Value of `aria-live` attribute. */
