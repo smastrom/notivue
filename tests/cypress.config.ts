@@ -13,6 +13,9 @@ export default defineConfig({
          framework: 'vue',
          bundler: 'vite',
          viteConfig: {
+            server: {
+               port: 5176,
+            },
             resolve: {
                alias: {
                   '@/support': resolve(__dirname, './cypress/support'),

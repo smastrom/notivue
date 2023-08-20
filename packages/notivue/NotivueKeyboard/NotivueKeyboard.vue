@@ -135,9 +135,6 @@ function onStreamLeave({ announce = true } = {}) {
    items.resetStreamFocus()
    items.resumeTimeouts()
 
-   console.log('maxAnnouncements', maxAnnouncements.value)
-   console.log('announcementsCount', announcementsCount)
-
    if (announce && announcementsCount < maxAnnouncements.value) {
       announcementsCount++
 

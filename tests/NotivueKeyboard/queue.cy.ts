@@ -39,6 +39,6 @@ describe('Queue', () => {
          .realPress('Tab')
          .realPress('Space')
 
-      cy.get('@relatedTarget').should('be.focused').checkLeaveAnnouncement()
+      cy.get('@relatedTarget').should('be.focused') // We do not announce exit when last candidate is dismissed
    })
 })
