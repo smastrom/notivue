@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, unref } from 'vue'
 
 import { Classes as Cx } from './constants'
 import { filledIcons } from './icons'
@@ -13,8 +13,9 @@ const props = withDefaults(
       icons?: NotivueIcons
       theme?: NotivueTheme
       closeAriaLabel?: string
+      hideClose?: boolean
    }>(),
-   { icons: () => filledIcons, theme: () => lightTheme, closeAriaLabel: 'Close' }
+   { icons: () => filledIcons, theme: () => lightTheme, hideClose: false, closeAriaLabel: 'Close' }
 )
 
 const icon = computed(() => props.icons[props.item.type])
@@ -35,13 +36,13 @@ const closeIcon = computed(() => props.icons.close)
          </div>
       </template>
 
-      <div :class="Cx.CONTENT" :aria-live="item.ariaLive" :role="item.ariaRole">
-         <h3 v-if="item.title" :class="Cx.TITLE" v-text="item.title" />
-         <p :class="Cx.MESSAGE" v-text="item.message" />
+      <div :class="Cx.CONTENT" :aria-live="item.ariaLive" :role="item.ariaRole" aria-atomic="true">
+         <h3 v-if="item.title" :class="Cx.TITLE" v-text="unref(item.title)" />
+         <p :class="Cx.MESSAGE" v-text="unref(item.message)" />
       </div>
 
       <button
-         v-if="closeIcon && item.type !== 'promise'"
+         v-if="!props.hideClose && closeIcon && item.type !== 'promise'"
          :class="Cx.CLOSE"
          :aria-label="closeAriaLabel"
          type="button"

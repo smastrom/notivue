@@ -11,3 +11,14 @@ it('Close button dismisses notification', () => {
       .getNotifications()
       .should('have.length', 0)
 })
+
+it('It is not renderer if hideClose is true', () => {
+   cy.mountNotifications({
+      hideClose: true,
+   })
+
+      .clickAllStatic()
+
+      .get(`.${Classes.CLOSE}`)
+      .should('not.exist')
+})
