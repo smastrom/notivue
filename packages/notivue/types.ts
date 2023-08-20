@@ -173,6 +173,7 @@ export type NotivueTheme = Partial<Record<ThemeVars, string>>
 
 type ThemeLayoutVars =
    | '--nv-width'
+   | '--nv-min-width'
    | '--nv-spacing'
    | '--nv-radius'
    | '--nv-border-width'

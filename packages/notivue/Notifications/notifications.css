@@ -44,6 +44,7 @@
 
    box-sizing: border-box;
    position: relative;
+   min-width: var(--nv-min-width, auto);
    width: auto;
    max-width: var(--nv-width);
    background-color: var(--nv-bg, var(--nv-global-bg));
