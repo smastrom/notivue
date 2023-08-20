@@ -29,9 +29,11 @@ const props = withDefaults(defineProps<NotivueKeyboardProps>(), {
    leaveMessage: "You're leaving the notifications stream. Press Control + N to navigate it again.",
    emptyMessage: 'No notifications to navigate',
    renderAnnouncement: true,
+   maxAnnouncements: 3,
 })
 
-const { comboKey, handleClicks, leaveMessage, emptyMessage, renderAnnouncement } = toRefs(props)
+const { comboKey, handleClicks, leaveMessage, emptyMessage, renderAnnouncement, maxAnnouncements } =
+   toRefs(props)
 
 // Slots
 
@@ -70,7 +72,7 @@ const elements = useElements()
 const items = useItems()
 const push = usePush()
 
-const { queue, entries } = useNotifications()
+const { queue } = useNotifications()
 
 const config = useNotivue()
 
@@ -93,6 +95,8 @@ function setTabIndex(value: TabIndexValue) {
 }
 
 // Non-reactive
+
+let announcementsCount = 0
 
 let hasNeverTabbedStream = true
 let allInnerFocusableEls: HTMLElement[] = []
@@ -131,7 +135,14 @@ function onStreamLeave({ announce = true } = {}) {
    items.resetStreamFocus()
    items.resumeTimeouts()
 
-   push.info(leavePushOptions.value)
+   console.log('maxAnnouncements', maxAnnouncements.value)
+   console.log('announcementsCount', announcementsCount)
+
+   if (announce && announcementsCount < maxAnnouncements.value) {
+      announcementsCount++
+
+      push.info(leavePushOptions.value)
+   }
 }
 
 // Provide
@@ -279,7 +290,9 @@ watch(
          e.preventDefault()
          e.stopPropagation()
 
+         if (!items.isStreamFocused.value) return
          if (!isKeyboard.value) return
+
          if (isManualLeave) return (isManualLeave = false)
 
          if (!stream?.contains(e.relatedTarget as HTMLElement)) {

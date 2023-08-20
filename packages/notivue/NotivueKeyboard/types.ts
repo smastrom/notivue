@@ -50,4 +50,10 @@ export interface NotivueKeyboardProps {
     * @default true
     */
    renderAnnouncement?: boolean
+   /**
+    * Maximum times to announce that the user is leaving the stream.
+    *
+    * @default 3
+    */
+   maxAnnouncements?: number
 }

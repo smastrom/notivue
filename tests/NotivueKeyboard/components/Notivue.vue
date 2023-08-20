@@ -19,6 +19,7 @@ const cyProps = withDefaults(defineProps<CyNotivueKeyboardProps>(), {
    renderAnnouncement: true,
    enqueue: false,
    limit: Infinity,
+   maxAnnouncements: 3,
 })
 
 const push = usePush()
@@ -70,6 +71,7 @@ onBeforeUnmount(() => {
       :leaveMessage="cyProps.leaveMessage"
       :emptyMessage="cyProps.emptyMessage"
       :renderAnnouncement="cyProps.renderAnnouncement"
+      :maxAnnouncements="cyProps.maxAnnouncements"
    >
       <Notivue :containersTabIndex="containersTabIndex" v-slot="item">
          <Candidate :item="item" v-if="item.props.isCandidate" />

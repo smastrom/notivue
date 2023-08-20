@@ -68,4 +68,28 @@ describe('Props', () => {
          .get('.Notification')
          .should('have.length', 0)
    })
+
+   it('Should customize max number of leave announcements', () => {
+      cy.mountKeyboard({ maxAnnouncements: 2 })
+         .pushCandidate()
+         .pushCandidate()
+         .pushCandidate()
+
+         .realPress('Tab')
+         .realPress('Escape')
+         .checkLeaveAnnouncement()
+
+         .realPress(['ControlLeft', 'N'])
+         .realPress('Tab')
+         .realPress('Escape')
+         .checkLeaveAnnouncement()
+
+         .realPress(['ControlLeft', 'N'])
+         .realPress('Tab')
+         .realPress('Escape')
+
+         .get('.Notification')
+         .should('contain.text', "You're leaving the notifications stream")
+         .should('have.length', 2)
+   })
 })
