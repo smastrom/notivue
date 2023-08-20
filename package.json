@@ -1,6 +1,6 @@
 {
    "name": "notivue-monorepo",
-   "version": "1.2.3",
+   "version": "1.2.4",
    "private": true,
    "packageManager": "pnpm@8.6.3",
    "engines": {
@@ -18,10 +18,10 @@
       "pretty-quick": "pretty-quick"
    },
    "devDependencies": {
-      "@types/node": "^18.17.5",
-      "@vitejs/plugin-vue": "^4.2.3",
+      "@types/node": "^18.17.6",
+      "@vitejs/plugin-vue": "^4.3.1",
       "concurrently": "^8.2.0",
-      "cypress": "^12.17.3",
+      "cypress": "^12.17.4",
       "husky": "^8.0.3",
       "prettier": "^2.8.8",
       "pretty-quick": "^3.1.3",

@@ -76,7 +76,7 @@ describe('Entering the stream', () => {
          .should('have.data', 'notivueContainer', 0)
    })
 
-   it.only('Should not enter with Tab if already navigated and no new candidates are available', () => {
+   it('Should not enter with Tab if already navigated and no new candidates are available', () => {
       cy.mountKeyboard()
 
       for (let i = 0; i < 3; i++) {
