@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { Teleport, onBeforeUnmount, type Component } from 'vue'
+import { Teleport, type Component } from 'vue'
 
 import AriaLive from './AriaLive.vue'
 
-import { useNotivue, useItems, useElements } from '@/core/useStore'
+import { useStore } from '@/core/useStore'
 
 import { useMouseEvents } from './composables/useMouseEvents'
 import { useTouchEvents } from './composables/useTouchEvents'
@@ -43,9 +43,7 @@ defineSlots<{
 
 // Store
 
-const config = useNotivue()
-const items = useItems()
-const elements = useElements()
+const { config, items, elements } = useStore()
 
 // Notivue Composables
 
@@ -55,12 +53,6 @@ const touchEvents = useTouchEvents()
 
 useVisibilityChange()
 useRepositioning()
-
-// Lifecycle
-
-onBeforeUnmount(() => {
-   items.reset()
-})
 </script>
 
 <template>
@@ -68,7 +60,7 @@ onBeforeUnmount(() => {
       <!-- List Container -->
       <ol
          :aria-label="props.listAriaLabel"
-         v-if="items.entries.value.length > 0"
+         v-if="items.getLength() > 0"
          v-bind="{ ...mouseEvents, ...touchEvents }"
          :data-notivue-align="config.isTopAlign.value ? 'top' : 'bottom'"
          :ref="elements.wrapper"
@@ -81,7 +73,7 @@ onBeforeUnmount(() => {
             tabindex="-1"
             :key="item.id"
             :data-notivue-id="item.id"
-            :aria-setsize="items.entries.value.length"
+            :aria-setsize="items.getLength()"
             :aria-posinset="index + 1"
             :ref="elements.items"
             :style="{

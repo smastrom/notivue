@@ -1,6 +1,6 @@
-import { computed, onBeforeUnmount, watchEffect } from 'vue'
+import { computed, onBeforeUnmount } from 'vue'
 
-import { useNotivue, useItems } from '@/core/useStore'
+import { useStore } from '@/core/useStore'
 import { isMouse } from '@/core/utils'
 
 /**
@@ -17,18 +17,17 @@ import { isMouse } from '@/core/utils'
  */
 
 export function useTouchEvents() {
-   const items = useItems()
-   const config = useNotivue()
+   const { timeouts, config } = useStore()
 
    let resumeTimeout: ReturnType<typeof setTimeout>
 
    function pauseTouch(event: PointerEvent) {
       if (!isMouse(event)) {
-         items.pauseTimeouts()
+         timeouts.pause()
          clearTimeout(resumeTimeout)
 
          resumeTimeout = setTimeout(() => {
-            items.resumeTimeouts()
+            timeouts.resume()
          }, 2000)
       }
    }
@@ -38,6 +37,8 @@ export function useTouchEvents() {
    })
 
    return computed(() =>
-      config.pauseOnTouch.value && !items.isStreamFocused.value ? { onPointerdown: pauseTouch } : {}
+      config.pauseOnTouch.value && !timeouts.isStreamFocused.value
+         ? { onPointerdown: pauseTouch }
+         : {}
    )
 }
