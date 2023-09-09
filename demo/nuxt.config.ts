@@ -1,7 +1,5 @@
 import { getHead } from './utils/head'
 
-import nesting from 'postcss-nesting'
-
 export default defineNuxtConfig({
    modules: ['floating-vue/nuxt', '@nuxtjs/notivue'],
    ssr: true,
@@ -9,7 +7,6 @@ export default defineNuxtConfig({
       enabled: true,
    },
    notivue: {
-      // position: 'top-right',
       notifications: {
          global: {
             // duration: Infinity,
@@ -20,9 +17,15 @@ export default defineNuxtConfig({
       head: getHead(),
    },
    vite: {
+      build: {
+         cssMinify: 'lightningcss',
+      },
       css: {
-         postcss: {
-            plugins: [nesting],
+         transformer: 'lightningcss',
+         lightningcss: {
+            drafts: {
+               nesting: true,
+            },
          },
       },
    },

@@ -11,13 +11,13 @@
    "devDependencies": {
       "@nuxt/devtools": "^0.7.4",
       "@types/node": "^18.17.5",
-      "nuxt": "^3.7.1",
-      "postcss-nesting": "^12.0.1"
+      "lightningcss": "^1.21.7",
+      "nuxt": "^3.7.1"
    },
    "dependencies": {
-      "notivue": "workspace:^",
       "@nuxtjs/notivue": "file:module-latest.tgz",
       "date-fns": "^2.30.0",
-      "floating-vue": "2.0.0-beta.24"
+      "floating-vue": "2.0.0-beta.24",
+      "notivue": "workspace:^"
    }
 }

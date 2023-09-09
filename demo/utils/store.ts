@@ -1,7 +1,6 @@
-import type { Position, ThemeNames } from 'notivue'
+import type { ThemeNames } from 'notivue'
 
 const initialState = {
-   position: 'top-center' as Position,
    maxWidth: '100%',
    theme: 'lightTheme' as ThemeNames,
    renderTitles: false,
@@ -16,10 +15,7 @@ export function useStore() {
 }
 
 export function createStore() {
-   const state = shallowReactive({
-      ...initialState,
-      position: useRuntimeConfig().public.notivue?.position || initialState.position,
-   })
+   const state = shallowReactive(initialState)
 
    const actions = {
       setFullWidth() {
