@@ -2,4 +2,3 @@ packages:
    - 'packages/*'
    - 'demo'
    - 'tests'
-link-workspace-packages: true
