@@ -1,9 +1,9 @@
-import { ref, onMounted, onBeforeUnmount, watchEffect } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 
-import { useElements } from '@/core/useStore'
+import { useStore } from '@/core/useStore'
 
 export function useLastFocused() {
-   const { wrapper: stream } = useElements()
+   const { wrapper: stream } = useStore().elements
 
    const lastFocused = ref<HTMLElement | null>(null)
 
