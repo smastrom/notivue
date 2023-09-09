@@ -1,42 +1,22 @@
-import { inject, computed, ComputedRef } from 'vue'
+import { inject, computed } from 'vue'
 
 import { createPushSSR } from './createPush'
 import { isSSR, toShallowRefs } from './utils'
-import { storeInjectionKey } from './createStore'
-import { defaultConfig } from './config'
+import { notivueInjectionKey } from './createNotivue'
+import { DEFAULT_CONFIG } from './constants'
+
 import { getSlotContext } from '@/Notivue/utils'
 
-import type {
-   NotivueStore,
-   NotivueReactiveConfig,
-   NotivueComputedEntries,
-   NotivueItem,
-} from 'notivue'
+import type { NotivueStore, ConfigSlice, NotivueComputedEntries, NotivueItem } from 'notivue'
 
-/**
- * Used internally by Notivue.vue, since the component should
- * be wrapped in a ClientOnly component there's no need to
- * check for SSR.
- */
-export function useElements() {
-   return useStore()?.elements
+export function useStore() {
+   return inject(notivueInjectionKey) as NotivueStore
 }
 
-export function useItems() {
-   return useStore()?.items
-}
-
-export function useStore(): NotivueStore {
-   return inject(storeInjectionKey) as NotivueStore
-}
-
-/**
- * The following composables might be called on the server because
- * are exposed to the user. In such case we return an object
- * with the same shape.
- */
-export function useNotivue(): NotivueReactiveConfig {
-   if (isSSR) return toShallowRefs({ ...defaultConfig, isTopAlign: true }) as NotivueStore['config']
+export function useNotivue(): ConfigSlice {
+   if (isSSR) {
+      return toShallowRefs({ ...DEFAULT_CONFIG, isTopAlign: true }) as NotivueStore['config']
+   }
 
    return useStore().config
 }
@@ -59,6 +39,6 @@ export function useNotifications(): NotivueComputedEntries {
 
    return {
       entries: computed(() => store.items.entries.value.map(getSlotContext)),
-      queue: computed(() => store.items.queue.value.map(getSlotContext)),
+      queue: computed(() => store.queue.entries.value.map(getSlotContext)),
    }
 }

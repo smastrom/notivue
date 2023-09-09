@@ -1,25 +1,23 @@
 import { NotificationTypeKeys as NKeys } from './constants'
-import { createStore } from './createStore'
+import { createProxiesSlice } from './createStore'
 
 import type { NotificationType, Push, PushParameter } from 'notivue'
 
 export function createPush(
-   items: ReturnType<typeof createStore>['items'],
-   elements: ReturnType<typeof createStore>['elements']
+   proxies: ReturnType<typeof createProxiesSlice>,
+   { onDestroyAll, onClearAll }: { onDestroyAll: () => void; onClearAll: () => void }
 ): Push {
    let createCount = 0
 
    function push(options: PushParameter, type: NotificationType, id = `${createCount++}`) {
-      if (typeof options === 'string') {
-         options = { message: options }
-      }
+      if (typeof options === 'string') options = { message: options }
 
-      items.pushProxy({ ...options, id, type })
+      proxies.push({ ...options, id, type })
 
       return {
          id,
-         clear: () => items.clearProxy(id),
-         destroy: () => items.clearProxy(id, true),
+         clear: () => proxies.clear(id),
+         destroy: () => proxies.clear(id, true),
       }
    }
 
@@ -38,12 +36,12 @@ export function createPush(
             destroy,
          }
       },
-      clearAll: () => elements.addClearAllClass(),
-      destroyAll: () => items.reset(),
+      clearAll: () => onClearAll(),
+      destroyAll: () => onDestroyAll(),
    }
 }
 
 export function createPushSSR(): Push {
-   const noopProxy = new Proxy({}, { get: () => () => {} }) as any
-   return createPush(noopProxy, noopProxy)
+   const noop = new Proxy({}, { get: () => () => {} }) as any
+   return createPush(noop, noop)
 }

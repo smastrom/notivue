@@ -1,6 +1,6 @@
 import { shallowRef } from 'vue'
 
-import type { ToMappedRefs } from 'notivue'
+import type { NotivueConfigRequired, Obj, PushOptionsWithInternals, ToMappedRefs } from 'notivue'
 
 export const isSSR = typeof window === 'undefined'
 
@@ -36,4 +36,19 @@ export function mergeDeep<T>(target: T, source: Record<string, any>): T {
 
 export function isReducedMotion() {
    return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
+
+export function mergeNotificationOptions<T extends Obj = Obj>(
+   mergedConfigOptions: NotivueConfigRequired['notifications'],
+   optionsFromPush: PushOptionsWithInternals<T>
+) {
+   if (!optionsFromPush.props) {
+      optionsFromPush.props = {} as T
+   }
+
+   return {
+      ...(mergedConfigOptions[optionsFromPush.type] ?? mergedConfigOptions.success),
+      ...mergedConfigOptions.global,
+      ...optionsFromPush,
+   }
 }

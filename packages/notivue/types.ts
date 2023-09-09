@@ -1,6 +1,13 @@
 import type { Ref, Component, ComputedRef, CSSProperties, ShallowRef } from 'vue'
 
-import { createStore } from './core/createStore'
+import {
+   createItemsSlice,
+   createConfigSlice,
+   createTimeoutsSlice,
+   createElementsSlice,
+   createQueueSlice,
+   createAnimationsSlice,
+} from './core/createStore'
 
 // Utils
 
@@ -223,8 +230,22 @@ type ThemeVars =
 
 // Exported Composables
 
-export type NotivueStore = ReturnType<typeof createStore>
-export type NotivueReactiveConfig = NotivueStore['config']
+export type ConfigSlice = ReturnType<typeof createConfigSlice>
+export type AnimationsSlice = ReturnType<typeof createAnimationsSlice>
+export type TimeoutsSlice = ReturnType<typeof createTimeoutsSlice>
+export type QueueSlice = ReturnType<typeof createQueueSlice>
+export type ItemsSlice = ReturnType<typeof createItemsSlice>
+export type ElementsSlice = ReturnType<typeof createElementsSlice>
+
+export type NotivueStore = {
+   config: ConfigSlice
+   animations: AnimationsSlice
+   timeouts: TimeoutsSlice
+   queue: QueueSlice
+   items: ItemsSlice
+   elements: ElementsSlice
+   push: Push
+}
 
 export interface NotivueComputedEntries {
    entries: ComputedRef<NotivueItem[]>
