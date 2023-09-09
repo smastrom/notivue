@@ -42,19 +42,20 @@
    "main": "./dist/module.cjs",
    "types": "./dist/types.d.ts",
    "files": [
-      "dist"
+      "dist/*"
    ],
    "scripts": {
+      "prepack": "nuxt-module-build",
       "build": "nuxt-module-build"
    },
    "devDependencies": {
-      "@nuxt/module-builder": "^0.5.1",
-      "nuxt": "^3.7.1",
+      "@nuxt/module-builder": "0.4.0",
+      "@nuxt/schema": "^3.7.1",
       "typescript": "^5.2.2"
    },
    "dependencies": {
       "@nuxt/kit": "^3.7.1",
-      "defu": "^6.1.2",
-      "notivue": "workspace:*"
+      "notivue": "workspace:*",
+      "defu": "^6.1.2"
    }
 }

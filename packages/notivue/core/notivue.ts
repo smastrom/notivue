@@ -21,8 +21,8 @@ import type { NotivueConfig } from 'notivue'
  *
  * **Nuxt**
  *
- * Since `1.3.0` the official nuxt module `@nuxtjs/notivue`
- * is available. It provides automatic installation and auto-imports.
+ * Since `1.3.0` you can install the official nuxt module `@nuxtjs/notivue`
+ * which provides automatic installation and auto-imports.
  */
 export const notivue = {
    install(app: App, config: NotivueConfig = {}) {

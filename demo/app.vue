@@ -70,9 +70,7 @@ const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme }
 
    <QueueCount />
 
-   <ClientOnly>
-      <Nav />
-   </ClientOnly>
+   <Nav />
 
    <Background />
 </template>
