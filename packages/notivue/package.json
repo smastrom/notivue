@@ -2,7 +2,7 @@
    "name": "notivue",
    "version": "1.2.4",
    "private": false,
-   "description": "Fully-featured toast notification system for Vue and Nuxt.",
+   "description": "Fully-featured toast notification system for Vue and Nuxt",
    "keywords": [
       "vue",
       "vuejs",
@@ -20,7 +20,8 @@
    },
    "repository": {
       "type": "git",
-      "url": "https://github.com/smastrom/notivue.git"
+      "url": "https://github.com/smastrom/notivue.git",
+      "directory": "packages/notivue"
    },
    "license": "MIT",
    "author": {
@@ -51,12 +52,12 @@
       "postbuild": " rm -f *.tgz && pnpm pack && ./scripts/verify-tarball.sh"
    },
    "devDependencies": {
-      "@types/node": "^18.17.5",
-      "concurrently": "^8.2.0",
+      "@types/node": "^18.17.15",
+      "concurrently": "^8.2.1",
       "esbuild": "^0.19.2",
-      "typescript": "^5.1.6",
+      "typescript": "^5.2.2",
       "vite": "^4.4.9",
       "vue": "^3.3.4",
-      "vue-tsc": "^1.8.8"
+      "vue-tsc": "^1.8.10"
    }
 }

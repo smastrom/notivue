@@ -1,4 +1,7 @@
 export { notivue } from '@/core/notivue'
+
+export { createNotivue } from '@/core/createNotivue'
+
 export {
    usePush,
    useNotivue,
