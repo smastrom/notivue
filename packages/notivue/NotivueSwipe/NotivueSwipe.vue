@@ -11,11 +11,15 @@ import {
    type CSSProperties,
 } from 'vue'
 
-import { useElements, useItems } from '@/core/useStore'
+import { useStore } from '@/core/useStore'
 import { isMouse, isReducedMotion } from '@/core/utils'
 import { NotificationTypeKeys as NType } from '@/core/constants'
 
 import type { NotivueSwipeProps } from './types'
+
+// Store
+
+const { timeouts, elements, animations } = useStore()
 
 // Props
 
@@ -34,16 +38,11 @@ const threshold = toRef(props, 'threshold')
 const isPromise = computed(() => props.item.type === NType.PROMISE)
 const isEnabled = computed(
    () =>
-      !items.isStreamFocused.value &&
+      !timeouts.isStreamFocused.value &&
       !isDisabledByUser.value &&
       !isPromise.value &&
       props.item.duration < Infinity
 )
-
-// Store
-
-const items = useItems()
-const elements = useElements()
 
 const lastItemContainer = computed(() => elements.items.value[elements.items.value.length - 1])
 
@@ -166,7 +165,7 @@ function onPointerDown(e: PointerEvent) {
       if (excludedEls.includes(e.target as HTMLElement)) return
    }
 
-   if (!isMouse(e)) items.pauseTimeouts()
+   if (!isMouse(e)) timeouts.pause()
 
    setState({
       startX: e.clientX,
@@ -203,12 +202,12 @@ function onPointerMoveClear(e: PointerEvent) {
 
    if (isMouse(e) && isPointerInside(e)) {
       const isLastItem = lastItemContainer.value.contains(itemRef.value)
-      if (!isLastItem) items.pauseTimeouts()
+      if (!isLastItem) timeouts.pause()
    } else {
-      items.resumeTimeouts()
+      timeouts.resume()
    }
 
-   const animDuration = parseFloat(elements.getTransitionData()?.duration ?? 0) * 1000
+   const animDuration = parseFloat(animations.getTransitionData()?.duration ?? 0) * 1000
    setTimeout(() => (state.isClearing = false), animDuration)
 }
 
@@ -224,9 +223,9 @@ function onPointerUp(e: PointerEvent) {
    if (state.isClearing || state.isLocked) return
 
    if (isMouse(e) && isPointerInside(e)) {
-      items.pauseTimeouts()
+      timeouts.pause()
    } else {
-      items.resumeTimeouts()
+      timeouts.resume()
    }
 
    setReturnStyles()
@@ -258,7 +257,7 @@ function onPointerLeave(e: PointerEvent) {
       isLocked: false,
    })
 
-   items.resumeTimeouts()
+   timeouts.resume()
 }
 
 /* ====================================================================================
