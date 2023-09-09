@@ -1,7 +1,5 @@
 import type { Position, ThemeNames } from 'notivue'
 
-export const storeInjectionKey = Symbol('')
-
 const initialState = {
    position: 'top-center' as Position,
    maxWidth: '100%',
@@ -14,19 +12,14 @@ const initialState = {
 }
 
 export function useStore() {
-   if (isSSR) {
-      return {
-         state: initialState,
-         actions: {},
-         computed: { messages: {} },
-      } as ReturnType<typeof createStore>
-   }
-
-   return inject(storeInjectionKey) as ReturnType<typeof createStore>
+   return useNuxtApp().$store
 }
 
 export function createStore() {
-   const state = shallowReactive(initialState)
+   const state = shallowReactive({
+      ...initialState,
+      position: useRuntimeConfig().public.notivue?.position || initialState.position,
+   })
 
    const actions = {
       setFullWidth() {

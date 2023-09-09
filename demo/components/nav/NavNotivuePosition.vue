@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useNotivue, type Position } from 'notivue'
+import type { Position } from 'notivue'
 
 import ArrowIcon from '../icons/ArrowIcon.vue'
 

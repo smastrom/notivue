@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { formatDistanceToNow as toNow } from 'date-fns'
 
-import { useNotivueKeyboard, type NotivueItem } from 'notivue'
+import type { NotivueItem } from 'notivue'
 
 import type { CustomActionProps } from '../nav/NavPushCustom.vue'
 
@@ -23,7 +23,7 @@ const { elementsTabIndex } = useNotivueKeyboard()
             <time>{{ toNow(item.createdAt) }} ago</time>
             <p :aria-live="item.ariaLive" :role="item.ariaRole">
                <span class="FakeLink">{{ item.props.name }}</span>
-               {{ item.message.replace(item.props.name, '') }}
+               {{ (item.message as string).replace(item.props.name, '') }}
             </p>
          </div>
          <nav class="Buttons">

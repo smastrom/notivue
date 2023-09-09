@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { usePush } from 'notivue'
-
 import VueIcon from '../icons/VueIcon.vue'
 import Button from '../shared/Button.vue'
 

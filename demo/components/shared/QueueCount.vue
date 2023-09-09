@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useNotifications, useNotivue } from 'notivue'
-
 const { queue } = useNotifications()
 
 const { isTopAlign } = useNotivue()

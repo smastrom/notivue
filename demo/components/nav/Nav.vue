@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { usePush } from 'notivue'
-
 import NavNotivueConfig from './NavNotivueConfig.vue'
 import NavNotificationsThemes from './NavNotificationsThemes.vue'
 import NavPushBuiltIn from './NavPushBuiltIn.vue'

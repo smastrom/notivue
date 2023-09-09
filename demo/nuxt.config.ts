@@ -1,20 +1,32 @@
 import { getHead } from './utils/head'
 
-import nesting from 'postcss-nesting'
-
 export default defineNuxtConfig({
-   modules: ['floating-vue/nuxt'],
+   modules: ['floating-vue/nuxt', '@nuxtjs/notivue'],
    ssr: true,
    devtools: {
       enabled: true,
+   },
+   notivue: {
+      // position: 'top-right',
+      notifications: {
+         global: {
+            // duration: Infinity,
+         },
+      },
    },
    app: {
       head: getHead(),
    },
    vite: {
+      build: {
+         cssMinify: 'lightningcss',
+      },
       css: {
-         postcss: {
-            plugins: [nesting],
+         transformer: 'lightningcss',
+         lightningcss: {
+            drafts: {
+               nesting: true,
+            },
          },
       },
    },

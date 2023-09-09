@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { usePush } from 'notivue'
-
 const push = usePush()
 
 const { state, actions, computed } = useStore()

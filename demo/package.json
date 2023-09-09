@@ -10,14 +10,15 @@
    },
    "devDependencies": {
       "@nuxt/devalue": "2.0.2",
-      "@nuxt/devtools": "^0.8.0",
-      "@types/node": "^18.17.5",
-      "nuxt": "^3.6.5",
-      "postcss-nesting": "^12.0.1"
+      "@nuxt/devtools": "^0.8.3",
+      "@types/node": "^18.17.15",
+      "lightningcss": "^1.21.7",
+      "nuxt": "^3.7.1"
    },
    "dependencies": {
+      "@nuxtjs/notivue": "workspace:*",
       "date-fns": "^2.30.0",
       "floating-vue": "2.0.0-beta.24",
-      "notivue": "workspace:*"
+      "notivue": "workspace:^"
    }
 }
