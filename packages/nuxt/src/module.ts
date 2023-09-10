@@ -1,11 +1,5 @@
-import {
-   defineNuxtModule,
-   createResolver,
-   addComponent,
-   addImports,
-   addPluginTemplate,
-} from '@nuxt/kit'
-import defu from 'defu'
+import { defineNuxtModule, addComponent, addImports, addPluginTemplate } from '@nuxt/kit'
+import { defu } from 'defu'
 
 import type { NotivueConfig } from 'notivue'
 
@@ -28,10 +22,7 @@ export default defineNuxtModule<NotivueConfig>({
       name: '@nuxtjs/notivue',
       configKey: 'notivue',
    },
-   defaults: {},
    setup(moduleOptions, nuxt) {
-      const { resolve } = createResolver(import.meta.url)
-
       nuxt.options.runtimeConfig.public.notivue = defu(
          nuxt.options.runtimeConfig.public.notivue || {},
          moduleOptions
@@ -41,13 +32,13 @@ export default defineNuxtModule<NotivueConfig>({
          opts.references.push({ types: 'notivue' })
       })
 
+      nuxt.options.build.transpile.push('notivue')
+
       if (nuxt.options.vite.optimizeDeps) {
-         nuxt.options.vite.optimizeDeps.include = nuxt.options.vite.optimizeDeps.include || []
-         nuxt.options.vite.optimizeDeps.include.push('notivue')
+         nuxt.options.vite.optimizeDeps.exclude = nuxt.options.vite.optimizeDeps.exclude || []
+         nuxt.options.vite.optimizeDeps.exclude.push('notivue')
       }
 
-      nuxt.options.build.transpile.push(resolve('./runtime'))
-      nuxt.options.build.transpile.push('notivue')
       ;['usePush', 'useNotivue', 'useNotifications', 'useNotivueKeyboard'].forEach((name) =>
          addImports({ name, as: name, from: 'notivue' })
       )
