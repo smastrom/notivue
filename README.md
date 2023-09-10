@@ -54,26 +54,27 @@ _From ~4.5 KB (gzipped)_
 ### Installation
 
 ```bash
-pnpm add notivue
+npm i notivue
 
+# pnpm add notivue
 # yarn add notivue
-# npm i notivue
+# bun install notivue
 ```
 
 **main.js/ts**
 
-```diff
+```ts
 import { createApp } from 'vue'
-+ import { createNotivue } from 'notivue'
+import { createNotivue } from 'notivue'
 
 import App from './App.vue'
 
-+ import 'notivue/notifications.css' // Only needed if using built-in notifications
-+ import 'notivue/animations.css' // Only needed if using built-in animations
+import 'notivue/notifications.css' // Only needed if using built-in notifications
+import 'notivue/animations.css' // Only needed if using built-in animations
 
 const app = createApp(App)
 
-+ export const push = createNotivue(app, /* options */)
+export const push = createNotivue(app /*, options */)
 
 app.mount('#app')
 ```
@@ -146,10 +147,11 @@ import { Notivue } from 'notivue'
 ## Nuxt
 
 ```bash
-pnpm add notivue @nuxtjs/notivue
+npm i @nuxtjs/notivue
 
-# yarn add notivue @nuxtjs/notivue
-# npm i notivue @nuxtjs/notivue
+# pnpm add @nuxtjs/notivue
+# yarn add @nuxtjs/notivue
+# bun install @nuxtjs/notivue
 ```
 
 **nuxt.config.ts**

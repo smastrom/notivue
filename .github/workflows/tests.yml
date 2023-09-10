@@ -18,8 +18,6 @@ jobs:
               run_install: false
          - name: Install dependecies
            run: pnpm install
-           env:
-              SKIP_NUXT_POSTINSTALL_BUG: 'true'
          - name: Build Notivue
            run: pnpm build
          - name: Install Notivue
@@ -28,7 +26,7 @@ jobs:
            uses: cypress-io/github-action@v5
            timeout-minutes: 10
            with:
-              env: CYPRESS_SKIP_BUGGED_CI_TEST=true
+              env: CYPRESS_CI=true
               component: true
               install: false
               project: ./tests
