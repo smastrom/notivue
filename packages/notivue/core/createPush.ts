@@ -17,7 +17,7 @@ export function createPush(
       return {
          id,
          clear: () => proxies.clear(id),
-         destroy: () => proxies.clear(id, true),
+         destroy: () => proxies.clear(id, { isDestroy: true }),
       }
    }
 

@@ -23,9 +23,9 @@ export function createNotivue(app: App, userConfig: NotivueConfig): Push {
    const animations = createAnimationsSlice(config, items, queue, elements)
    const timeouts = createTimeoutsSlice(items, animations)
 
-   const proxies = createProxiesSlice(config, items, queue, animations, timeouts)
+   const pushProxies = createProxiesSlice(config, items, queue, animations, timeouts)
 
-   const push = createPushSlice(proxies, {
+   const push = createPushSlice(pushProxies, {
       onDestroyAll: () => {
          items.clear()
          queue.clear()

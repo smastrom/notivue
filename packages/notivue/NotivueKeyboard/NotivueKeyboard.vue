@@ -128,7 +128,7 @@ function onStreamLeave({ announce = true } = {}) {
 
    setTabIndex(-1)
 
-   timeouts.unsetStreamFocus()
+   timeouts.setStreamFocus(false)
    timeouts.resume()
 
    if (announce && announcementsCount < maxAnnouncements.value) {

@@ -11495,7 +11495,7 @@ packages:
    file:demo/module-latest.tgz:
       resolution:
          {
-            integrity: sha512-TyFr2Drh79shntAvt20MJiSxhuV0cmDysZRTtUxGTj4/TNLpzPG5PowGYfzWe6ySLQBqgk0kga1UqfCZnPkrgA==,
+            integrity: sha512-GSeNp/h5w5tyXQgvYvSm1/h6ZDV+cBF354Vp2XT4inggJ7NyElpZ3aNP1sr6Xi1gkpc4/yClJMPj44mUCXSUCA==,
             tarball: file:demo/module-latest.tgz,
          }
       name: '@nuxtjs/notivue'

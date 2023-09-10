@@ -22,6 +22,7 @@ import type {
    TimeoutsSlice,
    AnimationsSlice,
 } from 'notivue'
+import { getSlotContext } from '@/Notivue/utils'
 
 export function createConfigSlice(userConfig: NotivueConfig) {
    const reactiveConfig = toShallowRefs(mergeDeep(DEFAULT_CONFIG, userConfig))
@@ -103,89 +104,6 @@ export function createItemsSlice(config: ConfigSlice, queue: QueueSlice) {
    }
 }
 
-export function createTimeoutsSlice(items: ItemsSlice, animations: AnimationsSlice) {
-   return {
-      isStreamPaused: ref(false),
-      isStreamFocused: ref(false),
-      setStreamPause() {
-         this.isStreamPaused.value = true
-      },
-      unsetStreamPause() {
-         this.isStreamPaused.value = false
-      },
-      setStreamFocus() {
-         this.isStreamFocused.value = true
-      },
-      unsetStreamFocus() {
-         this.isStreamFocused.value = false
-      },
-      reset() {
-         this.unsetStreamPause()
-         this.unsetStreamFocus()
-      },
-      create(id: string, duration: number | undefined, force = false) {
-         if (duration === Infinity || (this.isStreamPaused.value && !force)) return undefined
-         return window.setTimeout(() => animations.playLeave(id), duration)
-      },
-      pause() {
-         if (items.getLength() === 0 || this.isStreamPaused.value) return
-
-         const pausedAt = Date.now()
-
-         console.log('Pausing timeouts')
-         items.updateAll((item) => {
-            clearTimeout(item.timeout as number)
-
-            return {
-               ...item,
-               elapsed: pausedAt - (item.resumedAt ?? item.createdAt) + (item.elapsed ?? 0),
-            }
-         })
-
-         this.setStreamPause()
-      },
-      resume() {
-         if (items.getLength() === 0 || !this.isStreamPaused.value) return
-
-         console.log('Resuming timeouts')
-         items.updateAll((item) => {
-            clearTimeout(item.timeout as number)
-            /**
-             * 'elapsed' may be equal to 'undefined' if a notification
-             * is pushed while the stream is paused as 'pausedTimeouts' won't be called.
-             *
-             * To keep leave animation order coherent with the creation time and to avoid
-             * notifications to be dismissed at the same time, we calculate a normalized
-             * elapsed time ranging from 200ms to 1200ms.
-             */
-            if (item.elapsed === undefined) {
-               const createdAtStamps = items.entries.value.map(({ createdAt }) => createdAt)
-
-               const maxStamp = Math.max(...createdAtStamps)
-               const minStamp = Math.min(...createdAtStamps)
-
-               if (minStamp === maxStamp) {
-                  item.elapsed = 1200
-               } else {
-                  const normalizedCreatedAt = (item.createdAt - minStamp) / (maxStamp - minStamp)
-                  item.elapsed = normalizedCreatedAt * (1200 - 200) + 200
-               }
-            }
-
-            let newTimeout = item.duration - item.elapsed
-
-            return {
-               ...item,
-               resumedAt: Date.now(),
-               timeout: this.create(item.id, newTimeout, true),
-            }
-         })
-
-         this.unsetStreamPause()
-      },
-   }
-}
-
 export function createElementsSlice() {
    return {
       wrapper: ref<HTMLElement | null>(null),
@@ -211,6 +129,9 @@ export function createAnimationsSlice(
          if (!this.transitionData) this.syncTransitionData()
          return this.transitionData as TransitionData
       },
+      resetTransitionData() {
+         this.transitionData = null
+      },
       syncTransitionData() {
          const enterClass = config.animations.value.enter
          const animEl = enterClass ? elements.wrapper.value?.querySelector(`.${enterClass}`) : null
@@ -226,15 +147,22 @@ export function createAnimationsSlice(
             }
          }
       },
-      resetTransitionData() {
-         this.transitionData = null
-      },
-      playLeave(id: string) {
-         if (!config.animations.value.leave || isReducedMotion()) return items.remove(id)
+      playLeave(id: string, { isDestroy = false, isManual = false } = {}) {
+         const currItem = items.get(id)
+         const clearCallback = () =>
+            currItem?.[isManual ? 'onManualClear' : 'onAutoClear']?.(getSlotContext(currItem))
+
+         if (!config.animations.value.leave || isDestroy || isReducedMotion()) {
+            items.remove(id)
+            clearCallback()
+         }
 
          items.update(id, {
             animationClass: config.animations.value.leave,
-            onAnimationend: () => items.remove(id),
+            onAnimationend: () => {
+               items.remove(id)
+               clearCallback()
+            },
          })
 
          this.updatePositions()
@@ -285,6 +213,81 @@ export function createAnimationsSlice(
    }
 }
 
+export function createTimeoutsSlice(items: ItemsSlice, animations: AnimationsSlice) {
+   return {
+      isStreamPaused: ref(false),
+      isStreamFocused: ref(false),
+      setStreamPause(newValue = true) {
+         this.isStreamPaused.value = newValue
+      },
+      setStreamFocus(newValue = true) {
+         this.isStreamFocused.value = newValue
+      },
+      reset() {
+         this.setStreamPause(false)
+         this.setStreamFocus(false)
+      },
+      create(id: string, duration: number | undefined, { ignorePause = false } = {}) {
+         if (duration === Infinity || (this.isStreamPaused.value && !ignorePause)) return undefined
+         return window.setTimeout(() => animations.playLeave(id), duration)
+      },
+      pause() {
+         if (items.getLength() === 0 || this.isStreamPaused.value) return
+
+         const pausedAt = Date.now()
+
+         console.log('Pausing timeouts')
+         items.updateAll((item) => {
+            clearTimeout(item.timeout as number)
+
+            return {
+               ...item,
+               elapsed: pausedAt - (item.resumedAt ?? item.createdAt) + (item.elapsed ?? 0),
+            }
+         })
+
+         this.setStreamPause()
+      },
+      resume() {
+         if (items.getLength() === 0 || !this.isStreamPaused.value) return
+
+         console.log('Resuming timeouts')
+         items.updateAll((item) => {
+            clearTimeout(item.timeout as number)
+            /**
+             * 'elapsed' may be equal to 'undefined' if a notification
+             * is pushed while the stream is paused as 'pausedTimeouts' won't be called.
+             *
+             * To keep leave animation order coherent with the creation time and to avoid
+             * notifications to be dismissed at the same time, we calculate a normalized
+             * elapsed time ranging from 200ms to 1200ms.
+             */
+            if (item.elapsed === undefined) {
+               const createdAtStamps = items.entries.value.map(({ createdAt }) => createdAt)
+
+               const maxStamp = Math.max(...createdAtStamps)
+               const minStamp = Math.min(...createdAtStamps)
+
+               if (minStamp === maxStamp) {
+                  item.elapsed = 1200
+               } else {
+                  const normalizedCreatedAt = (item.createdAt - minStamp) / (maxStamp - minStamp)
+                  item.elapsed = normalizedCreatedAt * (1200 - 200) + 200
+               }
+            }
+
+            return {
+               ...item,
+               resumedAt: Date.now(),
+               timeout: this.create(item.id, item.duration - item.elapsed, { ignorePause: true }),
+            }
+         })
+
+         this.setStreamPause(false)
+      },
+   }
+}
+
 export function createProxiesSlice(
    config: ConfigSlice,
    items: ItemsSlice,
@@ -296,15 +299,11 @@ export function createProxiesSlice(
       /**
        * Removes a notification and resumes timeouts if clearing the last one
        */
-      clear(id: string, isDestroy = false) {
+      clear(id: string, { isDestroy = false } = {}) {
          const isLast = items.getLength() > 1 && items.entries.value.at(-1)?.id === id
          if (isLast) timeouts.resume()
 
-         if (isDestroy) {
-            items.remove(id)
-         } else {
-            animations.playLeave(id)
-         }
+         animations.playLeave(id, { isManual: true, isDestroy })
       },
       /**
        * Creates, updates or enqueues a notification created using push methods
@@ -343,7 +342,7 @@ export function createProxiesSlice(
                animationClass: isReducedMotion() ? '' : config.animations.value.enter,
                timeout: shouldEnqueue ? createTimeout : createTimeout(),
                clear: () => this.clear(entry.id),
-               destroy: () => this.clear(entry.id, true),
+               destroy: () => this.clear(entry.id, { isDestroy: true }),
             } as StoreItem<T>
 
             if (shouldEnqueue) {

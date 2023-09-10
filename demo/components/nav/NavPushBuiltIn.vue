@@ -44,7 +44,20 @@ async function asyncPush() {
 </script>
 
 <template>
-   <Button @click="push.success(messages.success)" text="Success">
+   <Button
+      @click="
+         push.success({
+            ...messages.success,
+            onAutoClear: (item) => {
+               console.log('AutoClear!', item)
+            },
+            onManualClear: (item) => {
+               console.log('Manual Clear!', item)
+            },
+         })
+      "
+      text="Success"
+   >
       <SuccessIcon />
    </Button>
    <Button @click="push.error(messages.error)" text="Error">
