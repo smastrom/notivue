@@ -154,7 +154,7 @@ export function createAnimationsSlice(
 
          if (!config.animations.value.leave || isDestroy || isReducedMotion()) {
             items.remove(id)
-            clearCallback()
+            return clearCallback()
          }
 
          items.update(id, {

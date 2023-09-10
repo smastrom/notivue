@@ -7,7 +7,7 @@ import { SWIPE_NOTIFICATION_WIDTH as WIDTH } from '@/support/utils'
  * Skipping it for now.
  *
  */
-if (Cypress.env('CYPRESS_CI')) {
+if (!Cypress.env('CYPRESS_CI')) {
    describe('Props', () => {
       it('Should not swipe if disabled', () => {
          cy.mountSwipe({ disabled: true })
