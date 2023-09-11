@@ -1,6 +1,6 @@
 {
    "name": "notivue",
-   "version": "1.2.4",
+   "version": "1.3.0",
    "private": false,
    "description": "Fully-featured toast notification system for Vue and Nuxt",
    "keywords": [
