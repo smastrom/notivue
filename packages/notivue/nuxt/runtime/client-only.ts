@@ -7,8 +7,8 @@ import { defineComponent, onMounted, ref } from 'vue'
  * Moreover, if setting 'mode: client' in addComponent() options
  * it throws a non-sense hydration mismatch warning in the console.
  *
- * This component is just a simplified version of Nuxt's <ClientOnly />
- * which relies on a onMounted boolean ref to render the slot as well.
+ * This component is just a streamlined version of Nuxt's <ClientOnly />
+ * which also relies on a onMounted boolean ref to render the slot.
  */
 
 export const NotivueClientOnly = defineComponent({

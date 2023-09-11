@@ -27,18 +27,30 @@ const module = defineNuxtModule({
             return `
                   import { createNotivue } from 'notivue'
                   import { defineNuxtPlugin, useRuntimeConfig } from '#app'
+
+                  function nullToInf(obj) {
+                     if (obj == null) return 1 / 0
+
+                     if (typeof obj === 'object') {
+                        for (let key in obj) obj[key] = nullToInf(obj[key])
+                     }
+
+                     return obj
+                  }                  
    
                   export default defineNuxtPlugin(({ vueApp }) => {
                      const options = useRuntimeConfig().public?.notivue || {}
+                     const deserializedOpts = nullToInf(JSON.parse(JSON.stringify(options)))
    
-                     createNotivue(vueApp, options)
+                     createNotivue(vueApp, deserializedOpts)
                   })           
                   `
          },
       })
-      ;['usePush', 'useNotivue', 'useNotifications', 'useNotivueKeyboard'].forEach((name) =>
+
+      for (const name of ['usePush', 'useNotivue', 'useNotifications', 'useNotivueKeyboard']) {
          addImports({ name, as: name, from: 'notivue' })
-      )
+      }
 
       for (const name of ['Notivue', 'NotivueKeyboard']) {
          await addComponent({ name, filePath: resolve(`runtime/${name}.vue`) })

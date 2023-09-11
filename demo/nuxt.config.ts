@@ -7,10 +7,10 @@ export default defineNuxtConfig({
       enabled: true,
    },
    notivue: {
-      // limit: 0,
+      // limit: Infinity,
       notifications: {
          global: {
-            // duration: 0,
+            // duration: Infinity,
          },
       },
    },
