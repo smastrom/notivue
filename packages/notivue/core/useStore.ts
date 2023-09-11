@@ -15,7 +15,7 @@ export function useStore() {
 
 export function useNotivue(): ConfigSlice {
    if (isSSR) {
-      return toShallowRefs({ ...DEFAULT_CONFIG, isTopAlign: true }) as NotivueStore['config']
+      return toShallowRefs({ ...DEFAULT_CONFIG, isTopAlign: true }) as ConfigSlice
    }
 
    return useStore().config

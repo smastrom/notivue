@@ -12,26 +12,9 @@ import { useRepositioning } from './composables/useRepositioning'
 import { useVisibilityChange } from './composables/useVisibilityChange'
 import { getSlotContext, getAriaLabel } from './utils'
 
-import type { NotivueItem } from 'notivue'
-import type { ContainersTabIndexMap } from '@/NotivueKeyboard/types'
+import type { NotivueItem, NotivueProps } from 'notivue'
 
 // Props
-
-interface NotivueProps {
-   class?: string | Record<string, boolean> | (string | Record<string, boolean>)[]
-   /**
-    * Notification containers reactive tabindex map. Only needed if using NotivueKeyboard.
-    *
-    * @default undefined
-    */
-   containersTabIndex?: ContainersTabIndexMap
-   /**
-    * Aria label for the list container. Only effective if using NotivueKeyboard.
-    *
-    * @default "Notifications"
-    */
-   listAriaLabel?: string
-}
 
 const props = withDefaults(defineProps<NotivueProps>(), {
    listAriaLabel: 'Notifications',

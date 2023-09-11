@@ -7,7 +7,7 @@ import {
    createElementsSlice,
    createQueueSlice,
    createAnimationsSlice,
-} from './core/createStore'
+} from './createStore'
 
 // Utils
 
@@ -82,7 +82,7 @@ export interface NotivueConfig {
    animations?: NotivueAnimations
    /** Tag or element to which the stream will be teleported. */
    teleportTo?: string | HTMLElement
-   /** Notifications limit. Defaults to `Infinity`. */
+   /** Notifications limit. Defaults to `0` (unlimited). */
    limit?: number
 }
 
