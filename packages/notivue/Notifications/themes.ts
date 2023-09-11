@@ -60,7 +60,7 @@ export const materialTheme: NotivueTheme = {
    ...shadow,
    // Global
    '--nv-global-accent': '#FFF',
-   '--nv-global-fg': '#e7e7e7',
+   '--nv-global-fg': '#FFF',
    // Scoped
    '--nv-success-bg': '#178570',
    '--nv-error-bg': '#C94430',

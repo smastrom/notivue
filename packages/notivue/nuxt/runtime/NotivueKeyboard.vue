@@ -6,12 +6,21 @@ import {
    DEFAULT_KEYBOARD_PROPS,
    type TabIndexValue,
    type ContainersTabIndexMap,
-   type NotivueKeyboardProps,
 } from 'notivue'
 
 import { NotivueClientOnly } from './client-only'
 
-const props = withDefaults(defineProps<NotivueKeyboardProps>(), DEFAULT_KEYBOARD_PROPS)
+const props = withDefaults(
+   defineProps<{
+      comboKey?: string
+      handleClicks?: boolean
+      leaveMessage?: string
+      emptyMessage?: string
+      renderAnnouncement?: boolean
+      maxAnnouncements?: number
+   }>(),
+   DEFAULT_KEYBOARD_PROPS
+)
 
 const { comboKey, handleClicks, leaveMessage, emptyMessage, renderAnnouncement, maxAnnouncements } =
    toRefs(props)

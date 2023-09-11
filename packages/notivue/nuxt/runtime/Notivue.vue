@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
 
-import { Notivue as NotivueClient, type NotivueItem, type NotivueProps } from 'notivue'
+import { Notivue as NotivueClient, type NotivueItem } from 'notivue'
 
 import { NotivueClientOnly } from './client-only'
 
-const props = withDefaults(defineProps<NotivueProps>(), { listAriaLabel: 'Notifications' })
+const props = withDefaults(
+   defineProps<{
+      class?: string | Record<string, boolean> | (string | Record<string, boolean>)[]
+      containersTabIndex?: Record<string, 0 | -1>
+      listAriaLabel?: string
+   }>(),
+   { listAriaLabel: 'Notifications' }
+)
 
 defineSlots<{
    default(item: NotivueItem & { key?: string }): Component

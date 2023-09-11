@@ -11,7 +11,13 @@ fi
 # Create temp directory
 mkdir -p $temp_dir
 
-declare -a files=("README.md" "package.json" "LICENSE" "dist/index.js" "dist/index.d.ts" "dist/core/animations.css" "dist/Notifications/notifications.css")
+declare -a files=(
+    "README.md" "package.json" "LICENSE"
+    "dist/index.js" "dist/index.d.ts"
+    "dist/core/animations.css" "dist/Notifications/notifications.css"
+    "nuxt/module.mjs" "nuxt/module.cjs" "nuxt/module.d.ts" "nuxt/module.json"
+    "nuxt/runtime/Notivue.vue" "nuxt/runtime/NotivueKeyboard.vue" "nuxt/runtime/client-only.ts"
+)
 
 for file in "${files[@]}"; do
     if ! tar tzf "$tar_file" | grep -qE "package/$file$"; then

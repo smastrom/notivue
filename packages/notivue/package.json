@@ -68,9 +68,9 @@
       "defu": "^6.1.2"
    },
    "peerDependencies": {
-      "@nuxt/schema": ">=3",
-      "defu": ">=6",
-      "@nuxt/kit": ">=3"
+      "@nuxt/schema": ">=3.5.0",
+      "@nuxt/kit": ">=3.5.0",
+      "defu": ">=6"
    },
    "peerDependenciesMeta": {
       "@nuxt/schema": {

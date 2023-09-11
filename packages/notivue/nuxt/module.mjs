@@ -11,6 +11,9 @@ const module = defineNuxtModule({
    meta: {
       name: 'nuxt/notivue',
       configKey: 'notivue',
+      compatibility: {
+         nuxt: '>=3.5.0',
+      },
    },
 
    async setup(moduleOptions, nuxt) {
