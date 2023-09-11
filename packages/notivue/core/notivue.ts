@@ -21,8 +21,11 @@ import type { NotivueConfig } from 'notivue'
  *
  * **Nuxt**
  *
- * Since `1.3.0` you can install the official nuxt module `@nuxtjs/notivue`
- * which provides automatic installation and auto-imports.
+ * Since `1.3.0` you can use the built-in nuxt module `notivue/nuxt`
+ * which provides automatic plugin installation and auto-imports.
+ *
+ *
+ * Documentation: https://notivue.netlify.app
  */
 export const notivue = {
    install(app: App, config: NotivueConfig = {}) {
