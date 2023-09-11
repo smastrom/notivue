@@ -44,9 +44,8 @@
 
    box-sizing: border-box;
    position: relative;
-   min-width: var(--nv-min-width, auto);
-   width: auto;
-   max-width: var(--nv-width);
+   width: var(--nv-min-width, auto);
+   max-width: var(--nv-width, 100%);
    background-color: var(--nv-bg, var(--nv-global-bg));
    display: flex;
    align-items: var(--nv-y-align);

@@ -9,7 +9,9 @@ pnpm-debug.log*
 node_modules
 dist
 
-*.tgz
+notivue-*.tgz
 
 cypress/downloads
 cypress/screenshots
+
+spa

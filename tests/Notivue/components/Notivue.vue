@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { shallowRef, toRefs, watchEffect, type Ref } from 'vue'
+import { ref, shallowRef, toRefs, watchEffect, type Ref } from 'vue'
 
 import {
    usePush,
@@ -55,6 +55,36 @@ function pushAndClear() {
 
 function pushAriaLiveOnly() {
    push.success({ title: 'Title', message: 'Message', ariaLiveOnly: true })
+}
+
+const autoClearCount = ref(0)
+const manualClearCount = ref(0)
+
+const pushCallbacks = {
+   onAutoClear: () => autoClearCount.value++,
+   onManualClear: () => manualClearCount.value++,
+}
+
+function pushWithAutoClearCallback() {
+   ;(['success', 'error', 'warning', 'info'] as const).forEach((type) => {
+      push[type](pushCallbacks)
+   })
+
+   push.promise(pushCallbacks).resolve(pushCallbacks)
+   push.promise(pushCallbacks).reject(pushCallbacks)
+}
+
+function pushWithManualClearCallback() {
+   const notifications = [] as ReturnType<Push['success']>[]
+
+   ;(['success', 'error', 'warning', 'info'] as const).forEach((type) => {
+      notifications.push(push[type](pushCallbacks))
+   })
+
+   notifications.push(push.promise(pushCallbacks).resolve(pushCallbacks))
+   notifications.push(push.promise(pushCallbacks).reject(pushCallbacks))
+
+   notifications.forEach((n) => n.clear())
 }
 
 const toBeCleared = shallowRef(null) as unknown as Ref<ReturnType<Push['success']>>
@@ -119,6 +149,13 @@ async function pushPromiseAndReject() {
       </button>
       <button class="PushPromiseAndReject" @click="pushPromiseAndReject">
          Push Promise and Reject
+      </button>
+
+      <button class="PushWithAutoClearCallback" @click="pushWithAutoClearCallback">
+         {{ autoClearCount }}
+      </button>
+      <button class="PushWithManualClearCallback" @click="pushWithManualClearCallback">
+         {{ manualClearCount }}
       </button>
    </div>
 </template>

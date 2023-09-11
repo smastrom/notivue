@@ -6,14 +6,16 @@
 
 # Notivue
 
-### Fully-featured notification system for Vue and Nuxt.
+### Fully-featured notification system for Vue and Nuxt
 
-[Live Demo](https://notivue.pages.dev) - [Documentation](https://notivuedocs.netlify.app)
+[Live Demo](https://notivue.smastrom.dev) - [Documentation](https://notivuedocs.netlify.app)
 
-**Examples**
+---
 
-[Custom Components](https://stackblitz.com/edit/vitejs-vite-9jkh73?file=src%2Fcomponents%2FPage.vue) -
-[Vue Router](https://stackblitz.com/edit/vitejs-vite-kdrtrw?file=src/components/Example.vue) - [Nuxt](https://stackblitz.com/edit/nuxt-starter-fnhcmx?file=pages%2Findex.vue) - [Pinia](https://stackblitz.com/edit/vitejs-vite-knysks?file=src%2FApp.vue) - [TanStack Query](https://stackblitz.com/edit/vitejs-vite-ymjktx?file=src%2FApp.vue)
+**Examples:** [Custom Components](https://stackblitz.com/edit/vitejs-vite-9jkh73?file=src%2Fcomponents%2FPage.vue) -
+[Nuxt](https://stackblitz.com/edit/nuxt-starter-fnhcmx?file=pages%2Findex.vue)
+
+<br />
 
 </div>
 
@@ -23,9 +25,6 @@
 
 **🧬 JS and CSS modular**  
 _Granularly include only the features you need_
-
-**🧚‍♂️ Zero deps and lightweight**  
-_From ~4 KB (gzipped)_
 
 **💊 Drop-in components to enhance notifications**  
 _NotivueSwipe, NotivueKeyboard, all optional and customizable_
@@ -45,56 +44,69 @@ _Themes, icons, rtl support and much more_
 **♿️ Fully accessible**  
 _Built-in screen reader, reduced motion, and keyboard support_
 
+**🧚‍♂️ Zero dependencies**  
+_From ~4.5 KB (gzipped)_
+
 <br />
 
 ## Installation
 
 ```bash
 pnpm add notivue
+
+# npm i notivue
+# yarn add notivue
+# bun install notivue
 ```
 
 <br />
 
-## Vite
+## Vite (Single-page app)
 
-### 1. Configure
+> :bulb: See [↓ below](#nuxt) for **Nuxt**
 
 **main.js/ts**
 
-```diff
+```ts
 import { createApp } from 'vue'
-+ import { notivue } from 'notivue'
+import { createNotivue } from 'notivue'
 
 import App from './App.vue'
 
-+ import 'notivue/notifications.css' // Only needed if using built-in notifications
-+ import 'notivue/animations.css' // Only needed if using built-in animations
+import 'notivue/notifications.css' // Only needed if using built-in notifications
+import 'notivue/animations.css' // Only needed if using built-in animations
 
 const app = createApp(App)
 
-+ app.use(notivue)
+// app.use(...), app.use(...), ...
+
+// Place it at THE END of the app.use() chain, just right before app.mount()
+export const push = createNotivue(app /*, options */)
+
 app.mount('#app')
 ```
 
 **App.vue**
 
-With built-in notifications:
-
 ```vue
 <script setup>
 import { Notivue, Notifications } from 'notivue'
+import { push } from './main'
 </script>
 
 <template>
+  <button @click="push.success('This is your first notification!')">Push</button>
+
   <Notivue v-slot="item">
     <Notifications :item="item" />
   </Notivue>
 
-  <!-- ... -->
+  <!-- RouterView, etc. -->
 </template>
 ```
 
-Or roll your own:
+<details>
+<summary><strong>With custom components</strong></summary>
 
 ```vue
 <script setup>
@@ -102,6 +114,8 @@ import { Notivue } from 'notivue'
 </script>
 
 <template>
+  <button @click="push.success('This is your first notification!')">Push</button>
+
   <Notivue v-slot="item">
     <div class="rounded-full flex py-2 pl-3 bg-slate-700 text-slate-50 text-sm">
       <p :role="item.ariaRole" :aria-live="item.ariaLive">
@@ -129,79 +143,46 @@ import { Notivue } from 'notivue'
     </div>
   </Notivue>
 
-  <!-- ... -->
+  <!-- RouterView, etc. -->
 </template>
 ```
 
-> Animations, repositioning, queueing, pausing, clear on swipe and any other core feature will always be handled by `<Notivue />` when using custom components, so don't worry about anything else besides building the component itself.
-
-### 2. Push notifications from any component
-
-```vue
-<script setup>
-import { usePush } from 'notivue'
-
-const push = usePush()
-</script>
-
-<template>
-  <button @click="push.success('Something good has been pushed!')">Push</button>
-</template>
-```
+</details>
 
 <br />
 
-## Nuxt 3
-
-### 1. Configure
-
-**plugins/notivue.client.ts** (create _/plugins_ folder if it doesn't exist)
-
-```ts
-import { notivue } from 'notivue'
-
-export default defineNuxtPlugin(({ vueApp }) => {
-  vueApp.use(notivue)
-})
-```
+## Nuxt
 
 **nuxt.config.ts**
 
 ```ts
 export default defineNuxtConfig({
-  css: ['notivue/notifications.css', 'notivue/animations.css']
+  modules: ['notivue/nuxt'],
+  css: [
+    'notivue/notifications.css', // Only needed if using built-in notifications
+    'notivue/animations.css' // Only needed if using built-in animations
+  ],
+  notivue: {
+    // Options
+  }
 })
 ```
 
-**App.vue** (wrap `<Notivue />` in a [ClientOnly](https://nuxt.com/docs/api/components/client-only) component)
+**app.vue**
 
 ```vue
 <script setup>
-import { Notivue, Notifications } from 'notivue'
-</script>
-
-<template>
-  <ClientOnly>
-    <Notivue v-slot="item">
-      <Notifications :item="item" />
-    </Notivue>
-  </ClientOnly>
-
-  <!-- ... -->
-</template>
-```
-
-### 2. Push notifications from any component
-
-```vue
-<script setup>
-import { usePush } from 'notivue'
-
 const push = usePush()
 </script>
 
 <template>
-  <button @click="push.success('Something good has been pushed!')">Push</button>
+  <button @click="push.success('This is your first notification!')">Push</button>
+
+  <Notivue v-slot="item">
+    <Notifications :item="item" />
+  </Notivue>
+
+  <!-- NuxtLayout, NuxtPage, etc. -->
 </template>
 ```
 

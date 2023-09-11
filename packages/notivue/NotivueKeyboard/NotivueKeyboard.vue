@@ -12,7 +12,7 @@ import {
    type Component,
 } from 'vue'
 
-import { useElements, useItems, usePush, useNotifications, useNotivue } from '@/core/useStore'
+import { useNotivue, useStore } from '@/core/useStore'
 import { focusableEls, keyboardInjectionKey } from './constants'
 import { useKeyboard } from './useKeyboard'
 import { useLastFocused } from './useLastFocused'
@@ -68,11 +68,7 @@ const emptyPushOptions = computed<PushOptions>(() => ({
 
 // Store
 
-const elements = useElements()
-const items = useItems()
-const push = usePush()
-
-const { queue } = useNotifications()
+const { elements, items, timeouts, push, queue } = useStore()
 
 const config = useNotivue()
 
@@ -119,8 +115,8 @@ function onStreamEnter() {
 
    setTabIndex(0)
 
-   items.setStreamFocus()
-   items.pauseTimeouts()
+   timeouts.setStreamFocus()
+   timeouts.pause()
 
    nextTick(() => {
       candidateContainers.value[0].focus()
@@ -132,8 +128,8 @@ function onStreamLeave({ announce = true } = {}) {
 
    setTabIndex(-1)
 
-   items.resetStreamFocus()
-   items.resumeTimeouts()
+   timeouts.setStreamFocus(false)
+   timeouts.resume()
 
    if (announce && announcementsCount < maxAnnouncements.value) {
       announcementsCount++
@@ -204,10 +200,11 @@ watch(
          return !prevCandidates.some((prevContainer) => prevContainer === container)
       })
 
-      const isAlreadyNavigating = isNewCandidate && items.isStreamFocused.value
+      const isAlreadyNavigating = isNewCandidate && timeouts.isStreamFocused.value
 
       const shouldAddEnterListener =
-         (isNewCandidate && !items.isStreamFocused.value) || (hasCandidates && hasNeverTabbedStream)
+         (isNewCandidate && !timeouts.isStreamFocused.value) ||
+         (hasCandidates && hasNeverTabbedStream)
 
       if (isAlreadyNavigating) {
          currCandidates[0].focus()
@@ -258,7 +255,7 @@ function removeEnterListener() {
 watch(
    unqualifiedContainers,
    (newUnqualified) => {
-      if (!config.enqueue.value || !items.isStreamFocused.value) return
+      if (!config.enqueue.value || !timeouts.isStreamFocused.value) return
 
       if (newUnqualified.length > 0) {
          if (candidateContainers.value.length > 0) {
@@ -287,7 +284,7 @@ watch(
          e.preventDefault()
          e.stopPropagation()
 
-         if (!items.isStreamFocused.value) return
+         if (!timeouts.isStreamFocused.value) return
          if (!isKeyboard.value) return
 
          if (isManualLeave) return (isManualLeave = false)
@@ -342,7 +339,7 @@ function onCandidatesKeydown(e: KeyboardEvent) {
           * If the queue has items, we simply do not perform any operation.
           * Once the new candidate is pushed, it will be focused automatically.
           */
-         if (queue.value.length > 0) return
+         if (queue.getLength() > 0) return
 
          const nextContainer = candidateContainers.value[currCandidateIndex + 1]
 
@@ -362,7 +359,7 @@ function onComboKeyDown(e: KeyboardEvent) {
    ) {
       e.preventDefault()
 
-      if (items.isStreamFocused.value) {
+      if (timeouts.isStreamFocused.value) {
          isManualLeave = true
 
          return onStreamLeave()
@@ -383,7 +380,7 @@ function onComboKeyDown(e: KeyboardEvent) {
  * Same if clicking any element outside the stream.
  */
 function onActionsMouseClick(e: MouseEvent) {
-   if (items.isStreamFocused.value && !isKeyboard.value) {
+   if (timeouts.isStreamFocused.value && !isKeyboard.value) {
       if (!elements.wrapper.value?.contains(e.target as HTMLElement)) {
          onStreamLeave()
       }
@@ -405,7 +402,8 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-   items.reset()
+   items.clear()
+   queue.clear()
 
    events.forEach(([event, handler]) => {
       document.removeEventListener(event, handler as EventListener)

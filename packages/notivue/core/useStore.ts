@@ -1,52 +1,59 @@
-import { inject, computed, ComputedRef } from 'vue'
+import { inject, computed } from 'vue'
 
 import { createPushSSR } from './createPush'
 import { isSSR, toShallowRefs } from './utils'
-import { storeInjectionKey } from './createStore'
-import { defaultConfig } from './config'
+import { notivueInjectionKey } from './createNotivue'
+import { DEFAULT_CONFIG } from './constants'
+
 import { getSlotContext } from '@/Notivue/utils'
 
-import type {
-   NotivueStore,
-   NotivueReactiveConfig,
-   NotivueComputedEntries,
-   NotivueItem,
-} from 'notivue'
+import type { NotivueStore, ConfigSlice, NotivueComputedEntries, NotivueItem } from 'notivue'
 
-/**
- * Used internally by Notivue.vue, since the component should
- * be wrapped in a ClientOnly component there's no need to
- * check for SSR.
- */
-export function useElements() {
-   return useStore()?.elements
-}
-
-export function useItems() {
-   return useStore()?.items
-}
-
-export function useStore(): NotivueStore {
-   return inject(storeInjectionKey) as NotivueStore
+export function useStore() {
+   return inject(notivueInjectionKey) as NotivueStore
 }
 
 /**
- * The following composables might be called on the server because
- * are exposed to the user. In such case we return an object
- * with the same shape.
+ * @returns
+ *
+ * An object with the same shape of the plugin
+ * [configuration](https://notivuedocs.netlify.app/customization/configuration) except
+ * for the fact that each property is a [shallowRef](https://vuejs.org/api/reactivity-advanced.html#shallowref)
+ * that allows for reactive updates and side effects.
+ *
+ * Documentation: https://notivue.netlify.app/api/use-notivue
  */
-export function useNotivue(): NotivueReactiveConfig {
-   if (isSSR) return toShallowRefs({ ...defaultConfig, isTopAlign: true }) as NotivueStore['config']
+export function useNotivue(): ConfigSlice {
+   if (isSSR) {
+      return toShallowRefs({ ...DEFAULT_CONFIG, isTopAlign: true }) as ConfigSlice
+   }
 
    return useStore().config
 }
 
+/**
+ * @returns
+ *
+ * Portion of the store matching the actions to create notifications.
+ *
+ * Documentation: https://notivue.netlify.app/api/use-push
+ */
 export function usePush() {
    if (isSSR) return createPushSSR()
 
    return useStore().push
 }
 
+/**
+ * @returns
+ *
+ * An object with two computed properties:
+ *
+ * - `entries` - read-only reactive array of all the current displayed notifications
+ * - `queue` - read-only reactive array of all the notifications waiting to be displayed
+ *
+ * Documentation: https://notivue.netlify.app/api/use-notifications
+ */
 export function useNotifications(): NotivueComputedEntries {
    if (isSSR) {
       return {
@@ -59,6 +66,6 @@ export function useNotifications(): NotivueComputedEntries {
 
    return {
       entries: computed(() => store.items.entries.value.map(getSlotContext)),
-      queue: computed(() => store.items.queue.value.map(getSlotContext)),
+      queue: computed(() => store.queue.entries.value.map(getSlotContext)),
    }
 }

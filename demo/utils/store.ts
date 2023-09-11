@@ -1,9 +1,6 @@
-import type { Position, ThemeNames } from 'notivue'
-
-export const storeInjectionKey = Symbol('')
+import type { ThemeNames } from 'notivue'
 
 const initialState = {
-   position: 'top-center' as Position,
    maxWidth: '100%',
    theme: 'lightTheme' as ThemeNames,
    renderTitles: false,
@@ -14,15 +11,7 @@ const initialState = {
 }
 
 export function useStore() {
-   if (isSSR) {
-      return {
-         state: initialState,
-         actions: {},
-         computed: { messages: {} },
-      } as ReturnType<typeof createStore>
-   }
-
-   return inject(storeInjectionKey) as ReturnType<typeof createStore>
+   return useNuxtApp().$store
 }
 
 export function createStore() {

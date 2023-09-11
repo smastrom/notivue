@@ -9,7 +9,7 @@ jobs:
          - uses: actions/checkout@v3
          - uses: actions/setup-node@v3
            with:
-              node-version: '20'
+              node-version: '18'
          - uses: pnpm/action-setup@v2
            name: Install pnpm
            id: pnpm-install
@@ -20,12 +20,14 @@ jobs:
            run: pnpm install
          - name: Build Notivue
            run: pnpm build
-         - name: Cypress run
+         - name: Install Notivue
+           run: pnpm install
+         - name: Test with Cypress
            uses: cypress-io/github-action@v5
            timeout-minutes: 10
            with:
-              env: CYPRESS_SKIP_BUGGED_CI_TEST=true
+              env: CYPRESS_CI=true
               component: true
-              install: true
+              install: false
               project: ./tests
               browser: chrome

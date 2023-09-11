@@ -1,6 +1,13 @@
 import type { Ref, Component, ComputedRef, CSSProperties, ShallowRef } from 'vue'
 
-import { createStore } from './core/createStore'
+import {
+   createItemsSlice,
+   createConfigSlice,
+   createTimeoutsSlice,
+   createElementsSlice,
+   createQueueSlice,
+   createAnimationsSlice,
+} from './createStore'
 
 // Utils
 
@@ -75,7 +82,7 @@ export interface NotivueConfig {
    animations?: NotivueAnimations
    /** Tag or element to which the stream will be teleported. */
    teleportTo?: string | HTMLElement
-   /** Notifications limit. Defaults to `Infinity`. */
+   /** Notifications limit. Defaults to `0` (unlimited). */
    limit?: number
 }
 
@@ -112,6 +119,8 @@ export interface PushProps<T extends Obj = Obj> {
 export interface PushSpecificOptions {
    skipQueue?: boolean
    ariaLiveOnly?: boolean
+   onAutoClear?: (item: NotivueSlot) => void
+   onManualClear?: (item: NotivueSlot) => void
 }
 
 /** Defined by the user when calling push() */
@@ -223,8 +232,22 @@ type ThemeVars =
 
 // Exported Composables
 
-export type NotivueStore = ReturnType<typeof createStore>
-export type NotivueReactiveConfig = NotivueStore['config']
+export type ConfigSlice = ReturnType<typeof createConfigSlice>
+export type AnimationsSlice = ReturnType<typeof createAnimationsSlice>
+export type TimeoutsSlice = ReturnType<typeof createTimeoutsSlice>
+export type QueueSlice = ReturnType<typeof createQueueSlice>
+export type ItemsSlice = ReturnType<typeof createItemsSlice>
+export type ElementsSlice = ReturnType<typeof createElementsSlice>
+
+export type NotivueStore = {
+   config: ConfigSlice
+   animations: AnimationsSlice
+   timeouts: TimeoutsSlice
+   queue: QueueSlice
+   items: ItemsSlice
+   elements: ElementsSlice
+   push: Push
+}
 
 export interface NotivueComputedEntries {
    entries: ComputedRef<NotivueItem[]>

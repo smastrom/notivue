@@ -1,8 +1,8 @@
-import { defaultNotificationOptions as defaultOptions } from '@/core/options'
+import { DEFAULT_NOTIFICATION_OPTIONS as DEFAULT_OPTIONS } from '@/core/constants'
 import { RESOLVE_REJECT_DELAY } from '@/support/utils'
 
 describe('Default options match the slot content', () => {
-   const { success, error, warning, info, promise } = defaultOptions
+   const { success, error, warning, info, promise } = DEFAULT_OPTIONS
 
    describe('First-level notifications', () => {
       it('Success', () => {
@@ -47,8 +47,8 @@ describe('Default options match the slot content', () => {
    })
 
    describe('Promise - Resolve / Reject', () => {
-      const promiseResolve = defaultOptions['promise-resolve']
-      const promiseReject = defaultOptions['promise-reject']
+      const promiseResolve = DEFAULT_OPTIONS['promise-resolve']
+      const promiseReject = DEFAULT_OPTIONS['promise-reject']
 
       it('Promise - Resolve', () => {
          cy.mountNotivue()

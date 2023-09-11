@@ -1,22 +1,22 @@
-import { useItems, useNotivue } from '@/core/useStore'
+import { useStore } from '@/core/useStore'
 import { onMounted, onBeforeUnmount } from 'vue'
 
 export function useVisibilityChange() {
-   const items = useItems()
-   const config = useNotivue()
+   const { items, queue, config, timeouts } = useStore()
 
    function onVisibilityChange() {
-      if (items.isStreamFocused.value) return
+      if (timeouts.isStreamFocused.value) return
 
       if (document.visibilityState === 'visible') {
          if (config.pauseOnTabChange.value) {
-            items.resumeTimeouts()
+            timeouts.resume()
          }
       } else {
          if (config.pauseOnTabChange.value) {
-            items.pauseTimeouts()
+            timeouts.pause()
          } else {
-            items.reset()
+            items.clear()
+            queue.clear()
          }
       }
    }

@@ -2,29 +2,20 @@ import { watch } from 'vue'
 
 import { useWindowSize } from './useWindowSize'
 import { useResizeObserver } from './useResizeObserver'
-import { useNotivue, useItems, useElements } from '@/core/useStore'
+import { useStore } from '@/core/useStore'
 
 import { TransitionType as TType } from '@/core/constants'
 
 /** Set of watchers that aggressively reposition notifications. */
 export function useRepositioning() {
-   const config = useNotivue()
-   const items = useItems()
-   const elements = useElements()
+   const { elements, animations, config } = useStore()
 
-   // 1. Items 'length' change
-   watch(
-      () => items.entries.value.length,
-      () => items.updatePositions(TType.PUSH),
-      { flush: 'post' }
-   )
+   // 1. Window resize (below 1100px)
+   useWindowSize(() => animations.updatePositions(TType.SILENT))
 
-   // 2. Window resize (below 1100px)
-   useWindowSize(() => items.updatePositions(TType.SILENT))
+   // 2. Elements 'height' change
+   useResizeObserver(elements.items.value, () => animations.updatePositions(TType.HEIGHT))
 
-   // 3. Elements 'height' change
-   useResizeObserver(elements.items.value, () => items.updatePositions(TType.HEIGHT))
-
-   // 4. 'position' option change
-   watch(config.isTopAlign, () => items.updatePositions(TType.SILENT))
+   // 3. 'position' option change
+   watch(config.isTopAlign, () => animations.updatePositions(TType.SILENT))
 }

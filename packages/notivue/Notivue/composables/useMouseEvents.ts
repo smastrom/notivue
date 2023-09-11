@@ -1,22 +1,21 @@
 import { computed } from 'vue'
 
 import { isMouse } from '@/core/utils'
-import { useNotivue, useItems } from '@/core/useStore'
+import { useStore } from '@/core/useStore'
 
 export function useMouseEvents() {
-   const items = useItems()
-   const config = useNotivue()
+   const { timeouts, config } = useStore()
 
    function pauseHover(event: PointerEvent) {
-      if (isMouse(event)) items.pauseTimeouts()
+      if (isMouse(event)) timeouts.pause()
    }
 
    function resumeHover(event: PointerEvent) {
-      if (isMouse(event)) items.resumeTimeouts()
+      if (isMouse(event)) timeouts.resume()
    }
 
    return computed(() =>
-      config.pauseOnHover.value && !items.isStreamFocused.value
+      config.pauseOnHover.value && !timeouts.isStreamFocused.value
          ? {
               onPointerenter: pauseHover,
               onPointerleave: resumeHover,

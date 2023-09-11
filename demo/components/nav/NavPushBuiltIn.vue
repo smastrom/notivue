@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { usePush } from 'notivue'
-
 import Button from '../shared/Button.vue'
 import SuccessIcon from '../icons/SuccessIcon.vue'
 import PromiseIcon from '../icons/PromiseIcon.vue'
@@ -18,7 +16,7 @@ async function asyncRefPush() {
    const initialMessage = ref(
       store.state.rtl ? 'جاري تحميل الملفات...' : 'Preparing to upload files...'
    )
-   const notification = push.promise({ message: initialMessage as any })
+   const notification = push.promise({ message: initialMessage })
 
    for (const i of [1, 2, 3, 4]) {
       await new Promise((resolve) => setTimeout(resolve, getRandomInt(1000, 2000)))
@@ -46,7 +44,20 @@ async function asyncPush() {
 </script>
 
 <template>
-   <Button @click="push.success(messages.success)" text="Success">
+   <Button
+      @click="
+         push.success({
+            ...messages.success,
+            onAutoClear: (item) => {
+               console.log('AutoClear!', item)
+            },
+            onManualClear: (item) => {
+               console.log('Manual Clear!', item)
+            },
+         })
+      "
+      text="Success"
+   >
       <SuccessIcon />
    </Button>
    <Button @click="push.error(messages.error)" text="Error">
