@@ -36,8 +36,8 @@ export function createPush(
             destroy,
          }
       },
-      clearAll: () => onClearAll(),
-      destroyAll: () => onDestroyAll(),
+      clearAll: onClearAll,
+      destroyAll: onDestroyAll,
    }
 }
 

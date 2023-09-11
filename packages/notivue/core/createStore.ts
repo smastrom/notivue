@@ -305,7 +305,8 @@ export function createProxiesSlice(
 ) {
    return {
       /**
-       * Removes a notification and resumes timeouts if clearing the last one
+       * Removes a notification and resumes timeouts if clearing the last one.
+       * This is only used by users (push.clear).
        */
       clear(id: string, { isDestroy = false } = {}) {
          const isLast = items.getLength() > 1 && items.entries.value.at(-1)?.id === id
