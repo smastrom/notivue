@@ -47,19 +47,21 @@ _From ~4.5 KB (gzipped)_
 
 <br />
 
-## Vite (Single Page App)
-
-> :bulb: See [↓ below](#nuxt) for **Nuxt** installation and usage
-
-### Installation
+## Installation
 
 ```bash
-npm i notivue
+pnpm add notivue
 
-# pnpm add notivue
+# npm i notivue
 # yarn add notivue
 # bun install notivue
 ```
+
+<br />
+
+## Vite (Single-page app)
+
+> :bulb: See [↓ below](#nuxt) for **Nuxt**
 
 **main.js/ts**
 
@@ -146,19 +148,11 @@ import { Notivue } from 'notivue'
 
 ## Nuxt
 
-```bash
-npm i @nuxtjs/notivue
-
-# pnpm add @nuxtjs/notivue
-# yarn add @nuxtjs/notivue
-# bun install @nuxtjs/notivue
-```
-
 **nuxt.config.ts**
 
 ```ts
 export default defineNuxtConfig({
-  modules: ['@nuxtjs/notivue'],
+  modules: ['notivue/nuxt'],
   css: [
     'notivue/notifications.css', // Only needed if using built-in notifications
     'notivue/animations.css' // Only needed if using built-in animations

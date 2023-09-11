@@ -228,7 +228,15 @@ export function createTimeoutsSlice(items: ItemsSlice, animations: AnimationsSli
          this.setStreamFocus(false)
       },
       create(id: string, duration: number | undefined, { ignorePause = false } = {}) {
-         if (duration === Infinity || (this.isStreamPaused.value && !ignorePause)) return undefined
+         if (
+            duration === 0 ||
+            duration === null ||
+            duration === Infinity ||
+            (this.isStreamPaused.value && !ignorePause)
+         ) {
+            return undefined
+         }
+
          return window.setTimeout(() => animations.playLeave(id), duration)
       },
       pause() {
@@ -256,7 +264,7 @@ export function createTimeoutsSlice(items: ItemsSlice, animations: AnimationsSli
             clearTimeout(item.timeout as number)
             /**
              * 'elapsed' may be equal to 'undefined' if a notification
-             * is pushed while the stream is paused as 'pausedTimeouts' won't be called.
+             * is pushed while the stream is paused as pause() won't be called.
              *
              * To keep leave animation order coherent with the creation time and to avoid
              * notifications to be dismissed at the same time, we calculate a normalized

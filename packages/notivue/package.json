@@ -34,6 +34,10 @@
          "types": "./dist/index.d.ts",
          "import": "./dist/index.js"
       },
+      "./nuxt": {
+         "import": "./nuxt/module.mjs",
+         "require": "./nuxt/module.cjs"
+      },
       "./notifications.css": "./dist/Notifications/notifications.css",
       "./animations.css": "./dist/core/animations.css"
    },
@@ -42,7 +46,7 @@
    "type": "module",
    "files": [
       "dist/*",
-      "*.d.ts"
+      "nuxt/*"
    ],
    "scripts": {
       "prebuild": "cp ../../README.md ../../LICENSE .",
@@ -58,6 +62,25 @@
       "typescript": "^5.2.2",
       "vite": "^4.4.9",
       "vue": "^3.3.4",
-      "vue-tsc": "^1.8.10"
+      "vue-tsc": "^1.8.10",
+      "@nuxt/kit": "^3.7.1",
+      "@nuxt/schema": "^3.0.0",
+      "defu": "^6.1.2"
+   },
+   "peerDependencies": {
+      "@nuxt/schema": ">=3",
+      "defu": ">=6",
+      "@nuxt/kit": ">=3"
+   },
+   "peerDependenciesMeta": {
+      "@nuxt/schema": {
+         "optional": true
+      },
+      "defu": {
+         "optional": true
+      },
+      "@nuxt/kit": {
+         "optional": true
+      }
    }
 }

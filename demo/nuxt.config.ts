@@ -1,15 +1,16 @@
 import { getHead } from './utils/head'
 
 export default defineNuxtConfig({
-   modules: ['floating-vue/nuxt', '@nuxtjs/notivue'],
+   modules: ['floating-vue/nuxt', 'notivue/nuxt'],
    ssr: true,
    devtools: {
       enabled: true,
    },
    notivue: {
+      // limit: 0,
       notifications: {
          global: {
-            // duration: Infinity,
+            // duration: 0,
          },
       },
    },
