@@ -24,10 +24,11 @@ const module = defineNuxtModule({
 
       const { resolve } = createResolver(import.meta.url)
 
-      addPluginTemplate({
-         filename: 'notivue.client.mjs',
-         getContents() {
-            return `
+      if (nuxt.options.runtimeConfig.public.notivue.addPlugin !== false) {
+         addPluginTemplate({
+            filename: 'notivue.client.mjs',
+            getContents() {
+               return `
                   import { createNotivue } from 'notivue'
                   import { defineNuxtPlugin, useRuntimeConfig } from '#app'
 
@@ -44,12 +45,14 @@ const module = defineNuxtModule({
                   export default defineNuxtPlugin(({ vueApp }) => {
                      const options = useRuntimeConfig().public?.notivue || {}
                      const deserializedOpts = nullToInf(JSON.parse(JSON.stringify(options)))
+                     delete deserializedOpts.addPlugin
    
                      createNotivue(vueApp, deserializedOpts)
                   })           
                   `
-         },
-      })
+            },
+         })
+      }
 
       for (const name of ['usePush', 'useNotivue', 'useNotifications', 'useNotivueKeyboard']) {
          addImports({ name, as: name, from: 'notivue' })
