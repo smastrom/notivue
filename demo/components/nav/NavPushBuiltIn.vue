@@ -49,10 +49,10 @@ async function asyncPush() {
          push.success({
             ...messages.success,
             onAutoClear: (item) => {
-               console.log('AutoClear!', item)
+               // console.log('AutoClear!', item)
             },
             onManualClear: (item) => {
-               console.log('Manual Clear!', item)
+               // console.log('Manual Clear!', item)
             },
          })
       "
