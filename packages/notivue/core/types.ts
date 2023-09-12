@@ -82,7 +82,7 @@ export interface NotivueConfig {
    animations?: NotivueAnimations
    /** Tag or element to which the stream will be teleported. */
    teleportTo?: string | HTMLElement
-   /** Notifications limit. Defaults to `0` (unlimited). */
+   /** Notifications limit. Defaults to `Infinity`. */
    limit?: number
 }
 

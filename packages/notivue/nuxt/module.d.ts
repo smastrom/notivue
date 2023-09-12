@@ -3,11 +3,11 @@ import * as _nuxt_schema from '@nuxt/schema'
 import { NotivueConfig } from 'notivue'
 
 /**
- * Strangely, if types are imported from `notivue` package, they are not
+ * Strangely, if types are imported from `notivue`, they are not
  * recognized so they must be hardcoded. nuxt/ui seems to follow the same
  * approach.
  *
- * TODO: Update them everytime, substituting Ref<string> with string on
+ * TODO: Update them on every release, substituting Ref<string> with string on
  * title/message and removing HTMLElement from teleportTo union
  */
 
@@ -52,7 +52,7 @@ interface ModuleOptions extends NotivueConfig {
    animations?: NotivueAnimations
    /** Tag or element to which the stream will be teleported. */
    teleportTo?: string
-   /** Notifications limit. Defaults to `0` (unlimited). */
+   /** Notifications limit. Defaults to `Infinity`. */
    limit?: number
 }
 

@@ -7,6 +7,7 @@ export default defineNuxtConfig({
       enabled: true,
    },
    notivue: {
+      // addPlugin: true,
       // limit: Infinity,
       notifications: {
          global: {
