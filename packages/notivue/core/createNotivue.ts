@@ -25,13 +25,15 @@ export function createNotivue(app: App, userConfig: NotivueConfig = {}): Push {
 
    const pushProxies = createProxiesSlice(config, items, queue, animations, timeouts)
 
-   const push = createPushSlice(pushProxies, {
-      onDestroyAll: () => {
-         items.clear()
-         queue.clear()
-      },
-      onClearAll: () => animations.playClearAll(),
-   })
+   const push = Object.freeze(
+      createPushSlice(pushProxies, {
+         onDestroyAll: () => {
+            items.clear()
+            queue.clear()
+         },
+         onClearAll: () => animations.playClearAll(),
+      })
+   )
 
    watch(
       () => [config.enqueue.value, config.limit.value, config.teleportTo.value],
