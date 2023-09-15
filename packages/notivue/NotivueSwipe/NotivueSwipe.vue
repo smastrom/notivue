@@ -28,7 +28,7 @@ const props = withDefaults(defineProps<NotivueSwipeProps>(), {
    exclude: 'a, button',
    disabled: false,
    threshold: 0.5,
-   playLeave: true,
+   destroy: false,
 })
 
 const touchOnly = toRef(props, 'touchOnly')
