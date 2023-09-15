@@ -44,10 +44,10 @@ export function createQueueSlice() {
          triggerRef(this.entries)
       },
       get(id: string) {
-         return this.entries.value.find(({ id: _id }) => id === _id) ?? ({} as StoreItem)
+         return this.entries.value.find(({ id: _id }) => id === _id)
       },
       update(id: string, newOptions: DeepPartial<StoreItem>) {
-         Object.assign(this.get(id), newOptions)
+         Object.assign(this.get(id) ?? {}, newOptions)
          triggerRef(this.entries)
       },
       remove(id: string) {
@@ -80,10 +80,10 @@ export function createItemsSlice(config: ConfigSlice, queue: QueueSlice) {
          this.add(firstQueueItem)
       },
       get(id: string) {
-         return this.entries.value.find(({ id: _id }) => id === _id) ?? ({} as StoreItem)
+         return this.entries.value.find(({ id: _id }) => id === _id)
       },
       update(id: string, newOptions: DeepPartial<StoreItem>) {
-         Object.assign(this.get(id), newOptions)
+         Object.assign(this.get(id) ?? {}, newOptions)
          triggerRef(this.entries)
       },
       updateAll(updateItem: (item: StoreItem) => StoreItem) {
@@ -327,10 +327,14 @@ export function createProxiesSlice(
 
          const createTimeout = () => timeouts.create(entry.id, entry.duration)
 
+         console.log(isUpdate, queue.entries.value)
+
          if (isUpdate) {
             if (isQueueActive && queue.get(entry.id)) {
+               console.log('Updating queue item from push()')
                queue.update(entry.id, { ...entry, createdAt, timeout: createTimeout })
             } else {
+               console.log('Updating item from push()')
                items.update(entry.id, { ...entry, createdAt, timeout: createTimeout() })
             }
          } else {
@@ -355,6 +359,7 @@ export function createProxiesSlice(
             } as StoreItem<T>
 
             if (shouldEnqueue) {
+               console.log('Enqueuing')
                queue.add(item)
             } else {
                items.add(item)
