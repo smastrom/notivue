@@ -1,4 +1,4 @@
-import { ref, shallowRef, computed, triggerRef } from 'vue'
+import { ref, shallowRef, computed, triggerRef, nextTick } from 'vue'
 
 import {
    isReducedMotion,
@@ -76,8 +76,10 @@ export function createItemsSlice(config: ConfigSlice, queue: QueueSlice) {
             createdAt: Date.now(),
          }
 
-         queue.remove(firstQueueItem.id)
-         this.add(firstQueueItem)
+         nextTick(() => {
+            queue.remove(firstQueueItem.id)
+            this.add(firstQueueItem)
+         })
       },
       get(id: string) {
          return this.entries.value.find(({ id: _id }) => id === _id)
@@ -327,14 +329,10 @@ export function createProxiesSlice(
 
          const createTimeout = () => timeouts.create(entry.id, entry.duration)
 
-         console.log(isUpdate, queue.entries.value)
-
          if (isUpdate) {
             if (isQueueActive && queue.get(entry.id)) {
-               console.log('Updating queue item from push()')
                queue.update(entry.id, { ...entry, createdAt, timeout: createTimeout })
             } else {
-               console.log('Updating item from push()')
                items.update(entry.id, { ...entry, createdAt, timeout: createTimeout() })
             }
          } else {
@@ -359,7 +357,6 @@ export function createProxiesSlice(
             } as StoreItem<T>
 
             if (shouldEnqueue) {
-               console.log('Enqueuing')
                queue.add(item)
             } else {
                items.add(item)
