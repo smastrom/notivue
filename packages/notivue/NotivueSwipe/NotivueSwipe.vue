@@ -28,12 +28,14 @@ const props = withDefaults(defineProps<NotivueSwipeProps>(), {
    exclude: 'a, button',
    disabled: false,
    threshold: 0.5,
+   playLeave: true,
 })
 
 const touchOnly = toRef(props, 'touchOnly')
 const exclude = toRef(props, 'exclude')
 const isDisabledByUser = toRef(props, 'disabled')
 const threshold = toRef(props, 'threshold')
+const destroy = toRef(props, 'destroy')
 
 const isPromise = computed(() => props.item.type === NType.PROMISE)
 const isEnabled = computed(
@@ -198,7 +200,11 @@ function onPointerMove(e: PointerEvent) {
 }
 
 function onPointerMoveClear(e: PointerEvent) {
-   props.item.clear()
+   if (destroy.value) {
+      props.item.destroy()
+   } else {
+      props.item.clear()
+   }
 
    if (isMouse(e) && isPointerInside(e)) {
       const isLastItem = lastItemContainer.value.contains(itemRef.value)
