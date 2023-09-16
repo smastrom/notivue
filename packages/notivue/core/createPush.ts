@@ -3,10 +3,7 @@ import { createProxiesSlice } from './createStore'
 
 import type { NotificationType, Push, PushParameter } from 'notivue'
 
-export function createPush(
-   proxies: ReturnType<typeof createProxiesSlice>,
-   { onDestroyAll, onClearAll }: { onDestroyAll: () => void; onClearAll: () => void }
-): Push {
+export function createPush(proxies: ReturnType<typeof createProxiesSlice>): Push {
    let createCount = 0
 
    function push(options: PushParameter, type: NotificationType, id = `${createCount++}`) {
@@ -36,12 +33,12 @@ export function createPush(
             destroy,
          }
       },
-      clearAll: onClearAll,
-      destroyAll: onDestroyAll,
+      clearAll: () => proxies.clearAll(),
+      destroyAll: () => proxies.destroyAll(),
    }
 }
 
 export function createPushSSR(): Push {
    const noop = new Proxy({}, { get: () => () => {} }) as any
-   return createPush(noop, noop)
+   return createPush(noop)
 }

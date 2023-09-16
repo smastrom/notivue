@@ -1,5 +1,6 @@
 import { watch, type App, type InjectionKey } from 'vue'
 
+import { TransitionType as TType } from './constants'
 import { createPush as createPushSlice } from './createPush'
 import {
    createConfigSlice,
@@ -17,40 +18,30 @@ export const notivueInjectionKey = Symbol('') as InjectionKey<NotivueStore>
 
 export function createNotivue(app: App, userConfig: NotivueConfig = {}): Push {
    const config = createConfigSlice(userConfig)
+   const elements = createElementsSlice()
    const queue = createQueueSlice()
    const items = createItemsSlice(config, queue)
-   const elements = createElementsSlice()
    const animations = createAnimationsSlice(config, items, queue, elements)
    const timeouts = createTimeoutsSlice(items, animations)
+   const proxies = createProxiesSlice(config, items, queue, animations, timeouts)
 
-   const pushProxies = createProxiesSlice(config, items, queue, animations, timeouts)
+   const push = Object.freeze(createPushSlice(proxies))
 
-   const push = Object.freeze(
-      createPushSlice(pushProxies, {
-         onDestroyAll: () => {
-            items.clear()
-            queue.clear()
-         },
-         onClearAll: () => animations.playClearAll(),
-      })
-   )
+   watch(config.isTopAlign, () => animations.updatePositions(TType.SILENT))
 
    watch(
-      () => [config.enqueue.value, config.limit.value, config.teleportTo.value],
-      () => {
-         items.clear()
-         queue.clear()
-      }
+      () => items.getLength(),
+      () => animations.updatePositions(TType.PUSH)
    )
 
    watch(
       () => items.getLength() === 0 && queue.getLength() === 0,
       (isReset) => {
          if (isReset) {
-            console.log('Reset!')
-
             timeouts.reset()
             animations.resetTransitionData()
+
+            console.log('Reset!')
          }
       }
    )

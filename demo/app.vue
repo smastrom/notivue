@@ -24,8 +24,18 @@ import type {
 
 const { state } = useStore()
 
+const config = useNotivue()
+const push = usePush()
+
 !isSSR &&
    watchEffect(() => document.documentElement.style.setProperty('--nv-root-width', state.maxWidth))
+
+watch(
+   () => [config.enqueue.value, config.limit.value],
+   () => {
+      push.destroyAll()
+   }
+)
 
 const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme } as const
 </script>

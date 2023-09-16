@@ -298,6 +298,9 @@ export function createTimeoutsSlice(items: ItemsSlice, animations: AnimationsSli
    }
 }
 
+/**
+ * These methods are only called by users to create, update or remove notifications.
+ */
 export function createProxiesSlice(
    config: ConfigSlice,
    items: ItemsSlice,
@@ -306,9 +309,15 @@ export function createProxiesSlice(
    timeouts: TimeoutsSlice
 ) {
    return {
+      destroyAll() {
+         items.clear()
+         queue.clear()
+      },
+      clearAll() {
+         animations.playClearAll()
+      },
       /**
        * Removes a notification and resumes timeouts if clearing the last one.
-       * This is only used by users (push.clear).
        */
       clear(id: string, { isDestroy = false } = {}) {
          const isLast = items.getLength() > 1 && items.entries.value.at(-1)?.id === id
@@ -316,9 +325,6 @@ export function createProxiesSlice(
 
          animations.playLeave(id, { isManual: true, isDestroy })
       },
-      /**
-       * Creates, updates or enqueues a notification created using push methods
-       */
       push<T extends Obj = Obj>(options: PushOptionsWithInternals<T>) {
          const createdAt = Date.now()
 
