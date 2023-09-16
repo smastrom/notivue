@@ -14,4 +14,4 @@ notivue-*.tgz
 cypress/downloads
 cypress/screenshots
 
-spa
+*.sublime-workspace
