@@ -12,11 +12,6 @@ import type { NotivueElements } from 'notivue'
  * remove the /notifications.css import and have no CSS at all.
  */
 
-const absolute: CSSProperties = { position: 'absolute' }
-const boxSizing: CSSProperties = { boxSizing: 'border-box' }
-const flex: CSSProperties = { display: 'flex' }
-const flexCenter: CSSProperties = { ...flex, justifyContent: 'center' }
-
 const nvZ = 'var(--nv-z, 500)'
 const nvGap = 'var(--nv-gap, 0.75rem)'
 
@@ -28,10 +23,13 @@ const rootOffsets = {
    left: 'var(--nv-root-left, 1.25rem)',
 }
 
+const boxSizing: CSSProperties = { boxSizing: 'border-box' }
+
 const staticStyles: Record<NotivueElements, CSSProperties> = {
    ol: {
       ...boxSizing,
-      ...flexCenter,
+      display: 'flex',
+      justifyContent: 'center',
       margin: '0px auto',
       zIndex: nvZ,
       maxWidth: rootWidth,
@@ -43,9 +41,8 @@ const staticStyles: Record<NotivueElements, CSSProperties> = {
    },
    li: {
       ...boxSizing,
+      display: 'flex',
       margin: '0',
-      ...flex,
-      ...absolute,
       position: 'absolute',
       transitionProperty: 'transform',
       width: '100%',
@@ -74,6 +71,7 @@ export function useNotivueStyles() {
    })
 
    const isAlignedTo = (value: string) => config.position.value.endsWith(value)
+
    const xAlignment = computed<CSSProperties>(() => ({
       justifyContent: `var(--nv-root-x-align, ${
          isAlignedTo('left') ? 'flex-start' : isAlignedTo('right') ? 'flex-end' : 'center'

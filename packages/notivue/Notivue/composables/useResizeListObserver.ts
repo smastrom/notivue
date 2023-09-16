@@ -1,6 +1,6 @@
 import { onMounted, onBeforeUnmount, watch } from 'vue'
 
-export function useResizeObserver(elements: HTMLElement[], onSizeChange: () => void) {
+export function useResizeListObserver(elements: HTMLElement[], onSizeChange: () => void) {
    let resizeObserver: ResizeObserver
 
    const calls = new Set()
