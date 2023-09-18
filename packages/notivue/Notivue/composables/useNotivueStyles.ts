@@ -12,32 +12,20 @@ import type { NotivueElements } from 'notivue'
  * remove the /notifications.css import and have no CSS at all.
  */
 
-const nvZ = 'var(--nv-z, 500)'
-const nvGap = 'var(--nv-gap, 0.75rem)'
-
-const rootWidth = 'var(--nv-root-width, 100%)'
-const rootOffsets = {
-   top: 'var(--nv-root-top, 1.25rem)',
-   right: 'var(--nv-root-right, 1.25rem)',
-   bottom: 'var(--nv-root-bottom, 1.25rem)',
-   left: 'var(--nv-root-left, 1.25rem)',
-}
-
 const boxSizing: CSSProperties = { boxSizing: 'border-box' }
 
-const staticStyles: Record<NotivueElements, CSSProperties> = {
+const baseStyles: Record<NotivueElements, CSSProperties> = {
    ol: {
       ...boxSizing,
       display: 'flex',
       justifyContent: 'center',
-      margin: '0px auto',
-      zIndex: nvZ,
-      maxWidth: rootWidth,
-      padding: '0',
       listStyle: 'none',
-      position: 'fixed',
+      margin: '0 auto',
+      maxWidth: 'var(--nv-root-width, 100%)',
+      padding: '0',
       pointerEvents: 'none',
-      inset: Object.values(rootOffsets).join(' '),
+      position: 'fixed',
+      zIndex: 'var(--nv-z, 500)',
    },
    li: {
       ...boxSizing,
@@ -49,42 +37,50 @@ const staticStyles: Record<NotivueElements, CSSProperties> = {
    },
    item: {
       ...boxSizing,
-      padding: `0 0 ${nvGap} 0`,
-      pointerEvents: 'auto',
       maxWidth: '100%',
+      padding: `0 0 var(--nv-gap, 0.75rem) 0`,
+      pointerEvents: 'auto',
    },
 }
 
 export function useNotivueStyles() {
-   const config = useNotivue()
+   const { isTopAlign, position } = useNotivue()
 
    /**
     * Simulates overflow-hidden only on the opposite side of the current vertical align.
     * This will not clip enter animations but will contain the stream vertically.
     */
-   const clipPath = computed<CSSProperties>(() => {
-      const clipInset = Object.values(rootOffsets).map((value) => `calc(-1 * ${value})`)
+   const offset = computed<CSSProperties>(() => {
+      const isTop = isTopAlign.value
 
-      config.isTopAlign.value ? clipInset.splice(2, 1, '0px') : clipInset.splice(0, 1, '0px')
+      // IMPORTANT: Order of values must match 'top right bottom left'
+      const inset = [
+         `var(--nv-root-top, ${isTop ? '1.25rem' : '0px'})`,
+         'var(--nv-root-right, 1.25rem)',
+         `var(--nv-root-bottom, ${isTop ? '0px' : '1.25rem'})`,
+         'var(--nv-root-left, 1.25rem)',
+      ]
 
-      return { clipPath: `inset(${clipInset.join(' ')})` }
+      const clipPath = inset.map((v) => `calc(-1 * ${v})`)
+      isTop ? clipPath.splice(2, 1, '0px') : clipPath.splice(0, 1, '0px')
+
+      return { inset: inset.join(' '), clipPath: `inset(${clipPath.join(' ')})` }
    })
 
-   const isAlignedTo = (value: string) => config.position.value.endsWith(value)
-
    const xAlignment = computed<CSSProperties>(() => ({
+      [isTopAlign.value ? 'top' : 'bottom']: '0',
       justifyContent: `var(--nv-root-x-align, ${
-         isAlignedTo('left') ? 'flex-start' : isAlignedTo('right') ? 'flex-end' : 'center'
+         position.value.endsWith('left')
+            ? 'flex-start'
+            : position.value.endsWith('right')
+            ? 'flex-end'
+            : 'center'
       })`,
    }))
 
    return computed<Record<NotivueElements, CSSProperties>>(() => ({
-      ol: { ...staticStyles.ol, ...clipPath.value },
-      li: {
-         ...staticStyles.li,
-         ...xAlignment.value,
-         ...(config.isTopAlign.value ? { top: '0px' } : { bottom: '0px' }),
-      },
-      item: staticStyles.item,
+      ol: { ...baseStyles.ol, ...offset.value },
+      li: { ...baseStyles.li, ...xAlignment.value },
+      item: baseStyles.item,
    }))
 }
