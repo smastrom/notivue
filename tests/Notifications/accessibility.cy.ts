@@ -11,7 +11,7 @@ it('All elements are accessible', () => {
       .get('.Success')
       .click()
 
-   cy.injectAxe()
+   cy.injectAxe({ axeCorePath: '../node_modules/axe-core/axe.min.js' })
    cy.checkA11y(`.${Classes.NOTIFICATION}`)
 
    cy.get('.Notivue__content')

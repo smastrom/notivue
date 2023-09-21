@@ -2,26 +2,29 @@
    "name": "notivue-monorepo",
    "version": "1.3.3",
    "private": true,
-   "packageManager": "pnpm@8.7.4",
-   "engines": {
-      "node": ">=18.0.0"
-   },
+   "workspaces": [
+      "packages/*",
+      "tests",
+      "demo"
+   ],
    "scripts": {
-      "preinstall": "npx only-allow pnpm",
-      "dev": "pnpm run build && concurrently \"pnpm -C packages/notivue run watch\" \"pnpm install && pnpm -C demo run dev\"",
-      "preview": "pnpm run build && pnpm -C demo run preview",
-      "build": "pnpm -C packages/notivue run build",
-      "build:demo": "pnpm run build && pnpm install && pnpm -C demo run build",
-      "test": "pnpm run build && pnpm install && pnpm -C tests run test",
-      "test:gui": "pnpm -C packages/notivue run build && concurrently \"pnpm -C packages/notivue run watch\" \"pnpm install && pnpm -C tests run test:gui\"",
-      "prepare": "husky install",
-      "pretty-quick": "pretty-quick"
+      "dev": "bun run build && concurrently \"cd packages/notivue && bun run watch\" \"bun install && cd demo && bun run dev\"",
+      "preview": "bun run build && bun install && cd demo && bun run preview",
+      "build": "cd packages/notivue && bun run build",
+      "build:demo": "bun run build && bun install && cd demo && bun run build",
+      "test": "bun run build && bun install && cd tests && bun run test",
+      "test:gui": "bun run build && concurrently \"cd packages/notivue && bun run watch\" \"bun install && cd tests && bun run test:gui\"",
+      "prepare": "bunx husky install"
    },
    "devDependencies": {
       "concurrently": "^8.2.1",
-      "cypress": "^12.17.4",
-      "husky": "^8.0.3",
-      "prettier": "^2.8.8",
-      "pretty-quick": "^3.1.3"
+      "lint-staged": "^14.0.1",
+      "prettier": "^2.8.8"
+   },
+   "trustedDependencies": [
+      "husky"
+   ],
+   "lint-staged": {
+      "*.{js,ts,vue,json,css,md}": "prettier --write"
    }
 }

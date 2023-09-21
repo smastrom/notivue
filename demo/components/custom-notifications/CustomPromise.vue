@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { formatDistanceToNow as toNow } from 'date-fns'
-
 import CloseIcon from '../icons/CloseIcon.vue'
 
 import type { NotivueItem } from 'notivue'

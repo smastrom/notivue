@@ -7,21 +7,17 @@ jobs:
       runs-on: ubuntu-latest
       steps:
          - uses: actions/checkout@v3
-         - uses: actions/setup-node@v3
+         - uses: oven-sh/setup-bun@v1
            with:
-              node-version: '18'
-         - uses: pnpm/action-setup@v2
-           name: Install pnpm
-           id: pnpm-install
-           with:
-              version: 8
-              run_install: false
-         - name: Install dependencies
-           run: pnpm install
+              bun-version: latest
+         - name: Install dependecies
+           run: bun install
          - name: Build Notivue
-           run: pnpm build
+           run: bun run build
          - name: Install Notivue
-           run: pnpm install
+           run: bun install
+         - name: Install Cypress binaries
+           run: cd tests && npx cypress install
          - name: Test with Cypress
            uses: cypress-io/github-action@v5
            timeout-minutes: 10
@@ -29,5 +25,5 @@ jobs:
               env: CYPRESS_CI=true
               component: true
               install: false
-              project: ./tests
+              working-directory: tests
               browser: chrome

@@ -6,7 +6,7 @@
       "test:gui": "cypress open --component --browser chrome"
    },
    "dependencies": {
-      "notivue": "workspace:*"
+      "notivue": "*"
    },
    "devDependencies": {
       "@types/node": "^18.17.15",
