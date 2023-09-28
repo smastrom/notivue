@@ -1,11 +1,11 @@
-import { notivue, type NotivueConfig, type PushOptions } from 'notivue'
+import { createNotivue, type NotivueConfig, type PushOptions } from 'notivue'
 
 import type { Plugin } from 'vue'
 
 export function notivuePlugin(config: NotivueConfig = {}): Plugin {
    return {
       install(app) {
-         app.use(notivue, config)
+         createNotivue(app, config)
       },
    }
 }
@@ -26,7 +26,7 @@ export const GENERIC_UPDATE_DELAY = 1000
 
 export const SWIPE_NOTIFICATION_WIDTH = 300
 
-export const DEFAULT_ENTER_LEAVE_ANIM_DURATION = 300
+export const DEFAULT_ENTER_LEAVE_ANIM_DURATION = 350
 
 export function getRandomInt(min: number, max: number) {
    return Math.floor(Math.random() * (max - min + 1)) + min
