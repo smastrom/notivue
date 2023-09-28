@@ -29,6 +29,13 @@ export interface NotivueSwipeProps {
     */
    threshold?: number
    /**
+    * @deprecated
+    *
+    * @since 1.4.0
+    *
+    * This is no longer required.
+    *
+    *
     * Whether to call the 'destroy' item method instead of 'clear' when
     * the swipe threshold is met.
     *
