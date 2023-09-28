@@ -12,7 +12,7 @@ import {
 } from 'vue'
 
 import { useStore } from '@/core/useStore'
-import { isMouse, isReducedMotion } from '@/core/utils'
+import { isMouse } from '@/core/utils'
 import { NotificationTypeKeys as NType } from '@/core/constants'
 
 import type { NotivueSwipeProps } from './types'
@@ -131,7 +131,9 @@ function setTargetPosition() {
 
 function setReturnStyles() {
    setStyles({
-      transition: isReducedMotion() ? 'none' : `${RETURN_DUR}ms cubic-bezier(0.76, 0, 0.24, 1)`,
+      transition: animations.isReducedMotion.value
+         ? 'none'
+         : `${RETURN_DUR}ms cubic-bezier(0.76, 0, 0.24, 1)`,
       transform: `translate3d(0px, 0px, 0px)`,
       opacity: '1',
    })
