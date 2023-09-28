@@ -21,13 +21,13 @@ export function createNotivue(app: App, userConfig: NotivueConfig = {}): Push {
    const elements = createElementsSlice()
    const queue = createQueueSlice()
    const items = createItemsSlice(config, queue)
-   const animations = createAnimationsSlice(config, items, queue, elements)
+   const animations = createAnimationsSlice(config, items, elements)
    const timeouts = createTimeoutsSlice(items, animations)
-   const proxies = createProxiesSlice(config, items, queue, animations, timeouts)
 
+   const proxies = createProxiesSlice({ config, items, queue, animations, timeouts })
    const push = Object.freeze(createPushSlice(proxies))
 
-   watch(config.isTopAlign, () => animations.updatePositions(TType.SILENT))
+   watch(config.isTopAlign, () => animations.updatePositions(TType.IMMEDIATE))
 
    watch(
       () => items.getLength(),
@@ -39,9 +39,19 @@ export function createNotivue(app: App, userConfig: NotivueConfig = {}): Push {
       (isReset) => {
          if (isReset) {
             timeouts.reset()
-            animations.resetTransitionData()
+            elements.setRootAttrs({})
 
             console.log('Reset!')
+         }
+      }
+   )
+
+   watch(
+      () => config.animations.value.enter,
+      (newEnter, prevEnter) => {
+         if (newEnter !== prevEnter) {
+            console.log('Resetting transition data!')
+            animations.resetTransitionData()
          }
       }
    )

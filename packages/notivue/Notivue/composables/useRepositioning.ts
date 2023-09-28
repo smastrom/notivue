@@ -7,7 +7,7 @@ import { TransitionType as TType } from '@/core/constants'
 export function useRepositioning() {
    const { elements, animations } = useStore()
 
-   useWindowSize(() => animations.updatePositions(TType.SILENT))
+   useWindowSize(() => animations.updatePositions(TType.IMMEDIATE))
 
-   useResizeListObserver(elements.items.value, () => animations.updatePositions(TType.HEIGHT))
+   useResizeListObserver(elements.items.value, () => animations.updatePositions())
 }

@@ -103,10 +103,8 @@ export interface HiddenInternalItemData {
    timeout: number | undefined | (() => void) | void
    elapsed: number
    resumedAt: number
-   positionStyles?: CSSProperties
-   animationClass?: string
-   onAnimationstart?: (event: AnimationEvent) => void
-   onAnimationend?: (event: AnimationEvent) => void
+   animationAttrs: Partial<{ class: string; onAnimationend: () => void }>
+   positionStyles: CSSProperties
 }
 
 /** Options added internally when creating a notification. */

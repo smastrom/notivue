@@ -1,11 +1,7 @@
 import { ref, shallowRef, computed, triggerRef, nextTick } from 'vue'
 
-import {
-   isReducedMotion,
-   mergeDeep,
-   toShallowRefs,
-   mergeNotificationOptions as mergeOptions,
-} from './utils'
+import { mergeDeep, toShallowRefs, mergeNotificationOptions as mergeOptions } from './utils'
+import { getSlotContext } from '@/Notivue/utils'
 
 import { DEFAULT_CONFIG, NotificationTypeKeys as NKeys, TransitionType as TType } from './constants'
 
@@ -22,7 +18,6 @@ import type {
    TimeoutsSlice,
    AnimationsSlice,
 } from 'notivue'
-import { getSlotContext } from '@/Notivue/utils'
 
 export function createConfigSlice(userConfig: NotivueConfig) {
    const reactiveConfig = toShallowRefs(mergeDeep(DEFAULT_CONFIG, userConfig))
@@ -70,15 +65,15 @@ export function createItemsSlice(config: ConfigSlice, queue: QueueSlice) {
          triggerRef(this.entries)
       },
       addFromQueue() {
-         const firstQueueItem = {
+         const next = {
             ...queue.entries.value[0],
             timeout: (queue.entries.value[0].timeout as () => void)(),
             createdAt: Date.now(),
          }
 
          nextTick(() => {
-            queue.remove(firstQueueItem.id)
-            this.add(firstQueueItem)
+            queue.remove(next.id)
+            this.add(next)
          })
       },
       get(id: string) {
@@ -102,41 +97,48 @@ export function createItemsSlice(config: ConfigSlice, queue: QueueSlice) {
       },
       clear() {
          this.entries.value = []
+         queue.clear()
       },
    }
 }
 
 export function createElementsSlice() {
+   type RootAttrs = Partial<{ class: string; onAnimationend: () => void }>
+
    return {
-      wrapper: ref<HTMLElement | null>(null),
+      root: ref<HTMLElement | null>(null),
+      rootAttrs: shallowRef<RootAttrs>({}),
+      setRootAttrs(newAttrs: RootAttrs) {
+         this.rootAttrs.value = newAttrs
+      },
       items: ref<HTMLElement[]>([]),
       containers: ref<HTMLElement[]>([]),
-      getSortedItems() {
-         return this.items.value.sort((a, b) => +b.dataset.notivueId! - +a.dataset.notivueId!)
-      },
    }
 }
 
 export function createAnimationsSlice(
    config: ConfigSlice,
    items: ItemsSlice,
-   queue: QueueSlice,
    elements: ElementsSlice
 ) {
    type TransitionData = { duration: string; easing: string }
 
    return {
+      isReducedMotion: ref(false),
       transitionData: null as null | TransitionData,
+      setReducedMotion(newVal: boolean) {
+         this.isReducedMotion.value = newVal
+      },
       getTransitionData() {
-         if (!this.transitionData) this.syncTransitionData()
+         if (!this.transitionData) this.setTransitionData()
          return this.transitionData as TransitionData
       },
       resetTransitionData() {
          this.transitionData = null
       },
-      syncTransitionData() {
+      setTransitionData() {
          const enterClass = config.animations.value.enter
-         const animEl = enterClass ? elements.wrapper.value?.querySelector(`.${enterClass}`) : null
+         const animEl = enterClass ? elements.root.value?.querySelector(`.${enterClass}`) : null
 
          if (!animEl) {
             this.transitionData = { duration: '0s', easing: 'ease' }
@@ -150,61 +152,62 @@ export function createAnimationsSlice(
          }
       },
       playLeave(id: string, { isDestroy = false, isManual = false } = {}) {
-         const currItem = items.get(id)
-         const clearCallback = () =>
-            currItem?.[isManual ? 'onManualClear' : 'onAutoClear']?.(getSlotContext(currItem))
+         const item = items.get(id)
 
-         if (!config.animations.value.leave || isDestroy || isReducedMotion()) {
+         const { leave = '' } = config.animations.value
+
+         function onAnimationend() {
             items.remove(id)
-            return clearCallback()
+            item?.[isManual ? 'onManualClear' : 'onAutoClear']?.(getSlotContext(item))
          }
 
+         if (!leave || isDestroy || this.isReducedMotion.value) return onAnimationend()
+
          items.update(id, {
-            animationClass: config.animations.value.leave,
-            onAnimationend: () => {
-               items.remove(id)
-               clearCallback()
+            positionStyles: {
+               ...item?.positionStyles,
+               zIndex: -1,
+            },
+            animationAttrs: {
+               class: leave,
+               onAnimationend,
             },
          })
 
          this.updatePositions()
       },
       playClearAll() {
-         if (elements.wrapper.value) {
-            function onEnd() {
-               items.clear()
-               queue.clear()
-            }
+         const { clearAll = '' } = config.animations.value
 
-            if (!config.animations.value.clearAll || isReducedMotion()) return onEnd()
+         if (!clearAll || this.isReducedMotion.value) return items.clear()
 
-            elements.wrapper.value.classList.add(config.animations.value.clearAll)
-            elements.wrapper.value.onanimationend = onEnd
-         }
+         elements.setRootAttrs({
+            class: clearAll,
+            onAnimationend: () => items.clear(),
+         })
       },
       updatePositions(type = TType.PUSH) {
-         const isReduced = isReducedMotion() || type === TType.SILENT
+         const isReduced = this.isReducedMotion.value || type === TType.IMMEDIATE
 
          let accPrevHeights = 0
 
          requestAnimationFrame(() => {
-            const sortedItems = elements.getSortedItems()
+            for (const el of elements.items.value.toReversed()) {
+               const id = el.dataset.notivueId!
+               const item = items.get(id)
+               const leaveClass = config.animations.value.leave
 
-            for (const el of sortedItems) {
-               const leaveClassName = config.animations.value.leave
-               const currId = el.dataset.notivueId!
-               const item = items.get(currId)
+               if (!el || !item || item.animationAttrs.class === leaveClass) continue
 
-               if (!el || !item || item.animationClass === leaveClassName) continue
-
-               items.update(currId, {
+               items.update(id, {
                   positionStyles: {
-                     transitionDuration: this.getTransitionData().duration,
-                     transitionTimingFunction: this.getTransitionData().easing,
-                     ...(type === TType.HEIGHT ? { transitionProperty: 'all' } : {}),
-                     ...(isReduced ? { transition: 'none' } : {}),
-
                      transform: `translate3d(0, ${accPrevHeights}px, 0)`,
+                     ...(isReduced
+                        ? { transition: 'none' }
+                        : {
+                             transitionDuration: this.getTransitionData().duration,
+                             transitionTimingFunction: this.getTransitionData().easing,
+                          }),
                   },
                })
 
@@ -219,11 +222,11 @@ export function createTimeoutsSlice(items: ItemsSlice, animations: AnimationsSli
    return {
       isStreamPaused: ref(false),
       isStreamFocused: ref(false),
-      setStreamPause(newValue = true) {
-         this.isStreamPaused.value = newValue
+      setStreamPause(newVal = true) {
+         this.isStreamPaused.value = newVal
       },
-      setStreamFocus(newValue = true) {
-         this.isStreamFocused.value = newValue
+      setStreamFocus(newVal = true) {
+         this.isStreamFocused.value = newVal
       },
       reset() {
          this.setStreamPause(false)
@@ -299,40 +302,41 @@ export function createTimeoutsSlice(items: ItemsSlice, animations: AnimationsSli
 }
 
 /**
- * These methods are only called by users to create, update or remove notifications.
+ * Methods called by users to create, update or remove notifications using the push object.
  */
-export function createProxiesSlice(
-   config: ConfigSlice,
-   items: ItemsSlice,
-   queue: QueueSlice,
-   animations: AnimationsSlice,
+
+export function createProxiesSlice({
+   config,
+   items,
+   queue,
+   animations,
+   timeouts,
+}: {
+   config: ConfigSlice
+   items: ItemsSlice
+   queue: QueueSlice
+   animations: AnimationsSlice
    timeouts: TimeoutsSlice
-) {
+}) {
    return {
       destroyAll() {
          items.clear()
-         queue.clear()
       },
       clearAll() {
          animations.playClearAll()
       },
-      /**
-       * Removes a notification and resumes timeouts if clearing the last one.
-       */
       clear(id: string, { isDestroy = false } = {}) {
-         const isLast = items.getLength() > 1 && items.entries.value.at(-1)?.id === id
+         const isLast = items.entries.value.at(-1)?.id === id
          if (isLast) timeouts.resume()
 
          animations.playLeave(id, { isManual: true, isDestroy })
       },
       push<T extends Obj = Obj>(options: PushOptionsWithInternals<T>) {
          const createdAt = Date.now()
-
-         const entry = mergeOptions<T>(config.notifications.value, options)
-
          const isQueueActive = config.enqueue.value
          const isUpdate = [NKeys.PROMISE_RESOLVE, NKeys.PROMISE_REJECT].includes(options.type)
 
+         const entry = mergeOptions<T>(config.notifications.value, options)
          const createTimeout = () => timeouts.create(entry.id, entry.duration)
 
          if (isUpdate) {
@@ -356,7 +360,9 @@ export function createProxiesSlice(
             const item = {
                ...entry,
                createdAt,
-               animationClass: isReducedMotion() ? '' : config.animations.value.enter,
+               animationAttrs: {
+                  class: animations.isReducedMotion.value ? '' : config.animations.value.enter,
+               },
                timeout: shouldEnqueue ? createTimeout : createTimeout(),
                clear: () => this.clear(entry.id),
                destroy: () => this.clear(entry.id, { isDestroy: true }),
@@ -366,7 +372,6 @@ export function createProxiesSlice(
                queue.add(item)
             } else {
                items.add(item)
-               animations.updatePositions()
             }
          }
       },
