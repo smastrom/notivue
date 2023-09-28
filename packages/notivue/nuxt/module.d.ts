@@ -1,7 +1,5 @@
 import * as _nuxt_schema from '@nuxt/schema'
 
-import { NotivueConfig } from 'notivue'
-
 /**
  * Strangely, if types are imported from `notivue`, they are not
  * recognized so they must be hardcoded. nuxt/ui seems to follow the same
@@ -20,6 +18,14 @@ type NotificationType =
    | 'promise-resolve'
    | 'promise-reject'
 
+type Position =
+   | 'top-left'
+   | 'top-center'
+   | 'top-right'
+   | 'bottom-left'
+   | 'bottom-center'
+   | 'bottom-right'
+
 interface NotificationOptions {
    /** String to use as default title, an empty string doesn't render the title. */
    title?: string
@@ -33,7 +39,7 @@ interface NotificationOptions {
    ariaRole?: 'alert' | 'status'
 }
 
-interface ModuleOptions extends NotivueConfig {
+interface ModuleOptions {
    addPlugin?: boolean
 
    /** Whether to pause all notifications when hovering over them with mouse. */
@@ -49,7 +55,7 @@ interface ModuleOptions extends NotivueConfig {
    /** Notification options for each type. */
    notifications?: Partial<Record<NotificationType | 'global', NotificationOptions>>
    /** Animation classes for `enter`, `leave` and `clearAll`. */
-   animations?: NotivueAnimations
+   animations?: { enter?: string; leave?: string; clearAll?: string }
    /** Tag or element to which the stream will be teleported. */
    teleportTo?: string
    /** Notifications limit. Defaults to `Infinity`. */
