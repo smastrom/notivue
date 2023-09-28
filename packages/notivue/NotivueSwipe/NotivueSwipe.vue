@@ -12,7 +12,7 @@ import {
 } from 'vue'
 
 import { useStore } from '@/core/useStore'
-import { isMouse, isReducedMotion } from '@/core/utils'
+import { isMouse } from '@/core/utils'
 import { NotificationTypeKeys as NType } from '@/core/constants'
 
 import type { NotivueSwipeProps } from './types'
@@ -28,14 +28,12 @@ const props = withDefaults(defineProps<NotivueSwipeProps>(), {
    exclude: 'a, button',
    disabled: false,
    threshold: 0.5,
-   destroy: false,
 })
 
 const touchOnly = toRef(props, 'touchOnly')
 const exclude = toRef(props, 'exclude')
 const isDisabledByUser = toRef(props, 'disabled')
 const threshold = toRef(props, 'threshold')
-const destroy = toRef(props, 'destroy')
 
 const isPromise = computed(() => props.item.type === NType.PROMISE)
 const isEnabled = computed(
@@ -120,18 +118,20 @@ function shouldSwipe(e: PointerEvent) {
 function setTargetPosition() {
    if (!itemRef.value) return
 
-   const { left, right, width } = itemRef.value.getBoundingClientRect()
+   const { offsetLeft, clientWidth } = itemRef.value
 
    setState({
-      targetLeft: left,
-      targetRight: right,
-      targetWidth: width,
+      targetLeft: offsetLeft,
+      targetRight: offsetLeft + clientWidth,
+      targetWidth: clientWidth,
    })
 }
 
 function setReturnStyles() {
    setStyles({
-      transition: isReducedMotion() ? 'none' : `${RETURN_DUR}ms cubic-bezier(0.76, 0, 0.24, 1)`,
+      transition: animations.isReducedMotion.value
+         ? 'none'
+         : `${RETURN_DUR}ms cubic-bezier(0.76, 0, 0.24, 1)`,
       transform: `translate3d(0px, 0px, 0px)`,
       opacity: '1',
    })
@@ -186,7 +186,7 @@ function onPointerMove(e: PointerEvent) {
    setStyles({
       transition: 'none',
       transform: `translate3d(${state.currentX}px, 0px, 0px)`,
-      opacity: `${1 - Math.abs(state.currentX) / (state.targetWidth * 0.65)}`,
+      opacity: `${1 - (Math.abs(state.currentX) / state.targetWidth) * (1 / threshold.value)}`,
    })
 
    setState({
@@ -200,11 +200,7 @@ function onPointerMove(e: PointerEvent) {
 }
 
 function onPointerMoveClear(e: PointerEvent) {
-   if (destroy.value) {
-      props.item.destroy()
-   } else {
-      props.item.clear()
-   }
+   props.item.destroy()
 
    if (isMouse(e) && isPointerInside(e)) {
       const isLastItem = lastItemContainer.value.contains(itemRef.value)

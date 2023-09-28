@@ -68,7 +68,7 @@ const emptyPushOptions = computed<PushOptions>(() => ({
 
 // Store
 
-const { elements, items, timeouts, push, queue } = useStore()
+const { elements, timeouts, push, queue } = useStore()
 
 const config = useNotivue()
 
@@ -278,7 +278,7 @@ watch(
 let isManualLeave = false
 
 watch(
-   elements.wrapper,
+   elements.root,
    (stream, _, onCleanup) => {
       function onStreamFocusOut(e: FocusEvent) {
          e.preventDefault()
@@ -381,7 +381,7 @@ function onComboKeyDown(e: KeyboardEvent) {
  */
 function onActionsMouseClick(e: MouseEvent) {
    if (timeouts.isStreamFocused.value && !isKeyboard.value) {
-      if (!elements.wrapper.value?.contains(e.target as HTMLElement)) {
+      if (!elements.root.value?.contains(e.target as HTMLElement)) {
          onStreamLeave()
       }
 
@@ -398,13 +398,10 @@ const events = [
 ] as const
 
 onMounted(() => {
-   events.forEach(([event, handler]) => window.addEventListener(event, handler as EventListener))
+   events.forEach(([event, handler]) => document.addEventListener(event, handler as EventListener))
 })
 
 onBeforeUnmount(() => {
-   items.clear()
-   queue.clear()
-
    events.forEach(([event, handler]) => {
       document.removeEventListener(event, handler as EventListener)
    })

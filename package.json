@@ -1,6 +1,6 @@
 {
    "name": "notivue-monorepo",
-   "version": "1.3.3",
+   "version": "1.4.0",
    "private": true,
    "workspaces": [
       "packages/*",
@@ -8,7 +8,7 @@
       "demo"
    ],
    "scripts": {
-      "dev": "bun run build && concurrently \"cd packages/notivue && bun run watch\" \"bun install && cd demo && bun run dev\"",
+      "dev": "bun run build && concurrently \"cd packages/notivue && bun run watch\" \"bun install && cd demo && bun run dev --host\"",
       "preview": "bun run build && bun install && cd demo && bun run preview",
       "build": "cd packages/notivue && bun run build",
       "build:demo": "bun run build && bun install && cd demo && bun run build",

@@ -16,8 +16,7 @@ export const NotificationTypeKeys: Record<string, NTypeU> = {
 
 export enum TransitionType {
    PUSH,
-   HEIGHT,
-   SILENT,
+   IMMEDIATE,
 }
 
 const success: NotificationOptions = {

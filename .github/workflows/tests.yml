@@ -10,14 +10,14 @@ jobs:
          - uses: oven-sh/setup-bun@v1
            with:
               bun-version: latest
+         - name: Install Cypress binaries
+           run: bun x cypress install
          - name: Install dependecies
            run: bun install
          - name: Build Notivue
            run: bun run build
          - name: Install Notivue
            run: bun install
-         - name: Install Cypress binaries
-           run: cd tests && npx cypress install
          - name: Test with Cypress
            uses: cypress-io/github-action@v5
            timeout-minutes: 10

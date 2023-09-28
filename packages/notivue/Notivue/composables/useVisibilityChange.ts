@@ -2,7 +2,7 @@ import { useStore } from '@/core/useStore'
 import { onMounted, onBeforeUnmount } from 'vue'
 
 export function useVisibilityChange() {
-   const { items, queue, config, timeouts } = useStore()
+   const { items, config, timeouts } = useStore()
 
    function onVisibilityChange() {
       if (timeouts.isStreamFocused.value) return
@@ -16,7 +16,6 @@ export function useVisibilityChange() {
             timeouts.pause()
          } else {
             items.clear()
-            queue.clear()
          }
       }
    }

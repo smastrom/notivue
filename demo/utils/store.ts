@@ -55,7 +55,7 @@ export function createStore() {
             success: {
                title: actions.getTitle(state.rtl ? 'نجاح' : 'Success'),
                message: actions.getMsg(
-                  'Your message has been successfully sent to Maria.',
+                  'Your message has been sent to your friend Maria.',
                   'تم إرسال رسالتك بنجاح. لو سمحت.'
                ),
             },

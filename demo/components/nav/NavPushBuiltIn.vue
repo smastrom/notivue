@@ -18,11 +18,11 @@ async function asyncRefPush() {
    )
    const notification = push.promise({ message: initialMessage })
 
-   for (const i of [1, 2, 3, 4]) {
+   for (const i of [1, 2, 3]) {
       await new Promise((resolve) => setTimeout(resolve, getRandomInt(1000, 2000)))
       initialMessage.value = store.state.rtl
-         ? `جاري تحميل الملف ${i}/4...`
-         : `Uploading file ${i}/4...`
+         ? `جاري تحميل الملف ${i}/3...`
+         : `Uploading file ${i}/3...`
    }
 
    await new Promise((resolve) => setTimeout(resolve, getRandomInt(1000, 2000)))

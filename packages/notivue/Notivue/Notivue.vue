@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { Teleport, type Component } from 'vue'
+import { computed, Teleport, type Component } from 'vue'
 
 import AriaLive from './AriaLive.vue'
 
 import { useStore } from '@/core/useStore'
-
 import { useMouseEvents } from './composables/useMouseEvents'
 import { useTouchEvents } from './composables/useTouchEvents'
 import { useNotivueStyles } from './composables/useNotivueStyles'
 import { useRepositioning } from './composables/useRepositioning'
 import { useVisibilityChange } from './composables/useVisibilityChange'
+import { useReducedMotion } from './composables/useReducedMotion'
 import { getSlotContext, getAriaLabel } from './utils'
 
 import type { NotivueItem, NotivueProps } from 'notivue'
@@ -28,25 +28,31 @@ defineSlots<{
 
 const { config, items, elements } = useStore()
 
-// Notivue Composables
+// Composables
 
 const styles = useNotivueStyles()
 const mouseEvents = useMouseEvents()
 const touchEvents = useTouchEvents()
 
+useReducedMotion()
 useVisibilityChange()
 useRepositioning()
+
+// Computed
+
+const dataAlign = computed(() => ({
+   'data-notivue-align': config.isTopAlign.value ? 'top' : 'bottom',
+}))
 </script>
 
 <template>
    <Teleport :to="config.teleportTo.value">
       <!-- List Container -->
       <ol
-         :aria-label="props.listAriaLabel"
          v-if="items.getLength() > 0"
-         v-bind="{ ...mouseEvents, ...touchEvents }"
-         :data-notivue-align="config.isTopAlign.value ? 'top' : 'bottom'"
-         :ref="elements.wrapper"
+         v-bind="{ ...mouseEvents, ...touchEvents, ...elements.rootAttrs.value, ...dataAlign }"
+         :aria-label="props.listAriaLabel"
+         :ref="elements.root"
          :style="styles.ol"
          :class="props.class"
       >
@@ -70,14 +76,12 @@ useRepositioning()
             <!-- Notification Container -->
             <div
                v-else
+               v-bind="item.animationAttrs"
                :aria-label="getAriaLabel(item)"
                :tabindex="containersTabIndex?.[item.id] ?? -1"
                :data-notivue-container="item.id"
                :ref="elements.containers"
                :style="styles.item"
-               :class="item.animationClass"
-               @animationstart="item.onAnimationstart"
-               @animationend="item.onAnimationend"
             >
                <!-- Notification -->
                <slot v-bind="getSlotContext(item)" :key="`${item.id}_${item.type}`" />

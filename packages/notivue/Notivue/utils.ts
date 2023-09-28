@@ -4,10 +4,8 @@ export const hiddenInternalKeys: (keyof HiddenInternalItemData)[] = [
    'timeout',
    'elapsed',
    'resumedAt',
+   'animationAttrs',
    'positionStyles',
-   'animationClass',
-   'onAnimationstart',
-   'onAnimationend',
 ]
 
 export function getSlotContext(item: StoreItem): NotivueItem {

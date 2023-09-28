@@ -35,10 +35,6 @@
    --nv-border: var(--nv-promise-border);
 }
 
-[dir='rtl'] .Notivue__notification {
-   --tip-width-fx: -1;
-}
-
 .Notivue__notification {
    --tip-width: calc(var(--tip-width-fx, 1) * var(--nv-tip-width, 0px));
 
@@ -69,8 +65,7 @@
    min-width: var(--nv-icon-size);
    width: var(--nv-icon-size);
    height: var(--nv-icon-size);
-   margin: var(--nv-spacing);
-   margin-inline-start: calc(var(--nv-tip-width, 0px) + var(--nv-spacing));
+   margin: var(--nv-spacing) 0 var(--nv-spacing) var(--nv-spacing);
    animation: Notivue__icon-pop-kf 200ms ease-in-out backwards;
    color: var(--nv-accent, var(--nv-global-accent));
 
@@ -92,22 +87,21 @@
 }
 
 .Notivue__content {
-   --nv-content-spacing: calc(var(--nv-spacing) + var(--nv-spacing) * 0.15);
+   --nv-content-space: calc(var(--nv-spacing) + var(--nv-spacing) * 0.15);
 
    display: flex;
    flex-direction: column;
    flex-grow: 1;
    text-align: inherit;
-   padding: var(--nv-content-spacing) 0;
-   padding-inline-end: var(--nv-content-spacing);
+   padding: var(--nv-content-space);
 }
 
 .Notivue__content-title {
-   line-height: 1.15;
+   line-height: 1;
    font-weight: 700;
    color: var(--nv-fg, var(--nv-global-fg));
    font-size: var(--nv-title-size);
-   margin: 0 0 0.25em 0;
+   margin: 0 0 0.33em 0;
    padding: 0;
 }
 
@@ -122,32 +116,44 @@
    white-space: pre-line;
 }
 
-[dir='rtl'] {
-   & .Notivue__content-message {
-      font-size: calc(var(--nv-message-size) + 0.1em);
-   }
-
-   & .Notivue__content-title {
-      font-size: calc(var(--nv-title-size) + 0.1em);
-   }
-}
-
 .Notivue__close {
+   position: relative;
    margin: 0;
    cursor: pointer;
-   padding: var(--nv-spacing);
+   padding: calc(var(--nv-spacing) / 2);
+   margin: var(--nv-spacing) var(--nv-spacing) var(--nv-spacing) 0;
    font-weight: 700;
    border: none;
    background: none;
-   opacity: 0.65;
    line-height: 1;
    font-size: var(--nv-message-size);
    color: var(--nv-fg, var(--nv-global-fg));
-   transition: 100ms opacity ease-out;
    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
-   &:hover {
-      opacity: 1;
+   &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--nv-fg, var(--nv-global-fg));
+      opacity: 0;
+      border-radius: calc(var(--nv-radius) / 2);
+      transition: opacity 100ms ease-out;
+   }
+
+   @media (hover: hover) {
+      &:hover {
+         opacity: 1;
+
+         &::after {
+            opacity: 0.1;
+         }
+
+         & .Notivue__close-icon {
+            opacity: 1;
+         }
+      }
    }
 }
 
@@ -157,4 +163,27 @@
    display: flex;
    color: var(--nv-fg, var(--nv-global-fg));
    pointer-events: none;
+   opacity: 0.65;
+}
+
+[dir='rtl'] {
+   & .Notivue__notification {
+      --tip-width-fx: -1;
+   }
+
+   & .Notivue__icon {
+      margin: var(--nv-spacing) var(--nv-spacing) var(--nv-spacing) 0;
+   }
+
+   & .Notivue__content-message {
+      font-size: calc(var(--nv-message-size) + 0.1em);
+   }
+
+   & .Notivue__content-title {
+      font-size: calc(var(--nv-title-size) + 0.1em);
+   }
+
+   & .Notivue__close {
+      margin: var(--nv-spacing) 0 var(--nv-spacing) var(--nv-spacing);
+   }
 }

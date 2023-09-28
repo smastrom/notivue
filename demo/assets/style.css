@@ -1,5 +1,20 @@
 @font-face {
    font-display: swap;
+   font-family: 'Inter';
+   font-style: normal;
+   font-weight: 400;
+   src: url('inter-v13-latin-500.woff2') format('woff2');
+}
+
+@font-face {
+   font-display: swap;
+   font-family: 'Inter';
+   font-style: normal;
+   font-weight: 700;
+   src: url('inter-v13-latin-700.woff2') format('woff2');
+}
+@font-face {
+   font-display: swap;
    font-family: 'PT Sans Narrow';
    font-style: normal;
    font-weight: 400;
@@ -15,7 +30,7 @@
 }
 
 :root {
-   font-family: 'Inter', Helvetica, Arial, sans-serif;
+   font-family: 'Inter', sans-serif;
    font-size: 16px;
    line-height: 24px;
    font-weight: 400;

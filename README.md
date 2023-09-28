@@ -61,7 +61,7 @@ pnpm add notivue
 
 <br />
 
-## Vite (Single-page app)
+## Single-page app (Vite or Webpack)
 
 > :bulb: See [↓ below](#nuxt) for **Nuxt**
 
@@ -78,11 +78,8 @@ import 'notivue/animations.css' // Only needed if using built-in animations
 
 const app = createApp(App)
 
-// app.use(...), app.use(...), ...
-
 // Place it at THE END of the app.use() chain, just right before app.mount()
-export const push = createNotivue(app /*, options */)
-
+export const push = createNotivue(app)
 app.mount('#app')
 ```
 
@@ -106,11 +103,12 @@ import { push } from './main'
 ```
 
 <details>
-<summary><strong>With custom components</strong></summary>
+<summary><strong>Using custom components</strong></summary>
 
 ```vue
 <script setup>
 import { Notivue } from 'notivue'
+import { push } from './main'
 </script>
 
 <template>

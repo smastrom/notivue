@@ -34,10 +34,6 @@ export function mergeDeep<T>(target: T, source: Record<string, any>): T {
    return merged
 }
 
-export function isReducedMotion() {
-   return window.matchMedia('(prefers-reduced-motion: reduce)').matches
-}
-
 export function mergeNotificationOptions<T extends Obj = Obj>(
    mergedConfigOptions: NotivueConfigRequired['notifications'],
    optionsFromPush: PushOptionsWithInternals<T>
