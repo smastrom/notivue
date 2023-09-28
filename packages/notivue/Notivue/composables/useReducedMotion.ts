@@ -10,8 +10,14 @@ export function useReducedMotion() {
 
    onMounted(() => {
       onMatch()
-      query.addEventListener('change', onMatch)
+      if (query.addEventListener) {
+         query.addEventListener('change', onMatch)
+      }
    })
 
-   onBeforeUnmount(() => query.removeEventListener('change', onMatch))
+   onBeforeUnmount(() => {
+      if (query.removeEventListener) {
+         query.removeEventListener('change', onMatch)
+      }
+   })
 }
