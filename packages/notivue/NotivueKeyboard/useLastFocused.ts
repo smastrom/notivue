@@ -3,7 +3,7 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useStore } from '@/core/useStore'
 
 export function useLastFocused() {
-   const { wrapper: stream } = useStore().elements
+   const { root: stream } = useStore().elements
 
    const lastFocused = ref<HTMLElement | null>(null)
 
