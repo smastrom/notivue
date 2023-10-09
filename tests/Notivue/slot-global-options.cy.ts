@@ -55,12 +55,12 @@ describe('Global options have higher priority over defaults', () => {
             .checkSlotAgainst(globalOptions)
       })
 
-      it('Promise - Should not override duration', () => {
+      it('Promise', () => {
          cy.mountNotivue(customConfig)
 
             .get('.Promise')
             .click()
-            .checkSlotAgainst({ ...globalOptions, duration: null })
+            .checkSlotAgainst(globalOptions)
       })
    })
 
