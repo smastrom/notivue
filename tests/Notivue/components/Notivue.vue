@@ -35,19 +35,6 @@ watchEffect(() => {
    if (enqueue?.value) config.enqueue.value = enqueue.value
 })
 
-async function randomPromise() {
-   const promise = push.promise(cyProps.options ?? {})
-
-   try {
-      await new Promise((resolve, reject) =>
-         setTimeout(Math.random() > 0.5 ? resolve : reject, RESOLVE_REJECT_DELAY)
-      )
-      promise.resolve(cyProps.options ?? {})
-   } catch (error) {
-      promise.reject(cyProps.options ?? {})
-   }
-}
-
 function pushAndClear() {
    const notification = push.success(cyProps.options ?? {})
    setTimeout(() => notification.clear(), RESOLVE_REJECT_DELAY)
@@ -143,7 +130,6 @@ async function pushPromiseAndReject() {
       <button class="PushAndRenderClear" @click="pushAndRenderClear">Push and Render Clear</button>
       <button v-if="toBeCleared" class="RenderedClear" @click="toBeCleared.clear">Clear</button>
 
-      <button class="RandomPromise" @click="randomPromise">Push and Resolve/Reject Promise</button>
       <button class="PushPromiseAndResolve" @click="pushPromiseAndResolve">
          Push Promise and Resolve
       </button>

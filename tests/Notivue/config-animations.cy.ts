@@ -1,5 +1,3 @@
-import Notivue from './components/Notivue.vue'
-
 import type { VueWrapper } from '@vue/test-utils'
 
 // In cypress/support/styles.css
@@ -19,14 +17,14 @@ describe('Animations', () => {
    })
 
    it('Custom animations are merged properly with defaults', () => {
-      const _customAnimations = { ...customAnims } as Partial<typeof customAnims>
-      delete _customAnimations.enter
-
-      cy.mountNotivue({ config: { animations: _customAnimations } }).checkAnimations(
-         '.Notivue__enter',
-         '.fade-out',
-         '.fade-all'
-      )
+      cy.mountNotivue({
+         config: {
+            animations: {
+               leave: customAnims.leave,
+               clearAll: customAnims.clearAll,
+            },
+         },
+      }).checkAnimations('.Notivue__enter', '.fade-out', '.fade-all')
    })
 
    it('Should update animations config dynamically', () => {
