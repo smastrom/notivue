@@ -14,12 +14,13 @@
       "build:demo": "bun run build && bun install && cd demo && bun run build",
       "test": "bun run build && bun install && cd tests && bun run test",
       "test:gui": "bun run build && concurrently \"cd packages/notivue && bun run watch\" \"bun install && cd tests && bun run test:gui\"",
-      "prepare": "bunx husky install"
+      "prepare": "bun x husky install"
    },
    "devDependencies": {
       "concurrently": "^8.2.1",
       "lint-staged": "^14.0.1",
-      "prettier": "^2.8.8"
+      "prettier": "^2.8.8",
+      "husky": "^8.0.3"
    },
    "trustedDependencies": [
       "husky"
