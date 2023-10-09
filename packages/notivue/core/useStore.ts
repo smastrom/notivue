@@ -21,7 +21,7 @@ export function useStore() {
  * for the fact that each property is a [shallowRef](https://vuejs.org/api/reactivity-advanced.html#shallowref)
  * that allows for reactive updates and side effects.
  *
- * Documentation: https://notivue.netlify.app/api/use-notivue
+ * Documentation: https://notivuedocs.netlify.app/api/use-notivue
  */
 export function useNotivue(): ConfigSlice {
    if (isSSR) {
@@ -36,7 +36,7 @@ export function useNotivue(): ConfigSlice {
  *
  * Portion of the store matching the actions to create notifications.
  *
- * Documentation: https://notivue.netlify.app/api/use-push
+ * Documentation: https://notivuedocs.netlify.app/api/use-push
  */
 export function usePush() {
    if (isSSR) return createPushSSR()
@@ -52,7 +52,7 @@ export function usePush() {
  * - `entries` - read-only reactive array of all the current displayed notifications
  * - `queue` - read-only reactive array of all the notifications waiting to be displayed
  *
- * Documentation: https://notivue.netlify.app/api/use-notifications
+ * Documentation: https://notivuedocs.netlify.app/api/use-notifications
  */
 export function useNotifications(): NotivueComputedEntries {
    if (isSSR) {
