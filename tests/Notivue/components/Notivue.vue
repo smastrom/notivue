@@ -103,14 +103,14 @@ function pushSkipQueue() {
 }
 
 async function pushPromiseAndResolve() {
-   const promise = push.promise({ ...cyProps.options, duration: Infinity } ?? {})
+   const promise = push.promise(cyProps.options ?? {})
    await new Promise((resolve) => setTimeout(resolve, RESOLVE_REJECT_DELAY))
 
    promise.resolve(cyProps.newOptions ?? cyProps.options ?? {})
 }
 
 async function pushPromiseAndReject() {
-   const promise = push.promise({ ...cyProps.options, duration: Infinity } ?? {})
+   const promise = push.promise(cyProps.options ?? {})
    await new Promise((resolve) => setTimeout(resolve, RESOLVE_REJECT_DELAY))
 
    promise.reject(cyProps.newOptions ?? cyProps.options ?? {})
