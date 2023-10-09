@@ -1,4 +1,5 @@
 import { DEFAULT_DURATION } from '@/core/constants'
+import { DEFAULT_ENTER_LEAVE_ANIM_DURATION, RESOLVE_REJECT_DELAY } from '@/support/utils'
 
 describe('Push', () => {
    it('Can push any type of notification', () => {
@@ -25,9 +26,17 @@ describe('Push', () => {
    it('Updates and dismisses promises', () => {
       cy.mountNotivue()
 
-         .get('.RandomPromise')
+         .get('.PushPromiseAndResolve')
          .click()
+         .wait(RESOLVE_REJECT_DELAY)
+         .wait(DEFAULT_DURATION)
 
+         .getNotifications()
+         .should('have.length', 0)
+
+         .get('.PushPromiseAndReject')
+         .click()
+         .wait(RESOLVE_REJECT_DELAY)
          .wait(DEFAULT_DURATION)
 
          .getNotifications()
@@ -61,6 +70,8 @@ describe('Push', () => {
 
          .get('.PushAndClear')
          .click()
+         .wait(RESOLVE_REJECT_DELAY)
+         .wait(DEFAULT_ENTER_LEAVE_ANIM_DURATION)
 
          .getNotifications()
          .should('have.length', 0)
@@ -71,6 +82,7 @@ describe('Push', () => {
 
          .get('.PushAndDestroy')
          .click()
+         .wait(RESOLVE_REJECT_DELAY)
 
          .getNotifications()
          .should('have.length', 0)

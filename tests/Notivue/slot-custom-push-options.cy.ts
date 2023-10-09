@@ -50,12 +50,12 @@ describe('Push notification options have higher priority over config', () => {
          .checkSlotAgainst(options)
    })
 
-   it('Promise', () => {
+   it('Promise - Besides duration', () => {
       cy.mountNotivue(componentConf)
 
          .get('.Promise')
          .click()
-         .checkSlotAgainst(options)
+         .checkSlotAgainst({ ...options, duration: null })
    })
 
    it('Promise - Resolve', () => {
@@ -141,12 +141,12 @@ describe('Push notification options are merged properly with config', () => {
             .checkSlotAgainst(expectedOptions)
       })
 
-      it('Promise', () => {
+      it('Promise - Besides duration', () => {
          cy.mountNotivue(componentConf)
 
             .get('.Promise')
             .click()
-            .checkSlotAgainst(expectedOptions)
+            .checkSlotAgainst({ ...expectedOptions, duration: null })
       })
    })
 

@@ -55,12 +55,12 @@ describe('Global options have higher priority over defaults', () => {
             .checkSlotAgainst(globalOptions)
       })
 
-      it('Promise', () => {
+      it('Promise - Should not override duration', () => {
          cy.mountNotivue(customConfig)
 
             .get('.Promise')
             .click()
-            .checkSlotAgainst(globalOptions)
+            .checkSlotAgainst({ ...globalOptions, duration: null })
       })
    })
 
@@ -128,12 +128,12 @@ describe('Push options have higher priority over globals', () => {
             .checkSlotAgainst(options)
       })
 
-      it('Promise', () => {
+      it('Promise - Besides duration', () => {
          cy.mountNotivue(componentConf)
 
             .get('.Promise')
             .click()
-            .checkSlotAgainst(options)
+            .checkSlotAgainst({ ...options, duration: null })
       })
    })
 

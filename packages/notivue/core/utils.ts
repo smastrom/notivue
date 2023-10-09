@@ -46,5 +46,6 @@ export function mergeNotificationOptions<T extends Obj = Obj>(
       ...(mergedConfigOptions[optionsFromPush.type] ?? mergedConfigOptions.success),
       ...mergedConfigOptions.global,
       ...optionsFromPush,
+      ...(optionsFromPush.type === 'promise' ? { duration: Infinity } : {}), // Force duration infinity
    }
 }

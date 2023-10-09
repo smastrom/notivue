@@ -10,7 +10,7 @@ import {
    type Push,
 } from 'notivue'
 
-import { GENERIC_UPDATE_DELAY, RESOLVE_REJECT_DELAY } from '@/support/utils'
+import { RESOLVE_REJECT_DELAY } from '@/support/utils'
 
 export type CyNotivueProps = {
    class?: string
@@ -35,22 +35,9 @@ watchEffect(() => {
    if (enqueue?.value) config.enqueue.value = enqueue.value
 })
 
-async function randomPromise() {
-   const promise = push.promise(cyProps.options ?? {})
-
-   try {
-      await new Promise((resolve, reject) =>
-         setTimeout(Math.random() > 0.5 ? resolve : reject, GENERIC_UPDATE_DELAY)
-      )
-      promise.resolve(cyProps.options ?? {})
-   } catch (error) {
-      promise.reject(cyProps.options ?? {})
-   }
-}
-
 function pushAndClear() {
    const notification = push.success(cyProps.options ?? {})
-   setTimeout(() => notification.clear(), GENERIC_UPDATE_DELAY)
+   setTimeout(() => notification.clear(), RESOLVE_REJECT_DELAY)
 }
 
 function pushAriaLiveOnly() {
@@ -95,7 +82,7 @@ function pushAndRenderClear() {
 
 function pushAndDestroy() {
    const notification = push.success(cyProps.options ?? {})
-   setTimeout(() => notification.destroy(), GENERIC_UPDATE_DELAY)
+   setTimeout(() => notification.destroy(), RESOLVE_REJECT_DELAY)
 }
 
 function pushSkipQueue() {
@@ -103,14 +90,14 @@ function pushSkipQueue() {
 }
 
 async function pushPromiseAndResolve() {
-   const promise = push.promise({ ...cyProps.options, duration: Infinity } ?? {})
+   const promise = push.promise(cyProps.options ?? {})
    await new Promise((resolve) => setTimeout(resolve, RESOLVE_REJECT_DELAY))
 
    promise.resolve(cyProps.newOptions ?? cyProps.options ?? {})
 }
 
 async function pushPromiseAndReject() {
-   const promise = push.promise({ ...cyProps.options, duration: Infinity } ?? {})
+   const promise = push.promise(cyProps.options ?? {})
    await new Promise((resolve) => setTimeout(resolve, RESOLVE_REJECT_DELAY))
 
    promise.reject(cyProps.newOptions ?? cyProps.options ?? {})
@@ -143,7 +130,6 @@ async function pushPromiseAndReject() {
       <button class="PushAndRenderClear" @click="pushAndRenderClear">Push and Render Clear</button>
       <button v-if="toBeCleared" class="RenderedClear" @click="toBeCleared.clear">Clear</button>
 
-      <button class="RandomPromise" @click="randomPromise">Push and Resolve/Reject Promise</button>
       <button class="PushPromiseAndResolve" @click="pushPromiseAndResolve">
          Push Promise and Resolve
       </button>
