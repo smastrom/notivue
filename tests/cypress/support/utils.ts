@@ -22,7 +22,6 @@ export const RESOLVE_REJECT_DELAY = 2000
  *
  * Needed just to see the change in the UI
  */
-export const GENERIC_UPDATE_DELAY = 1000
 
 export const SWIPE_NOTIFICATION_WIDTH = 300
 

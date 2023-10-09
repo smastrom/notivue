@@ -128,12 +128,12 @@ describe('Push options have higher priority over globals', () => {
             .checkSlotAgainst(options)
       })
 
-      it('Promise', () => {
+      it('Promise - Besides duration', () => {
          cy.mountNotivue(componentConf)
 
             .get('.Promise')
             .click()
-            .checkSlotAgainst(options)
+            .checkSlotAgainst({ ...options, duration: null })
       })
    })
 

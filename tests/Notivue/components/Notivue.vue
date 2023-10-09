@@ -10,7 +10,7 @@ import {
    type Push,
 } from 'notivue'
 
-import { GENERIC_UPDATE_DELAY, RESOLVE_REJECT_DELAY } from '@/support/utils'
+import { RESOLVE_REJECT_DELAY } from '@/support/utils'
 
 export type CyNotivueProps = {
    class?: string
@@ -40,7 +40,7 @@ async function randomPromise() {
 
    try {
       await new Promise((resolve, reject) =>
-         setTimeout(Math.random() > 0.5 ? resolve : reject, GENERIC_UPDATE_DELAY)
+         setTimeout(Math.random() > 0.5 ? resolve : reject, RESOLVE_REJECT_DELAY)
       )
       promise.resolve(cyProps.options ?? {})
    } catch (error) {
@@ -50,7 +50,7 @@ async function randomPromise() {
 
 function pushAndClear() {
    const notification = push.success(cyProps.options ?? {})
-   setTimeout(() => notification.clear(), GENERIC_UPDATE_DELAY)
+   setTimeout(() => notification.clear(), RESOLVE_REJECT_DELAY)
 }
 
 function pushAriaLiveOnly() {
@@ -95,7 +95,7 @@ function pushAndRenderClear() {
 
 function pushAndDestroy() {
    const notification = push.success(cyProps.options ?? {})
-   setTimeout(() => notification.destroy(), GENERIC_UPDATE_DELAY)
+   setTimeout(() => notification.destroy(), RESOLVE_REJECT_DELAY)
 }
 
 function pushSkipQueue() {
