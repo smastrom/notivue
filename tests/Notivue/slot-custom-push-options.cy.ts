@@ -141,12 +141,12 @@ describe('Push notification options are merged properly with config', () => {
             .checkSlotAgainst(expectedOptions)
       })
 
-      it('Promise - Should not override promise duration', () => {
+      it('Promise', () => {
          cy.mountNotivue(componentConf)
 
             .get('.Promise')
             .click()
-            .checkSlotAgainst({ ...expectedOptions, duration: null })
+            .checkSlotAgainst(expectedOptions)
       })
    })
 
