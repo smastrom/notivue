@@ -19,7 +19,7 @@ const cyProps = withDefaults(defineProps<CyNotivueKeyboardProps>(), {
    renderAnnouncement: true,
    enqueue: false,
    limit: Infinity,
-   maxAnnouncements: 3,
+   maxAnnouncements: 2,
 })
 
 const push = usePush()

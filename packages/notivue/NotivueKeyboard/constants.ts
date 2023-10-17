@@ -12,5 +12,5 @@ export const DEFAULT_KEYBOARD_PROPS = {
    leaveMessage: "You're leaving the notifications stream. Press Control + N to navigate it again.",
    emptyMessage: 'No notifications to navigate',
    renderAnnouncement: true,
-   maxAnnouncements: 3,
+   maxAnnouncements: 2,
 }
