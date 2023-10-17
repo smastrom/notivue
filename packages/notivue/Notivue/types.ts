@@ -21,3 +21,7 @@ export interface NotivueProps {
 export interface NotivueComponentSlot {
    default(item: NotivueItem & { key?: string }): Component
 }
+
+// Elements
+
+export type NotivueElements = 'stream' | 'item' | 'container'

@@ -15,7 +15,7 @@ import type { NotivueElements } from 'notivue'
 const boxSizing: CSSProperties = { boxSizing: 'border-box' }
 
 const baseStyles: Record<NotivueElements, CSSProperties> = {
-   ol: {
+   stream: {
       ...boxSizing,
       display: 'flex',
       justifyContent: 'center',
@@ -27,7 +27,7 @@ const baseStyles: Record<NotivueElements, CSSProperties> = {
       position: 'fixed',
       zIndex: 'var(--nv-z, 500)',
    },
-   li: {
+   item: {
       ...boxSizing,
       display: 'flex',
       margin: '0',
@@ -35,7 +35,7 @@ const baseStyles: Record<NotivueElements, CSSProperties> = {
       transitionProperty: 'transform',
       width: '100%',
    },
-   item: {
+   container: {
       ...boxSizing,
       maxWidth: '100%',
       padding: `0 0 var(--nv-gap, 0.75rem) 0`,
@@ -79,8 +79,8 @@ export function useNotivueStyles() {
    }))
 
    return computed<Record<NotivueElements, CSSProperties>>(() => ({
-      ol: { ...baseStyles.ol, ...offset.value },
-      li: { ...baseStyles.li, ...xAlignment.value },
-      item: baseStyles.item,
+      stream: { ...baseStyles.stream, ...offset.value },
+      item: { ...baseStyles.item, ...xAlignment.value },
+      container: baseStyles.container,
    }))
 }
