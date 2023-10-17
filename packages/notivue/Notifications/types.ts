@@ -1,3 +1,19 @@
+import type { Component } from 'vue'
+
+import type { NotificationType, NotivueItem } from 'notivue'
+
+export interface NotificationsProps {
+   item: NotivueItem
+   icons?: NotivueIcons
+   theme?: NotivueTheme
+   closeAriaLabel?: string
+   hideClose?: boolean
+}
+
+export type NotivueIcons = Partial<
+   Record<NotificationType | 'close', Component | string | null | undefined>
+>
+
 export type ThemeNames = 'lightTheme' | 'pastelTheme' | 'materialTheme' | 'darkTheme' | 'slateTheme'
 
 export type NotivueTheme = Partial<Record<ThemeVars, string>>
