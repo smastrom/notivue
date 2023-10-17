@@ -1,7 +1,7 @@
-import { inject, computed } from 'vue'
+import { inject, computed, toRefs } from 'vue'
 
 import { createPushSSR } from './createPush'
-import { isSSR, toShallowRefs } from './utils'
+import { isSSR } from './utils'
 import { notivueInjectionKey } from './createNotivue'
 import { DEFAULT_CONFIG } from './constants'
 
@@ -25,7 +25,7 @@ export function useStore() {
  */
 export function useNotivue(): ConfigSlice {
    if (isSSR) {
-      return toShallowRefs({ ...DEFAULT_CONFIG, isTopAlign: true }) as ConfigSlice
+      return toRefs({ ...DEFAULT_CONFIG, isTopAlign: true }) as ConfigSlice
    }
 
    return useStore().config
