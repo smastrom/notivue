@@ -12,7 +12,7 @@ import {
 } from 'vue'
 
 import { useNotivue, useStore } from '@/core/useStore'
-import { DEFAULT_KEYBOARD_PROPS, focusableEls, keyboardInjectionKey } from './constants'
+import { focusableEls, keyboardInjectionKey, DEFAULT_PROPS } from './constants'
 import { useKeyboard } from './useKeyboard'
 import { useLastFocused } from './useLastFocused'
 
@@ -26,7 +26,7 @@ import type {
 
 // Props
 
-const props = withDefaults(defineProps<NotivueKeyboardProps>(), DEFAULT_KEYBOARD_PROPS)
+const props = withDefaults(defineProps<NotivueKeyboardProps>(), DEFAULT_PROPS)
 
 const { comboKey, handleClicks, leaveMessage, emptyMessage, renderAnnouncement, maxAnnouncements } =
    toRefs(props)
