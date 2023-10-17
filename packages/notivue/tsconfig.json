@@ -13,6 +13,7 @@
       "baseUrl": ".",
       "paths": {
          "@/core/*": ["core/*"],
+         "@/shared/*": ["shared/*"],
          "@/Notivue/*": ["Notivue/*"],
          "@/NotivueSwipe/*": ["NotivueSwipe/*"],
          "@/NotivueKeyboard/*": ["NotivueKeyboard/*"],
