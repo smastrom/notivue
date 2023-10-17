@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, Teleport, type Component } from 'vue'
+import { computed, Teleport } from 'vue'
 
 import AriaLive from './AriaLive.vue'
 
@@ -11,18 +11,15 @@ import { useRepositioning } from './composables/useRepositioning'
 import { useVisibilityChange } from './composables/useVisibilityChange'
 import { useReducedMotion } from './composables/useReducedMotion'
 import { getSlotContext, getAriaLabel } from './utils'
+import { DEFAULT_PROPS } from './constants'
 
-import type { NotivueItem, NotivueProps } from 'notivue'
+import type { NotivueProps, NotivueComponentSlot } from 'notivue'
 
 // Props
 
-const props = withDefaults(defineProps<NotivueProps>(), {
-   listAriaLabel: 'Notifications',
-})
+const props = withDefaults(defineProps<NotivueProps>(), DEFAULT_PROPS)
 
-defineSlots<{
-   default(item: NotivueItem & { key?: string }): Component
-}>()
+defineSlots<NotivueComponentSlot>()
 
 // Store
 
