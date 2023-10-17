@@ -1,0 +1,30 @@
+name: Publish to NPM
+
+on:
+   release:
+      types: [created]
+
+jobs:
+   publish:
+      runs-on: ubuntu-latest
+      permissions:
+         contents: read
+         id-token: write
+      steps:
+         - uses: actions/checkout@v3
+         - uses: actions/setup-node@v3
+           with:
+              node-version: '19.x'
+              registry-url: 'https://registry.npmjs.org'
+         - uses: oven-sh/setup-bun@v1
+           with:
+              bun-version: latest
+         - name: Install dependecies
+           run: bun install
+         - name: Build Notivue
+           run: cd packages/notivue && bun run build
+         # The 'postbuild' command deletes any existing .tgz files, packs a new one, and verifies its contents
+         - name: Publish Notivue
+           run: npm publish *.tgz --provenance
+           env:
+              NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
