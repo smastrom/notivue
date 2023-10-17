@@ -50,7 +50,7 @@ const dataAlign = computed(() => ({
          v-bind="{ ...mouseEvents, ...touchEvents, ...elements.rootAttrs.value, ...dataAlign }"
          :aria-label="props.listAriaLabel"
          :ref="elements.root"
-         :style="styles.ol"
+         :style="styles.stream"
          :class="props.class"
       >
          <!-- List Item -->
@@ -63,7 +63,7 @@ const dataAlign = computed(() => ({
             :aria-posinset="index + 1"
             :ref="elements.items"
             :style="{
-               ...styles.li,
+               ...styles.item,
                ...item.positionStyles,
             }"
          >
@@ -78,7 +78,7 @@ const dataAlign = computed(() => ({
                :tabindex="containersTabIndex?.[item.id] ?? -1"
                :data-notivue-container="item.id"
                :ref="elements.containers"
-               :style="styles.item"
+               :style="styles.container"
             >
                <!-- Notification -->
                <slot v-bind="getSlotContext(item)" :key="`${item.id}_${item.type}`" />
