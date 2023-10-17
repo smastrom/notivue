@@ -9,40 +9,31 @@ import {
    readonly,
    nextTick,
    watch,
-   type Component,
 } from 'vue'
 
 import { useNotivue, useStore } from '@/core/useStore'
-import { focusableEls, keyboardInjectionKey } from './constants'
+import { DEFAULT_KEYBOARD_PROPS, focusableEls, keyboardInjectionKey } from './constants'
 import { useKeyboard } from './useKeyboard'
 import { useLastFocused } from './useLastFocused'
 
-import type { PushOptions } from 'notivue'
-
-import type { TabIndexValue, ContainersTabIndexMap, NotivueKeyboardProps } from './types'
+import type {
+   PushOptions,
+   TabIndexValue,
+   ContainersTabIndexMap,
+   NotivueKeyboardProps,
+   NotivueKeyboardSlot,
+} from 'notivue'
 
 // Props
 
-const props = withDefaults(defineProps<NotivueKeyboardProps>(), {
-   comboKey: 'n',
-   handleClicks: true,
-   leaveMessage: "You're leaving the notifications stream. Press Control + N to navigate it again.",
-   emptyMessage: 'No notifications to navigate',
-   renderAnnouncement: true,
-   maxAnnouncements: 3,
-})
+const props = withDefaults(defineProps<NotivueKeyboardProps>(), DEFAULT_KEYBOARD_PROPS)
 
 const { comboKey, handleClicks, leaveMessage, emptyMessage, renderAnnouncement, maxAnnouncements } =
    toRefs(props)
 
 // Slots
 
-defineSlots<{
-   default(props: {
-      elementsTabIndex: TabIndexValue
-      containersTabIndex: ContainersTabIndexMap
-   }): Component
-}>()
+defineSlots<NotivueKeyboardSlot>()
 
 // Computed
 

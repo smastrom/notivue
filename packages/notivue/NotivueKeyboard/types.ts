@@ -1,4 +1,4 @@
-import type { ComputedRef, Ref } from 'vue'
+import type { Component, ComputedRef, Ref } from 'vue'
 
 export type TabIndexValue = 0 | -1
 export type ContainersTabIndexMap = Record<string, TabIndexValue>
@@ -56,4 +56,11 @@ export interface NotivueKeyboardProps {
     * @default 3
     */
    maxAnnouncements?: number
+}
+
+export interface NotivueKeyboardSlot {
+   default(props: {
+      elementsTabIndex: TabIndexValue
+      containersTabIndex: ContainersTabIndexMap
+   }): Component
 }
