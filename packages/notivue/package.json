@@ -67,7 +67,7 @@
       "vite": "^4.4.9",
       "vue": "^3.3.4",
       "vue-tsc": "^1.8.10",
-      "vite-plugin-dts": "^3.5.3"
+      "vite-plugin-dts": "^3.6.0"
    },
    "peerDependencies": {
       "@nuxt/kit": ">=3.5.0",
