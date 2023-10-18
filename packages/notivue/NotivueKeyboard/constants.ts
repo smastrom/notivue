@@ -1,5 +1,5 @@
 import type { InjectionKey } from 'vue'
-import type { NotivueKeyboardData } from './types'
+import type { NotivueKeyboardData } from 'notivue'
 
 export const keyboardInjectionKey = Symbol('') as InjectionKey<NotivueKeyboardData>
 

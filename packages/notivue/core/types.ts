@@ -1,4 +1,4 @@
-import type { Ref, ComputedRef, CSSProperties, ShallowRef } from 'vue'
+import type { Ref, ComputedRef, CSSProperties } from 'vue'
 
 import {
    createItemsSlice,
@@ -20,10 +20,6 @@ export type DeepPartial<T> = {
 }
 
 export type Obj = Record<string, any>
-
-export type ToMappedRefs<T> = {
-   [K in keyof T]: ShallowRef<T[K]>
-}
 
 // Config
 

@@ -16,7 +16,7 @@ import { isMouse } from '@/core/utils'
 import { NotificationTypeKeys as NType } from '@/core/constants'
 import { DEFAULT_PROPS } from './constants'
 
-import type { NotivueSwipeProps } from './types'
+import type { NotivueSwipeProps } from 'notivue'
 
 // Store
 
