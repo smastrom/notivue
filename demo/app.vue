@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import {
+   NotivueKeyboard,
+   Notivue,
    lightTheme,
    pastelTheme,
    materialTheme,
