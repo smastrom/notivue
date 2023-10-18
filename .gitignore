@@ -18,3 +18,4 @@ cypress/screenshots
 *.sublime-project
 
 .nuxt
+pnpm-lock.yaml

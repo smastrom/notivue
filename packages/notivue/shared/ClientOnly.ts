@@ -1,4 +1,4 @@
-import { defineComponent, onMounted, ref } from 'vue'
+import { createElementBlock, defineComponent, onMounted, ref } from 'vue'
 
 /**
  * This is a streamlined version of Nuxt's <ClientOnly />
@@ -14,15 +14,15 @@ import { defineComponent, onMounted, ref } from 'vue'
  */
 
 export const ClientOnly = defineComponent({
-   setup(_, { slots }) {
+   setup(_, { slots, attrs }) {
       const isMounted = ref(false)
 
       onMounted(() => (isMounted.value = true))
 
       return () => {
-         if (!isMounted.value) return null
+         if (isMounted.value) return slots.default?.()
 
-         return slots?.default?.()
+         return createElementBlock('span', attrs, '')
       }
    },
 })
