@@ -1,4 +1,4 @@
-import { inject, computed, toRefs } from 'vue'
+import { inject, computed, toRefs, reactive } from 'vue'
 
 import { createPushSSR } from './createPush'
 import { isSSR } from './utils'
@@ -25,7 +25,7 @@ export function useStore() {
  */
 export function useNotivue(): ConfigSlice {
    if (isSSR) {
-      return toRefs({ ...DEFAULT_CONFIG, isTopAlign: true }) as ConfigSlice
+      return toRefs(reactive({ ...DEFAULT_CONFIG, isTopAlign: true })) as ConfigSlice
    }
 
    return useStore().config

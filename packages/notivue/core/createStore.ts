@@ -1,4 +1,4 @@
-import { ref, shallowRef, computed, triggerRef, nextTick, toRefs } from 'vue'
+import { ref, shallowRef, computed, triggerRef, nextTick, toRefs, reactive } from 'vue'
 
 import { mergeDeep, mergeNotificationOptions as mergeOptions } from './utils'
 import { getSlotContext } from '@/Notivue/utils'
@@ -20,7 +20,7 @@ import type {
 } from 'notivue'
 
 export function createConfigSlice(userConfig: NotivueConfig) {
-   const reactiveConfig = toRefs(mergeDeep(DEFAULT_CONFIG, userConfig))
+   const reactiveConfig = toRefs(reactive(mergeDeep(DEFAULT_CONFIG, userConfig)))
 
    return {
       ...reactiveConfig,

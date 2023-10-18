@@ -7,17 +7,23 @@ jobs:
       runs-on: ubuntu-latest
       steps:
          - uses: actions/checkout@v3
-         - uses: oven-sh/setup-bun@v1
+         - name: Install Node.js
+           uses: actions/setup-node@v3
            with:
-              bun-version: latest
+              node-version: 19
+         - uses: pnpm/action-setup@v2
+           name: Install pnpm
+           with:
+              version: 8
+              run_install: false
          - name: Install Cypress binaries
-           run: bun x cypress install
+           run: npx cypress install
          - name: Install dependecies
-           run: bun install
+           run: pnpm install
          - name: Build Notivue
-           run: bun run build
+           run: pnpm build
          - name: Install Notivue
-           run: bun install
+           run: pnpm install
          - name: Test with Cypress
            uses: cypress-io/github-action@v5
            timeout-minutes: 10

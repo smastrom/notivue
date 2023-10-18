@@ -16,13 +16,15 @@ jobs:
            with:
               node-version: '19.x'
               registry-url: 'https://registry.npmjs.org'
-         - uses: oven-sh/setup-bun@v1
+         - uses: pnpm/action-setup@v2
+           name: Install pnpm
            with:
-              bun-version: latest
+              version: 8
+              run_install: false
          - name: Install dependecies
-           run: bun install
+           run: pnpm install
          - name: Build Notivue
-           run: cd packages/notivue && bun run build
+           run: pnpm -C packages/notivue run build
          # The 'postbuild' command deletes any existing .tgz files, packs a new one, and verifies its contents
          - name: Publish Notivue
            run: npm publish *.tgz --provenance

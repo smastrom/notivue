@@ -29,6 +29,7 @@
       "email": "smastrom@proton.me"
    },
    "sideEffects": false,
+   "type": "module",
    "exports": {
       ".": {
          "types": "./dist/index.d.ts",
@@ -44,30 +45,30 @@
    },
    "module": "dist/index.js",
    "types": "dist/index.d.ts",
-   "type": "module",
    "files": [
       "dist/*",
       "nuxt/*"
    ],
    "scripts": {
       "prebuild": "cp ../../README.md ../../LICENSE .",
-      "build": "rm -rf dist && vue-tsc && vite build && bun run build:css",
-      "watch": "rm -rf dist && concurrently \"vite build --watch\" \"bun run build:css --watch\"",
+      "build": "rm -rf dist && vue-tsc && vite build && pnpm build:css",
+      "postbuild": " rm -f *.tgz && npm pack && ./scripts/verify-tarball.sh",
       "build:css": "esbuild ./Notifications/notifications.css ./core/animations.css --bundle --outdir=dist --minify --target=chrome58,edge16,firefox57,node12,safari11",
-      "postbuild": " rm -f *.tgz && npm pack && ./scripts/verify-tarball.sh"
+      "watch": "rm -rf dist && concurrently \"vite build --watch\" \"pnpm build:css --watch\""
    },
    "devDependencies": {
       "@nuxt/kit": "^3.7.1",
       "@nuxt/schema": "^3.0.0",
-      "@types/node": "^18.17.15",
+      "@types/node": "^20.8.7",
+      "@vitejs/plugin-vue": "4.4.0",
       "concurrently": "^8.2.1",
       "defu": "^6.1.2",
-      "esbuild": "^0.19.2",
-      "typescript": "^5.2.2",
-      "vite": "^4.4.9",
-      "vue": "^3.3.4",
-      "vue-tsc": "^1.8.10",
-      "vite-plugin-dts": "^3.6.0"
+      "esbuild": "^0.19.5",
+      "typescript": "5.2.2",
+      "vite": "4.4.11",
+      "vite-plugin-dts": "3.6.0",
+      "vue": "3.3.4",
+      "vue-tsc": "1.8.19"
    },
    "peerDependencies": {
       "@nuxt/kit": ">=3.5.0",
@@ -75,13 +76,13 @@
       "defu": ">=6"
    },
    "peerDependenciesMeta": {
+      "@nuxt/kit": {
+         "optional": true
+      },
       "@nuxt/schema": {
          "optional": true
       },
       "defu": {
-         "optional": true
-      },
-      "@nuxt/kit": {
          "optional": true
       }
    }
