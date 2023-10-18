@@ -1,11 +1,15 @@
 name: Publish to NPM
 
 on:
-   release:
-      types: [created]
+   push:
+      tags: ['v*']
+   workflow_dispatch:
 
 jobs:
+   tests-workflow:
+      uses: ./.github/workflows/tests.yml
    publish:
+      needs: tests-workflow
       runs-on: ubuntu-latest
       permissions:
          contents: read
@@ -23,9 +27,11 @@ jobs:
               run_install: true
          - name: Build Notivue
            run: pnpm -C packages/notivue run build
-         # The 'postbuild' command deletes any existing tarball, packs a new one,
-         # and verifies it (presence of all expected files and no debug statements in the code).
-         - name: Publish Notivue
+         - name: Copy README and LICENSE
+           run: cp README.md LICENSE packages/notivue
+         - name: Pack and verify
+           run: cd packages/notivue && rm -rf *.tgz && npm pack && ./scripts/verify-tarball.sh
+         - name: Publish
            run: cd packages/notivue && npm publish *.tgz --provenance
            env:
               NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
