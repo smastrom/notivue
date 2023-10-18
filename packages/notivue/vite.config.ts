@@ -12,6 +12,7 @@ export default defineConfig({
    resolve: {
       alias: {
          '@/core': path('./core'),
+         '@/shared': path('./shared'),
          '@/Notivue': path('./Notivue'),
          '@/NotivueSwipe': path('./NotivueSwipe'),
          '@/NotivueKeyboard': path('./NotivueKeyboard'),
@@ -24,6 +25,7 @@ export default defineConfig({
    },
    build: {
       emptyOutDir: isFinalBundle,
+      target: 'es2015',
       lib: {
          entry: 'index.ts',
          name: 'Notivue',

@@ -25,7 +25,7 @@ export const RESOLVE_REJECT_DELAY = 2000
 
 export const SWIPE_NOTIFICATION_WIDTH = 300
 
-export const DEFAULT_ENTER_LEAVE_ANIM_DURATION = 350
+export const DEFAULT_ANIM_DURATION = 350
 
 export function getRandomInt(min: number, max: number) {
    return Math.floor(Math.random() * (max - min + 1)) + min

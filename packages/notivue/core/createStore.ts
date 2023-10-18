@@ -1,6 +1,6 @@
-import { ref, shallowRef, computed, triggerRef, nextTick } from 'vue'
+import { ref, shallowRef, computed, triggerRef, nextTick, toRefs, reactive } from 'vue'
 
-import { mergeDeep, toShallowRefs, mergeNotificationOptions as mergeOptions } from './utils'
+import { mergeDeep, mergeNotificationOptions as mergeOptions } from './utils'
 import { getSlotContext } from '@/Notivue/utils'
 
 import { DEFAULT_CONFIG, NotificationTypeKeys as NKeys, TransitionType as TType } from './constants'
@@ -20,7 +20,7 @@ import type {
 } from 'notivue'
 
 export function createConfigSlice(userConfig: NotivueConfig) {
-   const reactiveConfig = toShallowRefs(mergeDeep(DEFAULT_CONFIG, userConfig))
+   const reactiveConfig = toRefs(reactive(mergeDeep(DEFAULT_CONFIG, userConfig)))
 
    return {
       ...reactiveConfig,
@@ -192,7 +192,7 @@ export function createAnimationsSlice(
          let accPrevHeights = 0
 
          requestAnimationFrame(() => {
-            for (const el of elements.items.value.toReversed()) {
+            for (const el of [...elements.items.value].reverse()) {
                const id = el.dataset.notivueId!
                const item = items.get(id)
                const leaveClass = config.animations.value.leave
@@ -326,7 +326,7 @@ export function createProxiesSlice({
          animations.playClearAll()
       },
       clear(id: string, { isDestroy = false } = {}) {
-         const isLast = items.entries.value.at(-1)?.id === id
+         const isLast = items.entries.value[items.entries.value.length - 1]?.id === id
          if (isLast) timeouts.resume()
 
          animations.playLeave(id, { isManual: true, isDestroy })

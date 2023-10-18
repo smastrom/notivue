@@ -1,22 +1,11 @@
 <script setup lang="ts">
 import { computed, unref } from 'vue'
 
-import { Classes as Cx } from './constants'
-import { filledIcons } from './icons'
-import { lightTheme } from './themes'
+import { Classes as Cx, DEFAULT_NOTIFICATIONS_PROPS } from './constants'
 
-import type { NotivueIcons, NotivueItem, NotivueTheme } from 'notivue'
+import type { NotificationsProps } from 'notivue'
 
-const props = withDefaults(
-   defineProps<{
-      item: NotivueItem
-      icons?: NotivueIcons
-      theme?: NotivueTheme
-      closeAriaLabel?: string
-      hideClose?: boolean
-   }>(),
-   { icons: () => filledIcons, theme: () => lightTheme, hideClose: false, closeAriaLabel: 'Close' }
-)
+const props = withDefaults(defineProps<NotificationsProps>(), DEFAULT_NOTIFICATIONS_PROPS)
 
 const icon = computed(() => props.icons[props.item.type])
 const closeIcon = computed(() => props.icons.close)

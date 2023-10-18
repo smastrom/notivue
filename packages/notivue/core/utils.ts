@@ -1,21 +1,9 @@
-import { shallowRef } from 'vue'
-
-import type { NotivueConfigRequired, Obj, PushOptionsWithInternals, ToMappedRefs } from 'notivue'
+import type { NotivueConfigRequired, Obj, PushOptionsWithInternals } from 'notivue'
 
 export const isSSR = typeof window === 'undefined'
 
 export function isMouse(event: PointerEvent) {
    return event.pointerType === 'mouse'
-}
-
-export function toShallowRefs<T extends Record<string, any>>(object: T) {
-   return Object.entries(object).reduce(
-      (acc, [option, value]) => ({
-         ...acc,
-         [option]: shallowRef(value),
-      }),
-      {}
-   ) as ToMappedRefs<typeof object>
 }
 
 export function mergeDeep<T>(target: T, source: Record<string, any>): T {

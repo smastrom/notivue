@@ -1,7 +1,7 @@
 it('All elements should be accessible', () => {
    cy.mountNotivue().clickRandomStatic()
 
-   cy.injectAxe({ axeCorePath: '../node_modules/axe-core/axe.min.js' })
+   cy.injectAxe()
    cy.checkA11y('.Root')
 })
 

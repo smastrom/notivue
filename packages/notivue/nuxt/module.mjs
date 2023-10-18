@@ -1,10 +1,4 @@
-import {
-   defineNuxtModule,
-   addPluginTemplate,
-   addImports,
-   addComponent,
-   createResolver,
-} from '@nuxt/kit'
+import { defineNuxtModule, addPluginTemplate, addImports, addComponent } from '@nuxt/kit'
 import { defu } from 'defu'
 
 const module = defineNuxtModule({
@@ -21,8 +15,6 @@ const module = defineNuxtModule({
          nuxt.options.runtimeConfig.public.notivue || {},
          moduleOptions
       )
-
-      const { resolve } = createResolver(import.meta.url)
 
       if (nuxt.options.runtimeConfig.public.notivue.addPlugin !== false) {
          addPluginTemplate({
@@ -58,11 +50,7 @@ const module = defineNuxtModule({
          addImports({ name, as: name, from: 'notivue' })
       }
 
-      for (const name of ['Notivue', 'NotivueKeyboard']) {
-         await addComponent({ name, filePath: resolve(`runtime/${name}.vue`) })
-      }
-
-      for (const name of ['Notifications', 'NotivueSwipe']) {
+      for (const name of ['Notivue', 'NotivueKeyboard', 'Notifications', 'NotivueSwipe']) {
          await addComponent({ name, export: name, filePath: 'notivue' })
       }
    },

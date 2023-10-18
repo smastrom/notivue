@@ -1,4 +1,4 @@
-import type { Ref, Component, ComputedRef, CSSProperties, ShallowRef } from 'vue'
+import type { Ref, ComputedRef, CSSProperties } from 'vue'
 
 import {
    createItemsSlice,
@@ -20,16 +20,6 @@ export type DeepPartial<T> = {
 }
 
 export type Obj = Record<string, any>
-
-export type ToMappedRefs<T> = {
-   [K in keyof T]: ShallowRef<T[K]>
-}
-
-// Shared
-
-export type NotivueIcons = Partial<
-   Record<NotificationType | 'close', Component | string | null | undefined>
->
 
 // Config
 
@@ -110,6 +100,8 @@ export interface HiddenInternalItemData {
 /** Options added internally when creating a notification. */
 export type InternalItemData = ExposedInternalItemData & HiddenInternalItemData
 
+// Push
+
 export interface PushProps<T extends Obj = Obj> {
    props?: T
 }
@@ -141,8 +133,6 @@ export type StoreItem<T extends Obj = Obj> = DeepRequired<NotificationOptions> &
 /** Portion of the store item exposed to slot */
 export type NotivueItem<T extends Obj = Obj> = Omit<StoreItem<T>, keyof HiddenInternalItemData>
 
-// Push
-
 export type PushParameter<T extends Obj = Obj> = PushOptions<T> | NotificationOptions['message']
 
 export type PushStatic = <T extends Obj = Obj>(
@@ -167,68 +157,6 @@ export interface Push {
    clearAll: () => void
    destroyAll: () => void
 }
-
-// Elements
-
-export type NotivueElements = 'ol' | 'li' | 'item'
-
-// Themes
-
-export type ThemeNames = 'lightTheme' | 'pastelTheme' | 'materialTheme' | 'darkTheme' | 'slateTheme'
-
-export type NotivueTheme = Partial<Record<ThemeVars, string>>
-
-type ThemeLayoutVars =
-   | '--nv-width'
-   | '--nv-min-width'
-   | '--nv-spacing'
-   | '--nv-radius'
-   | '--nv-border-width'
-   | '--nv-icon-size'
-   | '--nv-title-size'
-   | '--nv-message-size'
-   | '--nv-shadow'
-   | '--nv-tip-width'
-   | '--nv-y-align'
-
-type ThemeGlobalColorsVars =
-   | '--nv-global-bg'
-   | '--nv-global-fg'
-   | '--nv-global-accent'
-   | '--nv-global-border'
-
-type SuccessColorsVars =
-   | '--nv-success-fg'
-   | '--nv-success-bg'
-   | '--nv-success-border'
-   | '--nv-success-accent'
-
-type ErrorColorsVars = '--nv-error-fg' | '--nv-error-bg' | '--nv-error-border' | '--nv-error-accent'
-
-type WarningColorsVars =
-   | '--nv-warning-fg'
-   | '--nv-warning-bg'
-   | '--nv-warning-border'
-   | '--nv-warning-accent'
-
-type InfoColorsVars = '--nv-info-fg' | '--nv-info-bg' | '--nv-info-border' | '--nv-info-accent'
-
-type PromiseColorsVars =
-   | '--nv-promise-fg'
-   | '--nv-promise-bg'
-   | '--nv-promise-border'
-   | '--nv-promise-accent'
-
-type ThemeVars =
-   | ThemeLayoutVars
-   | ThemeGlobalColorsVars
-   | SuccessColorsVars
-   | ErrorColorsVars
-   | WarningColorsVars
-   | InfoColorsVars
-   | PromiseColorsVars
-
-// Exported Composables
 
 export type ConfigSlice = ReturnType<typeof createConfigSlice>
 export type AnimationsSlice = ReturnType<typeof createAnimationsSlice>

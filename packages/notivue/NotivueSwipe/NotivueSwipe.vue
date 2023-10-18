@@ -14,8 +14,9 @@ import {
 import { useStore } from '@/core/useStore'
 import { isMouse } from '@/core/utils'
 import { NotificationTypeKeys as NType } from '@/core/constants'
+import { DEFAULT_PROPS } from './constants'
 
-import type { NotivueSwipeProps } from './types'
+import type { NotivueSwipeProps } from 'notivue'
 
 // Store
 
@@ -23,12 +24,7 @@ const { timeouts, elements, animations } = useStore()
 
 // Props
 
-const props = withDefaults(defineProps<NotivueSwipeProps>(), {
-   touchOnly: false,
-   exclude: 'a, button',
-   disabled: false,
-   threshold: 0.5,
-})
+const props = withDefaults(defineProps<NotivueSwipeProps>(), DEFAULT_PROPS)
 
 const touchOnly = toRef(props, 'touchOnly')
 const exclude = toRef(props, 'exclude')

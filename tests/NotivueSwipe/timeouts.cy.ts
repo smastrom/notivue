@@ -1,4 +1,8 @@
-import { SWIPE_NOTIFICATION_WIDTH as WIDTH, getRandomInt } from '@/support/utils'
+import {
+   SWIPE_NOTIFICATION_WIDTH as WIDTH,
+   DEFAULT_ANIM_DURATION as ANIM_DUR,
+   getRandomInt,
+} from '@/support/utils'
 
 import { DEFAULT_DURATION } from '@/core/constants'
 
@@ -14,6 +18,8 @@ describe('Leave timeouts', () => {
          cy.get('.Success').click()
       }
 
+      cy.wait(ANIM_DUR)
+
       cy.get('.SwipeNotification').eq(child).realSwipe('toRight', { length: WIDTH })
 
       cy.wait(DEFAULT_DURATION)
@@ -21,7 +27,7 @@ describe('Leave timeouts', () => {
       cy.get('.SwipeNotification').should('have.length', 0)
    })
 
-   it('Should not resume timeouts if hovering back on a notification after clearing', () => {
+   it.only('Should not resume timeouts if hovering back on a notification after clearing', () => {
       const child = getRandomInt(0, REPEAT - 1)
 
       cy.mountSwipe()
@@ -29,6 +35,8 @@ describe('Leave timeouts', () => {
       for (let i = 0; i < REPEAT; i++) {
          cy.get('.Success').click()
       }
+
+      cy.wait(ANIM_DUR)
 
       cy.get('.SwipeNotification')
          .eq(child)

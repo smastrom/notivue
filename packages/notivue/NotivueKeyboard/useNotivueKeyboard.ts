@@ -3,7 +3,7 @@ import { inject, ref, computed } from 'vue'
 import { keyboardInjectionKey } from './constants'
 import { isSSR } from '@/core/utils'
 
-import type { NotivueKeyboardData } from './types'
+import type { NotivueKeyboardData } from 'notivue'
 
 export function useNotivueKeyboard(): NotivueKeyboardData {
    if (isSSR) {

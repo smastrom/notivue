@@ -27,9 +27,9 @@ export {
 export { filledIcons, outlinedIcons } from '@/Notifications/icons'
 
 export { DEFAULT_CONFIG } from '@/core/constants'
-export { DEFAULT_KEYBOARD_PROPS } from '@/NotivueKeyboard/constants'
 
 export * from './core/types'
 export * from './Notivue/types'
 export * from './NotivueSwipe/types'
 export * from './NotivueKeyboard/types'
+export * from './Notifications/types'

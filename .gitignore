@@ -16,3 +16,6 @@ cypress/screenshots
 
 *.sublime-workspace
 *.sublime-project
+
+.nuxt
+pnpm-lock.yaml
