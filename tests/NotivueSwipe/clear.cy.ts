@@ -1,6 +1,6 @@
 import {
    SWIPE_NOTIFICATION_WIDTH as WIDTH,
-   DEFAULT_ENTER_LEAVE_ANIM_DURATION as ANIM_DUR,
+   DEFAULT_ANIM_DURATION as ANIM_DUR,
 } from '@/support/utils'
 
 describe('Default behavior', () => {

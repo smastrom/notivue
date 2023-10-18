@@ -1,5 +1,5 @@
 import { DEFAULT_DURATION } from '@/core/constants'
-import { DEFAULT_ENTER_LEAVE_ANIM_DURATION, RESOLVE_REJECT_DELAY } from '@/support/utils'
+import { DEFAULT_ANIM_DURATION, RESOLVE_REJECT_DELAY } from '@/support/utils'
 
 describe('Push', () => {
    it('Can push any type of notification', () => {
@@ -71,7 +71,7 @@ describe('Push', () => {
          .get('.PushAndClear')
          .click()
          .wait(RESOLVE_REJECT_DELAY)
-         .wait(DEFAULT_ENTER_LEAVE_ANIM_DURATION)
+         .wait(DEFAULT_ANIM_DURATION)
 
          .getNotifications()
          .should('have.length', 0)
