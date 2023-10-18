@@ -26,7 +26,7 @@ jobs:
            run: pnpm install
          - name: Test with Cypress
            uses: cypress-io/github-action@v5
-           timeout-minutes: 10
+           timeout-minutes: 15
            with:
               env: CYPRESS_CI=true
               component: true
