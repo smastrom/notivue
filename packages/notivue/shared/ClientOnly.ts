@@ -13,7 +13,7 @@ import { createElementBlock, defineComponent, onMounted, ref } from 'vue'
  * store code clean without adding a bunch of (isSSR) checks.
  */
 
-export const ClientOnly = defineComponent({
+export const NotivueClientOnly = defineComponent({
    setup(_, { slots, attrs }) {
       const isMounted = ref(false)
 

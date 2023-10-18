@@ -1,5 +1,3 @@
-import { shallowRef } from 'vue'
-
 import type { NotivueConfigRequired, Obj, PushOptionsWithInternals } from 'notivue'
 
 export const isSSR = typeof window === 'undefined'

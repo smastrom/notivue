@@ -100,6 +100,8 @@ export interface HiddenInternalItemData {
 /** Options added internally when creating a notification. */
 export type InternalItemData = ExposedInternalItemData & HiddenInternalItemData
 
+// Push
+
 export interface PushProps<T extends Obj = Obj> {
    props?: T
 }
@@ -131,8 +133,6 @@ export type StoreItem<T extends Obj = Obj> = DeepRequired<NotificationOptions> &
 /** Portion of the store item exposed to slot */
 export type NotivueItem<T extends Obj = Obj> = Omit<StoreItem<T>, keyof HiddenInternalItemData>
 
-// Push
-
 export type PushParameter<T extends Obj = Obj> = PushOptions<T> | NotificationOptions['message']
 
 export type PushStatic = <T extends Obj = Obj>(
@@ -157,8 +157,6 @@ export interface Push {
    clearAll: () => void
    destroyAll: () => void
 }
-
-// Exported Composables
 
 export type ConfigSlice = ReturnType<typeof createConfigSlice>
 export type AnimationsSlice = ReturnType<typeof createAnimationsSlice>
