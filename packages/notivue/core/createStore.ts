@@ -192,7 +192,7 @@ export function createAnimationsSlice(
          let accPrevHeights = 0
 
          requestAnimationFrame(() => {
-            for (const el of elements.items.value.toReversed()) {
+            for (const el of [...elements.items.value].reverse()) {
                const id = el.dataset.notivueId!
                const item = items.get(id)
                const leaveClass = config.animations.value.leave
@@ -326,7 +326,7 @@ export function createProxiesSlice({
          animations.playClearAll()
       },
       clear(id: string, { isDestroy = false } = {}) {
-         const isLast = items.entries.value.at(-1)?.id === id
+         const isLast = items.entries.value[items.entries.value.length - 1]?.id === id
          if (isLast) timeouts.resume()
 
          animations.playLeave(id, { isManual: true, isDestroy })
