@@ -112,6 +112,9 @@ export function createElementsSlice() {
          this.rootAttrs.value = newAttrs
       },
       items: ref<HTMLElement[]>([]),
+      getSortedItems() {
+         return this.items.value.sort((a, b) => +b.dataset.notivueId! - +a.dataset.notivueId!)
+      },
       containers: ref<HTMLElement[]>([]),
    }
 }
@@ -191,35 +194,35 @@ export function createAnimationsSlice(
 
          let accPrevHeights = 0
 
-         requestAnimationFrame(() => {
-            for (const el of [...elements.items.value].reverse()) {
-               const id = el.dataset.notivueId!
-               const item = items.get(id)
-               const leaveClass = config.animations.value.leave
+         for (const el of elements.getSortedItems()) {
+            const id = el.dataset.notivueId!
+            const item = items.get(id)
+            const leaveClass = config.animations.value.leave
 
-               if (!el || !item || item.animationAttrs.class === leaveClass) continue
+            if (!el || !item || item.animationAttrs.class === leaveClass) continue
 
-               items.update(id, {
-                  positionStyles: {
-                     transform: `translate3d(0, ${accPrevHeights}px, 0)`,
-                     ...(isReduced
-                        ? { transition: 'none' }
-                        : {
-                             transitionDuration: this.getTransitionData().duration,
-                             transitionTimingFunction: this.getTransitionData().easing,
-                          }),
-                  },
-               })
+            items.update(id, {
+               positionStyles: {
+                  willChange: 'transform',
+                  transform: `translate3d(0, ${accPrevHeights}px, 0)`,
+                  ...(isReduced
+                     ? { transition: 'none' }
+                     : {
+                          transitionDuration: this.getTransitionData().duration,
+                          transitionTimingFunction: this.getTransitionData().easing,
+                       }),
+               },
+            })
 
-               accPrevHeights += (config.isTopAlign.value ? 1 : -1) * el.clientHeight
-            }
-         })
+            accPrevHeights += (config.isTopAlign.value ? 1 : -1) * el.clientHeight
+         }
       },
    }
 }
 
 export function createTimeoutsSlice(items: ItemsSlice, animations: AnimationsSlice) {
    return {
+      touchDebounceTimeout: undefined as unknown as ReturnType<typeof setTimeout>,
       isStreamPaused: ref(false),
       isStreamFocused: ref(false),
       setStreamPause(newVal = true) {
@@ -229,6 +232,8 @@ export function createTimeoutsSlice(items: ItemsSlice, animations: AnimationsSli
          this.isStreamFocused.value = newVal
       },
       reset() {
+         clearTimeout(this.touchDebounceTimeout)
+
          this.setStreamPause(false)
          this.setStreamFocus(false)
       },

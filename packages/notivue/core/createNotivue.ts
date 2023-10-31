@@ -31,7 +31,8 @@ export function createNotivue(app: App, userConfig: NotivueConfig = {}): Push {
 
    watch(
       () => items.getLength(),
-      () => animations.updatePositions(TType.PUSH)
+      () => animations.updatePositions(TType.PUSH),
+      { flush: 'post' }
    )
 
    watch(
@@ -50,8 +51,9 @@ export function createNotivue(app: App, userConfig: NotivueConfig = {}): Push {
       () => config.animations.value.enter,
       (newEnter, prevEnter) => {
          if (newEnter !== prevEnter) {
-            console.log('Resetting transition data!')
             animations.resetTransitionData()
+
+            console.log('Transition data reset!')
          }
       }
    )
