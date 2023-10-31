@@ -2,18 +2,18 @@
 import type { NotivueItem } from 'notivue'
 import type { CustomSimpleProps } from '../nav/NavPushCustom.vue'
 
-const props = defineProps<{
+defineProps<{
    item: NotivueItem<CustomSimpleProps>
 }>()
 </script>
 
 <template>
    <div class="Notification">
-      <p :role="props.item.ariaRole" :aria-live="props.item.ariaLive">
-         {{ props.item.message }}
+      <p :role="item.ariaRole" :aria-live="item.ariaLive">
+         {{ item.message }}
       </p>
 
-      <button @click="props.item.clear" aria-label="Dismiss" tabindex="-1" class="CloseButton">
+      <button @click="item.clear" aria-label="Dismiss" tabindex="-1" class="CloseButton">
          <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"

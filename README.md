@@ -32,8 +32,8 @@ _NotivueSwipe, NotivueKeyboard, all optional and customizable_
 **🎢 Slick transitions and animations**  
 _Customize any animation with CSS_
 
-**🧩 Custom Components API**  
-_Use your own components while Notivue handles the rest_
+**🧩 Headless API**  
+_Use your own notifications while Notivue handles the rest_
 
 **🌀 Promise API**  
 _Update pending notifications with ease_

@@ -4,11 +4,11 @@ import CloseIcon from '../icons/CloseIcon.vue'
 import type { NotivueItem } from 'notivue'
 import type { CustomPromiseProps } from '../nav/NavPushCustom.vue'
 
-const props = defineProps<{
+const notification = defineProps<{
    item: NotivueItem<CustomPromiseProps>
 }>()
 
-const isPromise = computed(() => props.item.type === 'promise')
+const isPromise = computed(() => notification.item.type === 'promise')
 </script>
 
 <template>
@@ -36,7 +36,7 @@ const isPromise = computed(() => props.item.type === 'promise')
       </div>
 
       <div class="Footer" v-else>
-         <time class="Time">{{ toNow(props.item.createdAt) }} ago</time>
+         <time class="Time">{{ toNow(item.createdAt) }} ago</time>
          <p><strong>Remaining space:</strong> 302.1 GB</p>
       </div>
    </div>
