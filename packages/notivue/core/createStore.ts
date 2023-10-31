@@ -225,6 +225,9 @@ export function createTimeoutsSlice(items: ItemsSlice, animations: AnimationsSli
       touchDebounceTimeout: undefined as undefined | number,
       isStreamPaused: ref(false),
       isStreamFocused: ref(false),
+      setTouchDebounceTimeout(cb: () => void, ms: number) {
+         this.touchDebounceTimeout = window.setTimeout(cb, ms)
+      },
       setStreamPause(newVal = true) {
          this.isStreamPaused.value = newVal
       },

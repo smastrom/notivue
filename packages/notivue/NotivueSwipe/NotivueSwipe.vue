@@ -160,7 +160,7 @@ function pauseTimeouts() {
 function resumeTimeouts(ms: number) {
    window.clearTimeout(timeouts.touchDebounceTimeout)
 
-   timeouts.touchDebounceTimeout = window.setTimeout(() => {
+   timeouts.setTouchDebounceTimeout(() => {
       timeouts.resume()
    }, ms)
 }
