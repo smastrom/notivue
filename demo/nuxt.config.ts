@@ -8,7 +8,6 @@ export default defineNuxtConfig({
    },
    notivue: {
       // addPlugin: true,
-      // limit: Infinity,
       notifications: {
          global: {
             // duration: Infinity,
@@ -23,7 +22,8 @@ export default defineNuxtConfig({
    },
    vite: {
       build: {
-         cssMinify: 'lightningcss',
+         // Never use lightningcss - https://github.com/parcel-bundler/lightningcss/issues/288
+         cssMinify: 'esbuild',
       },
       css: {
          transformer: 'lightningcss',

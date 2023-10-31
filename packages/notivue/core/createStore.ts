@@ -222,7 +222,7 @@ export function createAnimationsSlice(
 
 export function createTimeoutsSlice(items: ItemsSlice, animations: AnimationsSlice) {
    return {
-      touchDebounceTimeout: undefined as unknown as ReturnType<typeof setTimeout>,
+      touchDebounceTimeout: undefined as undefined | number,
       isStreamPaused: ref(false),
       isStreamFocused: ref(false),
       setStreamPause(newVal = true) {
@@ -232,7 +232,7 @@ export function createTimeoutsSlice(items: ItemsSlice, animations: AnimationsSli
          this.isStreamFocused.value = newVal
       },
       reset() {
-         clearTimeout(this.touchDebounceTimeout)
+         window.clearTimeout(this.touchDebounceTimeout)
 
          this.setStreamPause(false)
          this.setStreamFocus(false)
@@ -256,7 +256,7 @@ export function createTimeoutsSlice(items: ItemsSlice, animations: AnimationsSli
 
          console.log('Pausing timeouts')
          items.updateAll((item) => {
-            clearTimeout(item.timeout as number)
+            window.clearTimeout(item.timeout as number)
 
             return {
                ...item,
@@ -271,7 +271,7 @@ export function createTimeoutsSlice(items: ItemsSlice, animations: AnimationsSli
 
          console.log('Resuming timeouts')
          items.updateAll((item) => {
-            clearTimeout(item.timeout as number)
+            window.clearTimeout(item.timeout as number)
             /**
              * 'elapsed' may be equal to 'undefined' if a notification
              * is pushed while the stream is paused as pause() won't be called.

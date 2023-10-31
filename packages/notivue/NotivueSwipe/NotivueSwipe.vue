@@ -153,14 +153,14 @@ function getDebounceMs(e: PointerEvent) {
 }
 
 function pauseTimeouts() {
-   clearTimeout(timeouts.touchDebounceTimeout)
+   window.clearTimeout(timeouts.touchDebounceTimeout)
    timeouts.pause()
 }
 
 function resumeTimeouts(ms: number) {
-   clearTimeout(timeouts.touchDebounceTimeout)
+   window.clearTimeout(timeouts.touchDebounceTimeout)
 
-   timeouts.touchDebounceTimeout = setTimeout(() => {
+   timeouts.touchDebounceTimeout = window.setTimeout(() => {
       timeouts.resume()
    }, ms)
 }
@@ -249,7 +249,7 @@ function onPointerMoveClear(e: PointerEvent) {
    }
 
    const animDuration = parseFloat(animations.getTransitionData()?.duration ?? 0) * 1000
-   setTimeout(() => (state.isClearing = false), animDuration)
+   window.setTimeout(() => (state.isClearing = false), animDuration)
 }
 
 /**
@@ -281,7 +281,7 @@ function onPointerUp(e: PointerEvent) {
       isLocked: true,
    })
 
-   setTimeout(() => (state.isLocked = false), RETURN_DUR)
+   window.setTimeout(() => (state.isLocked = false), RETURN_DUR)
 }
 
 /**
