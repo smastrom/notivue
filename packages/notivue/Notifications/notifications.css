@@ -48,7 +48,8 @@
    border-radius: var(--nv-radius, 0);
    border: var(--nv-border-width, 0) solid var(--nv-border, var(--nv-global-border));
 
-   box-shadow: var(--nv-shadow, 0 0 rgba(0, 0, 0, 0)),
+   box-shadow:
+      var(--nv-shadow, 0 0 rgba(0, 0, 0, 0)),
       inset var(--tip-width) 0 0 var(--nv-accent, var(--nv-global-accent));
 
    & * {
