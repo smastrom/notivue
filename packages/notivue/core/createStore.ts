@@ -194,9 +194,6 @@ export function createAnimationsSlice(
          const isReduced = this.isReducedMotion.value || type === TType.IMMEDIATE
          const leaveClass = config.animations.value.leave
 
-         const { duration: transitionDuration, easing: transitionTimingFunction } =
-            this.getTransitionData()
-
          let accPrevHeights = 0
 
          for (const el of elements.getSortedItems()) {
@@ -204,6 +201,9 @@ export function createAnimationsSlice(
             const item = items.get(id)
 
             if (!el || !item || item.animationAttrs.class === leaveClass) continue
+
+            const { duration: transitionDuration, easing: transitionTimingFunction } =
+               this.getTransitionData()
 
             items.update(id, {
                positionStyles: {
