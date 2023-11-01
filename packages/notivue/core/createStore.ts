@@ -113,7 +113,7 @@ export function createElementsSlice() {
       },
       items: ref<HTMLElement[]>([]),
       getSortedItems() {
-         // This is a bit dirty, but it's more performant than cloning and reversing the array on every repositioning.
+         // This is a bit dirty, but it's better than cloning and reversing the array on every repositioning
          return this.items.value.sort((a, b) => +b.dataset.notivueId! - +a.dataset.notivueId!)
       },
       containers: ref<HTMLElement[]>([]),
