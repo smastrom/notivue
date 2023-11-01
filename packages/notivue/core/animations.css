@@ -51,7 +51,7 @@
    }
 
    100% {
-      transform: translate3d(0, var(--notivue-ty), 0) scale(0);
+      transform: translate3d(0, var(--notivue-ty), 0) scale(0.01);
       opacity: 0;
    }
 }
