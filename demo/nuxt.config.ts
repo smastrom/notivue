@@ -22,8 +22,7 @@ export default defineNuxtConfig({
    },
    vite: {
       build: {
-         // Never use lightningcss - https://github.com/parcel-bundler/lightningcss/issues/288
-         cssMinify: 'esbuild',
+         cssMinify: 'lightningcss',
       },
       css: {
          transformer: 'lightningcss',
