@@ -148,7 +148,6 @@ function setReturnStyles() {
 }
 
 function isPointerInside(e: PointerEvent) {
-   console.log('isPointerInside', e.clientX, state.targetLeft, state.targetRight)
    return e.clientX > state.targetLeft && e.clientX < state.targetRight
 }
 
@@ -266,8 +265,6 @@ function onPointerUp(e: PointerEvent) {
 
    if (!state.isPressed) return
    if (state.isClearing || state.isLocked) return
-
-   console.log('isPointerInside', isPointerInside(e))
 
    if (isMouse(e) && isPointerInside(e)) {
       pauseTimeouts()
