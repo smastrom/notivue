@@ -1,7 +1,8 @@
-import { getRandomInt } from '@/support/utils'
+import { DEFAULT_ANIM_DURATION as LEAVE_ANIM_DUR, getRandomInt } from '@/support/utils'
 
 import { DEBOUNCE } from '@/NotivueSwipe/constants'
 import { DEFAULT_DURATION } from '@/core/constants'
+import { SWIPE_NOTIFICATION_WIDTH as WIDTH } from '@/support/utils'
 
 const LENGTH = 5
 
@@ -17,30 +18,35 @@ describe('Debounce', () => {
    })
 
    /**
-    * Remove 100ms from debounce time to account for the time Cypress takes
-    * to perform the actions before
+    * In order for those tests to be accurate, we need a way to track how much time Cypress
+    * takes to swipe the element and to trigger pointer events.
+    *
+    * We can use Cypress retry-ability mixed with cy.then to track it.
+    * In the first test, this matches the moment the element is removed from the DOM.
+    *
+    * We also add the leave animation duration to the wait time, to be even more accurate.
     */
 
    it('Resume is delayed after clearing', () => {
-      const child = getRandomInt(0, LENGTH - 1)
-
       cy.mountSwipe()
+
+      let elapsed = Date.now()
 
       for (let i = 0; i < LENGTH; i++) {
          cy.get('.Success').click()
       }
 
-      cy.get('.SwipeNotification').eq(child).trigger('pointerdown', pointerEventOptions)
+      cy.get('.SwipeNotification').eq(3).realSwipe('toLeft', { length: WIDTH })
+
       cy.get('.SwipeNotification')
-         .eq(child)
-         .trigger('pointermove', {
-            ...pointerEventOptions,
-            clientX: 1000,
+         .should('have.length', LENGTH - 1)
+         .then(() => {
+            elapsed = Date.now() - elapsed
+            console.log('Elapsed: ', elapsed)
+
+            cy.wait(DEFAULT_DURATION - elapsed + DEBOUNCE.Touch + LEAVE_ANIM_DUR)
+            cy.get('.SwipeNotification').should('have.length', LENGTH - 1)
          })
-
-      cy.wait(DEFAULT_DURATION + (DEBOUNCE.Touch - 100))
-
-      cy.get('.SwipeNotification').should('have.length', LENGTH - 1)
    })
 
    it('Resume is delayed after tapping an excluded element', () => {
@@ -48,15 +54,22 @@ describe('Debounce', () => {
 
       cy.mountSwipe()
 
+      let elapsed = Date.now()
+
       for (let i = 0; i < LENGTH; i++) {
          cy.get('.Success').click()
       }
 
-      cy.get('.CloseButton').eq(child).trigger('pointerdown', pointerEventOptions)
+      cy.get('.CloseButton')
+         .eq(child)
+         .trigger('pointerdown', pointerEventOptions)
+         .then(() => {
+            elapsed = Date.now() - elapsed
+            console.log('Elapsed: ', elapsed)
 
-      cy.wait(DEFAULT_DURATION + (DEBOUNCE.TouchExternal - 100))
-
-      cy.get('.SwipeNotification').should('have.length', LENGTH - 1)
+            cy.wait(DEFAULT_DURATION - elapsed + DEBOUNCE.TouchExternal + LEAVE_ANIM_DUR)
+            cy.get('.SwipeNotification').should('have.length', LENGTH - 1)
+         })
    })
 
    it('Resume is delayed after tappping a notification', () => {
@@ -64,15 +77,26 @@ describe('Debounce', () => {
 
       cy.mountSwipe()
 
+      let elapsed = Date.now()
+
       for (let i = 0; i < LENGTH; i++) {
          cy.get('.Success').click()
       }
 
-      cy.get('.SwipeNotification').eq(child).trigger('pointerdown', pointerEventOptions)
-      cy.get('.SwipeNotification').eq(child).trigger('pointerup', pointerEventOptions)
+      cy.get('.SwipeNotification')
+         .eq(child)
+         .trigger('pointerdown', pointerEventOptions)
+         .then(() => {
+            cy.get('.SwipeNotification')
+               .eq(child)
+               .trigger('pointerup', pointerEventOptions)
+               .then(() => {
+                  elapsed = Date.now() - elapsed
+                  console.log('Elapsed: ', elapsed)
 
-      cy.wait(DEFAULT_DURATION + (DEBOUNCE.Touch - 100))
-
-      cy.get('.SwipeNotification').should('have.length', LENGTH)
+                  cy.wait(DEFAULT_DURATION - elapsed + DEBOUNCE.Touch + LEAVE_ANIM_DUR)
+                  cy.get('.SwipeNotification').should('have.length', LENGTH)
+               })
+         })
    })
 })
