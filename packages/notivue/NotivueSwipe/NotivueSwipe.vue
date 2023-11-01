@@ -153,16 +153,13 @@ function getDebounceMs(e: PointerEvent) {
 }
 
 function pauseTimeouts() {
-   window.clearTimeout(timeouts.touchDebounceTimeout)
+   timeouts.clearDebounceTimeout()
    timeouts.pause()
 }
 
 function resumeTimeouts(ms: number) {
-   window.clearTimeout(timeouts.touchDebounceTimeout)
-
-   timeouts.setTouchDebounceTimeout(() => {
-      timeouts.resume()
-   }, ms)
+   timeouts.clearDebounceTimeout()
+   timeouts.setDebounceTimeout(ms)
 }
 
 /* ====================================================================================
@@ -351,6 +348,7 @@ watch(
       })
 
       onCleanup(() => {
+         // timeouts.clearDebounceTimeout()
          removeListeners()
          resetDragStyles()
          // No need to reset target position as they will be recomputed on next enabling

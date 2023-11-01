@@ -89,7 +89,7 @@ export function createItemsSlice(config: ConfigSlice, queue: QueueSlice) {
       remove(id: string) {
          this.entries.value = this.entries.value.filter(({ timeout, id: _id }) => {
             if (id !== _id) return true
-            return clearTimeout(timeout as number), false
+            return window.clearTimeout(timeout as number), false
          })
 
          const shouldDequeue = config.enqueue.value && queue.getLength() > 0
@@ -222,11 +222,16 @@ export function createAnimationsSlice(
 
 export function createTimeoutsSlice(items: ItemsSlice, animations: AnimationsSlice) {
    return {
-      touchDebounceTimeout: undefined as undefined | number,
       isStreamPaused: ref(false),
       isStreamFocused: ref(false),
-      setTouchDebounceTimeout(cb: () => void, ms: number) {
-         this.touchDebounceTimeout = window.setTimeout(cb, ms)
+      debounceTimeout: undefined as undefined | number,
+      setDebounceTimeout(ms: number) {
+         this.debounceTimeout = window.setTimeout(() => {
+            this.resume()
+         }, ms)
+      },
+      clearDebounceTimeout() {
+         window.clearTimeout(this.debounceTimeout)
       },
       setStreamPause(newVal = true) {
          this.isStreamPaused.value = newVal
@@ -235,8 +240,7 @@ export function createTimeoutsSlice(items: ItemsSlice, animations: AnimationsSli
          this.isStreamFocused.value = newVal
       },
       reset() {
-         window.clearTimeout(this.touchDebounceTimeout)
-
+         this.clearDebounceTimeout()
          this.setStreamPause(false)
          this.setStreamFocus(false)
       },

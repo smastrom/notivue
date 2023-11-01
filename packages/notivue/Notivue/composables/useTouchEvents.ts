@@ -21,17 +21,15 @@ export function useTouchEvents() {
 
    function pauseTouch(event: PointerEvent) {
       if (!isMouse(event)) {
-         window.clearTimeout(timeouts.touchDebounceTimeout)
+         timeouts.clearDebounceTimeout()
          timeouts.pause()
 
-         timeouts.setTouchDebounceTimeout(() => {
-            timeouts.resume()
-         }, 2000)
+         timeouts.setDebounceTimeout(2000)
       }
    }
 
    onBeforeUnmount(() => {
-      window.clearTimeout(timeouts.touchDebounceTimeout)
+      timeouts.clearDebounceTimeout()
    })
 
    return computed(() =>
