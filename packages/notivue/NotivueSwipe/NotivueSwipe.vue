@@ -125,11 +125,14 @@ function shouldSwipe(e: PointerEvent) {
 function setTargetPosition() {
    if (!itemRef.value) return
 
-   const { offsetLeft, clientWidth } = itemRef.value
+   // Must use clientWidth so that scale transform is not taken into account
+   const { clientWidth } = itemRef.value
+
+   const { left } = itemRef.value.getBoundingClientRect()
 
    setState({
-      targetLeft: offsetLeft,
-      targetRight: offsetLeft + clientWidth,
+      targetLeft: left,
+      targetRight: left + clientWidth,
       targetWidth: clientWidth,
    })
 }
@@ -145,6 +148,7 @@ function setReturnStyles() {
 }
 
 function isPointerInside(e: PointerEvent) {
+   console.log('isPointerInside', e.clientX, state.targetLeft, state.targetRight)
    return e.clientX > state.targetLeft && e.clientX < state.targetRight
 }
 
@@ -262,6 +266,8 @@ function onPointerUp(e: PointerEvent) {
 
    if (!state.isPressed) return
    if (state.isClearing || state.isLocked) return
+
+   console.log('isPointerInside', isPointerInside(e))
 
    if (isMouse(e) && isPointerInside(e)) {
       pauseTimeouts()
