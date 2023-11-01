@@ -53,8 +53,6 @@ const isEnabled = computed(
       props.item.duration < Infinity
 )
 
-const lastItemContainer = computed(() => elements.items.value[elements.items.value.length - 1])
-
 // Internal
 
 const itemRef = ref<HTMLElement | null>(null)
@@ -242,7 +240,9 @@ function onPointerMoveClear(e: PointerEvent) {
    props.item.destroy()
 
    if (isMouse(e) && isPointerInside(e)) {
-      const isLastItem = lastItemContainer.value.contains(itemRef.value)
+      const sortedContainers = elements.getSortedItems()
+      const isLastItem = sortedContainers[sortedContainers.length - 1].contains(itemRef.value)
+
       if (!isLastItem) pauseTimeouts()
    } else {
       resumeTimeouts(getDebounceMs(e))

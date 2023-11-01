@@ -9,6 +9,6 @@ export const RETURN_DUR = 300
 
 export const DEBOUNCE = {
    Mouse: 200,
-   Touch: 800,
-   TouchExternal: 1200,
+   Touch: 1000,
+   TouchExternal: 1400,
 }
