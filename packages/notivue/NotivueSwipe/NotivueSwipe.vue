@@ -14,9 +14,22 @@ import {
 import { useStore } from '@/core/useStore'
 import { isMouse } from '@/core/utils'
 import { NotificationTypeKeys as NType } from '@/core/constants'
-import { DEFAULT_PROPS } from './constants'
+import { DEFAULT_PROPS, DEBOUNCE, RETURN_DUR } from './constants'
 
 import type { NotivueSwipeProps } from 'notivue'
+
+/**
+ * MOUSE - Notivue's mouse events (get from 'useMouseEvents') will still handle the pause/resume logic
+ * on hover. NotivueSwipe will only additionally pause timeouts while swiping and resume them
+ * when clearing.
+ *
+ * TOUCH / PEN - Notivue's touch events (get from 'useTouchEvents') execution is prevented when
+ * using NotivueSwipe. That's because a more granular timeout control is required due
+ * to all possible interactions hence the whole touch logic is handled here.
+ *
+ * When releasing, leaving or clearing a notification via Swipe a small debounce time is added to
+ * improve UX.
+ */
 
 // Store
 
@@ -40,11 +53,7 @@ const isEnabled = computed(
       props.item.duration < Infinity
 )
 
-const lastItemContainer = computed(() => elements.items.value[elements.items.value.length - 1])
-
 // Internal
-
-const RETURN_DUR = 300
 
 const itemRef = ref<HTMLElement | null>(null)
 
@@ -114,11 +123,14 @@ function shouldSwipe(e: PointerEvent) {
 function setTargetPosition() {
    if (!itemRef.value) return
 
-   const { offsetLeft, clientWidth } = itemRef.value
+   // Must use clientWidth so that scale transform is not taken into account
+   const { clientWidth } = itemRef.value
+
+   const { left } = itemRef.value.getBoundingClientRect()
 
    setState({
-      targetLeft: offsetLeft,
-      targetRight: offsetLeft + clientWidth,
+      targetLeft: left,
+      targetRight: left + clientWidth,
       targetWidth: clientWidth,
    })
 }
@@ -137,6 +149,20 @@ function isPointerInside(e: PointerEvent) {
    return e.clientX > state.targetLeft && e.clientX < state.targetRight
 }
 
+function getDebounceMs(e: PointerEvent) {
+   return isMouse(e) ? DEBOUNCE.Mouse : DEBOUNCE.Touch
+}
+
+function pauseTimeouts() {
+   timeouts.clearDebounceTimeout()
+   timeouts.pause()
+}
+
+function resumeTimeouts(ms: number) {
+   timeouts.clearDebounceTimeout()
+   timeouts.resumeWithDebounce(ms)
+}
+
 /* ====================================================================================
  * Event Handlers
  * ==================================================================================== */
@@ -149,8 +175,8 @@ function onPointerDown(e: PointerEvent) {
    if (!shouldSwipe(e)) return
 
    /**
-    * Prevents the `useTouchEvents` handler to fire, which is what
-    * we're looking for so it doesn't interfere.
+    * Prevents `useTouchEvents` events to fire, which is what
+    * we're looking for so they doen't interfere with NotivueSwipe logic.
     */
    e.stopPropagation()
 
@@ -160,10 +186,25 @@ function onPointerDown(e: PointerEvent) {
 
    if (exclude.value) {
       const excludedEls = Array.from(itemRef.value.querySelectorAll(exclude.value))
-      if (excludedEls.includes(e.target as HTMLElement)) return
+
+      if (excludedEls.includes(e.target as HTMLElement)) {
+         /**
+          * When tapping an excluded element, we want to pause and resume timeouts
+          * after a bit, keeping the same behavior as Notivue touch events (useTouchEvents).
+          *
+          * This is not required when using the mouse as the pause/resume is already handled on
+          * hover by useMouseEvents.
+          */
+         if (!isMouse(e)) {
+            pauseTimeouts()
+            resumeTimeouts(DEBOUNCE.TouchExternal)
+         }
+
+         return
+      }
    }
 
-   if (!isMouse(e)) timeouts.pause()
+   if (!isMouse(e)) pauseTimeouts()
 
    setState({
       startX: e.clientX,
@@ -199,18 +240,23 @@ function onPointerMoveClear(e: PointerEvent) {
    props.item.destroy()
 
    if (isMouse(e) && isPointerInside(e)) {
-      const isLastItem = lastItemContainer.value.contains(itemRef.value)
-      if (!isLastItem) timeouts.pause()
+      const sortedContainers = elements.getSortedItems()
+      const isLastItem = sortedContainers[sortedContainers.length - 1].contains(itemRef.value)
+
+      if (!isLastItem) pauseTimeouts()
    } else {
-      timeouts.resume()
+      resumeTimeouts(getDebounceMs(e))
    }
 
    const animDuration = parseFloat(animations.getTransitionData()?.duration ?? 0) * 1000
-   setTimeout(() => (state.isClearing = false), animDuration)
+   window.setTimeout(() => (state.isClearing = false), animDuration)
 }
 
 /**
- * Never triggered if the notification has been closed on pointer move.
+ * Triggered when the notification is swiped and then released but not enough
+ * to be cleared.
+ *
+ * Callback logic is not executed if the notification gets closed while swiping.
  */
 function onPointerUp(e: PointerEvent) {
    if (!shouldSwipe(e)) return
@@ -221,9 +267,9 @@ function onPointerUp(e: PointerEvent) {
    if (state.isClearing || state.isLocked) return
 
    if (isMouse(e) && isPointerInside(e)) {
-      timeouts.pause()
+      pauseTimeouts()
    } else {
-      timeouts.resume()
+      resumeTimeouts(getDebounceMs(e))
    }
 
    setReturnStyles()
@@ -235,9 +281,12 @@ function onPointerUp(e: PointerEvent) {
       isLocked: true,
    })
 
-   setTimeout(() => (state.isLocked = false), RETURN_DUR)
+   window.setTimeout(() => (state.isLocked = false), RETURN_DUR)
 }
 
+/**
+ * Triggered when the pointer leaves the notification bounding box while swiping.
+ */
 function onPointerLeave(e: PointerEvent) {
    if (!shouldSwipe(e)) return
 
@@ -255,7 +304,7 @@ function onPointerLeave(e: PointerEvent) {
       isLocked: false,
    })
 
-   timeouts.resume()
+   resumeTimeouts(getDebounceMs(e))
 }
 
 /* ====================================================================================
@@ -302,6 +351,7 @@ watch(
       })
 
       onCleanup(() => {
+         // timeouts.clearDebounceTimeout()
          removeListeners()
          resetDragStyles()
          // No need to reset target position as they will be recomputed on next enabling

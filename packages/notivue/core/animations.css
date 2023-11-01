@@ -13,7 +13,7 @@
 }
 
 .Notivue__enter {
-   animation: Notivue__enter-kf 350ms cubic-bezier(0.5, 1, 0.25, 1) both;
+   animation: Notivue__enter-kf 350ms cubic-bezier(0.5, 1, 0.25, 1);
 }
 
 .Notivue__leave {
@@ -34,24 +34,24 @@
 
 @keyframes Notivue__enter-kf {
    0% {
-      transform: translateY(var(--notivue-ty)) scale(0.25);
+      transform: translate3d(0, var(--notivue-ty), 0) scale(0.25);
       opacity: 0;
    }
 
    100% {
-      transform: translateY(0.1) scale(1);
+      transform: translate3d(0, 0, 0) scale(1);
       opacity: 1;
    }
 }
 
 @keyframes Notivue__leave-kf {
    0% {
-      transform: translateY(0.01) scale(1);
+      transform: translate3d(0, 0, 0) scale(1);
       opacity: 0.7;
    }
 
    100% {
-      transform: translateY(var(--notivue-ty)) scale(0.01);
+      transform: translate3d(0, var(--notivue-ty), 0) scale(0.01);
       opacity: 0;
    }
 }

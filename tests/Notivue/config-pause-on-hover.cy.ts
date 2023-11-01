@@ -1,5 +1,3 @@
-import Notivue from './components/Notivue.vue'
-
 import type { VueWrapper } from '@vue/test-utils'
 
 describe('Pause on hover', () => {

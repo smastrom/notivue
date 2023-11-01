@@ -6,7 +6,7 @@ import { isMouse } from '@/core/utils'
 /**
  * The logic follows this pattern:
  *
- * Every time users touch the stream, all notifications
+ * Every time users tap the stream, all notifications
  * will pause and automatically resume after 2 seconds.
  *
  * If users keep tapping on the stream, once timeouts
@@ -19,21 +19,17 @@ import { isMouse } from '@/core/utils'
 export function useTouchEvents() {
    const { timeouts, config } = useStore()
 
-   let resumeTimeout: ReturnType<typeof setTimeout>
-
    function pauseTouch(event: PointerEvent) {
       if (!isMouse(event)) {
+         timeouts.clearDebounceTimeout()
          timeouts.pause()
-         clearTimeout(resumeTimeout)
 
-         resumeTimeout = setTimeout(() => {
-            timeouts.resume()
-         }, 2000)
+         timeouts.resumeWithDebounce(2000)
       }
    }
 
    onBeforeUnmount(() => {
-      clearTimeout(resumeTimeout)
+      timeouts.clearDebounceTimeout()
    })
 
    return computed(() =>

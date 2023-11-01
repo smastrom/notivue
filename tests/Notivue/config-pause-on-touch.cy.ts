@@ -9,28 +9,25 @@ describe('Pause on touch', () => {
       cy.mountNotivue()
 
          .clickRandomStatic()
-         .wait(4000) // Remaining: 2000ms
+         .wait(5000) // Remaining: 1000ms
 
          .get('.Notification')
          .trigger('pointerdown', { pointerType: 'touch' })
-         .wait(4000) // Any value greater than the remaining time
+         .wait(2000) // More than the remaining time
 
          .get('.Notification')
          .should('exist')
-
-         .get('.Notification')
-         .should('not.exist')
    })
 
    it('Should not pause notifications if pauseOnTouch is false', () => {
       cy.mountNotivue({ config: { pauseOnTouch: false } })
 
          .clickRandomStatic()
-         .wait(4000) // Remaining: 2000ms
+         .wait(5000) // Remaining: 1000ms
 
          .get('.Notification')
          .trigger('pointerdown', { pointerType: 'touch' })
-         .wait(4000) // Any value greater than the remaining time
+         .wait(2000) // More than the remaining time
 
          .get('.Notification')
          .should('not.exist')
@@ -43,11 +40,11 @@ describe('Pause on touch', () => {
          .then((wrapper) => wrapper.setProps({ pauseOnTouch: true }))
 
          .clickRandomStatic()
-         .wait(4000) // Remaining: 2000ms
+         .wait(5000) // Remaining: 1000ms
 
          .get('.Notification')
          .trigger('pointerdown', { pointerType: 'touch' })
-         .wait(4000) // Any value greater than the remaining time
+         .wait(2000) // More than the remaining time
 
          .get('.Notification')
          .should('exist')

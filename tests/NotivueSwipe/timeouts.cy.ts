@@ -27,7 +27,7 @@ describe('Leave timeouts', () => {
       cy.get('.SwipeNotification').should('have.length', 0)
    })
 
-   it.only('Should not resume timeouts if hovering back on a notification after clearing', () => {
+   it('Should not resume timeouts if tapping back on a notification after clearing', () => {
       const child = getRandomInt(0, REPEAT - 1)
 
       cy.mountSwipe()
@@ -42,17 +42,14 @@ describe('Leave timeouts', () => {
          .eq(child)
          .realSwipe('toRight', { length: WIDTH / 2 })
 
-         .get('.SwipeNotification')
-         .its('length')
-         .should('be.eq', REPEAT - 1)
-
-      cy.get('.SwipeNotification').eq(0).trigger('pointerdown', {
-         force: true,
-         eventConstructor: 'PointerEvent',
-         pointerType: 'touch',
-      })
-
-      cy.wait(DEFAULT_DURATION * 2) // Very long time
+      cy.get('.SwipeNotification')
+         .eq(0)
+         .trigger('pointerdown', {
+            force: true,
+            eventConstructor: 'PointerEvent',
+            pointerType: 'touch',
+         })
+         .wait(DEFAULT_DURATION * 2) // Hold for very long time
 
       cy.get('.SwipeNotification').should('have.length', REPEAT - 1)
    })

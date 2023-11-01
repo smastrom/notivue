@@ -97,30 +97,19 @@ Cypress.Commands.add('checkSlotPropsAgainst', (obj: Record<string, any>) =>
 
 Cypress.Commands.add(
    'checkAnimations',
-   (enterClass: string, leaveClass: string, clearAllClass: string) =>
-      cy
-         .get('.Success')
-         .click()
+   (enterClass: string, leaveClass: string, clearAllClass: string) => {
+      cy.get('.Success').click()
 
-         .get(enterClass)
-         .should('exist')
-         .get(leaveClass)
-         .should('not.exist')
+      cy.get(enterClass).should('exist').get(leaveClass).should('not.exist').wait(DEFAULT_DURATION)
 
-         .wait(DEFAULT_DURATION)
+      cy.get(leaveClass).should('exist').get(enterClass).should('not.exist')
 
-         .get(leaveClass)
-         .should('exist')
-         .get(enterClass)
-         .should('not.exist')
+      cy.get('.Success').click()
 
-         .get('.Success')
-         .click()
-         .get('.ClearAll')
-         .click()
+      cy.get('.ClearAll').click()
 
-         .get(clearAllClass)
-         .should('exist')
+      cy.get(clearAllClass).should('exist')
+   }
 )
 
 Cypress.Commands.add('checkTransitions', (element: HTMLElement, height: number) =>

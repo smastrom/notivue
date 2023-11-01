@@ -89,7 +89,7 @@ export function createItemsSlice(config: ConfigSlice, queue: QueueSlice) {
       remove(id: string) {
          this.entries.value = this.entries.value.filter(({ timeout, id: _id }) => {
             if (id !== _id) return true
-            return clearTimeout(timeout as number), false
+            return window.clearTimeout(timeout as number), false
          })
 
          const shouldDequeue = config.enqueue.value && queue.getLength() > 0
@@ -112,6 +112,10 @@ export function createElementsSlice() {
          this.rootAttrs.value = newAttrs
       },
       items: ref<HTMLElement[]>([]),
+      getSortedItems() {
+         // This is a bit dirty, but it's better than cloning and reversing the array on every repositioning
+         return this.items.value.sort((a, b) => +b.dataset.notivueId! - +a.dataset.notivueId!)
+      },
       containers: ref<HTMLElement[]>([]),
    }
 }
@@ -188,32 +192,31 @@ export function createAnimationsSlice(
       },
       updatePositions(type = TType.PUSH) {
          const isReduced = this.isReducedMotion.value || type === TType.IMMEDIATE
+         const leaveClass = config.animations.value.leave
+
+         const { duration: transitionDuration, easing: transitionTimingFunction } =
+            this.getTransitionData()
 
          let accPrevHeights = 0
 
-         requestAnimationFrame(() => {
-            for (const el of [...elements.items.value].reverse()) {
-               const id = el.dataset.notivueId!
-               const item = items.get(id)
-               const leaveClass = config.animations.value.leave
+         for (const el of elements.getSortedItems()) {
+            const id = el.dataset.notivueId!
+            const item = items.get(id)
 
-               if (!el || !item || item.animationAttrs.class === leaveClass) continue
+            if (!el || !item || item.animationAttrs.class === leaveClass) continue
 
-               items.update(id, {
-                  positionStyles: {
-                     transform: `translate3d(0, ${accPrevHeights}px, 0)`,
-                     ...(isReduced
-                        ? { transition: 'none' }
-                        : {
-                             transitionDuration: this.getTransitionData().duration,
-                             transitionTimingFunction: this.getTransitionData().easing,
-                          }),
-                  },
-               })
+            items.update(id, {
+               positionStyles: {
+                  willChange: 'transform',
+                  transform: `translate3d(0, ${accPrevHeights}px, 0)`,
+                  ...(isReduced
+                     ? { transition: 'none' }
+                     : { transitionDuration, transitionTimingFunction }),
+               },
+            })
 
-               accPrevHeights += (config.isTopAlign.value ? 1 : -1) * el.clientHeight
-            }
-         })
+            accPrevHeights += (config.isTopAlign.value ? 1 : -1) * el.clientHeight
+         }
       },
    }
 }
@@ -222,13 +225,18 @@ export function createTimeoutsSlice(items: ItemsSlice, animations: AnimationsSli
    return {
       isStreamPaused: ref(false),
       isStreamFocused: ref(false),
+      debounceTimeout: undefined as undefined | number,
       setStreamPause(newVal = true) {
          this.isStreamPaused.value = newVal
       },
       setStreamFocus(newVal = true) {
          this.isStreamFocused.value = newVal
       },
+      clearDebounceTimeout() {
+         window.clearTimeout(this.debounceTimeout)
+      },
       reset() {
+         this.clearDebounceTimeout()
          this.setStreamPause(false)
          this.setStreamFocus(false)
       },
@@ -251,7 +259,7 @@ export function createTimeoutsSlice(items: ItemsSlice, animations: AnimationsSli
 
          console.log('Pausing timeouts')
          items.updateAll((item) => {
-            clearTimeout(item.timeout as number)
+            window.clearTimeout(item.timeout as number)
 
             return {
                ...item,
@@ -266,7 +274,7 @@ export function createTimeoutsSlice(items: ItemsSlice, animations: AnimationsSli
 
          console.log('Resuming timeouts')
          items.updateAll((item) => {
-            clearTimeout(item.timeout as number)
+            window.clearTimeout(item.timeout as number)
             /**
              * 'elapsed' may be equal to 'undefined' if a notification
              * is pushed while the stream is paused as pause() won't be called.
@@ -297,6 +305,11 @@ export function createTimeoutsSlice(items: ItemsSlice, animations: AnimationsSli
          })
 
          this.setStreamPause(false)
+      },
+      resumeWithDebounce(ms: number) {
+         this.debounceTimeout = window.setTimeout(() => {
+            this.resume()
+         }, ms)
       },
    }
 }
