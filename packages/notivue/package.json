@@ -57,12 +57,12 @@
       "watch": "rm -rf dist && concurrently \"vite build --watch\" \"pnpm build:css --watch\""
    },
    "devDependencies": {
-      "@nuxt/kit": "^3.7.1",
-      "@nuxt/schema": "^3.0.0",
-      "@types/node": "^20.8.7",
+      "@nuxt/kit": "^3.8.0",
+      "@nuxt/schema": "^3.8.0",
+      "@types/node": "^20.8.10",
       "@vitejs/plugin-vue": "4.4.0",
-      "concurrently": "^8.2.1",
-      "defu": "^6.1.2",
+      "concurrently": "^8.2.2",
+      "defu": "^6.1.3",
       "esbuild": "^0.19.5",
       "typescript": "5.2.2",
       "vite": "4.4.11",
