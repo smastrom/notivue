@@ -29,9 +29,6 @@ _Granularly include only the features you need_
 **💊 Drop-in components to enhance notifications**  
 _NotivueSwipe, NotivueKeyboard, all optional and customizable_
 
-**🎢 Slick transitions and animations**  
-_Customize any animation with CSS_
-
 **🧩 Headless API**  
 _Use your own notifications while Notivue handles the rest_
 
@@ -40,6 +37,9 @@ _Update pending notifications with ease_
 
 **🔰 Includes a ready-made component with anything you need**  
 _Themes, icons, rtl support and much more_
+
+**🎢 Slick transitions and animations**  
+_Customize any animation with plain CSS_
 
 **♿️ Fully accessible**  
 _Built-in screen reader, reduced motion, and keyboard support_
@@ -61,7 +61,7 @@ pnpm add notivue
 
 <br />
 
-## Single-page app (Vite or Webpack)
+## Single-page app (Vite)
 
 > :bulb: See [↓ below](#nuxt) for **Nuxt**
 
@@ -103,7 +103,7 @@ import { push } from './main'
 ```
 
 <details>
-<summary><strong>Using custom components</strong></summary>
+<summary><strong>Headless, with custom components</strong></summary>
 
 ```vue
 <script setup>
@@ -115,6 +115,7 @@ import { push } from './main'
   <button @click="push.success('This is your first notification!')">Push</button>
 
   <Notivue v-slot="item">
+    <!-- Your custom notification -->
     <div class="rounded-full flex py-2 pl-3 bg-slate-700 text-slate-50 text-sm">
       <p :role="item.ariaRole" :aria-live="item.ariaLive">
         {{ item.message }}
