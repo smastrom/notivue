@@ -24,7 +24,7 @@ export function useTouchEvents() {
          timeouts.clearDebounceTimeout()
          timeouts.pause()
 
-         timeouts.setDebounceTimeout(2000)
+         timeouts.resumeWithDebounce(2000)
       }
    }
 

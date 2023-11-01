@@ -226,19 +226,14 @@ export function createTimeoutsSlice(items: ItemsSlice, animations: AnimationsSli
       isStreamPaused: ref(false),
       isStreamFocused: ref(false),
       debounceTimeout: undefined as undefined | number,
-      setDebounceTimeout(ms: number) {
-         this.debounceTimeout = window.setTimeout(() => {
-            this.resume()
-         }, ms)
-      },
-      clearDebounceTimeout() {
-         window.clearTimeout(this.debounceTimeout)
-      },
       setStreamPause(newVal = true) {
          this.isStreamPaused.value = newVal
       },
       setStreamFocus(newVal = true) {
          this.isStreamFocused.value = newVal
+      },
+      clearDebounceTimeout() {
+         window.clearTimeout(this.debounceTimeout)
       },
       reset() {
          this.clearDebounceTimeout()
@@ -310,6 +305,11 @@ export function createTimeoutsSlice(items: ItemsSlice, animations: AnimationsSli
          })
 
          this.setStreamPause(false)
+      },
+      resumeWithDebounce(ms: number) {
+         this.debounceTimeout = window.setTimeout(() => {
+            this.resume()
+         }, ms)
       },
    }
 }

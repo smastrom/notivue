@@ -160,7 +160,7 @@ function pauseTimeouts() {
 
 function resumeTimeouts(ms: number) {
    timeouts.clearDebounceTimeout()
-   timeouts.setDebounceTimeout(ms)
+   timeouts.resumeWithDebounce(ms)
 }
 
 /* ====================================================================================
