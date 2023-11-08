@@ -22,7 +22,7 @@ const module = defineNuxtModule({
             getContents() {
                return `
                   import { createNotivue } from 'notivue'
-                  import { defineNuxtPlugin, useRuntimeConfig } from '#app'
+                  import { defineNuxtPlugin, useRuntimeConfig } from '#imports'
 
                   function nullToInf(obj) {
                      if (obj == null) return 1 / 0
