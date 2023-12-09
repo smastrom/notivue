@@ -6,8 +6,6 @@ export function getRandomInt(min: number, max: number) {
 
 export const isSSR = typeof window === 'undefined'
 
-export const isDesktop =
-   isSSR ||
-   /(Windows NT|Mac OS X|Linux|Ubuntu|Firefox|Chrome|Safari|Trident|MSIE)/i.test(
-      navigator.userAgent
-   )
+export function isMobile() {
+   return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent)
+}

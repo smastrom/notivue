@@ -81,26 +81,24 @@ const isSwipeDisabled = computed(() => !config.pauseOnHover.value)
 
 <template>
    <div class="Controls">
-      <!-- Disabled must be toggled as a string (and not boolean), Nuxt bug? -->
-
       <button
-         v-if="isDesktop"
-         class="ButtonBase SwitchButton"
-         role="switch"
-         :aria-checked="config.pauseOnHover.value"
-         @click="togglePauseOnHover"
-      >
-         Pause on Hover
-      </button>
-
-      <button
-         v-else
+         v-if="isMobile()"
          class="ButtonBase SwitchButton"
          role="switch"
          :aria-checked="config.pauseOnTouch.value"
          @click="togglePauseOnTouch"
       >
          Pause on Touch
+      </button>
+
+      <button
+         v-else
+         class="ButtonBase SwitchButton"
+         role="switch"
+         :aria-checked="config.pauseOnHover.value"
+         @click="togglePauseOnHover"
+      >
+         Pause on Hover
       </button>
 
       <button
