@@ -23,7 +23,7 @@
 
 ## Features
 
-**🧬 JS and CSS modular**  
+**🧬 Fully modular**  
 _Granularly include only the features you need_
 
 **💊 Drop-in components to enhance notifications**  
@@ -35,8 +35,8 @@ _Use your own notifications while Notivue handles the rest_
 **🌀 Promise API**  
 _Update pending notifications with ease_
 
-**🔰 Includes a ready-made component with anything you need**  
-_Themes, icons, rtl support and much more_
+**🔰 Ready-made notifications with anything you need**  
+_Themes, icons, RTL support and much more_
 
 **🎢 Slick transitions and animations**  
 _Customize any animation with plain CSS_
@@ -115,7 +115,7 @@ import { push } from './main'
   <button @click="push.success('This is your first notification!')">Push</button>
 
   <Notivue v-slot="item">
-    <!-- Your custom notification -->
+    <!-- Your custom notification 👇 -->
     <div class="rounded-full flex py-2 pl-3 bg-slate-700 text-slate-50 text-sm">
       <p :role="item.ariaRole" :aria-live="item.ariaLive">
         {{ item.message }}
@@ -196,4 +196,4 @@ const push = usePush()
 
 ## License
 
-MIT Licensed - Simone Mastromattei © 2023
+MIT

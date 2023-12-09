@@ -11,7 +11,7 @@ export function mergeDeep<T>(target: T, source: Record<string, any>): T {
 
    for (const key in source) {
       if (source.hasOwnProperty(key)) {
-         if (source[key] && typeof source[key] === 'object') {
+         if (isPlainObject(source[key])) {
             merged[key as keyof T] = mergeDeep(target[key as keyof T], source[key]) as T[keyof T]
          } else {
             merged[key as keyof T] = source[key]
@@ -36,4 +36,14 @@ export function mergeNotificationOptions<T extends Obj = Obj>(
       ...optionsFromPush,
       ...(optionsFromPush.type === 'promise' ? { duration: Infinity } : {}), // Force duration infinity
    }
+}
+
+// https://github.com/tailwindlabs/tailwindcss/blob/master/src/util/isPlainObject.js
+export default function isPlainObject(value: unknown) {
+   if (Object.prototype.toString.call(value) !== '[object Object]') {
+      return false
+   }
+
+   const prototype = Object.getPrototypeOf(value)
+   return prototype === null || Object.getPrototypeOf(prototype) === null
 }
