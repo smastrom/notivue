@@ -1,11 +1,10 @@
 import { mount } from 'cypress/vue'
-import { notivuePlugin } from './utils'
 
 import { Classes } from '@/Notifications/constants'
 
 import Notivue, { CyNotificationsProps } from '@/tests/Notifications/components/Notivue.vue'
 
-import type { NotivueTheme } from 'notivue'
+import { createNotivue, type NotivueTheme } from 'notivue'
 
 declare global {
    namespace Cypress {
@@ -26,9 +25,11 @@ Cypress.Commands.add('checkTheme', (theme: NotivueTheme) => {
 })
 
 Cypress.Commands.add('mountNotifications', (props = {}) => {
+   const notivue = createNotivue()
+
    return mount(Notivue, {
       global: {
-         plugins: [notivuePlugin()],
+         plugins: [notivue],
       },
       props,
    })

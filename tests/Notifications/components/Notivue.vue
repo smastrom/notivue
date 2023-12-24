@@ -1,14 +1,5 @@
 <script setup lang="ts">
-import {
-   usePush,
-   Notivue,
-   Notifications,
-   NotivueIcons,
-   NotivueTheme,
-   type PushOptions,
-} from 'notivue'
-
-const push = usePush()
+import { push, Notivue, Notifications, NotivueIcons, NotivueTheme, type PushOptions } from 'notivue'
 
 export interface CyNotificationsProps {
    options?: PushOptions

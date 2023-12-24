@@ -2,9 +2,9 @@
 import { onMounted, onBeforeUnmount, watchEffect } from 'vue'
 
 import {
+   push,
    NotivueKeyboard,
    Notivue,
-   usePush,
    useNotivueConfig,
    type NotivueKeyboardProps,
 } from 'notivue'
@@ -21,8 +21,6 @@ const cyProps = withDefaults(defineProps<CyNotivueKeyboardProps>(), {
    limit: Infinity,
    maxAnnouncements: 2,
 })
-
-const push = usePush()
 
 const config = useNotivueConfig()
 
