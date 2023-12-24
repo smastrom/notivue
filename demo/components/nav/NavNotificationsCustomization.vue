@@ -1,6 +1,4 @@
 <script setup lang="ts">
-const push = usePush()
-
 const { state, actions, computed } = useStore()
 
 function clearAllAndPushOne() {

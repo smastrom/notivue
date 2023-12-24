@@ -5,7 +5,6 @@ import PromiseIcon from '../icons/PromiseIcon.vue'
 import InfoIcon from '../icons/InfoIcon.vue'
 import WarnIcon from '../icons/WarnIcon.vue'
 
-const push = usePush()
 const store = useStore()
 
 const {

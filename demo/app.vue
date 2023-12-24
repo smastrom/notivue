@@ -25,7 +25,6 @@ import type {
 const { state } = useStore()
 
 const config = useNotivue()
-const push = usePush()
 
 !isSSR &&
    watchEffect(() => document.documentElement.style.setProperty('--nv-root-width', state.maxWidth))
