@@ -1,11 +1,6 @@
 export { createNotivue } from '@/core/createNotivue'
 
-export {
-   usePush,
-   useNotivue,
-   useNotivue as useNotivueConfig,
-   useNotifications,
-} from '@/core/useStore'
+export { usePush, useNotivue, useNotifications } from '@/core/useStore'
 
 export { default as Notivue } from '@/Notivue/Notivue.vue'
 export { default as NotivueAstro } from './astro/Notivue.vue'

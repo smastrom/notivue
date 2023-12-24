@@ -52,9 +52,11 @@ export default defineConfig({
          closeBundle() {
             writeFileSync(
                'dist/astro.js',
-               'export { pushAstro as push } from "./index.js";\nexport { NotivueAstro as Notivue } from "./index.js";\n'.concat(
-                  astroReExports.map((name) => `export { ${name} } from "./index.js";`).join('\n')
-               )
+               [
+                  'export { pushAstro as push } from "./index.js";',
+                  'export { NotivueAstro as Notivue } from "./index.js";',
+                  ...astroReExports.map((name) => `export { ${name} } from "./index.js";`),
+               ].join('\n')
             )
          },
       },
@@ -75,7 +77,6 @@ const astroReExports = [
 
    'useNotivueKeyboard',
    'useNotifications',
-   'useNotivueConfig',
    'useNotivue',
    'usePush',
 

@@ -1,13 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, watchEffect } from 'vue'
 
-import {
-   push,
-   NotivueKeyboard,
-   Notivue,
-   useNotivueConfig,
-   type NotivueKeyboardProps,
-} from 'notivue'
+import { push, NotivueKeyboard, Notivue, useNotivue, type NotivueKeyboardProps } from 'notivue'
 
 import Candidate from './Candidate.vue'
 import Unqualified from './Unqualified.vue'
@@ -22,7 +16,7 @@ const cyProps = withDefaults(defineProps<CyNotivueKeyboardProps>(), {
    maxAnnouncements: 2,
 })
 
-const config = useNotivueConfig()
+const config = useNotivue()
 
 watchEffect(() => {
    config.enqueue.value = cyProps.enqueue

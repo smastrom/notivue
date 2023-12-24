@@ -15,13 +15,12 @@ export function useStore() {
 
 /**
  * @returns
- * An object with the same shape of the plugin
- * [configuration](https://notivuedocs.netlify.app/customization/configuration) except
- * for the fact that each property is a [ref](https://vuejs.org/guide/essentials/reactivity-fundamentals.html#ref)
- * that allows for reactive updates and side effects.
  *
- * @docs
- * https://notivuedocs.netlify.app/api/use-notivue
+ * The current [configuration](https://notivuedocs.netlify.app/customization/configuration)
+ * where each property is a [ref](https://vuejs.org/guide/essentials/reactivity-fundamentals.html#ref)
+ * that allows for reactive updates and side effects watching.
+ *
+ * @docs https://notivuedocs.netlify.app/api/use-notivue
  */
 export function useNotivue(): ConfigSlice {
    if (isSSR) {
@@ -32,13 +31,13 @@ export function useNotivue(): ConfigSlice {
 }
 
 /**
- * @deprecated Since version 2.0.0, import `push` directly instead.
+ * @deprecated
+ *
+ * Since version 2.0.0, import `push` directly instead.
  *
  * ```ts
  * import { push } from 'notivue'
  * ```
- *
- * https://notivuedocs.netlify.app/api/use-push
  */
 export function usePush() {
    return push
@@ -46,13 +45,13 @@ export function usePush() {
 
 /**
  * @returns
- * An object with two computed properties:
+ *
+ * Object of two computed properties:
  *
  * - `entries` - read-only reactive array of all the current displayed notifications
  * - `queue` - read-only reactive array of all the notifications waiting to be displayed
  *
- * @docs
- * https://notivuedocs.netlify.app/api/use-notifications
+ * @docs https://notivuedocs.netlify.app/api/use-notifications
  */
 export function useNotifications(): NotivueComputedEntries {
    if (isSSR) {

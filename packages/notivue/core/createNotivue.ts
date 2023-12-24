@@ -23,7 +23,7 @@ export function createNotivue(userConfig: NotivueConfig = {}): Plugin {
    const animations = createAnimations(config, items, elements)
    const timeouts = createTimeouts(items, animations)
 
-   const store = { config, animations, timeouts, queue, items, elements }
+   const store = { config, queue, items, elements, animations, timeouts }
 
    const proxies = createProxies(store)
    const push = Object.freeze(createPush(proxies))
