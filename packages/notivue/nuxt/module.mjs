@@ -18,7 +18,7 @@ const module = defineNuxtModule({
 
       if (nuxt.options.runtimeConfig.public.notivue.addPlugin !== false) {
          addPluginTemplate({
-            filename: 'notivue.client.mjs',
+            filename: '001.notivue.client.mjs',
             getContents() {
                return `
                   import { createNotivue } from 'notivue'
@@ -38,15 +38,23 @@ const module = defineNuxtModule({
                      const options = useRuntimeConfig().public?.notivue || {}
                      const deserializedOpts = nullToInf(JSON.parse(JSON.stringify(options)))
                      delete deserializedOpts.addPlugin
-   
-                     createNotivue(vueApp, deserializedOpts)
+
+                     const notivue = createNotivue(deserializedOpts)
+
+                     vueApp.use(notivue)
                   })           
                   `
             },
          })
       }
 
-      for (const name of ['usePush', 'useNotivue', 'useNotifications', 'useNotivueKeyboard']) {
+      for (const name of [
+         'push',
+         'usePush',
+         'useNotivue',
+         'useNotifications',
+         'useNotivueKeyboard',
+      ]) {
          addImports({ name, as: name, from: 'notivue' })
       }
 
