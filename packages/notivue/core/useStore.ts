@@ -1,8 +1,8 @@
 import { inject, computed, toRefs, reactive } from 'vue'
 
-import { createPushSSR } from './createPush'
 import { isSSR } from './utils'
 import { notivueInjectionKey } from './createNotivue'
+import { push } from './createPush'
 import { DEFAULT_CONFIG } from './constants'
 
 import { getSlotContext } from '@/Notivue/utils'
@@ -32,15 +32,16 @@ export function useNotivue(): ConfigSlice {
 }
 
 /**
- * @returns
- * Portion of the store matching the actions to create notifications.
+ * @deprecated Since version 2.0.0, import `push` directly instead.
+ *
+ * ```ts
+ * import { push } from 'notivue'
+ * ```
  *
  * https://notivuedocs.netlify.app/api/use-push
  */
 export function usePush() {
-   if (isSSR) return createPushSSR()
-
-   return useStore().push
+   return push
 }
 
 /**
