@@ -13,7 +13,8 @@
 ---
 
 **Examples:** [Custom Components](https://stackblitz.com/edit/vitejs-vite-9jkh73?file=src%2Fcomponents%2FPage.vue) -
-[Nuxt](https://stackblitz.com/edit/nuxt-starter-fnhcmx?file=pages%2Findex.vue)
+[Nuxt](https://stackblitz.com/edit/nuxt-starter-fnhcmx?file=pages%2Findex.vue) -
+[Astro](https://stackblitz.com/edit/withastro-astro-qyesvk?file=src%2Fcomponents%2FVueComponent.vue)
 
 <br />
 
@@ -34,6 +35,9 @@ _Use your own notifications while Notivue handles the rest_
 
 **🌀 Promise API**  
 _Update pending notifications with ease_
+
+**💫 Astro and Nuxt modules**  
+_Buit-in Astro and Nuxt integrations_
 
 **🔰 Ready-made notifications with anything you need**  
 _Themes, icons, RTL support and much more_
@@ -61,7 +65,7 @@ pnpm add notivue
 
 <br />
 
-## Single-page app (Vite)
+## Vite
 
 > :bulb: See [↓ below](#nuxt) for **Nuxt**
 
@@ -76,10 +80,10 @@ import App from './App.vue'
 import 'notivue/notifications.css' // Only needed if using built-in notifications
 import 'notivue/animations.css' // Only needed if using built-in animations
 
+const notivue = createNotivue()
 const app = createApp(App)
 
-// Place it at THE END of the app.use() chain, just right before app.mount()
-export const push = createNotivue(app)
+app.use(notivue)
 app.mount('#app')
 ```
 
@@ -87,12 +91,11 @@ app.mount('#app')
 
 ```vue
 <script setup>
-import { Notivue, Notifications } from 'notivue'
-import { push } from './main'
+import { Notivue, Notifications, push } from 'notivue'
 </script>
 
 <template>
-  <button @click="push.success('This is your first notification!')">Push</button>
+  <button @click="push.success('Hello from your first notification!')">Push</button>
 
   <Notivue v-slot="item">
     <Notifications :item="item" />
@@ -107,8 +110,7 @@ import { push } from './main'
 
 ```vue
 <script setup>
-import { Notivue } from 'notivue'
-import { push } from './main'
+import { Notivue, push } from 'notivue'
 </script>
 
 <template>
@@ -170,10 +172,6 @@ export default defineNuxtConfig({
 **app.vue**
 
 ```vue
-<script setup>
-const push = usePush()
-</script>
-
 <template>
   <button @click="push.success('This is your first notification!')">Push</button>
 
