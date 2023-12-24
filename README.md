@@ -36,8 +36,8 @@ _Use your own notifications while Notivue handles the rest_
 **🌀 Promise API**  
 _Update pending notifications with ease_
 
-**💫 Astro and Nuxt modules**  
-_Buit-in Astro and Nuxt modules_
+**💫 Nuxt and Astro modules**  
+_Buit-in Nuxt and Astro modules_
 
 **🔰 Ready-made notifications with anything you need**  
 _Themes, icons, RTL support and much more_
