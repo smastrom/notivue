@@ -37,7 +37,7 @@ _Use your own notifications while Notivue handles the rest_
 _Update pending notifications with ease_
 
 **💫 Astro and Nuxt modules**  
-_Buit-in Astro and Nuxt integrations_
+_Buit-in Astro and Nuxt modules_
 
 **🔰 Ready-made notifications with anything you need**  
 _Themes, icons, RTL support and much more_
@@ -80,7 +80,7 @@ import App from './App.vue'
 import 'notivue/notifications.css' // Only needed if using built-in notifications
 import 'notivue/animations.css' // Only needed if using built-in animations
 
-const notivue = createNotivue()
+const notivue = createNotivue(/* Options */)
 const app = createApp(App)
 
 app.use(notivue)
