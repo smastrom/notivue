@@ -1,5 +1,3 @@
-export { notivue } from '@/core/notivue'
-
 export { createNotivue } from '@/core/createNotivue'
 
 export {
@@ -10,8 +8,12 @@ export {
 } from '@/core/useStore'
 
 export { default as Notivue } from '@/Notivue/Notivue.vue'
+export { default as NotivueAstro } from './astro/Notivue.vue'
 
 export { default as NotivueSwipe } from '@/NotivueSwipe/NotivueSwipe.vue'
+
+export { push } from '@/core/createPush'
+export { push as pushAstro } from './astro/push'
 
 export { default as NotivueKeyboard } from '@/NotivueKeyboard/NotivueKeyboard.vue'
 export { useNotivueKeyboard } from '@/NotivueKeyboard/useNotivueKeyboard'
@@ -33,3 +35,4 @@ export * from './Notivue/types'
 export * from './NotivueSwipe/types'
 export * from './NotivueKeyboard/types'
 export * from './Notifications/types'
+export * from './astro/types'
