@@ -1,4 +1,4 @@
-import { ref, shallowRef, computed, triggerRef, toRefs, reactive } from 'vue'
+import { ref, shallowRef, computed, triggerRef, toRefs, reactive, nextTick } from 'vue'
 
 import { mergeDeep, mergeNotificationOptions as mergeOptions } from './utils'
 import { getSlotContext } from '@/Notivue/utils'
@@ -159,18 +159,13 @@ export function createAnimations(config: ConfigSlice, items: ItemsSlice, element
             item?.[isManual ? 'onManualClear' : 'onAutoClear']?.(getSlotContext(item))
          }
 
-         if (!leave || isDestroy || this.isReducedMotion.value) return onAnimationend()
+         if (!item || !leave || isDestroy || this.isReducedMotion.value) return onAnimationend()
 
-         items.update(id, {
-            positionStyles: {
-               ...item?.positionStyles,
-               zIndex: -1,
-            },
-            animationAttrs: {
-               class: leave,
-               onAnimationend,
-            },
-         })
+         item.positionStyles.zIndex = -1
+         item.animationAttrs = {
+            class: leave,
+            onAnimationend,
+         }
 
          this.updatePositions()
       },
@@ -373,8 +368,10 @@ export function createProxies({
                      const item = items.get(entry.id)
                      if (!item) return
 
-                     item.animationAttrs.class = ''
-                     item.animationAttrs.onAnimationend = undefined
+                     item.animationAttrs = {
+                        class: '',
+                        onAnimationend: undefined,
+                     }
                   },
                },
                timeout: shouldEnqueue ? createTimeout : createTimeout(),
