@@ -46,7 +46,7 @@ const dataAlign = computed(() => ({
    <Teleport :to="config.teleportTo.value">
       <!-- List Container -->
       <ol
-         v-if="items.getLength() > 0"
+         v-if="items.length"
          v-bind="{ ...mouseEvents, ...touchEvents, ...elements.rootAttrs.value, ...dataAlign }"
          :aria-label="props.listAriaLabel"
          :ref="elements.root"
@@ -59,7 +59,7 @@ const dataAlign = computed(() => ({
             tabindex="-1"
             :key="item.id"
             :data-notivue-id="item.id"
-            :aria-setsize="items.getLength()"
+            :aria-setsize="items.length"
             :aria-posinset="index + 1"
             :ref="elements.items"
             :style="{
