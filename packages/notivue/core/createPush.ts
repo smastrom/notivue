@@ -3,6 +3,12 @@ import { createProxies } from './createStore'
 
 import type { NotificationType, Push, PushParameter } from 'notivue'
 
+export const push = createPushMock()
+
+export function setPush(p: Push) {
+   Object.assign(push, p)
+}
+
 export function createPush(proxies: ReturnType<typeof createProxies>): Push {
    let createCount = 0
 
