@@ -4,13 +4,19 @@ import { TransitionType as TType } from './constants'
 import type { NotivueStore } from 'notivue'
 
 export function createWatchers(store: NotivueStore) {
-   watch(store.config.isTopAlign, () => {
-      store.animations.updatePositions(TType.IMMEDIATE)
-   })
+   watch(
+      store.config.isTopAlign,
+      () => {
+         store.animations.updatePositions(TType.IMMEDIATE)
+      },
+      { flush: 'post' }
+   )
 
    watch(
       () => store.items.length,
-      () => store.animations.updatePositions(TType.PUSH),
+      () => {
+         store.animations.updatePositions(TType.PUSH)
+      },
       { flush: 'post' }
    )
 
@@ -21,7 +27,8 @@ export function createWatchers(store: NotivueStore) {
             store.timeouts.reset()
             store.elements.setRootAttrs({})
          }
-      }
+      },
+      { flush: 'post' }
    )
 
    watch(

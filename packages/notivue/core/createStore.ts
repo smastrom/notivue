@@ -43,6 +43,8 @@ export function createQueue() {
       },
       update(id: string, newOptions: DeepPartial<StoreItem>) {
          Object.assign(this.get(id) ?? {}, newOptions)
+      },
+      triggerRef() {
          triggerRef(this.entries)
       },
       remove(id: string) {
@@ -79,6 +81,8 @@ export function createItems(config: ConfigSlice, queue: QueueSlice) {
       },
       update(id: string, newOptions: DeepPartial<StoreItem>) {
          Object.assign(this.get(id) ?? {}, newOptions)
+      },
+      triggerRef() {
          triggerRef(this.entries)
       },
       updateAll(updateItem: (item: StoreItem) => StoreItem) {
@@ -161,11 +165,16 @@ export function createAnimations(config: ConfigSlice, items: ItemsSlice, element
 
          if (!item || !leave || isDestroy || this.isReducedMotion.value) return onAnimationend()
 
-         item.positionStyles.zIndex = -1
-         item.animationAttrs = {
-            class: leave,
-            onAnimationend,
-         }
+         items.update(id, {
+            positionStyles: {
+               ...item.positionStyles,
+               zIndex: -1,
+            },
+            animationAttrs: {
+               class: leave,
+               onAnimationend,
+            },
+         })
 
          this.updatePositions()
       },
@@ -206,6 +215,8 @@ export function createAnimations(config: ConfigSlice, items: ItemsSlice, element
 
             accPrevHeights += (config.isTopAlign.value ? 1 : -1) * el.clientHeight
          }
+
+         items.triggerRef()
       },
    }
 }
@@ -344,8 +355,10 @@ export function createProxies({
          if (isUpdate) {
             if (isQueueActive && queue.get(entry.id)) {
                queue.update(entry.id, { ...entry, createdAt, timeout: createTimeout })
+               queue.triggerRef()
             } else {
                items.update(entry.id, { ...entry, createdAt, timeout: createTimeout() })
+               items.triggerRef()
             }
          } else {
             const hasReachedLimit = items.length >= config.limit.value
@@ -359,19 +372,18 @@ export function createProxies({
             const shouldEnqueue =
                isQueueActive && !options.skipQueue && (queue.length > 0 || hasReachedLimit)
 
-            const item = {
+            const newEntry = {
                ...entry,
                createdAt,
                animationAttrs: {
                   class: animations.isReducedMotion.value ? '' : config.animations.value.enter,
                   onAnimationend() {
-                     const item = items.get(entry.id)
-                     if (!item) return
-
-                     item.animationAttrs = {
-                        class: '',
-                        onAnimationend: undefined,
-                     }
+                     items.update(entry.id, {
+                        animationAttrs: {
+                           class: '',
+                           onAnimationend: undefined,
+                        },
+                     })
                   },
                },
                timeout: shouldEnqueue ? createTimeout : createTimeout(),
@@ -380,9 +392,9 @@ export function createProxies({
             } as StoreItem<T>
 
             if (shouldEnqueue) {
-               queue.add(item)
+               queue.add(newEntry)
             } else {
-               items.add(item)
+               items.add(newEntry)
             }
          }
       },
