@@ -36,7 +36,7 @@ export function createQueue() {
       },
       add(item: StoreItem) {
          this.entries.value.push(item)
-         triggerRef(this.entries)
+         this.triggerRef()
       },
       get(id: string) {
          return this.entries.value.find(({ id: _id }) => id === _id)
@@ -64,7 +64,7 @@ export function createItems(config: ConfigSlice, queue: QueueSlice) {
       },
       add(item: StoreItem) {
          this.entries.value.unshift(item)
-         triggerRef(this.entries)
+         this.triggerRef()
       },
       addFromQueue() {
          const next = {
@@ -94,8 +94,10 @@ export function createItems(config: ConfigSlice, queue: QueueSlice) {
             return window.clearTimeout(timeout as number), false
          })
 
-         const shouldDequeue = config.enqueue.value && queue.length > 0
-         if (shouldDequeue) this.addFromQueue()
+         const shouldDequeue = queue.length > 0 && this.length < config.limit.value
+         if (shouldDequeue) {
+            nextTick(() => this.addFromQueue())
+         }
       },
       clear() {
          this.entries.value = []
@@ -353,7 +355,7 @@ export function createProxies({
          const createTimeout = () => timeouts.create(entry.id, entry.duration)
 
          if (isUpdate) {
-            if (isQueueActive && queue.get(entry.id)) {
+            if (queue.get(entry.id)) {
                queue.update(entry.id, { ...entry, createdAt, timeout: createTimeout })
                queue.triggerRef()
             } else {
@@ -369,8 +371,7 @@ export function createProxies({
                exceedingItems.forEach(({ id }) => timeouts.create(id, 10))
             }
 
-            const shouldEnqueue =
-               isQueueActive && !options.skipQueue && (queue.length > 0 || hasReachedLimit)
+            const shouldEnqueue = isQueueActive && !options.skipQueue && hasReachedLimit
 
             const newEntry = {
                ...entry,
