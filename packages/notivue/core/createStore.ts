@@ -1,4 +1,4 @@
-import { ref, shallowRef, computed, triggerRef, toRefs, reactive, nextTick } from 'vue'
+import { ref, shallowRef, computed, triggerRef, toRefs, reactive, nextTick, ToRefs, Ref } from 'vue'
 
 import { mergeDeep, mergeNotificationOptions as mergeOptions } from './utils'
 import { getSlotContext } from '@/Notivue/utils'
@@ -17,9 +17,12 @@ import type {
    ElementsSlice,
    TimeoutsSlice,
    AnimationsSlice,
+   NotivueConfigRequired,
 } from 'notivue'
 
-export function createConfig(userConfig: NotivueConfig) {
+export function createConfig(
+   userConfig: NotivueConfig
+): ToRefs<NotivueConfigRequired & { isTopAlign: boolean }> {
    const reactiveConfig = toRefs(reactive(mergeDeep(DEFAULT_CONFIG, userConfig)))
 
    return {
@@ -106,21 +109,26 @@ export function createItems(config: ConfigSlice, queue: QueueSlice) {
    }
 }
 
-export function createElements() {
-   type RootAttrs = Partial<{ class: string; onAnimationend: () => void }>
-
+export function createElements(): {
+   root: Ref<HTMLElement | null>
+   rootAttrs: Ref<Partial<{ class: string; onAnimationend: () => void }>>
+   setRootAttrs: (newAttrs: Partial<{ class: string; onAnimationend: () => void }>) => void
+   items: Ref<HTMLElement[]>
+   getSortedItems: () => HTMLElement[]
+   containers: Ref<HTMLElement[]>
+} {
    return {
-      root: ref<HTMLElement | null>(null),
-      rootAttrs: shallowRef<RootAttrs>({}),
-      setRootAttrs(newAttrs: RootAttrs) {
+      root: ref(null),
+      rootAttrs: shallowRef({}),
+      setRootAttrs(newAttrs) {
          this.rootAttrs.value = newAttrs
       },
-      items: ref<HTMLElement[]>([]),
+      items: ref([]),
       getSortedItems() {
          // This is a bit dirty, but it's better than cloning and reversing the array on every repositioning
          return this.items.value.sort((a, b) => +b.dataset.notivueId! - +a.dataset.notivueId!)
       },
-      containers: ref<HTMLElement[]>([]),
+      containers: ref([]),
    }
 }
 
