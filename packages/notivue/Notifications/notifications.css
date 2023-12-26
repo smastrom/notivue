@@ -67,24 +67,7 @@
    width: var(--nv-icon-size);
    height: var(--nv-icon-size);
    margin: var(--nv-spacing) 0 var(--nv-spacing) var(--nv-spacing);
-   animation: Notivue__icon-pop-kf 200ms ease-in-out backwards;
    color: var(--nv-accent, var(--nv-global-accent));
-
-   @media (prefers-reduced-motion) {
-      animation-duration: 0s;
-   }
-}
-
-@keyframes Notivue__icon-pop-kf {
-   0% {
-      opacity: 0;
-      transform: scale(0.33);
-   }
-
-   100% {
-      opacity: 1;
-      transform: scale(1);
-   }
 }
 
 .Notivue__content {

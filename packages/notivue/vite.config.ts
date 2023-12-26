@@ -73,6 +73,8 @@ const astroReExports = [
    'filledIcons',
    'outlinedIcons',
 
+   'createNotivue',
+
    'DEFAULT_CONFIG',
 
    'useNotivueKeyboard',

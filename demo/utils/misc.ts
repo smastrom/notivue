@@ -7,5 +7,6 @@ export function getRandomInt(min: number, max: number) {
 export const isSSR = typeof window === 'undefined'
 
 export function isMobile() {
+   if (isSSR) return false
    return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent)
 }
