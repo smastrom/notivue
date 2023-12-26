@@ -1,6 +1,6 @@
 {
    "name": "notivue",
-   "version": "1.4.5",
+   "version": "2.0.0",
    "private": false,
    "description": "Fully-featured toast notification system for Vue and Nuxt",
    "keywords": [
@@ -40,8 +40,14 @@
          "require": "./nuxt/module.cjs",
          "types": "./nuxt/index.d.ts"
       },
+      "./astro": {
+         "import": "./dist/astro.js",
+         "types": "./dist/index.d.ts"
+      },
       "./notifications.css": "./dist/Notifications/notifications.css",
-      "./animations.css": "./dist/core/animations.css"
+      "./animations.css": "./dist/core/animations.css",
+      "./astro/notifications.css": "./dist/Notifications/notifications.css",
+      "./astro/animations.css": "./dist/core/animations.css"
    },
    "module": "dist/index.js",
    "types": "dist/index.d.ts",
@@ -59,11 +65,11 @@
    "devDependencies": {
       "@nuxt/kit": "^3.8.2",
       "@nuxt/schema": "^3.8.2",
-      "@types/node": "^20.10.4",
+      "@types/node": "^20.10.5",
       "@vitejs/plugin-vue": "4.4.0",
       "concurrently": "^8.2.2",
       "defu": "^6.1.3",
-      "esbuild": "^0.19.8",
+      "esbuild": "^0.19.10",
       "typescript": "5.2.2",
       "vite": "4.4.11",
       "vite-plugin-dts": "3.6.0",

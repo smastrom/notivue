@@ -1,14 +1,4 @@
-import { createNotivue, type NotivueConfig, type PushOptions } from 'notivue'
-
-import type { Plugin } from 'vue'
-
-export function notivuePlugin(config: NotivueConfig = {}): Plugin {
-   return {
-      install(app) {
-         createNotivue(app, config)
-      },
-   }
-}
+import type { PushOptions } from 'notivue'
 
 export function parseText(subject: any) {
    return JSON.parse(subject.text()) as Record<string, any>

@@ -1,64 +1,43 @@
-import { watch, type App, type InjectionKey } from 'vue'
+import type { App, InjectionKey, Plugin } from 'vue'
+import type { NotivueConfig, NotivueStore } from 'notivue'
 
-import { TransitionType as TType } from './constants'
-import { createPush as createPushSlice } from './createPush'
+import { setPush, createPush as createPush } from './createPush'
+import { createWatchers } from './createWatchers'
 import {
-   createConfigSlice,
-   createQueueSlice,
-   createItemsSlice,
-   createElementsSlice,
-   createAnimationsSlice,
-   createTimeoutsSlice,
-   createProxiesSlice,
+   createConfig,
+   createQueue,
+   createItems,
+   createElements,
+   createAnimations,
+   createTimeouts,
+   createProxies,
 } from './createStore'
-
-import type { NotivueConfig, Push, NotivueStore } from 'notivue'
 
 export const notivueInjectionKey = Symbol('') as InjectionKey<NotivueStore>
 
-export function createNotivue(app: App, userConfig: NotivueConfig = {}): Push {
-   const config = createConfigSlice(userConfig)
-   const elements = createElementsSlice()
-   const queue = createQueueSlice()
-   const items = createItemsSlice(config, queue)
-   const animations = createAnimationsSlice(config, items, elements)
-   const timeouts = createTimeoutsSlice(items, animations)
+export function createNotivue(userConfig: NotivueConfig = {}): Plugin {
+   const config = createConfig(userConfig)
+   const queue = createQueue()
+   const items = createItems(config, queue)
+   const elements = createElements()
+   const animations = createAnimations(config, items, elements)
+   const timeouts = createTimeouts(items, animations)
 
-   const proxies = createProxiesSlice({ config, items, queue, animations, timeouts })
-   const push = Object.freeze(createPushSlice(proxies))
+   const store = { config, queue, items, elements, animations, timeouts }
 
-   watch(config.isTopAlign, () => animations.updatePositions(TType.IMMEDIATE))
+   const proxies = createProxies(store)
+   const push = Object.freeze(createPush(proxies))
 
-   watch(
-      () => items.getLength(),
-      () => animations.updatePositions(TType.PUSH),
-      { flush: 'post' }
-   )
+   setPush(push)
 
-   watch(
-      () => items.getLength() === 0 && queue.getLength() === 0,
-      (isReset) => {
-         if (isReset) {
-            timeouts.reset()
-            elements.setRootAttrs({})
+   createWatchers(store)
 
-            console.log('Reset!')
-         }
-      }
-   )
+   const notivue = {
+      install(app: App) {
+         app.config.globalProperties.$push = push
+         app.provide(notivueInjectionKey, store)
+      },
+   }
 
-   watch(
-      () => config.animations.value.enter,
-      (newEnter, prevEnter) => {
-         if (newEnter !== prevEnter) {
-            animations.resetTransitionData()
-
-            console.log('Transition data reset!')
-         }
-      }
-   )
-
-   app.provide(notivueInjectionKey, { config, timeouts, animations, push, queue, items, elements })
-
-   return push
+   return notivue
 }

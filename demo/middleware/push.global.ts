@@ -1,5 +1,5 @@
-export default defineNuxtRouteMiddleware(() => {
-   const push = usePush()
+import { push } from 'notivue'
 
+export default defineNuxtRouteMiddleware(() => {
    push.info('Welcome to Notivue! Use the controls below to test it out.')
 })

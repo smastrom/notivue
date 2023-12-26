@@ -39,7 +39,7 @@ export function mergeNotificationOptions<T extends Obj = Obj>(
 }
 
 // https://github.com/tailwindlabs/tailwindcss/blob/master/src/util/isPlainObject.js
-export default function isPlainObject(value: unknown) {
+function isPlainObject(value: unknown) {
    if (Object.prototype.toString.call(value) !== '[object Object]') {
       return false
    }

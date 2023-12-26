@@ -1,4 +1,4 @@
-import { ref, shallowRef, computed, triggerRef, nextTick, toRefs, reactive } from 'vue'
+import { ref, shallowRef, computed, triggerRef, toRefs, reactive, nextTick } from 'vue'
 
 import { mergeDeep, mergeNotificationOptions as mergeOptions } from './utils'
 import { getSlotContext } from '@/Notivue/utils'
@@ -19,7 +19,7 @@ import type {
    AnimationsSlice,
 } from 'notivue'
 
-export function createConfigSlice(userConfig: NotivueConfig) {
+export function createConfig(userConfig: NotivueConfig) {
    const reactiveConfig = toRefs(reactive(mergeDeep(DEFAULT_CONFIG, userConfig)))
 
    return {
@@ -28,21 +28,23 @@ export function createConfigSlice(userConfig: NotivueConfig) {
    }
 }
 
-export function createQueueSlice() {
+export function createQueue() {
    return {
       entries: shallowRef<StoreItem[]>([]),
-      getLength() {
+      get length() {
          return this.entries.value.length
       },
       add(item: StoreItem) {
          this.entries.value.push(item)
-         triggerRef(this.entries)
+         this.triggerRef()
       },
       get(id: string) {
          return this.entries.value.find(({ id: _id }) => id === _id)
       },
       update(id: string, newOptions: DeepPartial<StoreItem>) {
          Object.assign(this.get(id) ?? {}, newOptions)
+      },
+      triggerRef() {
          triggerRef(this.entries)
       },
       remove(id: string) {
@@ -54,15 +56,15 @@ export function createQueueSlice() {
    }
 }
 
-export function createItemsSlice(config: ConfigSlice, queue: QueueSlice) {
+export function createItems(config: ConfigSlice, queue: QueueSlice) {
    return {
       entries: shallowRef<StoreItem[]>([]),
-      getLength() {
+      get length() {
          return this.entries.value.length
       },
       add(item: StoreItem) {
          this.entries.value.unshift(item)
-         triggerRef(this.entries)
+         this.triggerRef()
       },
       addFromQueue() {
          const next = {
@@ -71,16 +73,16 @@ export function createItemsSlice(config: ConfigSlice, queue: QueueSlice) {
             createdAt: Date.now(),
          }
 
-         nextTick(() => {
-            queue.remove(next.id)
-            this.add(next)
-         })
+         queue.remove(next.id)
+         this.add(next)
       },
       get(id: string) {
          return this.entries.value.find(({ id: _id }) => id === _id)
       },
       update(id: string, newOptions: DeepPartial<StoreItem>) {
          Object.assign(this.get(id) ?? {}, newOptions)
+      },
+      triggerRef() {
          triggerRef(this.entries)
       },
       updateAll(updateItem: (item: StoreItem) => StoreItem) {
@@ -92,8 +94,10 @@ export function createItemsSlice(config: ConfigSlice, queue: QueueSlice) {
             return window.clearTimeout(timeout as number), false
          })
 
-         const shouldDequeue = config.enqueue.value && queue.getLength() > 0
-         if (shouldDequeue) this.addFromQueue()
+         const shouldDequeue = queue.length > 0 && this.length < config.limit.value
+         if (shouldDequeue) {
+            nextTick(() => this.addFromQueue())
+         }
       },
       clear() {
          this.entries.value = []
@@ -102,7 +106,7 @@ export function createItemsSlice(config: ConfigSlice, queue: QueueSlice) {
    }
 }
 
-export function createElementsSlice() {
+export function createElements() {
    type RootAttrs = Partial<{ class: string; onAnimationend: () => void }>
 
    return {
@@ -120,11 +124,7 @@ export function createElementsSlice() {
    }
 }
 
-export function createAnimationsSlice(
-   config: ConfigSlice,
-   items: ItemsSlice,
-   elements: ElementsSlice
-) {
+export function createAnimations(config: ConfigSlice, items: ItemsSlice, elements: ElementsSlice) {
    type TransitionData = { duration: string; easing: string }
 
    return {
@@ -165,11 +165,11 @@ export function createAnimationsSlice(
             item?.[isManual ? 'onManualClear' : 'onAutoClear']?.(getSlotContext(item))
          }
 
-         if (!leave || isDestroy || this.isReducedMotion.value) return onAnimationend()
+         if (!item || !leave || isDestroy || this.isReducedMotion.value) return onAnimationend()
 
          items.update(id, {
             positionStyles: {
-               ...item?.positionStyles,
+               ...item.positionStyles,
                zIndex: -1,
             },
             animationAttrs: {
@@ -217,11 +217,13 @@ export function createAnimationsSlice(
 
             accPrevHeights += (config.isTopAlign.value ? 1 : -1) * el.clientHeight
          }
+
+         items.triggerRef()
       },
    }
 }
 
-export function createTimeoutsSlice(items: ItemsSlice, animations: AnimationsSlice) {
+export function createTimeouts(items: ItemsSlice, animations: AnimationsSlice) {
    return {
       isStreamPaused: ref(false),
       isStreamFocused: ref(false),
@@ -253,7 +255,7 @@ export function createTimeoutsSlice(items: ItemsSlice, animations: AnimationsSli
          return window.setTimeout(() => animations.playLeave(id), duration)
       },
       pause() {
-         if (items.getLength() === 0 || this.isStreamPaused.value) return
+         if (items.length === 0 || this.isStreamPaused.value) return
 
          const pausedAt = Date.now()
 
@@ -270,7 +272,7 @@ export function createTimeoutsSlice(items: ItemsSlice, animations: AnimationsSli
          this.setStreamPause()
       },
       resume() {
-         if (items.getLength() === 0 || !this.isStreamPaused.value) return
+         if (items.length === 0 || !this.isStreamPaused.value) return
 
          console.log('Resuming timeouts')
          items.updateAll((item) => {
@@ -318,7 +320,7 @@ export function createTimeoutsSlice(items: ItemsSlice, animations: AnimationsSli
  * Methods called by users to create, update or remove notifications using the push object.
  */
 
-export function createProxiesSlice({
+export function createProxies({
    config,
    items,
    queue,
@@ -353,13 +355,15 @@ export function createProxiesSlice({
          const createTimeout = () => timeouts.create(entry.id, entry.duration)
 
          if (isUpdate) {
-            if (isQueueActive && queue.get(entry.id)) {
+            if (queue.get(entry.id)) {
                queue.update(entry.id, { ...entry, createdAt, timeout: createTimeout })
+               queue.triggerRef()
             } else {
                items.update(entry.id, { ...entry, createdAt, timeout: createTimeout() })
+               items.triggerRef()
             }
          } else {
-            const hasReachedLimit = items.getLength() >= config.limit.value
+            const hasReachedLimit = items.length >= config.limit.value
             const shouldDiscard = !isQueueActive && hasReachedLimit
 
             if (shouldDiscard) {
@@ -367,14 +371,21 @@ export function createProxiesSlice({
                exceedingItems.forEach(({ id }) => timeouts.create(id, 10))
             }
 
-            const shouldEnqueue =
-               isQueueActive && !options.skipQueue && (queue.getLength() > 0 || hasReachedLimit)
+            const shouldEnqueue = isQueueActive && !options.skipQueue && hasReachedLimit
 
-            const item = {
+            const newEntry = {
                ...entry,
                createdAt,
                animationAttrs: {
                   class: animations.isReducedMotion.value ? '' : config.animations.value.enter,
+                  onAnimationend() {
+                     items.update(entry.id, {
+                        animationAttrs: {
+                           class: '',
+                           onAnimationend: undefined,
+                        },
+                     })
+                  },
                },
                timeout: shouldEnqueue ? createTimeout : createTimeout(),
                clear: () => this.clear(entry.id),
@@ -382,9 +393,9 @@ export function createProxiesSlice({
             } as StoreItem<T>
 
             if (shouldEnqueue) {
-               queue.add(item)
+               queue.add(newEntry)
             } else {
-               items.add(item)
+               items.add(newEntry)
             }
          }
       },

@@ -4,8 +4,6 @@ import Button from '../shared/Button.vue'
 
 import profilePicture from '@/assets/profile-picture.jpg?url'
 
-const push = usePush()
-
 const { state, actions, computed } = useStore()
 
 export interface CustomActionProps {

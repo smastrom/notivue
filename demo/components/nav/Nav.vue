@@ -9,8 +9,6 @@ import Button from '../shared/Button.vue'
 import DismissIcon from '../icons/DismissIcon.vue'
 import DestroyIcon from '../icons/DestroyIcon.vue'
 import NavNotificationsCustomization from './NavNotificationsCustomization.vue'
-
-const push = usePush()
 </script>
 
 <template>

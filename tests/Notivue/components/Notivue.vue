@@ -1,14 +1,7 @@
 <script setup lang="ts">
 import { ref, shallowRef, toRefs, watchEffect, type Ref } from 'vue'
 
-import {
-   usePush,
-   useNotivue,
-   Notivue,
-   type PushOptions,
-   type NotivueConfig,
-   type Push,
-} from 'notivue'
+import { push, useNotivue, Notivue, type PushOptions, type NotivueConfig, type Push } from 'notivue'
 
 import { RESOLVE_REJECT_DELAY } from '@/support/utils'
 
@@ -21,7 +14,6 @@ export type CyNotivueProps = {
 const cyProps = defineProps<CyNotivueProps>()
 
 const config = useNotivue()
-const push = usePush()
 
 const { pauseOnTouch, pauseOnHover, teleportTo, limit, animations, enqueue } = toRefs(cyProps)
 
@@ -57,8 +49,8 @@ function pushWithAutoClearCallback() {
       push[type](pushCallbacks)
    })
 
-   push.promise(pushCallbacks).resolve(pushCallbacks)
    push.promise(pushCallbacks).reject(pushCallbacks)
+   push.load(pushCallbacks).success(pushCallbacks)
 }
 
 function pushWithManualClearCallback() {
@@ -69,7 +61,7 @@ function pushWithManualClearCallback() {
    })
 
    notifications.push(push.promise(pushCallbacks).resolve(pushCallbacks))
-   notifications.push(push.promise(pushCallbacks).reject(pushCallbacks))
+   notifications.push(push.load(pushCallbacks).error(pushCallbacks))
 
    notifications.forEach((n) => n.clear())
 }
@@ -97,10 +89,10 @@ async function pushPromiseAndResolve() {
 }
 
 async function pushPromiseAndReject() {
-   const promise = push.promise(cyProps.options ?? {})
+   const promise = push.load(cyProps.options ?? {})
    await new Promise((resolve) => setTimeout(resolve, RESOLVE_REJECT_DELAY))
 
-   promise.reject(cyProps.newOptions ?? cyProps.options ?? {})
+   promise.error(cyProps.newOptions ?? cyProps.options ?? {})
 }
 </script>
 
@@ -116,7 +108,7 @@ async function pushPromiseAndReject() {
       <button class="Error" @click="push.error(options ?? {})">Error</button>
       <button class="Warning" @click="push.warning(options ?? {})">Warning</button>
       <button class="Info" @click="push.info(options ?? {})">Info</button>
-      <button class="Promise" @click="push.promise(options ?? {})">Promise</button>
+      <button class="Promise" @click="push.load(options ?? {})">Promise</button>
 
       <button class="DestroyAll" @click="push.destroyAll">Destroy All</button>
       <button class="ClearAll" @click="push.clearAll">Clear All</button>

@@ -1,12 +1,12 @@
 import type { Ref, ComputedRef, CSSProperties } from 'vue'
 
 import {
-   createItemsSlice,
-   createConfigSlice,
-   createTimeoutsSlice,
-   createElementsSlice,
-   createQueueSlice,
-   createAnimationsSlice,
+   createItems,
+   createConfig,
+   createTimeouts,
+   createElements,
+   createQueue,
+   createAnimations,
 } from './createStore'
 
 // Utils
@@ -139,9 +139,15 @@ export type PushStatic = <T extends Obj = Obj>(
    options: PushParameter<T>
 ) => NotificationClearMethods
 
+export type PushPromiseReturnMethod = <T extends Obj = Obj>(
+   options: PushParameter<T>
+) => NotificationClearMethods
+
 export interface PushPromiseReturn {
-   resolve: <T extends Obj = Obj>(options: PushParameter<T>) => NotificationClearMethods
-   reject: <T extends Obj = Obj>(options: PushParameter<T>) => NotificationClearMethods
+   resolve: PushPromiseReturnMethod
+   success: PushPromiseReturnMethod
+   reject: PushPromiseReturnMethod
+   error: PushPromiseReturnMethod
 }
 
 export type PushPromise = <T extends Obj = Obj>(
@@ -154,16 +160,17 @@ export interface Push {
    info: PushStatic
    warning: PushStatic
    promise: PushPromise
+   load: PushPromise
    clearAll: () => void
    destroyAll: () => void
 }
 
-export type ConfigSlice = ReturnType<typeof createConfigSlice>
-export type AnimationsSlice = ReturnType<typeof createAnimationsSlice>
-export type TimeoutsSlice = ReturnType<typeof createTimeoutsSlice>
-export type QueueSlice = ReturnType<typeof createQueueSlice>
-export type ItemsSlice = ReturnType<typeof createItemsSlice>
-export type ElementsSlice = ReturnType<typeof createElementsSlice>
+export type ConfigSlice = ReturnType<typeof createConfig>
+export type AnimationsSlice = ReturnType<typeof createAnimations>
+export type TimeoutsSlice = ReturnType<typeof createTimeouts>
+export type QueueSlice = ReturnType<typeof createQueue>
+export type ItemsSlice = ReturnType<typeof createItems>
+export type ElementsSlice = ReturnType<typeof createElements>
 
 export type NotivueStore = {
    config: ConfigSlice
@@ -172,7 +179,6 @@ export type NotivueStore = {
    queue: QueueSlice
    items: ItemsSlice
    elements: ElementsSlice
-   push: Push
 }
 
 export interface NotivueComputedEntries {

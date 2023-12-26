@@ -1,5 +1,4 @@
 <script setup lang="ts">
-const push = usePush()
 const config = useNotivue()
 const { queue } = useNotifications()
 

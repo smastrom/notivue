@@ -1,9 +1,15 @@
 import { NotificationTypeKeys as NKeys } from './constants'
-import { createProxiesSlice } from './createStore'
+import { createProxies } from './createStore'
 
 import type { NotificationType, Push, PushParameter } from 'notivue'
 
-export function createPush(proxies: ReturnType<typeof createProxiesSlice>): Push {
+export const push = createPushMock()
+
+export function setPush(p: Push) {
+   Object.assign(push, p)
+}
+
+export function createPush(proxies: ReturnType<typeof createProxies>): Push {
    let createCount = 0
 
    function push(options: PushParameter, type: NotificationType, id = `${createCount++}`) {
@@ -29,16 +35,21 @@ export function createPush(proxies: ReturnType<typeof createProxiesSlice>): Push
          return {
             resolve: (options) => push(options, NKeys.PROMISE_RESOLVE, id),
             reject: (options) => push(options, NKeys.PROMISE_REJECT, id),
+            success: (options) => push(options, NKeys.PROMISE_RESOLVE, id),
+            error: (options) => push(options, NKeys.PROMISE_REJECT, id),
             clear,
             destroy,
          }
+      },
+      load(options) {
+         return this.promise(options)
       },
       clearAll: () => proxies.clearAll(),
       destroyAll: () => proxies.destroyAll(),
    }
 }
 
-export function createPushSSR(): Push {
+export function createPushMock(): Push {
    const noop = new Proxy({}, { get: () => () => {} }) as any
    return createPush(noop)
 }

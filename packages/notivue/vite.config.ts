@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import { fileURLToPath } from 'url'
+import { writeFileSync } from 'fs'
 
 import vue from '@vitejs/plugin-vue'
 import dts from 'vite-plugin-dts'
@@ -17,6 +18,7 @@ export default defineConfig({
          '@/NotivueSwipe': path('./NotivueSwipe'),
          '@/NotivueKeyboard': path('./NotivueKeyboard'),
          '@/Notifications': path('./Notifications'),
+         '@/astro': path('./astro'),
          notivue: path('./index.ts'),
       },
    },
@@ -28,7 +30,6 @@ export default defineConfig({
       target: 'es2015',
       lib: {
          entry: 'index.ts',
-         name: 'Notivue',
          fileName: 'index',
          formats: ['es'],
       },
@@ -46,5 +47,40 @@ export default defineConfig({
          rollupTypes: true,
       }),
       vue(),
+      {
+         name: 'write-astro-entry',
+         closeBundle() {
+            writeFileSync(
+               'dist/astro.js',
+               [
+                  'export { pushAstro as push } from "./index.js";',
+                  'export { NotivueAstro as Notivue } from "./index.js";',
+                  ...astroReExports.map((name) => `export { ${name} } from "./index.js";`),
+               ].join('\n')
+            )
+         },
+      },
    ],
 })
+
+const astroReExports = [
+   'lightTheme',
+   'pastelTheme',
+   'materialTheme',
+   'darkTheme',
+   'slateTheme',
+
+   'filledIcons',
+   'outlinedIcons',
+
+   'DEFAULT_CONFIG',
+
+   'useNotivueKeyboard',
+   'useNotifications',
+   'useNotivue',
+   'usePush',
+
+   'Notifications',
+   'NotivueSwipe',
+   'NotivueKeyboard',
+]

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Notivue, NotivueSwipe, usePush, type NotivueSwipeProps } from 'notivue'
+import { push, Notivue, NotivueSwipe, type NotivueSwipeProps } from 'notivue'
 
 import { SWIPE_NOTIFICATION_WIDTH } from '@/support/utils'
 
@@ -7,10 +7,8 @@ export type CyNotivueSwipeProps = Omit<NotivueSwipeProps, 'item'>
 
 const cyProps = defineProps<CyNotivueSwipeProps>()
 
-const push = usePush()
-
 function pushPromise() {
-   push.promise({
+   push.load({
       title: 'Promise',
       message: 'This is a promise notification and should not be swipeable',
    })

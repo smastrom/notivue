@@ -12,6 +12,7 @@ import {
 } from 'vue'
 
 import { useNotivue, useStore } from '@/core/useStore'
+import { push } from '@/core/createPush'
 import { focusableEls, keyboardInjectionKey, DEFAULT_PROPS } from './constants'
 import { useKeyboard } from './useKeyboard'
 import { useLastFocused } from './useLastFocused'
@@ -59,7 +60,7 @@ const emptyPushOptions = computed<PushOptions>(() => ({
 
 // Store
 
-const { elements, timeouts, push, queue } = useStore()
+const { elements, timeouts, queue } = useStore()
 
 const config = useNotivue()
 
@@ -330,7 +331,7 @@ function onCandidatesKeydown(e: KeyboardEvent) {
           * If the queue has items, we simply do not perform any operation.
           * Once the new candidate is pushed, it will be focused automatically.
           */
-         if (queue.getLength() > 0) return
+         if (queue.length > 0) return
 
          const nextContainer = candidateContainers.value[currCandidateIndex + 1]
 
