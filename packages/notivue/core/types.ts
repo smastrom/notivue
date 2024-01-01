@@ -11,7 +11,7 @@ import {
 
 // Utils
 
-type DeepRequired<T> = {
+export type DeepRequired<T> = {
    [K in keyof T]-?: T[K] extends object ? DeepRequired<T[K]> : T[K]
 }
 
@@ -22,6 +22,8 @@ export type DeepPartial<T> = {
 export type Obj = Record<string, any>
 
 // Config
+
+export type UpdateParam = NotivueConfig | ((config: NotivueConfigRequired) => NotivueConfig)
 
 export type NotificationType =
    | 'success'

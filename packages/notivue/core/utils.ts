@@ -1,4 +1,12 @@
-import type { NotivueConfigRequired, Obj, PushOptionsWithInternals } from 'notivue'
+import { ToRefs, reactive, toRaw, toRefs } from 'vue'
+
+import type {
+   DeepPartial,
+   DeepRequired,
+   NotivueConfigRequired,
+   Obj,
+   PushOptionsWithInternals,
+} from 'notivue'
 
 export const isSSR = typeof window === 'undefined'
 
@@ -46,4 +54,15 @@ function isPlainObject(value: unknown) {
 
    const prototype = Object.getPrototypeOf(value)
    return prototype === null || Object.getPrototypeOf(prototype) === null
+}
+
+export function createRefs<T>(source: DeepRequired<T>, target: DeepPartial<T>) {
+   return toRefs(reactive(mergeDeep(source, target))) as ToRefs<DeepRequired<T>>
+}
+
+export function toRawConfig<T extends Obj>(config: ToRefs<T>) {
+   return Object.entries(config).reduce(
+      (acc, [key, { value }]) => ({ ...acc, [key]: toRaw(value) }),
+      {}
+   ) as T
 }

@@ -24,7 +24,11 @@ export function useStore() {
  */
 export function useNotivue(): ConfigSlice {
    if (isSSR) {
-      return toRefs(reactive({ ...DEFAULT_CONFIG, isTopAlign: true })) as ConfigSlice
+      return {
+         ...toRefs(reactive(DEFAULT_CONFIG)),
+         isTopAlign: computed(() => true),
+         update: () => {},
+      } as ConfigSlice
    }
 
    return useStore().config
