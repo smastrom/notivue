@@ -9,16 +9,16 @@
       "notivue": "workspace:*"
    },
    "devDependencies": {
-      "@types/node": "^20.10.4",
-      "@vitejs/plugin-vue": "^4.5.2",
+      "@types/node": "^20.10.6",
+      "@vitejs/plugin-vue": "^5.0.2",
       "@vue/test-utils": "^2.4.3",
-      "axe-core": "^4.8.2",
-      "cypress": "^13.6.1",
+      "axe-core": "^4.8.3",
+      "cypress": "^13.6.2",
       "cypress-axe": "^1.5.0",
       "cypress-real-events": "^1.11.0",
       "typescript": "^5.3.3",
-      "vite": "^4.5.1",
-      "vue": "^3.3.11",
-      "vue-tsc": "^1.8.25"
+      "vite": "^5.0.10",
+      "vue": "^3.4.3",
+      "vue-tsc": "^1.8.27"
    }
 }
