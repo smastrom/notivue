@@ -9,14 +9,12 @@
       "postinstall": "nuxt prepare"
    },
    "devDependencies": {
-      "@nuxt/devtools": "1.0.0-beta.3",
       "@types/luxon": "^3.3.7",
       "@types/node": "^20.10.5",
       "lightningcss": "^1.22.1",
       "nuxt": "^3.9.0"
    },
    "dependencies": {
-      "floating-vue": "2.0.0-beta.24",
       "luxon": "^3.4.4",
       "notivue": "workspace:*"
    }

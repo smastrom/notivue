@@ -1,10 +1,10 @@
 import { getHead } from './utils/head'
 
 export default defineNuxtConfig({
-   modules: ['floating-vue/nuxt', 'notivue/nuxt'],
+   modules: ['notivue/nuxt'],
    ssr: true,
    devtools: {
-      enabled: true,
+      enabled: false,
    },
    notivue: {
       // addPlugin: true,
