@@ -81,7 +81,7 @@ const dataAlign = computed(() => ({
                :style="styles.container"
             >
                <!-- Notification -->
-               <slot v-bind="getSlotContext(item)" :key="`${item.id}_${item.type}`" />
+               <slot v-bind="getSlotContext(item)" :key="item.id" />
             </div>
          </li>
       </ol>
