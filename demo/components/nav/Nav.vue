@@ -36,7 +36,7 @@ import NavNotificationsCustomization from './NavNotificationsCustomization.vue'
             </ButtonGroup>
          </div>
 
-         <ButtonGroup name="Custom 👇" isPush>
+         <ButtonGroup name="Headless 👇" isPush>
             <NavPushCustom />
          </ButtonGroup>
 

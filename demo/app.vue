@@ -6,7 +6,6 @@ import {
    darkTheme,
    slateTheme,
    outlinedIcons,
-   type NotivueItem,
 } from 'notivue'
 
 import Nav from '@/components/nav/Nav.vue'
@@ -15,12 +14,6 @@ import CustomActions from '@/components/custom-notifications/CustomActions.vue'
 import CustomPromise from '@/components/custom-notifications/CustomPromise.vue'
 import CustomSimple from '@/components/custom-notifications/CustomSimple.vue'
 import QueueCount from '@/components/shared/QueueCount.vue'
-
-import type {
-   CustomPromiseProps,
-   CustomActionProps,
-   CustomSimpleProps,
-} from '@/components/nav/NavPushCustom.vue'
 
 const { state } = useStore()
 
@@ -31,9 +24,7 @@ const config = useNotivue()
 
 watch(
    () => [config.enqueue.value, config.limit.value],
-   () => {
-      push.destroyAll()
-   }
+   () => push.destroyAll()
 )
 
 const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme } as const
@@ -46,25 +37,22 @@ const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme }
          :containersTabIndex="containersTabIndex"
          v-slot="item"
       >
-         <CustomActions
-            :item="item as NotivueItem<CustomActionProps>"
-            v-if="(item.props as CustomActionProps).isCustom"
-         />
+         <CustomActions :item="item" v-if="item.props.isCustom" />
 
          <NotivueSwipe
             :item="item"
             :disabled="!state.enableSwipe"
-            v-else-if="(item.props as CustomPromiseProps).isFileUpload"
+            v-else-if="item.props.isFileUpload"
          >
-            <CustomPromise :item="item as NotivueItem<CustomPromiseProps>" />
+            <CustomPromise :item="item" />
          </NotivueSwipe>
 
          <NotivueSwipe
             :item="item"
             :disabled="!state.enableSwipe"
-            v-else-if="(item.props as CustomSimpleProps).isCustomSimple"
+            v-else-if="item.props.isCustomSimple"
          >
-            <CustomSimple :item="item as NotivueItem<CustomSimpleProps>" />
+            <CustomSimple :item="item" />
          </NotivueSwipe>
 
          <NotivueSwipe :item="item" :disabled="!state.enableSwipe" v-else>
@@ -78,9 +66,7 @@ const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme }
    </NotivueKeyboard>
 
    <QueueCount />
-
    <Nav />
-
    <Background />
 </template>
 
