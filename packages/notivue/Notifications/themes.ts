@@ -6,7 +6,7 @@ const layout: NotivueTheme = {
    '--nv-radius': '0.625rem',
    '--nv-icon-size': '1.25rem',
    '--nv-title-size': '1rem',
-   '--nv-message-size': '1rem',
+   '--nv-message-size': '0.925rem',
    '--nv-tip-width': '0px',
    '--nv-y-align': 'center',
 }
@@ -95,7 +95,7 @@ export const slateTheme: NotivueTheme = {
    // Global
    '--nv-global-bg': '#20252E',
    '--nv-global-border': '#353b45',
-   '--nv-global-fg': '#F7F7F7',
+   '--nv-global-fg': '#dfdfdf',
    // Scoped
    '--nv-success-accent': '#34D399',
    '--nv-error-accent': '#FF7777',
