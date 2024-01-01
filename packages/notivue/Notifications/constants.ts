@@ -10,6 +10,7 @@ export const Classes = {
    MESSAGE: CX + 'content-message',
    CLOSE: CX + 'close',
    CLOSE_ICON: CX + 'close-icon',
+   TRANSITION: CX + 'transition',
 }
 
 export const DEFAULT_NOTIFICATIONS_PROPS = {
