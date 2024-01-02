@@ -1,4 +1,4 @@
-import type { Ref, ComputedRef, CSSProperties } from 'vue'
+import type { Ref, ComputedRef, CSSProperties, ToRefs } from 'vue'
 
 import {
    createItems,
@@ -69,7 +69,7 @@ export interface NotivueConfig {
    /** Position of notifications, one of 'top-left', 'top-center', 'top-right', 'bottom-left', 'bottom-center', 'bottom-right'. */
    position?: Position
    /** Notification options for each type. */
-   notifications?: Partial<Record<NotificationType | 'global', NotificationOptions>>
+   notifications?: Record<NotificationType | 'global', NotificationOptions>
    /** Animation classes for `enter`, `leave` and `clearAll`. */
    animations?: NotivueAnimations
    /** Tag or element to which the stream will be teleported. */
@@ -78,7 +78,9 @@ export interface NotivueConfig {
    limit?: number
 }
 
-export type NotivueConfigRequired = DeepRequired<NotivueConfig>
+export type NotivueConfigRequired = DeepRequired<NotivueConfig> & {
+   notifications: DeepRequired<NotivueConfig['notifications']>
+}
 
 // Store Item
 
@@ -167,7 +169,11 @@ export interface Push {
    destroyAll: () => void
 }
 
-export type ConfigSlice = ReturnType<typeof createConfig>
+export type ConfigSlice = ToRefs<NotivueConfigRequired> & {
+   isTopAlign: ComputedRef<boolean>
+   update: (newConfig: UpdateParam) => void
+}
+
 export type AnimationsSlice = ReturnType<typeof createAnimations>
 export type TimeoutsSlice = ReturnType<typeof createTimeouts>
 export type QueueSlice = ReturnType<typeof createQueue>
