@@ -58,9 +58,6 @@ const isEnabled = computed(
 const itemRef = ref<HTMLElement | null>(null)
 
 const state = shallowReactive({
-   targetLeft: 0,
-   targetRight: 0,
-   targetWidth: 0,
    isLocked: false,
    isPressed: false,
    isClearing: false,
@@ -120,21 +117,6 @@ function shouldSwipe(e: PointerEvent) {
    return touchOnly.value && e.pointerType !== 'touch' ? false : true
 }
 
-function setTargetPosition() {
-   if (!itemRef.value) return
-
-   // Must use clientWidth so that scale transform is not taken into account
-   const { clientWidth } = itemRef.value
-
-   const { left } = itemRef.value.getBoundingClientRect()
-
-   setState({
-      targetLeft: left,
-      targetRight: left + clientWidth,
-      targetWidth: clientWidth,
-   })
-}
-
 function setReturnStyles() {
    setStyles({
       transition: animations.isReducedMotion.value
@@ -146,7 +128,14 @@ function setReturnStyles() {
 }
 
 function isPointerInside(e: PointerEvent) {
-   return e.clientX > state.targetLeft && e.clientX < state.targetRight
+   if (!elements.root.value || !itemRef.value) return false
+
+   const { clientWidth, offsetLeft } = itemRef.value
+
+   const left = offsetLeft + elements.root.value.offsetLeft
+   const right = left + clientWidth
+
+   return e.clientX > left && e.clientX < right
 }
 
 function getDebounceMs(e: PointerEvent) {
@@ -220,17 +209,19 @@ function onPointerMove(e: PointerEvent) {
    if (!state.isPressed) return
    if (state.isClearing || state.isLocked) return
 
+   const { clientWidth } = itemRef.value as HTMLElement
+
    setStyles({
       transition: 'none',
       transform: `translate3d(${state.currentX}px, 0px, 0px)`,
-      opacity: `${1 - (Math.abs(state.currentX) / state.targetWidth) * (1 / threshold.value)}`,
+      opacity: `${1 - (Math.abs(state.currentX) / clientWidth) * (1 / threshold.value)}`,
    })
 
    setState({
       currentX: e.clientX - state.startX,
    })
 
-   if (Math.abs(state.currentX) > state.targetWidth * threshold.value) {
+   if (Math.abs(state.currentX) > clientWidth * threshold.value) {
       state.isClearing = true
       onPointerMoveClear(e)
    }
@@ -245,6 +236,7 @@ function onPointerMoveClear(e: PointerEvent) {
 
       if (!isLastItem) pauseTimeouts()
    } else {
+      console.log('onPointerMoveClear')
       resumeTimeouts(getDebounceMs(e))
    }
 
@@ -320,8 +312,6 @@ const events = [
 ] as const
 
 function addListeners() {
-   window.addEventListener('resize', setTargetPosition)
-
    if (!itemRef.value) return
 
    events.forEach(([event, handler]) => {
@@ -330,8 +320,6 @@ function addListeners() {
 }
 
 function removeListeners() {
-   window.removeEventListener('resize', setTargetPosition)
-
    if (!itemRef.value) return
 
    events.forEach(([event, handler]) => {
@@ -345,16 +333,13 @@ watch(
       nextTick(() => {
          if (_isEnabled) {
             setDragStyles()
-            setTargetPosition()
             nextTick(addListeners)
          }
       })
 
       onCleanup(() => {
-         // timeouts.clearDebounceTimeout()
          removeListeners()
          resetDragStyles()
-         // No need to reset target position as they will be recomputed on next enabling
       })
    },
    { immediate: true, flush: 'post' }

@@ -4,46 +4,21 @@ import type { Position } from 'notivue'
 import ArrowIcon from '../icons/ArrowIcon.vue'
 
 const { state, actions } = useStore()
-
 const config = useNotivue()
 
 const positions = [
-   {
-      value: 'top-left',
-      label: 'Top Left',
-      rotate: 0,
-   },
-   {
-      value: 'top-center',
-      label: 'Top Center',
-      rotate: 45,
-   },
-   {
-      value: 'top-right',
-      label: 'Top Right',
-      rotate: 90,
-   },
-   {
-      value: 'bottom-left',
-      label: 'Bottom Left',
-      rotate: -90,
-   },
-   {
-      value: 'bottom-center',
-      label: 'Bottom Center',
-      rotate: -135,
-   },
-   {
-      value: 'bottom-right',
-      label: 'Bottom Right',
-      rotate: -180,
-   },
+   { value: 'top-left', label: 'Top Left', rotate: 0 },
+   { value: 'top-center', label: 'Top Center', rotate: 45 },
+   { value: 'top-right', label: 'Top Right', rotate: 90 },
+   { value: 'bottom-left', label: 'Bottom Left', rotate: -90 },
+   { value: 'bottom-center', label: 'Bottom Center', rotate: -135 },
+   { value: 'bottom-right', label: 'Bottom Right', rotate: -180 },
 ]
 
 const isFullWidth = computed(() => state.maxWidth === '100%')
 
 function setPosition(position: Position) {
-   config.position.value = position
+   config.update({ position })
 }
 </script>
 
@@ -52,7 +27,7 @@ function setPosition(position: Position) {
       <div
          class="ButtonBase SwitchButton SquaredSwitch"
          v-for="position in positions"
-         :key="position.label"
+         :key="position.value"
          role="radio"
          @click="setPosition(position.value as Position)"
          tabindex="0"

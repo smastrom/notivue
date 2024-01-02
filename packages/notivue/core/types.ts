@@ -1,8 +1,7 @@
-import type { Ref, ComputedRef, CSSProperties } from 'vue'
+import type { Ref, ComputedRef, CSSProperties, ToRefs } from 'vue'
 
 import {
    createItems,
-   createConfig,
    createTimeouts,
    createElements,
    createQueue,
@@ -11,7 +10,7 @@ import {
 
 // Utils
 
-type DeepRequired<T> = {
+export type DeepRequired<T> = {
    [K in keyof T]-?: T[K] extends object ? DeepRequired<T[K]> : T[K]
 }
 
@@ -22,6 +21,8 @@ export type DeepPartial<T> = {
 export type Obj = Record<string, any>
 
 // Config
+
+export type UpdateParam = NotivueConfig | ((config: NotivueConfigRequired) => NotivueConfig)
 
 export type NotificationType =
    | 'success'
@@ -55,6 +56,8 @@ export interface NotificationOptions {
    ariaRole?: 'alert' | 'status'
 }
 
+export type NotificationTypesOptions = Record<NotificationType | 'global', NotificationOptions>
+
 export interface NotivueConfig {
    /** Whether to pause all notifications when hovering over them with mouse. */
    pauseOnHover?: boolean
@@ -67,7 +70,7 @@ export interface NotivueConfig {
    /** Position of notifications, one of 'top-left', 'top-center', 'top-right', 'bottom-left', 'bottom-center', 'bottom-right'. */
    position?: Position
    /** Notification options for each type. */
-   notifications?: Partial<Record<NotificationType | 'global', NotificationOptions>>
+   notifications?: Partial<NotificationTypesOptions>
    /** Animation classes for `enter`, `leave` and `clearAll`. */
    animations?: NotivueAnimations
    /** Tag or element to which the stream will be teleported. */
@@ -76,7 +79,9 @@ export interface NotivueConfig {
    limit?: number
 }
 
-export type NotivueConfigRequired = DeepRequired<NotivueConfig>
+export type NotivueConfigRequired = DeepRequired<NotivueConfig> & {
+   notifications: DeepRequired<NotificationTypesOptions>
+}
 
 // Store Item
 
@@ -165,7 +170,11 @@ export interface Push {
    destroyAll: () => void
 }
 
-export type ConfigSlice = ReturnType<typeof createConfig>
+export type ConfigSlice = ToRefs<NotivueConfigRequired> & {
+   isTopAlign: ComputedRef<boolean>
+   update: (newConfig: UpdateParam) => void
+}
+
 export type AnimationsSlice = ReturnType<typeof createAnimations>
 export type TimeoutsSlice = ReturnType<typeof createTimeouts>
 export type QueueSlice = ReturnType<typeof createQueue>
@@ -185,6 +194,13 @@ export interface NotivueComputedEntries {
    entries: ComputedRef<NotivueItem[]>
    queue: ComputedRef<NotivueItem[]>
 }
+
+export type UseNotivue = ConfigSlice
+export type UseNotivueReturn = ConfigSlice
+
+export type NotivueNotificationOptions = NotificationOptions
+export type NotivuePosition = Position
+export type NotivueNotificationType = NotificationType
 
 // Aliases prev 1.2.0
 

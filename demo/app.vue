@@ -1,42 +1,34 @@
 <script setup lang="ts">
-import {
-   lightTheme,
-   pastelTheme,
-   materialTheme,
-   darkTheme,
-   slateTheme,
-   outlinedIcons,
-   type NotivueItem,
-} from 'notivue'
+import type { NotivueItem } from 'notivue'
 
 import Nav from '@/components/nav/Nav.vue'
 import Background from '@/components/shared/Background.vue'
-import CustomActions from '@/components/custom-notifications/CustomActions.vue'
-import CustomPromise from '@/components/custom-notifications/CustomPromise.vue'
-import CustomSimple from '@/components/custom-notifications/CustomSimple.vue'
 import QueueCount from '@/components/shared/QueueCount.vue'
 
-import type {
-   CustomPromiseProps,
-   CustomActionProps,
-   CustomSimpleProps,
-} from '@/components/nav/NavPushCustom.vue'
+import FriendRequestNotification, {
+   type FriendRequestNotificationProps,
+} from '@/components/custom-notifications/FriendRequestNotification.vue'
+
+import UploadNotification, {
+   type UploadNotificationProps,
+} from '@/components/custom-notifications/UploadNotification.vue'
+
+import SimpleNotification, {
+   type SimpleNotificationProps,
+} from '@/components/custom-notifications/SimpleNotification.vue'
 
 const { state } = useStore()
-
 const config = useNotivue()
+
+const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme } as const
 
 !isSSR &&
    watchEffect(() => document.documentElement.style.setProperty('--nv-root-width', state.maxWidth))
 
 watch(
    () => [config.enqueue.value, config.limit.value],
-   () => {
-      push.destroyAll()
-   }
+   () => push.destroyAll()
 )
-
-const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme } as const
 </script>
 
 <template>
@@ -46,29 +38,24 @@ const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme }
          :containersTabIndex="containersTabIndex"
          v-slot="item"
       >
-         <CustomActions
-            :item="item as NotivueItem<CustomActionProps>"
-            v-if="(item.props as CustomActionProps).isCustom"
+         <FriendRequestNotification
+            v-if="item.props.isFriendRequestNotification"
+            :item="item as NotivueItem<FriendRequestNotificationProps>"
          />
 
-         <NotivueSwipe
-            :item="item"
-            :disabled="!state.enableSwipe"
-            v-else-if="(item.props as CustomPromiseProps).isFileUpload"
-         >
-            <CustomPromise :item="item as NotivueItem<CustomPromiseProps>" />
-         </NotivueSwipe>
+         <NotivueSwipe v-else :item="item" :disabled="!state.enableSwipe">
+            <UploadNotification
+               v-if="item.props.isUploadNotifiation"
+               :item="item as NotivueItem<UploadNotificationProps>"
+            />
 
-         <NotivueSwipe
-            :item="item"
-            :disabled="!state.enableSwipe"
-            v-else-if="(item.props as CustomSimpleProps).isCustomSimple"
-         >
-            <CustomSimple :item="item as NotivueItem<CustomSimpleProps>" />
-         </NotivueSwipe>
+            <SimpleNotification
+               v-else-if="item.props.isSimpleNotification"
+               :item="item as NotivueItem<SimpleNotificationProps>"
+            />
 
-         <NotivueSwipe :item="item" :disabled="!state.enableSwipe" v-else>
             <Notifications
+               v-else
                :item="item"
                :theme="themes[state.theme]"
                :icons="state.outlinedIcons ? outlinedIcons : undefined"
@@ -78,9 +65,7 @@ const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme }
    </NotivueKeyboard>
 
    <QueueCount />
-
    <Nav />
-
    <Background />
 </template>
 

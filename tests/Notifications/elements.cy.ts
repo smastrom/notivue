@@ -1,6 +1,8 @@
 import { NotivueIcons, outlinedIcons } from 'notivue'
 
-import { Classes } from '@/Notifications/constants'
+import { Classes as _Classes } from '@/Notifications/constants'
+
+const { TRANSITION, ...Classes } = _Classes
 
 it('All elements are rendered and only exists one element per class', () => {
    cy.mountNotifications({

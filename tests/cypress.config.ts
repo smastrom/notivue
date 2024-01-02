@@ -1,5 +1,5 @@
 import { defineConfig } from 'cypress'
-import { resolve } from 'path'
+import { alias } from './shared-config'
 
 import vue from '@vitejs/plugin-vue'
 
@@ -8,6 +8,7 @@ export default defineConfig({
    viewportWidth: 1280,
    viewportHeight: 720,
    experimentalMemoryManagement: true,
+
    component: {
       devServer: {
          framework: 'vue',
@@ -17,15 +18,7 @@ export default defineConfig({
                port: 5176,
             },
             resolve: {
-               alias: {
-                  '@/support': resolve(__dirname, './cypress/support'),
-                  '@/tests': resolve(__dirname, './'),
-
-                  '@/core': resolve(__dirname, '../packages/notivue/core'),
-                  '@/Notivue': resolve(__dirname, '../packages/notivue/Notivue'),
-                  '@/NotivueSwipe': resolve(__dirname, '../packages/notivue/NotivueSwipe'),
-                  '@/Notifications': resolve(__dirname, '../packages/notivue/Notifications'),
-               },
+               alias,
             },
             plugins: [vue()],
          },

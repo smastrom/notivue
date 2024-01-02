@@ -75,6 +75,8 @@ const astroReExports = [
 
    'createNotivue',
 
+   'updateConfig',
+
    'DEFAULT_CONFIG',
 
    'useNotivueKeyboard',

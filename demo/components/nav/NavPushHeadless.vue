@@ -4,22 +4,11 @@ import Button from '../shared/Button.vue'
 
 import profilePicture from '@/assets/profile-picture.jpg?url'
 
-const { state, actions, computed } = useStore()
+import type { UploadNotificationProps } from '@/components/custom-notifications/UploadNotification.vue'
+import type { FriendRequestNotificationProps } from '@/components/custom-notifications/FriendRequestNotification.vue'
+import type { SimpleNotificationProps } from '@/components/custom-notifications/SimpleNotification.vue'
 
-export interface CustomActionProps {
-   name: string
-   profilePicture: string
-   isCustom: boolean
-}
-
-export interface CustomPromiseProps {
-   isFileUpload: boolean
-   fileName: string
-}
-
-export interface CustomSimpleProps {
-   isCustomSimple: boolean
-}
+const { state, actions, messages } = useStore()
 
 function resetOptions() {
    if (state.rtl) {
@@ -29,16 +18,16 @@ function resetOptions() {
    actions.setTheme('lightTheme')
 }
 
-function pushActions() {
+function pushFriendRequest() {
    resetOptions()
 
-   push.info<CustomActionProps>({
+   push.info<FriendRequestNotificationProps>({
       title: 'New Message Request',
       message: `Stephanie LaGarde wants to send you a message.`,
       props: {
          name: 'Stephanie LaGarde',
          profilePicture,
-         isCustom: true,
+         isFriendRequestNotification: true,
       },
       ariaRole: 'alert',
       ariaLive: 'assertive',
@@ -46,23 +35,12 @@ function pushActions() {
    })
 }
 
-function pushSimple() {
+async function pushFileUpload() {
    resetOptions()
 
-   push.success({
-      message: `Your message has been deleted.`,
-      props: {
-         isCustomSimple: true,
-      },
-   })
-}
+   const props = { isUploadNotifiation: true, fileName: 'excel-sheet.xlsx' }
 
-async function pushPromise() {
-   resetOptions()
-
-   const props = { isFileUpload: true, fileName: 'excel-sheet.xlsx' }
-
-   const promise = push.promise<CustomPromiseProps>({
+   const promise = push.promise<UploadNotificationProps>({
       message: 'Your file is being uploaded...',
       props,
    })
@@ -75,11 +53,22 @@ async function pushPromise() {
    })
 }
 
+function pushSimple() {
+   resetOptions()
+
+   push.success<SimpleNotificationProps>({
+      message: `Your message has been deleted.`,
+      props: {
+         isSimpleNotification: true,
+      },
+   })
+}
+
 function pushUsingComboKey(e: KeyboardEvent) {
    if (e.key === 'p') {
-      pushActions()
+      pushFriendRequest()
    } else if (e.key === 's') {
-      push.success(computed.messages.value.success)
+      push.success(messages.value.success)
    }
 }
 
@@ -93,10 +82,10 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-   <Button @click="pushActions" text="Actions">
+   <Button @click="pushFriendRequest" text="Actions">
       <VueIcon />
    </Button>
-   <Button @click="pushPromise" text="Promise">
+   <Button @click="pushFileUpload" text="Promise">
       <VueIcon />
    </Button>
    <Button @click="pushSimple" text="Simple">

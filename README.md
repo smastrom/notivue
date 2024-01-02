@@ -24,7 +24,7 @@
 
 ## Features
 
-**🧬 Fully modular**  
+**🧬 Fully modular with zero dependencies**  
 _Granularly include only the features you need_
 
 **💊 Drop-in components to enhance notifications**  
@@ -33,13 +33,10 @@ _NotivueSwipe, NotivueKeyboard, all optional and customizable_
 **🧩 Headless API**  
 _Use your own notifications while Notivue handles the rest_
 
-**🌀 Promise API**  
+**🌀 Dynamic Notifications**  
 _Update pending notifications with ease_
 
-**💫 Nuxt and Astro modules**  
-_Buit-in Nuxt and Astro modules_
-
-**🔰 Ready-made notifications with anything you need**  
+**🔰 Ready-made notifications included**  
 _Themes, icons, RTL support and much more_
 
 **🎢 Slick transitions and animations**  
@@ -48,8 +45,8 @@ _Customize any animation with plain CSS_
 **♿️ Fully accessible**  
 _Built-in screen reader, reduced motion, and keyboard support_
 
-**🧚‍♂️ Zero dependencies**  
-_From ~4.5 KB (gzipped)_
+**💫 Nuxt and Astro modules**  
+_Buit-in Nuxt and Astro modules_
 
 <br />
 
@@ -173,7 +170,7 @@ export default defineNuxtConfig({
 
 ```vue
 <template>
-  <button @click="push.success('This is your first notification!')">Push</button>
+  <button @click="push.success('Hello from your first notification!')">Push</button>
 
   <Notivue v-slot="item">
     <Notifications :item="item" />

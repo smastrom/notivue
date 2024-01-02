@@ -2,10 +2,14 @@
 import CloseIcon from '../icons/CloseIcon.vue'
 
 import type { NotivueItem } from 'notivue'
-import type { CustomPromiseProps } from '../nav/NavPushCustom.vue'
+
+export interface UploadNotificationProps {
+   isUploadNotifiation: boolean
+   fileName: string
+}
 
 const notification = defineProps<{
-   item: NotivueItem<CustomPromiseProps>
+   item: NotivueItem<UploadNotificationProps>
 }>()
 
 const isPromise = computed(() => notification.item.type === 'promise')
@@ -148,33 +152,20 @@ const isPromise = computed(() => notification.item.type === 'promise')
 /* Forked from: https://csslayout.io/indeterminate-progress-bar/ */
 
 .indeterminate-progress-bar {
-   /* Color */
    background-color: #e2efff;
-
-   /* Rounded border */
    border-radius: 9999px;
-
-   /* Size */
    height: 0.3rem;
-
    position: relative;
    overflow: hidden;
 }
 
 .indeterminate-progress-bar__progress {
-   /* Color */
    background-color: #0076ff;
-
-   /* Rounded border */
    border-radius: 9999px;
-
-   /* Absolute position */
    position: absolute;
    bottom: 0;
    top: 0;
    width: 50%;
-
-   /* Move the bar infinitely */
    animation-duration: 1.5s;
    animation-iteration-count: infinite;
    animation-name: indeterminate-progress-bar;

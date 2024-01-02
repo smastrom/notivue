@@ -1,6 +1,11 @@
-import { ref, shallowRef, computed, triggerRef, toRefs, reactive, nextTick, ToRefs, Ref } from 'vue'
+import { ref, shallowRef, computed, triggerRef, nextTick, type Ref } from 'vue'
 
-import { mergeDeep, mergeNotificationOptions as mergeOptions } from './utils'
+import {
+   createRefs,
+   mergeDeep,
+   mergeNotificationOptions as mergeOptions,
+   toRawConfig,
+} from './utils'
 import { getSlotContext } from '@/Notivue/utils'
 
 import { DEFAULT_CONFIG, NotificationTypeKeys as NKeys, TransitionType as TType } from './constants'
@@ -17,18 +22,30 @@ import type {
    ElementsSlice,
    TimeoutsSlice,
    AnimationsSlice,
-   NotivueConfigRequired,
+   UpdateParam,
 } from 'notivue'
 
-export function createConfig(
-   userConfig: NotivueConfig
-): ToRefs<NotivueConfigRequired & { isTopAlign: boolean }> {
-   const reactiveConfig = toRefs(reactive(mergeDeep(DEFAULT_CONFIG, userConfig)))
+export let updateConfig: (newConfig: UpdateParam) => void = () => {}
 
-   return {
-      ...reactiveConfig,
-      isTopAlign: computed(() => reactiveConfig.position.value.startsWith('top')),
+export function createConfig(userConfig: NotivueConfig) {
+   const config = createRefs(DEFAULT_CONFIG, userConfig)
+   const isTopAlign = computed(() => config.position.value.startsWith('top'))
+
+   function update(newConfig: UpdateParam) {
+      if (typeof newConfig === 'function') newConfig = newConfig(toRawConfig(config))
+
+      for (const key of Object.keys(newConfig) as (keyof NotivueConfig)[]) {
+         if (typeof config[key].value === 'object') {
+            config[key].value = mergeDeep(config[key].value as Obj, newConfig[key] as any)
+         } else {
+            config[key].value = newConfig[key] as any
+         }
+      }
    }
+
+   updateConfig = update
+
+   return { ...config, isTopAlign, update }
 }
 
 export function createQueue() {
@@ -376,7 +393,7 @@ export function createProxies({
 
             if (shouldDiscard) {
                const exceedingItems = items.entries.value.slice(config.limit.value - 1)
-               exceedingItems.forEach(({ id }) => timeouts.create(id, 10))
+               exceedingItems.forEach(({ id }) => timeouts.create(id, 50))
             }
 
             const shouldEnqueue = isQueueActive && !options.skipQueue && hasReachedLimit

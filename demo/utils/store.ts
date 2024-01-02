@@ -87,12 +87,12 @@ export function createStore() {
                   'نحن نرسل رسالتك. سيستغرق ذلك لحظة أو اثنتين ...'
                ),
             },
-         } as const)
+         }) as const
    )
 
    return {
       state,
       actions,
-      computed: { messages },
+      messages,
    }
 }

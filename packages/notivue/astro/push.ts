@@ -8,7 +8,7 @@ export function pushEvent<T extends Omit<PushAstroEvent, 'resultEventName'>>(
 ): MaybeAstroPushPromiseReturn<T> {
    eventId++
 
-   // Listen for the result of the notification that will be created by the Notivue...
+   // Listen for the result of the notification that will be created by NotivueAstro...
    let pushResult = {} as MaybeAstroPushPromiseReturn<T>
    const resultEventName = `notivue:id:${eventId}`
 

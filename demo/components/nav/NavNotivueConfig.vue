@@ -1,14 +1,12 @@
 <script setup lang="ts">
 const config = useNotivue()
 const { queue } = useNotifications()
-
 const { state, actions } = useStore()
 
-const enqueuedLength = computed(() => queue.value.length)
-
 function togglePauseOnHover() {
-   state.rtl = false
-   config.pauseOnHover.value = !config.pauseOnHover.value
+   config.update((prevConf) => ({
+      pauseOnHover: !prevConf.pauseOnHover,
+   }))
 
    push.info({
       title: `Pause on hover ${config.pauseOnHover.value ? 'enabled' : 'disabled'}`,
@@ -18,10 +16,16 @@ function togglePauseOnHover() {
    })
 }
 
-function togglePauseOnTouch() {
+function toggleRtlIfNeeded() {
    if (state.rtl) actions.toggleRTL()
+}
 
-   config.pauseOnTouch.value = !config.pauseOnTouch.value
+function togglePauseOnTouch() {
+   toggleRtlIfNeeded()
+
+   config.update((prevConf) => ({
+      pauseOnTouch: !prevConf.pauseOnTouch,
+   }))
 
    push.info({
       title: `Pause on touch ${config.pauseOnTouch.value ? 'enabled' : 'disabled'}`,
@@ -32,23 +36,28 @@ function togglePauseOnTouch() {
 }
 
 function toggleQueue() {
-   if (state.rtl) actions.toggleRTL()
-   config.enqueue.value = !config.enqueue.value
+   toggleRtlIfNeeded()
+
+   config.update((prevConf) => ({
+      enqueue: !prevConf.enqueue,
+   }))
 }
+
+const enqueuedLength = computed(() => queue.value.length)
+const isEnqueueDisabled = computed(() => config.limit.value === Infinity)
+const isSwipeDisabled = computed(() => !config.pauseOnHover.value)
 
 watch(
    () => !config.pauseOnHover.value && state.enableSwipe,
    (isPauseOnHoverDisabled) => {
-      if (isPauseOnHoverDisabled) {
-         state.enableSwipe = false
-      }
+      if (isPauseOnHoverDisabled) state.enableSwipe = false
    }
 )
 
 watch(
    () => state.enableSwipe,
    (isEnabled) => {
-      if (state.rtl) actions.toggleRTL()
+      toggleRtlIfNeeded()
 
       push.info({
          title: `Swipe to clear ${isEnabled ? 'enabled' : 'disabled'}`,
@@ -59,23 +68,9 @@ watch(
    }
 )
 
-watch(
-   () => config.limit.value,
-   () => {
-      if (state.rtl) actions.toggleRTL()
-   }
-)
-
-const queueTooltipMessage = computed(() => {
-   if (config.limit.value === Infinity) {
-      const action = config.enqueue.value ? 'use' : 'enable'
-      return `To ${action} this feature, select a limit below.`
-   }
-   return config.enqueue.value ? 'Deactivate the queue' : 'Activate the queue'
+watch(config.limit, () => {
+   toggleRtlIfNeeded()
 })
-
-const isEnqueueDisabled = computed(() => config.limit.value === Infinity)
-const isSwipeDisabled = computed(() => !config.pauseOnHover.value)
 </script>
 
 <template>
@@ -110,21 +105,15 @@ const isSwipeDisabled = computed(() => !config.pauseOnHover.value)
          Clear on Swipe
       </button>
 
-      <VTooltip>
-         <button
-            class="ButtonBase SwitchButton ButtonTooltip"
-            role="switch"
-            :aria-checked="config.enqueue.value"
-            @click="toggleQueue"
-            :disabled="isEnqueueDisabled"
-         >
-            Enqueue ({{ enqueuedLength }})
-         </button>
-
-         <template #popper placement="left">
-            {{ queueTooltipMessage }}
-         </template>
-      </VTooltip>
+      <button
+         class="ButtonBase SwitchButton ButtonTooltip"
+         role="switch"
+         :aria-checked="config.enqueue.value"
+         @click="toggleQueue"
+         :disabled="isEnqueueDisabled"
+      >
+         Enqueue ({{ enqueuedLength }})
+      </button>
 
       <hr />
 

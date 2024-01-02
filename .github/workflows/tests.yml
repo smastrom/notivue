@@ -31,6 +31,8 @@ jobs:
            run: pnpm build
          - name: Install Notivue
            run: pnpm install
+         - name: Test with Vitest
+           run: pnpm test:unit
          - name: Test with Cypress
            uses: cypress-io/github-action@v5
            timeout-minutes: 15
