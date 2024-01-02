@@ -50,10 +50,22 @@ const module = defineNuxtModule({
 
       for (const name of [
          'push',
+
          'usePush',
          'useNotivue',
          'useNotifications',
          'useNotivueKeyboard',
+
+         'updateConfig',
+
+         'lightTheme',
+         'pastelTheme',
+         'materialTheme',
+         'darkTheme',
+         'slateTheme',
+
+         'outlinedIcons',
+         'filledIcons',
       ]) {
          addImports({ name, as: name, from: 'notivue' })
       }

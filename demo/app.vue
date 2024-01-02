@@ -1,13 +1,5 @@
 <script setup lang="ts">
-import {
-   lightTheme,
-   pastelTheme,
-   materialTheme,
-   darkTheme,
-   slateTheme,
-   outlinedIcons,
-   type NotivueItem,
-} from 'notivue'
+import type { NotivueItem } from 'notivue'
 
 import Nav from '@/components/nav/Nav.vue'
 import Background from '@/components/shared/Background.vue'
