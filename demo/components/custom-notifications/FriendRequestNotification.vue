@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import type { NotivueItem } from 'notivue'
 
-import type { CustomActionProps } from '../nav/NavPushCustom.vue'
+export interface FriendRequestNotificationProps {
+   name: string
+   profilePicture: string
+   isFriendRequestNotification: boolean
+}
 
 defineProps<{
-   item: NotivueItem<CustomActionProps>
+   item: NotivueItem<FriendRequestNotificationProps>
 }>()
 
 const { elementsTabIndex } = useNotivueKeyboard()

@@ -1,4 +1,4 @@
-import { ToRefs, reactive, toRaw, toRefs } from 'vue'
+import { reactive, toRaw, toRefs, type ToRefs } from 'vue'
 
 import type {
    DeepPartial,

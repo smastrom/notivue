@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import type { NotivueItem } from 'notivue'
-import type { CustomSimpleProps } from '../nav/NavPushCustom.vue'
+
+export interface SimpleNotificationProps {
+   isSimpleNotification: boolean
+}
 
 defineProps<{
-   item: NotivueItem<CustomSimpleProps>
+   item: NotivueItem<SimpleNotificationProps>
 }>()
 </script>
 

@@ -2,10 +2,14 @@
 import CloseIcon from '../icons/CloseIcon.vue'
 
 import type { NotivueItem } from 'notivue'
-import type { CustomPromiseProps } from '../nav/NavPushCustom.vue'
+
+export interface UploadNotificationProps {
+   isUploadNotifiation: boolean
+   fileName: string
+}
 
 const notification = defineProps<{
-   item: NotivueItem<CustomPromiseProps>
+   item: NotivueItem<UploadNotificationProps>
 }>()
 
 const isPromise = computed(() => notification.item.type === 'promise')

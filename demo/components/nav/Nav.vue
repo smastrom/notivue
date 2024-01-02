@@ -2,7 +2,7 @@
 import NavNotivueConfig from './NavNotivueConfig.vue'
 import NavNotificationsThemes from './NavNotificationsThemes.vue'
 import NavPushBuiltIn from './NavPushBuiltIn.vue'
-import NavPushCustom from './NavPushCustom.vue'
+import NavPushHeadless from './NavPushHeadless.vue'
 import NavNotivuePosition from './NavNotivuePosition.vue'
 import ButtonGroup from '../shared/ButtonGroup.vue'
 import Button from '../shared/Button.vue'
@@ -37,7 +37,7 @@ import NavNotificationsCustomization from './NavNotificationsCustomization.vue'
          </div>
 
          <ButtonGroup name="Headless 👇" isPush>
-            <NavPushCustom />
+            <NavPushHeadless />
          </ButtonGroup>
 
          <ButtonGroup name="Actions">

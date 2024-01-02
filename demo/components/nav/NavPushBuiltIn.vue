@@ -11,7 +11,7 @@ const {
    computed: { messages },
 } = useStore()
 
-async function asyncRefPush() {
+async function asyncRefMessagePush() {
    const initialMessage = ref(state.rtl ? 'جاري تحميل الملفات...' : 'Preparing to upload files...')
    const notification = push.promise({ message: initialMessage })
 
@@ -25,7 +25,7 @@ async function asyncRefPush() {
 }
 
 async function asyncPush() {
-   if (Math.random() > 0.7) return asyncRefPush()
+   if (Math.random() > 0.7) return asyncRefMessagePush()
 
    const promise = push.promise(messages.value.promise)
    await new Promise((resolve) => setTimeout(resolve, getRandomInt(2000, 4000)))
