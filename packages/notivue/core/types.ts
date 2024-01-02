@@ -114,14 +114,18 @@ export interface PushProps<T extends Obj = Obj> {
 export interface PushSpecificOptions {
    skipQueue?: boolean
    ariaLiveOnly?: boolean
-   onAutoClear?: (item: NotivueSlot) => void
-   onManualClear?: (item: NotivueSlot) => void
+}
+
+export interface PushCallbacks {
+   onAutoClear?: (item: NotivueItem) => void
+   onManualClear?: (item: NotivueItem) => void
 }
 
 /** Defined by the user when calling push() */
 export type PushOptions<T extends Obj = Obj> = NotificationOptions &
    PushProps<T> &
-   PushSpecificOptions
+   PushSpecificOptions &
+   PushCallbacks
 
 /** Added in background after calling push() */
 export type InternalPushOptions = { id: string; type: NotificationType }
@@ -133,7 +137,8 @@ export type StoreItem<T extends Obj = Obj> = DeepRequired<NotificationOptions> &
    Required<PushProps<T>> &
    InternalPushOptions &
    InternalItemData &
-   PushSpecificOptions
+   PushSpecificOptions &
+   PushCallbacks
 
 /** Portion of the store item exposed to slot */
 export type NotivueItem<T extends Obj = Obj> = Omit<StoreItem<T>, keyof HiddenInternalItemData>
@@ -195,12 +200,17 @@ export interface NotivueComputedEntries {
    queue: ComputedRef<NotivueItem[]>
 }
 
-export type UseNotivue = ConfigSlice
+// New v2.1.0 aliases
+
 export type UseNotivueReturn = ConfigSlice
 
 export type NotivueNotificationOptions = NotificationOptions
 export type NotivuePosition = Position
 export type NotivueNotificationType = NotificationType
+
+// New v2.1.1 aliases
+
+export type PushClearMethods = NotificationClearMethods
 
 // Aliases prev 1.2.0
 

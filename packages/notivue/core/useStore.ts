@@ -7,7 +7,7 @@ import { DEFAULT_CONFIG } from './constants'
 
 import { getSlotContext } from '@/Notivue/utils'
 
-import type { NotivueStore, ConfigSlice, NotivueComputedEntries, NotivueItem } from 'notivue'
+import type { NotivueStore, UseNotivueReturn, NotivueComputedEntries, NotivueItem } from 'notivue'
 
 export function useStore() {
    return inject(notivueInjectionKey) as NotivueStore
@@ -22,13 +22,13 @@ export function useStore() {
  *
  * @docs https://notivuedocs.netlify.app/api/use-notivue
  */
-export function useNotivue(): ConfigSlice {
+export function useNotivue(): UseNotivueReturn {
    if (isSSR) {
       return {
          ...toRefs(reactive(DEFAULT_CONFIG)),
          isTopAlign: computed(() => true),
          update: () => {},
-      } as ConfigSlice
+      } as UseNotivueReturn
    }
 
    return useStore().config

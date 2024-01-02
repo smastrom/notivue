@@ -6,7 +6,7 @@ import {
    DEFAULT_NOTIFICATION_OPTIONS as defaultNot,
 } from '@/core/constants'
 
-import type { ConfigSlice, NotivueConfig, NotivueConfigRequired } from 'notivue'
+import type { UseNotivueReturn, NotivueConfig, NotivueConfigRequired } from 'notivue'
 
 type ConfigPairs<K extends keyof NotivueConfig> = [K, NotivueConfig[K]]
 
@@ -22,7 +22,7 @@ describe('Update method', () => {
          ['limit', Math.random() * 100],
       ]
 
-      const config = createConfig({}) as ConfigSlice
+      const config = createConfig({}) as UseNotivueReturn
 
       for (const [key, value] of newConf) {
          expect(config[key].value).not.toBe(value)
@@ -59,7 +59,7 @@ describe('Update method', () => {
             'promise-reject': { duration: Math.random() * 100 },
          }
 
-         const config = createConfig({}) as ConfigSlice
+         const config = createConfig({}) as UseNotivueReturn
 
          config.update({ notifications: newConf })
 
@@ -89,7 +89,7 @@ describe('Update method', () => {
          },
       }
 
-      const c = createConfig(userConf) as ConfigSlice
+      const c = createConfig(userConf) as UseNotivueReturn
 
       let prevConf = {} as NotivueConfigRequired
 

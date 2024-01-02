@@ -73,8 +73,8 @@ export function useNotivueStyles() {
          position.value.endsWith('left')
             ? 'flex-start'
             : position.value.endsWith('right')
-            ? 'flex-end'
-            : 'center'
+              ? 'flex-end'
+              : 'center'
       })`,
    }))
 
