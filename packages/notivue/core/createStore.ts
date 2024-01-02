@@ -34,7 +34,7 @@ export function createConfig(userConfig: NotivueConfig) {
 
       for (const key of Object.keys(newConfig) as (keyof NotivueConfig)[]) {
          if (typeof config[key].value === 'object') {
-            config[key].value = mergeDeep(config[key].value, newConfig[key] as any)
+            config[key].value = mergeDeep(config[key].value as Obj, newConfig[key] as any)
          } else {
             config[key].value = newConfig[key] as any
          }

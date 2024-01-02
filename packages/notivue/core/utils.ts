@@ -1,12 +1,6 @@
 import { reactive, toRaw, toRefs, type ToRefs } from 'vue'
 
-import type {
-   DeepPartial,
-   DeepRequired,
-   NotivueConfigRequired,
-   Obj,
-   PushOptionsWithInternals,
-} from 'notivue'
+import type { NotivueConfigRequired, Obj, PushOptionsWithInternals } from 'notivue'
 
 export const isSSR = typeof window === 'undefined'
 
@@ -14,7 +8,7 @@ export function isMouse(event: PointerEvent) {
    return event.pointerType === 'mouse'
 }
 
-export function mergeDeep<T>(target: T, source: Record<string, any>): T {
+export function mergeDeep<T extends Obj>(target: T, source: Record<string, any>): T {
    const merged: T = { ...target }
 
    for (const key in source) {
@@ -56,8 +50,8 @@ function isPlainObject(value: unknown) {
    return prototype === null || Object.getPrototypeOf(prototype) === null
 }
 
-export function createRefs<T>(source: DeepRequired<T>, target: DeepPartial<T>) {
-   return toRefs(reactive(mergeDeep(source, target))) as ToRefs<DeepRequired<T>>
+export function createRefs<T extends Obj>(target: T, source: Record<string, any>) {
+   return toRefs(reactive(mergeDeep(target, source))) as ToRefs<T>
 }
 
 export function toRawConfig<T extends Obj>(config: ToRefs<T>) {
