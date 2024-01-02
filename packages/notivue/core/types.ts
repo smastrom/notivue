@@ -2,7 +2,6 @@ import type { Ref, ComputedRef, CSSProperties, ToRefs } from 'vue'
 
 import {
    createItems,
-   createConfig,
    createTimeouts,
    createElements,
    createQueue,
