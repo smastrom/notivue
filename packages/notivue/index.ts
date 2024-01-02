@@ -10,6 +10,8 @@ export { default as NotivueSwipe } from '@/NotivueSwipe/NotivueSwipe.vue'
 export { push } from '@/core/createPush'
 export { push as pushAstro } from './astro/push'
 
+export { updateConfig } from './core/createStore'
+
 export { default as NotivueKeyboard } from '@/NotivueKeyboard/NotivueKeyboard.vue'
 export { useNotivueKeyboard } from '@/NotivueKeyboard/useNotivueKeyboard'
 

@@ -25,6 +25,8 @@ import type {
    UpdateParam,
 } from 'notivue'
 
+export let updateConfig: (newConfig: UpdateParam) => void = () => {}
+
 export function createConfig(userConfig: NotivueConfig) {
    const config = createRefs(DEFAULT_CONFIG, userConfig)
    const isTopAlign = computed(() => config.position.value.startsWith('top'))
@@ -40,6 +42,8 @@ export function createConfig(userConfig: NotivueConfig) {
          }
       }
    }
+
+   updateConfig = update
 
    return { ...config, isTopAlign, update }
 }
