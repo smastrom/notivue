@@ -1,5 +1,3 @@
-import Notivue from './components/Notivue.vue'
-
 it('Notivue attributes are added correctly', () => {
    cy.mountNotivue({
       props: {
