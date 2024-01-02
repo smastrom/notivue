@@ -27,7 +27,7 @@ function setPosition(position: Position) {
       <div
          class="ButtonBase SwitchButton SquaredSwitch"
          v-for="position in positions"
-         :key="position.label"
+         :key="position.value"
          role="radio"
          @click="setPosition(position.value as Position)"
          tabindex="0"

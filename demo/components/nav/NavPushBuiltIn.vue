@@ -7,9 +7,7 @@ import WarnIcon from '../icons/WarnIcon.vue'
 
 const { state } = useStore()
 
-const {
-   computed: { messages },
-} = useStore()
+const { messages } = useStore()
 
 async function asyncRefMessagePush() {
    const initialMessage = ref(state.rtl ? 'جاري تحميل الملفات...' : 'Preparing to upload files...')

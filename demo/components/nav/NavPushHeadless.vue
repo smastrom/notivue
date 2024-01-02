@@ -8,7 +8,7 @@ import type { UploadNotificationProps } from '@/components/custom-notifications/
 import type { FriendRequestNotificationProps } from '@/components/custom-notifications/FriendRequestNotification.vue'
 import type { SimpleNotificationProps } from '@/components/custom-notifications/SimpleNotification.vue'
 
-const { state, actions, computed } = useStore()
+const { state, actions, messages } = useStore()
 
 function resetOptions() {
    if (state.rtl) {
@@ -68,7 +68,7 @@ function pushUsingComboKey(e: KeyboardEvent) {
    if (e.key === 'p') {
       pushFriendRequest()
    } else if (e.key === 's') {
-      push.success(computed.messages.value.success)
+      push.success(messages.value.success)
    }
 }
 

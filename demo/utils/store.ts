@@ -93,6 +93,6 @@ export function createStore() {
    return {
       state,
       actions,
-      computed: { messages },
+      messages,
    }
 }

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-const { state, actions, computed } = useStore()
+const { state, actions, messages } = useStore()
 
 function clearAllAndPushOne() {
    push.destroyAll()
-   push.success(computed.messages.value.success)
+   push.success(messages.value.success)
 }
 
 async function toggleRenderTitles() {
