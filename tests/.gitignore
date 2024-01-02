@@ -6,8 +6,9 @@ node_modules
 dist
 coverage
 
-/cypress/videos/
+/cypress/downloads/
 /cypress/screenshots/
+/cypress/videos/
 
 # Editor directories and files
 .vscode/*

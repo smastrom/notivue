@@ -57,6 +57,8 @@ export interface NotificationOptions {
    ariaRole?: 'alert' | 'status'
 }
 
+export type AllNotificationOptions = Record<NotificationType | 'global', NotificationOptions>
+
 export interface NotivueConfig {
    /** Whether to pause all notifications when hovering over them with mouse. */
    pauseOnHover?: boolean
@@ -69,7 +71,7 @@ export interface NotivueConfig {
    /** Position of notifications, one of 'top-left', 'top-center', 'top-right', 'bottom-left', 'bottom-center', 'bottom-right'. */
    position?: Position
    /** Notification options for each type. */
-   notifications?: Record<NotificationType | 'global', NotificationOptions>
+   notifications?: Partial<AllNotificationOptions>
    /** Animation classes for `enter`, `leave` and `clearAll`. */
    animations?: NotivueAnimations
    /** Tag or element to which the stream will be teleported. */
@@ -79,7 +81,7 @@ export interface NotivueConfig {
 }
 
 export type NotivueConfigRequired = DeepRequired<NotivueConfig> & {
-   notifications: DeepRequired<NotivueConfig['notifications']>
+   notifications: DeepRequired<AllNotificationOptions>
 }
 
 // Store Item
@@ -193,6 +195,9 @@ export interface NotivueComputedEntries {
    entries: ComputedRef<NotivueItem[]>
    queue: ComputedRef<NotivueItem[]>
 }
+
+export type UseNotivue = ConfigSlice
+export type UseNotivueReturn = ConfigSlice
 
 // Aliases prev 1.2.0
 

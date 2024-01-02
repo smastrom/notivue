@@ -18,11 +18,11 @@ describe('Update method', () => {
          ['pauseOnTabChange', false],
          ['enqueue', true],
          ['position', 'bottom-right'],
-         ['teleportTo', 'vitest_body'],
+         ['teleportTo', 'foo'],
          ['limit', Math.random() * 100],
       ]
 
-      const config = createConfig({})
+      const config = createConfig({}) as ConfigSlice
 
       for (const [key, value] of newConf) {
          expect(config[key].value).not.toBe(value)
@@ -50,11 +50,11 @@ describe('Update method', () => {
       test('Notification options', () => {
          const newConf: NotivueConfig['notifications'] = {
             global: { duration: Math.random() * 100 },
-            success: { title: 'Vitest' },
-            error: { ariaLive: 'Vitest' } as unknown as { ariaLive: 'polite' },
-            info: { message: 'Vitest' },
-            warning: { ariaLive: 'Vitest' } as unknown as { ariaLive: 'polite' },
-            promise: { ariaRole: 'Vitest' } as unknown as { ariaRole: 'status' },
+            success: { title: 'foo' },
+            error: { ariaLive: 'bar' } as unknown as { ariaLive: 'polite' },
+            info: { message: 'baz' },
+            warning: { ariaLive: 'foo' } as unknown as { ariaLive: 'polite' },
+            promise: { ariaRole: 'bar' } as unknown as { ariaRole: 'status' },
             'promise-resolve': { duration: Math.random() * 100 },
             'promise-reject': { duration: Math.random() * 100 },
          }
@@ -77,11 +77,11 @@ describe('Update method', () => {
    })
 
    test('Should update using function', () => {
-      const userConf = {
+      const userConf: NotivueConfig = {
          pauseOnHover: false,
-         teleportTo: 'vitest_body',
+         teleportTo: 'foo',
          limit: 20000,
-         animations: { enter: 'Vitest_Enter', leave: 'Vitest_Leave', clearAll: 'Vitest_ClearAll' },
+         animations: { enter: 'foo', leave: 'bar', clearAll: 'baz' },
          notifications: {
             global: { duration: 3000 },
             error: { duration: 4000 },
@@ -99,9 +99,9 @@ describe('Update method', () => {
             ...userConf,
             notifications: {
                ...defaultConf.notifications,
-               global: { ...defaultConf.notifications.global, ...userConf.notifications.global },
-               error: { ...defaultConf.notifications.error, ...userConf.notifications.error },
-               info: { ...defaultConf.notifications.info, ...userConf.notifications.info },
+               global: { ...defaultConf.notifications.global, ...userConf.notifications!.global },
+               error: { ...defaultConf.notifications.error, ...userConf.notifications!.error },
+               info: { ...defaultConf.notifications.info, ...userConf.notifications!.info },
             },
          })
 
@@ -114,11 +114,11 @@ describe('Update method', () => {
             pauseOnTouch: !curr.pauseOnTouch,
             pauseOnTabChange: !curr.pauseOnTabChange,
             enqueue: !curr.enqueue,
-            position: (curr.position + '-left') as unknown as NotivueConfig['position'],
-            teleportTo: curr.teleportTo + '_body',
+            position: (curr.position + 'foo') as unknown as NotivueConfig['position'],
+            teleportTo: curr.teleportTo + 'bar',
             animations: {
-               enter: curr.animations.enter + '_Enter',
-               leave: curr.animations.leave + '_Leave',
+               enter: curr.animations.enter + 'baz',
+               leave: curr.animations.leave + 'haz',
             },
             limit: curr.limit * 2,
             notifications: {
@@ -141,12 +141,12 @@ describe('Update method', () => {
       expect(c.pauseOnTouch.value).toBe(!prevConf.pauseOnTouch)
       expect(c.pauseOnTabChange.value).toBe(!prevConf.pauseOnTabChange)
       expect(c.enqueue.value).toBe(!prevConf.enqueue)
-      expect(c.position.value).toBe(prevConf.position + '-left')
-      expect(c.teleportTo.value).toBe(prevConf.teleportTo + '_body')
+      expect(c.position.value).toBe(prevConf.position + 'foo')
+      expect(c.teleportTo.value).toBe(prevConf.teleportTo + 'bar')
       expect(c.limit.value).toBe(prevConf.limit * 2)
       expect(c.animations.value).toStrictEqual({
-         enter: prevConf.animations.enter + '_Enter',
-         leave: prevConf.animations.leave + '_Leave',
+         enter: prevConf.animations.enter + 'baz',
+         leave: prevConf.animations.leave + 'haz',
          clearAll: prevConf.animations.clearAll,
       })
       expect(c.notifications.value).toStrictEqual({
