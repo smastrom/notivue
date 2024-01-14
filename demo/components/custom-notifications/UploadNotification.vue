@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import CloseIcon from '../icons/CloseIcon.vue'
-
 import type { NotivueItem } from 'notivue'
 
 export interface UploadNotificationProps {
@@ -21,7 +19,7 @@ const isPromise = computed(() => notification.item.type === 'promise')
          <div class="Title">
             <h3 :aria-live="item.ariaLive" :role="item.ariaRole">{{ item.message }}</h3>
             <button class="Close" @click="item.clear" v-if="!isPromise">
-               <CloseIcon />
+               <IconsCloseIcon />
             </button>
          </div>
       </div>

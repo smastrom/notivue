@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import type { Position } from 'notivue'
 
-import ArrowIcon from '../icons/ArrowIcon.vue'
-
 const { state, actions } = useStore()
 const config = useNotivue()
 
@@ -34,7 +32,7 @@ function setPosition(position: Position) {
          :aria-label="position.label"
          :aria-checked="config.position.value === position.value"
       >
-         <ArrowIcon :rotate="position.rotate" />
+         <IconsArrowIcon :rotate="position.rotate" />
       </div>
 
       <button

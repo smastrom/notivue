@@ -3,13 +3,13 @@ const props = defineProps<{
    text: string
 }>()
 
-const emits = defineEmits<{
+const emit = defineEmits<{
    (event: 'click'): void
 }>()
 </script>
 
 <template>
-   <button @click="emits('click')" class="ButtonBase" role="button">
+   <button @click="emit('click')" class="ButtonBase" role="button">
       <slot />
       <span>{{ props.text }}</span>
    </button>

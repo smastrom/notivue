@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import type { NotivueItem } from 'notivue'
 
-import Nav from '@/components/nav/Nav.vue'
-import Background from '@/components/shared/Background.vue'
-import QueueCount from '@/components/shared/QueueCount.vue'
-
 import FriendRequestNotification, {
    type FriendRequestNotificationProps,
 } from '@/components/custom-notifications/FriendRequestNotification.vue'
@@ -66,7 +62,7 @@ watch(
 
    <QueueCount />
    <Nav />
-   <Background />
+   <SharedBackground />
 </template>
 
 <style>
