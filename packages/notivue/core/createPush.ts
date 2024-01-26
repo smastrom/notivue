@@ -1,5 +1,5 @@
 import { NotificationTypeKeys as NKeys } from './constants'
-import { createProxies } from './createStore'
+import { createPushProxies } from './createStore'
 
 import type { NotificationType, Push, PushParameter } from 'notivue'
 
@@ -9,7 +9,7 @@ export function setPush(p: Push) {
    Object.assign(push, p)
 }
 
-export function createPush(proxies: ReturnType<typeof createProxies>): Push {
+export function createPush(proxies: ReturnType<typeof createPushProxies>): Push {
    let createCount = 0
 
    function push(options: PushParameter, type: NotificationType, id = `${createCount++}`) {

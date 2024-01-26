@@ -337,11 +337,7 @@ export function createTimeouts(items: ItemsSlice, animations: AnimationsSlice) {
    }
 }
 
-/**
- * Methods called by users to create, update or remove notifications using the push object.
- */
-
-export function createProxies({
+export function createPushProxies({
    config,
    items,
    queue,
