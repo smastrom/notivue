@@ -60,7 +60,7 @@ watch(
       </Notivue>
    </NotivueKeyboard>
 
-   <QueueCount />
+   <SharedQueueCount />
    <Nav />
    <SharedBackground />
 </template>
