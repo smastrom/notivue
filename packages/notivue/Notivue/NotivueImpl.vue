@@ -41,48 +41,50 @@ useRepositioning()
       :to="config.teleportTo.value === false ? undefined : config.teleportTo.value"
       :disabled="config.teleportTo.value === false"
    >
-      <!-- List Container -->
-      <ol
-         v-if="items.length > 0"
-         v-bind="{ ...mouseEvents, ...touchEvents, ...elements.rootAttrs.value }"
-         :data-notivue-align="config.isTopAlign.value ? 'top' : 'bottom'"
-         :aria-label="props.listAriaLabel"
-         :ref="elements.root"
-         :class="props.class"
-         :style="{ ...styles.list, ...props.styles?.list }"
-      >
-         <!-- List Item -->
-         <li
-            v-for="(item, index) in items.entries.value"
-            tabindex="-1"
-            :key="item.id"
-            :data-notivue-id="item.id"
-            :aria-setsize="items.length"
-            :aria-posinset="index + 1"
-            :ref="elements.items"
-            :style="{
-               ...styles.listItem,
-               ...item.positionStyles,
-               ...props.styles?.listItem,
-            }"
+      <div :style="styles.scroller">
+         <!-- List Container -->
+         <ol
+            v-if="items.length > 0"
+            v-bind="{ ...mouseEvents, ...touchEvents, ...elements.rootAttrs.value }"
+            :data-notivue-align="config.isTopAlign.value ? 'top' : 'bottom'"
+            :aria-label="props.listAriaLabel"
+            :ref="elements.root"
+            :class="props.class"
+            :style="{ ...styles.list, ...props.styles?.list }"
          >
-            <!-- ariaLiveOnly Push Option -->
-            <AriaLive v-if="item.ariaLiveOnly" :item="item" />
-
-            <!-- Item Container -->
-            <div
-               v-else
-               v-bind="item.animationAttrs"
-               :aria-label="getAriaLabel(item)"
-               :tabindex="containersTabIndex?.[item.id] ?? -1"
-               :data-notivue-container="item.id"
-               :ref="elements.containers"
-               :style="{ ...styles.itemContainer, ...props.styles?.itemContainer }"
+            <!-- List Item -->
+            <li
+               v-for="(item, index) in items.entries.value"
+               tabindex="-1"
+               :key="item.id"
+               :data-notivue-id="item.id"
+               :aria-setsize="items.length"
+               :aria-posinset="index + 1"
+               :ref="elements.items"
+               :style="{
+                  ...styles.listItem,
+                  ...item.positionStyles,
+                  ...props.styles?.listItem,
+               }"
             >
-               <!-- Notification -->
-               <slot v-bind="getSlotItem(item)" />
-            </div>
-         </li>
-      </ol>
+               <!-- ariaLiveOnly Push Option -->
+               <AriaLive v-if="item.ariaLiveOnly" :item="item" />
+
+               <!-- Item Container -->
+               <div
+                  v-else
+                  v-bind="item.animationAttrs"
+                  :aria-label="getAriaLabel(item)"
+                  :tabindex="containersTabIndex?.[item.id] ?? -1"
+                  :data-notivue-container="item.id"
+                  :ref="elements.containers"
+                  :style="{ ...styles.itemContainer, ...props.styles?.itemContainer }"
+               >
+                  <!-- Notification -->
+                  <slot v-bind="getSlotItem(item)" />
+               </div>
+            </li>
+         </ol>
+      </div>
    </Teleport>
 </template>

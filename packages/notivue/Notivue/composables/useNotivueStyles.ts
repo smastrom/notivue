@@ -15,6 +15,7 @@ import type { NotivueElements } from 'notivue'
 const boxSizing: CSSProperties = { boxSizing: 'border-box' }
 
 const baseStyles: Record<NotivueElements, CSSProperties> = {
+   scroller: {},
    list: {
       ...boxSizing,
       display: 'flex',
@@ -79,6 +80,7 @@ export function useNotivueStyles() {
    }))
 
    return computed<Record<NotivueElements, CSSProperties>>(() => ({
+      scroller: baseStyles.scroller,
       list: { ...baseStyles.list, ...offset.value },
       listItem: { ...baseStyles.listItem, ...xAlignment.value },
       itemContainer: baseStyles.itemContainer,

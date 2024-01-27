@@ -47,4 +47,4 @@ export interface NotivueComponentSlot {
 
 // Elements
 
-export type NotivueElements = 'list' | 'listItem' | 'itemContainer'
+export type NotivueElements = 'scroller' | 'list' | 'listItem' | 'itemContainer'
