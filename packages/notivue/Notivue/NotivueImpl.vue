@@ -10,7 +10,7 @@ import { useNotivueStyles } from './composables/useNotivueStyles'
 import { useRepositioning } from './composables/useRepositioning'
 import { useVisibilityChange } from './composables/useVisibilityChange'
 import { useReducedMotion } from './composables/useReducedMotion'
-import { getSlotContext, getAriaLabel } from './utils'
+import { getSlotItem, getAriaLabel } from './utils'
 import { DEFAULT_PROPS } from './constants'
 
 import type { NotivueProps, NotivueComponentSlot } from 'notivue'
@@ -81,7 +81,7 @@ const dataAlign = computed(() => ({
                :style="styles.container"
             >
                <!-- Notification -->
-               <slot v-bind="getSlotContext(item)" />
+               <slot v-bind="getSlotItem(item)" />
             </div>
          </li>
       </ol>

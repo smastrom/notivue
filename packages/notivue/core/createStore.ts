@@ -6,7 +6,7 @@ import {
    mergeNotificationOptions as mergeOptions,
    toRawConfig,
 } from './utils'
-import { getSlotContext } from '@/Notivue/utils'
+import { getSlotItem } from '@/Notivue/utils'
 
 import { DEFAULT_CONFIG, NotificationTypeKeys as NKeys, TransitionType as TType } from './constants'
 
@@ -179,7 +179,7 @@ export function createAnimations(config: ConfigSlice, items: ItemsSlice, element
 
          function onAnimationend() {
             items.remove(id)
-            item?.[isUserTriggered ? 'onManualClear' : 'onAutoClear']?.(getSlotContext(item))
+            item?.[isUserTriggered ? 'onManualClear' : 'onAutoClear']?.(getSlotItem(item))
          }
 
          const { leave = '' } = config.animations.value

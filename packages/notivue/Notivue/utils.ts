@@ -8,7 +8,7 @@ export const hiddenInternalKeys: (keyof HiddenInternalItemData)[] = [
    'positionStyles',
 ]
 
-export function getSlotContext(item: StoreItem): NotivueItem {
+export function getSlotItem(item: StoreItem): NotivueItem {
    return Object.fromEntries(
       Object.entries(item).filter(
          ([key]) => !hiddenInternalKeys.includes(key as keyof HiddenInternalItemData)
