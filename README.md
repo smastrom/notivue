@@ -8,7 +8,7 @@
 
 ### Fully-featured notification system for Vue and Nuxt
 
-[Live Demo](https://notivue.smastrom.dev) - [Documentation](https://notivuedocs.netlify.app)
+[Live Demo](https://notivue.smastrom.io) - [Documentation](https://notivuedocs.netlify.app)
 
 ---
 
