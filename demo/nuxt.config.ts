@@ -3,6 +3,9 @@ import { getHead } from './utils/head'
 export default defineNuxtConfig({
    modules: ['notivue/nuxt'],
    ssr: true,
+   experimental: {
+      componentIslands: true,
+   },
    notivue: {
       // addPlugin: true,
       notifications: {
