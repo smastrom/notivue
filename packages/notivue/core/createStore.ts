@@ -8,7 +8,7 @@ import {
 } from './utils'
 import { getSlotItem } from '@/Notivue/utils'
 
-import { DEFAULT_CONFIG, NotificationTypeKeys as NKeys, TransitionType as TType } from './constants'
+import { DEFAULT_CONFIG, NotificationTypeKeys as NKeys } from './constants'
 
 import type {
    DeepPartial,
@@ -59,7 +59,7 @@ export function createQueue() {
          this.triggerRef()
       },
       get(id: string) {
-         return this.entries.value.find(({ id: _id }) => id === _id)
+         return this.entries.value.find((e) => e.id === id)
       },
       update(id: string, newOptions: DeepPartial<StoreItem>) {
          Object.assign(this.get(id) ?? {}, newOptions)
@@ -68,7 +68,7 @@ export function createQueue() {
          triggerRef(this.entries)
       },
       remove(id: string) {
-         this.entries.value = this.entries.value.filter(({ id: _id }) => id !== _id)
+         this.entries.value = this.entries.value.filter((e) => e.id !== id)
       },
       clear() {
          this.entries.value = []
@@ -97,7 +97,7 @@ export function createItems(config: ConfigSlice, queue: QueueSlice) {
          this.add(next)
       },
       get(id: string) {
-         return this.entries.value.find(({ id: _id }) => id === _id)
+         return this.entries.value.find((e) => e.id === id)
       },
       update(id: string, newOptions: DeepPartial<StoreItem>) {
          Object.assign(this.get(id) ?? {}, newOptions)
@@ -109,7 +109,7 @@ export function createItems(config: ConfigSlice, queue: QueueSlice) {
          this.entries.value = this.entries.value.map(updateItem)
       },
       remove(id: string) {
-         this.entries.value = this.entries.value.filter(({ id: _id }) => id !== _id)
+         this.entries.value = this.entries.value.filter((e) => e.id !== id)
 
          const shouldDequeue = queue.length > 0 && this.length < config.limit.value
          if (shouldDequeue) {
@@ -211,8 +211,8 @@ export function createAnimations(config: ConfigSlice, items: ItemsSlice, element
             onAnimationend: () => items.clear(),
          })
       },
-      updatePositions(type = TType.PUSH) {
-         const isReduced = this.isReducedMotion.value || type === TType.IMMEDIATE
+      updatePositions({ isImmediate = false } = {}) {
+         const isReduced = this.isReducedMotion.value || isImmediate
          const leaveClass = config.animations.value.leave
 
          let accPrevHeights = 0
