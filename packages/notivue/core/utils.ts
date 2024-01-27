@@ -31,7 +31,7 @@ export function mergeNotificationOptions<T extends Obj = Obj>(
    pushOptions.props ||= {} as T
 
    return {
-      ...(configOptions[pushOptions.type] ?? configOptions.success),
+      ...configOptions[pushOptions.type],
       ...configOptions.global,
       ...pushOptions,
       ...(pushOptions.type === 'promise' ? { duration: Infinity } : {}), // Force duration infinity

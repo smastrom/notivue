@@ -202,7 +202,7 @@ export function createAnimations(config: ConfigSlice, items: ItemsSlice, element
       playClearAll() {
          const { clearAll = '' } = config.animations.value
 
-         items.entries.value.forEach(({ timeout }) => window.clearTimeout(timeout as number))
+         items.entries.value.forEach((e) => window.clearTimeout(e.timeout as number))
 
          if (!clearAll || this.isReducedMotion.value) return items.clear()
 
