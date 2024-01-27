@@ -5,7 +5,7 @@ import { notivueInjectionKey } from './createNotivue'
 import { push } from './createPush'
 import { DEFAULT_CONFIG } from './constants'
 
-import { getSlotContext } from '@/Notivue/utils'
+import { getSlotItem } from '@/Notivue/utils'
 
 import type { NotivueStore, UseNotivueReturn, NotivueComputedEntries, NotivueItem } from 'notivue'
 
@@ -68,7 +68,7 @@ export function useNotifications(): NotivueComputedEntries {
    const store = useStore()
 
    return {
-      entries: computed(() => store.items.entries.value.map(getSlotContext)),
-      queue: computed(() => store.queue.entries.value.map(getSlotContext)),
+      entries: computed(() => store.items.entries.value.map(getSlotItem)),
+      queue: computed(() => store.queue.entries.value.map(getSlotItem)),
    }
 }

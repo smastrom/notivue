@@ -1,5 +1,4 @@
 import { watch } from 'vue'
-import { TransitionType as TType } from './constants'
 
 import type { NotivueStore } from 'notivue'
 
@@ -7,7 +6,7 @@ export function createWatchers(store: NotivueStore) {
    watch(
       store.config.isTopAlign,
       () => {
-         store.animations.updatePositions(TType.IMMEDIATE)
+         store.animations.updatePositions({ isImmediate: true })
       },
       { flush: 'post' }
    )
@@ -15,7 +14,7 @@ export function createWatchers(store: NotivueStore) {
    watch(
       () => store.items.length,
       () => {
-         store.animations.updatePositions(TType.PUSH)
+         store.animations.updatePositions()
       },
       { flush: 'post' }
    )

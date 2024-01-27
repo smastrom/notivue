@@ -3,8 +3,8 @@ import { getHead } from './utils/head'
 export default defineNuxtConfig({
    modules: ['notivue/nuxt'],
    ssr: true,
-   devtools: {
-      enabled: false,
+   experimental: {
+      componentIslands: true,
    },
    notivue: {
       // addPlugin: true,
@@ -26,11 +26,6 @@ export default defineNuxtConfig({
       },
       css: {
          transformer: 'lightningcss',
-         lightningcss: {
-            drafts: {
-               nesting: true,
-            },
-         },
       },
    },
    css: ['assets/style.css', 'notivue/notifications.css', 'notivue/animations.css'],

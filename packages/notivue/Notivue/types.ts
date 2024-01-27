@@ -1,4 +1,4 @@
-import type { Component } from 'vue'
+import type { CSSProperties, Component } from 'vue'
 import type { ContainersTabIndexMap } from '@/NotivueKeyboard/types'
 import type { NotivueItem } from 'notivue'
 
@@ -16,6 +16,29 @@ export interface NotivueProps {
     * @default "Notifications"
     */
    listAriaLabel?: string
+   /**
+    * CSS styles for the list container, list items and notification containers.
+    *
+    * They have higher priority over the internal styles and will override them.
+    *
+    * ```ts
+    * const styles = {
+    *   list: {
+    *     position: 'relative',
+    *     height: '100%',
+    *   },
+    *   listItem: {
+    *     // ...
+    *   },
+    *   itemContainer: {
+    *     // ...
+    *   },
+    * }
+    * ```
+    *
+    * @default undefined
+    */
+   styles?: Partial<Record<NotivueElements, CSSProperties>>
 }
 
 export interface NotivueComponentSlot {
@@ -24,4 +47,4 @@ export interface NotivueComponentSlot {
 
 // Elements
 
-export type NotivueElements = 'stream' | 'item' | 'container'
+export type NotivueElements = 'list' | 'listItem' | 'itemContainer'

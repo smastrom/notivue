@@ -7,13 +7,13 @@ export function useResizeListObserver(elements: HTMLElement[], onSizeChange: () 
 
    onMounted(() => {
       resizeObserver = new ResizeObserver((entries, observer) => {
-         entries.forEach((entry) => {
-            if (!calls.has(entry.target)) {
-               calls.add(entry.target)
+         entries.forEach((e) => {
+            if (!calls.has(e.target)) {
+               calls.add(e.target)
             } else {
                onSizeChange()
-               calls.delete(entry.target)
-               observer.unobserve(entry.target)
+               calls.delete(e.target)
+               observer.unobserve(e.target)
             }
          })
       })

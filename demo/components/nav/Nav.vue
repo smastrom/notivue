@@ -1,51 +1,40 @@
-<script setup lang="ts">
-import NavNotivueConfig from './NavNotivueConfig.vue'
-import NavNotificationsThemes from './NavNotificationsThemes.vue'
-import NavPushBuiltIn from './NavPushBuiltIn.vue'
-import NavPushHeadless from './NavPushHeadless.vue'
-import NavNotivuePosition from './NavNotivuePosition.vue'
-import ButtonGroup from '../shared/ButtonGroup.vue'
-import Button from '../shared/Button.vue'
-import DismissIcon from '../icons/DismissIcon.vue'
-import DestroyIcon from '../icons/DestroyIcon.vue'
-import NavNotificationsCustomization from './NavNotificationsCustomization.vue'
-</script>
-
 <template>
    <nav dir="ltr">
       <div class="Container">
-         <ButtonGroup name="Position">
+         <SharedButtonGroup name="Position">
             <NavNotivuePosition />
-         </ButtonGroup>
+         </SharedButtonGroup>
 
-         <ButtonGroup name="Config">
+         <SharedButtonGroup name="Config">
             <NavNotivueConfig />
-         </ButtonGroup>
+         </SharedButtonGroup>
 
          <div class="DefaultComponent">
-            <ButtonGroup name="Push 👇" isPush>
+            <SharedButtonGroup name="Push 👇" isPush>
                <NavPushBuiltIn />
-            </ButtonGroup>
+            </SharedButtonGroup>
 
-            <ButtonGroup name="Theme">
+            <SharedButtonGroup name="Theme">
                <NavNotificationsThemes />
-            </ButtonGroup>
+            </SharedButtonGroup>
 
-            <ButtonGroup name="Features">
+            <SharedButtonGroup name="Features">
                <NavNotificationsCustomization />
-            </ButtonGroup>
+            </SharedButtonGroup>
          </div>
 
-         <ButtonGroup name="Headless 👇" isPush>
+         <SharedButtonGroup name="Headless 👇" isPush>
             <NavPushHeadless />
-         </ButtonGroup>
+         </SharedButtonGroup>
 
-         <ButtonGroup name="Actions">
-            <Button @click="push.clearAll()" text="Dismiss All"> <DismissIcon /> </Button>
-            <Button @click="push.destroyAll()" text="Destroy All">
-               <DestroyIcon />
-            </Button>
-         </ButtonGroup>
+         <SharedButtonGroup name="Actions">
+            <SharedButton @click="push.clearAll()" text="Dismiss All">
+               <IconsDismissIcon />
+            </SharedButton>
+            <SharedButton @click="push.destroyAll()" text="Destroy All">
+               <IconsDestroyIcon />
+            </SharedButton>
+         </SharedButtonGroup>
       </div>
    </nav>
 </template>

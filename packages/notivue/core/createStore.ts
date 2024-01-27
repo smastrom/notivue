@@ -1,4 +1,4 @@
-import { ref, shallowRef, computed, triggerRef, nextTick, type Ref } from 'vue'
+import { ref, shallowRef, computed, triggerRef, nextTick } from 'vue'
 
 import {
    createRefs,
@@ -6,9 +6,9 @@ import {
    mergeNotificationOptions as mergeOptions,
    toRawConfig,
 } from './utils'
-import { getSlotContext } from '@/Notivue/utils'
+import { getSlotItem } from '@/Notivue/utils'
 
-import { DEFAULT_CONFIG, NotificationTypeKeys as NKeys, TransitionType as TType } from './constants'
+import { DEFAULT_CONFIG, NotificationTypeKeys as NKeys } from './constants'
 
 import type {
    DeepPartial,
@@ -59,7 +59,7 @@ export function createQueue() {
          this.triggerRef()
       },
       get(id: string) {
-         return this.entries.value.find(({ id: _id }) => id === _id)
+         return this.entries.value.find((e) => e.id === id)
       },
       update(id: string, newOptions: DeepPartial<StoreItem>) {
          Object.assign(this.get(id) ?? {}, newOptions)
@@ -68,7 +68,7 @@ export function createQueue() {
          triggerRef(this.entries)
       },
       remove(id: string) {
-         this.entries.value = this.entries.value.filter(({ id: _id }) => id !== _id)
+         this.entries.value = this.entries.value.filter((e) => e.id !== id)
       },
       clear() {
          this.entries.value = []
@@ -97,7 +97,7 @@ export function createItems(config: ConfigSlice, queue: QueueSlice) {
          this.add(next)
       },
       get(id: string) {
-         return this.entries.value.find(({ id: _id }) => id === _id)
+         return this.entries.value.find((e) => e.id === id)
       },
       update(id: string, newOptions: DeepPartial<StoreItem>) {
          Object.assign(this.get(id) ?? {}, newOptions)
@@ -109,10 +109,7 @@ export function createItems(config: ConfigSlice, queue: QueueSlice) {
          this.entries.value = this.entries.value.map(updateItem)
       },
       remove(id: string) {
-         this.entries.value = this.entries.value.filter(({ timeout, id: _id }) => {
-            if (id !== _id) return true
-            return window.clearTimeout(timeout as number), false
-         })
+         this.entries.value = this.entries.value.filter((e) => e.id !== id)
 
          const shouldDequeue = queue.length > 0 && this.length < config.limit.value
          if (shouldDequeue) {
@@ -126,26 +123,21 @@ export function createItems(config: ConfigSlice, queue: QueueSlice) {
    }
 }
 
-export function createElements(): {
-   root: Ref<HTMLElement | null>
-   rootAttrs: Ref<Partial<{ class: string; onAnimationend: () => void }>>
-   setRootAttrs: (newAttrs: Partial<{ class: string; onAnimationend: () => void }>) => void
-   items: Ref<HTMLElement[]>
-   getSortedItems: () => HTMLElement[]
-   containers: Ref<HTMLElement[]>
-} {
+export function createElements() {
+   type AnimationAttrs = { class: string; onAnimationend: () => void }
+
    return {
-      root: ref(null),
-      rootAttrs: shallowRef({}),
-      setRootAttrs(newAttrs) {
+      root: ref<HTMLElement | null>(null),
+      rootAttrs: shallowRef<Partial<AnimationAttrs>>({}),
+      setRootAttrs(newAttrs: Partial<AnimationAttrs>) {
          this.rootAttrs.value = newAttrs
       },
-      items: ref([]),
+      items: ref<HTMLElement[]>([]),
       getSortedItems() {
          // This is a bit dirty, but it's better than cloning and reversing the array on every repositioning
          return this.items.value.sort((a, b) => +b.dataset.notivueId! - +a.dataset.notivueId!)
       },
-      containers: ref([]),
+      containers: ref<HTMLElement[]>([]),
    }
 }
 
@@ -172,7 +164,7 @@ export function createAnimations(config: ConfigSlice, items: ItemsSlice, element
          if (!animEl) {
             this.transitionData = { duration: '0s', easing: 'ease' }
          } else {
-            const style = getComputedStyle(animEl)
+            const style = window.getComputedStyle(animEl)
 
             this.transitionData = {
                duration: style.animationDuration,
@@ -180,15 +172,17 @@ export function createAnimations(config: ConfigSlice, items: ItemsSlice, element
             }
          }
       },
-      playLeave(id: string, { isDestroy = false, isManual = false } = {}) {
+      playLeave(id: string, { isDestroy = false, isUserTriggered = false } = {}) {
          const item = items.get(id)
 
-         const { leave = '' } = config.animations.value
+         window.clearTimeout(item?.timeout as number)
 
          function onAnimationend() {
             items.remove(id)
-            item?.[isManual ? 'onManualClear' : 'onAutoClear']?.(getSlotContext(item))
+            item?.[isUserTriggered ? 'onManualClear' : 'onAutoClear']?.(getSlotItem(item))
          }
+
+         const { leave = '' } = config.animations.value
 
          if (!item || !leave || isDestroy || this.isReducedMotion.value) return onAnimationend()
 
@@ -208,6 +202,8 @@ export function createAnimations(config: ConfigSlice, items: ItemsSlice, element
       playClearAll() {
          const { clearAll = '' } = config.animations.value
 
+         items.entries.value.forEach((e) => window.clearTimeout(e.timeout as number))
+
          if (!clearAll || this.isReducedMotion.value) return items.clear()
 
          elements.setRootAttrs({
@@ -215,8 +211,8 @@ export function createAnimations(config: ConfigSlice, items: ItemsSlice, element
             onAnimationend: () => items.clear(),
          })
       },
-      updatePositions(type = TType.PUSH) {
-         const isReduced = this.isReducedMotion.value || type === TType.IMMEDIATE
+      updatePositions({ isImmediate = false } = {}) {
+         const isReduced = this.isReducedMotion.value || isImmediate
          const leaveClass = config.animations.value.leave
 
          let accPrevHeights = 0
@@ -267,30 +263,33 @@ export function createTimeouts(items: ItemsSlice, animations: AnimationsSlice) {
          this.setStreamPause(false)
          this.setStreamFocus(false)
       },
-      create(id: string, duration: number | undefined, { ignorePause = false } = {}) {
-         if (
-            duration === 0 ||
-            duration === null ||
-            duration === Infinity ||
-            (this.isStreamPaused.value && !ignorePause)
-         ) {
-            return undefined
+      create(id: string, duration: number | undefined) {
+         if (Number.isFinite(duration) && duration! > 0) {
+            return window.setTimeout(() => animations.playLeave(id), duration)
          }
-
-         return window.setTimeout(() => animations.playLeave(id), duration)
+         return undefined
       },
       pause() {
          if (items.length === 0 || this.isStreamPaused.value) return
 
-         const pausedAt = Date.now()
-
          console.log('Pausing timeouts')
+
          items.updateAll((item) => {
             window.clearTimeout(item.timeout as number)
 
+            if (!item.timeout) return item
+
+            let remaining = 0
+
+            if (item.remaining == null) {
+               remaining = item.duration - (Date.now() - item.createdAt)
+            } else {
+               remaining = item.remaining - (Date.now() - item.resumedAt)
+            }
+
             return {
                ...item,
-               elapsed: pausedAt - (item.resumedAt ?? item.createdAt) + (item.elapsed ?? 0),
+               remaining,
             }
          })
 
@@ -300,34 +299,16 @@ export function createTimeouts(items: ItemsSlice, animations: AnimationsSlice) {
          if (items.length === 0 || !this.isStreamPaused.value) return
 
          console.log('Resuming timeouts')
+
          items.updateAll((item) => {
             window.clearTimeout(item.timeout as number)
-            /**
-             * 'elapsed' may be equal to 'undefined' if a notification
-             * is pushed while the stream is paused as pause() won't be called.
-             *
-             * To keep leave animation order coherent with the creation time and to avoid
-             * notifications to be dismissed at the same time, we calculate a normalized
-             * elapsed time ranging from 200ms to 1200ms.
-             */
-            if (item.elapsed === undefined) {
-               const createdAtStamps = items.entries.value.map(({ createdAt }) => createdAt)
 
-               const maxStamp = Math.max(...createdAtStamps)
-               const minStamp = Math.min(...createdAtStamps)
-
-               if (minStamp === maxStamp) {
-                  item.elapsed = 1200
-               } else {
-                  const normalizedCreatedAt = (item.createdAt - minStamp) / (maxStamp - minStamp)
-                  item.elapsed = normalizedCreatedAt * (1200 - 200) + 200
-               }
-            }
+            if (!item.timeout) return item
 
             return {
                ...item,
+               timeout: this.create(item.id, item.remaining ?? item.duration),
                resumedAt: Date.now(),
-               timeout: this.create(item.id, item.duration - item.elapsed, { ignorePause: true }),
             }
          })
 
@@ -341,11 +322,7 @@ export function createTimeouts(items: ItemsSlice, animations: AnimationsSlice) {
    }
 }
 
-/**
- * Methods called by users to create, update or remove notifications using the push object.
- */
-
-export function createProxies({
+export function createPushProxies({
    config,
    items,
    queue,
@@ -369,15 +346,15 @@ export function createProxies({
          const isLast = items.entries.value[items.entries.value.length - 1]?.id === id
          if (isLast) timeouts.resume()
 
-         animations.playLeave(id, { isManual: true, isDestroy })
+         animations.playLeave(id, { isUserTriggered: true, isDestroy })
       },
       push<T extends Obj = Obj>(options: PushOptionsWithInternals<T>) {
          const createdAt = Date.now()
-         const isQueueActive = config.enqueue.value
-         const isUpdate = [NKeys.PROMISE_RESOLVE, NKeys.PROMISE_REJECT].includes(options.type)
-
          const entry = mergeOptions<T>(config.notifications.value, options)
+
          const createTimeout = () => timeouts.create(entry.id, entry.duration)
+
+         const isUpdate = [NKeys.PROMISE_RESOLVE, NKeys.PROMISE_REJECT].includes(options.type)
 
          if (isUpdate) {
             if (queue.get(entry.id)) {
@@ -388,27 +365,25 @@ export function createProxies({
                items.triggerRef()
             }
          } else {
+            const isQueueActive = config.enqueue.value
             const hasReachedLimit = items.length >= config.limit.value
             const shouldDiscard = !isQueueActive && hasReachedLimit
 
             if (shouldDiscard) {
                const exceedingItems = items.entries.value.slice(config.limit.value - 1)
-               exceedingItems.forEach(({ id }) => timeouts.create(id, 50))
+               exceedingItems.forEach(({ id }) => timeouts.create(id, 1))
             }
 
             const shouldEnqueue = isQueueActive && !options.skipQueue && hasReachedLimit
 
-            const newEntry = {
+            const item = {
                ...entry,
                createdAt,
                animationAttrs: {
                   class: animations.isReducedMotion.value ? '' : config.animations.value.enter,
                   onAnimationend() {
                      items.update(entry.id, {
-                        animationAttrs: {
-                           class: '',
-                           onAnimationend: undefined,
-                        },
+                        animationAttrs: { class: '', onAnimationend: undefined },
                      })
                   },
                },
@@ -418,9 +393,9 @@ export function createProxies({
             } as StoreItem<T>
 
             if (shouldEnqueue) {
-               queue.add(newEntry)
+               queue.add(item)
             } else {
-               items.add(newEntry)
+               items.add(item)
             }
          }
       },

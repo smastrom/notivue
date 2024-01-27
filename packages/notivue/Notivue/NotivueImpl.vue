@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, Teleport } from 'vue'
+import { Teleport } from 'vue'
 
 import AriaLive from './AriaLive.vue'
 
@@ -10,7 +10,7 @@ import { useNotivueStyles } from './composables/useNotivueStyles'
 import { useRepositioning } from './composables/useRepositioning'
 import { useVisibilityChange } from './composables/useVisibilityChange'
 import { useReducedMotion } from './composables/useReducedMotion'
-import { getSlotContext, getAriaLabel } from './utils'
+import { getSlotItem, getAriaLabel } from './utils'
 import { DEFAULT_PROPS } from './constants'
 
 import type { NotivueProps, NotivueComponentSlot } from 'notivue'
@@ -34,24 +34,22 @@ const touchEvents = useTouchEvents()
 useReducedMotion()
 useVisibilityChange()
 useRepositioning()
-
-// Computed
-
-const dataAlign = computed(() => ({
-   'data-notivue-align': config.isTopAlign.value ? 'top' : 'bottom',
-}))
 </script>
 
 <template>
-   <Teleport :to="config.teleportTo.value">
+   <Teleport
+      :to="config.teleportTo.value === false ? undefined : config.teleportTo.value"
+      :disabled="config.teleportTo.value === false"
+   >
       <!-- List Container -->
       <ol
          v-if="items.length > 0"
-         v-bind="{ ...mouseEvents, ...touchEvents, ...elements.rootAttrs.value, ...dataAlign }"
+         v-bind="{ ...mouseEvents, ...touchEvents, ...elements.rootAttrs.value }"
+         :data-notivue-align="config.isTopAlign.value ? 'top' : 'bottom'"
          :aria-label="props.listAriaLabel"
          :ref="elements.root"
-         :style="styles.stream"
          :class="props.class"
+         :style="{ ...styles.list, ...props.styles?.list }"
       >
          <!-- List Item -->
          <li
@@ -63,14 +61,15 @@ const dataAlign = computed(() => ({
             :aria-posinset="index + 1"
             :ref="elements.items"
             :style="{
-               ...styles.item,
+               ...styles.listItem,
                ...item.positionStyles,
+               ...props.styles?.listItem,
             }"
          >
             <!-- ariaLiveOnly Push Option -->
             <AriaLive v-if="item.ariaLiveOnly" :item="item" />
 
-            <!-- Notification Container -->
+            <!-- Item Container -->
             <div
                v-else
                v-bind="item.animationAttrs"
@@ -78,10 +77,10 @@ const dataAlign = computed(() => ({
                :tabindex="containersTabIndex?.[item.id] ?? -1"
                :data-notivue-container="item.id"
                :ref="elements.containers"
-               :style="styles.container"
+               :style="{ ...styles.itemContainer, ...props.styles?.itemContainer }"
             >
                <!-- Notification -->
-               <slot v-bind="getSlotContext(item)" />
+               <slot v-bind="getSlotItem(item)" />
             </div>
          </li>
       </ol>

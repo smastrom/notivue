@@ -14,7 +14,7 @@ import {
 import { useNotivue, useStore } from '@/core/useStore'
 import { push } from '@/core/createPush'
 import { focusableEls, keyboardInjectionKey, DEFAULT_PROPS } from './constants'
-import { useKeyboard } from './useKeyboard'
+import { useKeyboardFocus } from './useKeyboardFocus'
 import { useLastFocused } from './useLastFocused'
 
 import type {
@@ -69,7 +69,7 @@ const config = useNotivue()
  * ==================================================================================== */
 
 const { focusLastElement } = useLastFocused()
-const { isKeyboard } = useKeyboard()
+const { isKeyboardFocus } = useKeyboardFocus()
 
 const candidateIds = ref({ qualified: [] as string[], unqualified: [] as string[] })
 
@@ -277,7 +277,7 @@ watch(
          e.stopPropagation()
 
          if (!timeouts.isStreamFocused.value) return
-         if (!isKeyboard.value) return
+         if (!isKeyboardFocus.value) return
 
          if (isManualLeave) return (isManualLeave = false)
 
@@ -372,7 +372,7 @@ function onComboKeyDown(e: KeyboardEvent) {
  * Same if clicking any element outside the stream.
  */
 function onActionsMouseClick(e: MouseEvent) {
-   if (timeouts.isStreamFocused.value && !isKeyboard.value) {
+   if (timeouts.isStreamFocused.value && !isKeyboardFocus.value) {
       if (!elements.root.value?.contains(e.target as HTMLElement)) {
          onStreamLeave()
       }
@@ -403,3 +403,4 @@ onBeforeUnmount(() => {
 <template>
    <slot v-bind="{ containersTabIndex, elementsTabIndex }" />
 </template>
+./useKeyboardFocus

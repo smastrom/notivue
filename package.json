@@ -1,9 +1,9 @@
 {
    "name": "notivue-monorepo",
    "private": true,
-   "packageManager": "pnpm@8.9.2",
+   "packageManager": "pnpm@8.14.3",
    "engines": {
-      "node": ">=18.0.0"
+      "node": ">=20.0.0"
    },
    "scripts": {
       "dev": "pnpm build && concurrently \"pnpm -C packages/notivue run watch\" \"pnpm -C demo install && pnpm -C demo run dev --host\"",
@@ -18,7 +18,7 @@
       "concurrently": "^8.2.2",
       "husky": "^8.0.3",
       "lint-staged": "^15.2.0",
-      "prettier": "^3.1.1"
+      "prettier": "^3.2.4"
    },
    "lint-staged": {
       "*.{js,ts,vue,json,css,md}": "prettier --write"

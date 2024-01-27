@@ -10,7 +10,7 @@ import {
    createElements,
    createAnimations,
    createTimeouts,
-   createProxies,
+   createPushProxies,
 } from './createStore'
 
 export const notivueInjectionKey = Symbol('') as InjectionKey<NotivueStore>
@@ -25,7 +25,7 @@ export function createNotivue(userConfig: NotivueConfig = {}): Plugin {
 
    const store = { config, queue, items, elements, animations, timeouts }
 
-   const proxies = createProxies(store)
+   const proxies = createPushProxies(store)
    const push = Object.freeze(createPush(proxies))
 
    setPush(push)

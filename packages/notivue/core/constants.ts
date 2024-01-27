@@ -14,11 +14,6 @@ export const NotificationTypeKeys: Record<string, NTypeU> = {
    PROMISE_REJECT: 'promise-reject',
 }
 
-export enum TransitionType {
-   PUSH,
-   IMMEDIATE,
-}
-
 const success: NotificationOptions = {
    title: '',
    message: '',

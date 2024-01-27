@@ -6,12 +6,12 @@ import { useStore } from '@/core/useStore'
 export function useMouseEvents() {
    const { timeouts, config } = useStore()
 
-   function pauseHover(event: PointerEvent) {
-      if (isMouse(event)) timeouts.pause()
+   function pauseHover(e: PointerEvent) {
+      if (isMouse(e)) timeouts.pause()
    }
 
-   function resumeHover(event: PointerEvent) {
-      if (isMouse(event)) timeouts.resume()
+   function resumeHover(e: PointerEvent) {
+      if (isMouse(e)) timeouts.resume()
    }
 
    return computed(() =>

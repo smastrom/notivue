@@ -1,21 +1,14 @@
 <script setup lang="ts">
-import Button from '../shared/Button.vue'
-import SuccessIcon from '../icons/SuccessIcon.vue'
-import PromiseIcon from '../icons/PromiseIcon.vue'
-import InfoIcon from '../icons/InfoIcon.vue'
-import WarnIcon from '../icons/WarnIcon.vue'
-
 const { state } = useStore()
-
 const { messages } = useStore()
 
 async function asyncRefMessagePush() {
    const initialMessage = ref(state.rtl ? 'جاري تحميل الملفات...' : 'Preparing to upload files...')
    const notification = push.promise({ message: initialMessage })
 
-   for (const i of [1, 2, 3]) {
+   for (let n = 1; n < 4; n++) {
       await new Promise((resolve) => setTimeout(resolve, getRandomInt(1000, 2000)))
-      initialMessage.value = state.rtl ? `جاري تحميل الملف ${i}/3...` : `Uploading file ${i}/3...`
+      initialMessage.value = state.rtl ? `جاري تحميل الملف ${n}/3...` : `Uploading file ${n}/3...`
    }
 
    await new Promise((resolve) => setTimeout(resolve, getRandomInt(1000, 2000)))
@@ -37,7 +30,7 @@ async function asyncPush() {
 </script>
 
 <template>
-   <Button
+   <SharedButton
       @click="
          push.success({
             ...messages.success,
@@ -51,18 +44,18 @@ async function asyncPush() {
       "
       text="Success"
    >
-      <SuccessIcon />
-   </Button>
-   <Button @click="push.error(messages.error)" text="Error">
-      <WarnIcon :isWarn="false" />
-   </Button>
-   <Button @click="push.warning(messages.warning)" text="Warn">
-      <WarnIcon :isWarn="true" />
-   </Button>
-   <Button @click="push.info(messages.info)" text="Info">
-      <InfoIcon />
-   </Button>
-   <Button @click="asyncPush" text="Promise">
-      <PromiseIcon />
-   </Button>
+      <IconsSuccessIcon />
+   </SharedButton>
+   <SharedButton @click="push.error(messages.error)" text="Error">
+      <IconsWarnIcon :isWarn="false" />
+   </SharedButton>
+   <SharedButton @click="push.warning(messages.warning)" text="Warn">
+      <IconsWarnIcon isWarn />
+   </SharedButton>
+   <SharedButton @click="push.info(messages.info)" text="Info">
+      <IconsInfoIcon />
+   </SharedButton>
+   <SharedButton @click="asyncPush" text="Promise">
+      <IconsPromiseIcon />
+   </SharedButton>
 </template>

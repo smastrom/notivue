@@ -19,8 +19,8 @@ import { isMouse } from '@/core/utils'
 export function useTouchEvents() {
    const { timeouts, config } = useStore()
 
-   function pauseTouch(event: PointerEvent) {
-      if (!isMouse(event)) {
+   function pauseTouch(e: PointerEvent) {
+      if (!isMouse(e)) {
          timeouts.clearDebounceTimeout()
          timeouts.pause()
 

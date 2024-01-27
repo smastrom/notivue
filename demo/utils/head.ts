@@ -36,7 +36,7 @@ export function getHead() {
          {
             hid: 'og:url',
             property: 'og:url',
-            content: 'https://notivue.pages.dev',
+            content: 'https://notivue.smastrom.io',
          },
          {
             hid: 'twitter:title',

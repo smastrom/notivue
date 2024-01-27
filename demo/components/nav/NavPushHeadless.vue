@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import VueIcon from '../icons/VueIcon.vue'
-import Button from '../shared/Button.vue'
-
 import profilePicture from '@/assets/profile-picture.jpg?url'
 
 import type { UploadNotificationProps } from '@/components/custom-notifications/UploadNotification.vue'
@@ -82,13 +79,13 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-   <Button @click="pushFriendRequest" text="Actions">
-      <VueIcon />
-   </Button>
-   <Button @click="pushFileUpload" text="Promise">
-      <VueIcon />
-   </Button>
-   <Button @click="pushSimple" text="Simple">
-      <VueIcon />
-   </Button>
+   <SharedButton @click="pushFriendRequest" text="Actions">
+      <IconsVueIcon />
+   </SharedButton>
+   <SharedButton @click="pushFileUpload" text="Promise">
+      <IconsVueIcon />
+   </SharedButton>
+   <SharedButton @click="pushSimple" text="Simple">
+      <IconsVueIcon />
+   </SharedButton>
 </template>

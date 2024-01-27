@@ -9,10 +9,11 @@
       "postinstall": "nuxt prepare"
    },
    "devDependencies": {
-      "@types/luxon": "^3.3.7",
-      "@types/node": "^20.10.5",
-      "lightningcss": "^1.22.1",
-      "nuxt": "^3.9.0"
+      "@types/luxon": "^3.4.2",
+      "@types/node": "^20.11.7",
+      "lightningcss": "^1.23.0",
+      "nuxt": "^3.9.3",
+      "vue": "^3.4.15"
    },
    "dependencies": {
       "luxon": "^3.4.4",
