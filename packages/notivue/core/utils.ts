@@ -25,18 +25,16 @@ export function mergeDeep<T extends Obj>(target: T, source: Record<string, any>)
 }
 
 export function mergeNotificationOptions<T extends Obj = Obj>(
-   mergedConfigOptions: NotivueConfigRequired['notifications'],
-   optionsFromPush: PushOptionsWithInternals<T>
+   configOptions: NotivueConfigRequired['notifications'],
+   pushOptions: PushOptionsWithInternals<T>
 ) {
-   if (!optionsFromPush.props) {
-      optionsFromPush.props = {} as T
-   }
+   pushOptions.props ||= {} as T
 
    return {
-      ...(mergedConfigOptions[optionsFromPush.type] ?? mergedConfigOptions.success),
-      ...mergedConfigOptions.global,
-      ...optionsFromPush,
-      ...(optionsFromPush.type === 'promise' ? { duration: Infinity } : {}), // Force duration infinity
+      ...(configOptions[pushOptions.type] ?? configOptions.success),
+      ...configOptions.global,
+      ...pushOptions,
+      ...(pushOptions.type === 'promise' ? { duration: Infinity } : {}), // Force duration infinity
    }
 }
 
