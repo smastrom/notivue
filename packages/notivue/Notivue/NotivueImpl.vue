@@ -48,8 +48,8 @@ useRepositioning()
          :data-notivue-align="config.isTopAlign.value ? 'top' : 'bottom'"
          :aria-label="props.listAriaLabel"
          :ref="elements.root"
-         :style="styles.stream"
          :class="props.class"
+         :style="{ ...styles.list, ...props.styles?.list }"
       >
          <!-- List Item -->
          <li
@@ -61,14 +61,15 @@ useRepositioning()
             :aria-posinset="index + 1"
             :ref="elements.items"
             :style="{
-               ...styles.item,
+               ...styles.listItem,
                ...item.positionStyles,
+               ...props.styles?.listItem,
             }"
          >
             <!-- ariaLiveOnly Push Option -->
             <AriaLive v-if="item.ariaLiveOnly" :item="item" />
 
-            <!-- Notification Container -->
+            <!-- Item Container -->
             <div
                v-else
                v-bind="item.animationAttrs"
@@ -76,7 +77,7 @@ useRepositioning()
                :tabindex="containersTabIndex?.[item.id] ?? -1"
                :data-notivue-container="item.id"
                :ref="elements.containers"
-               :style="styles.container"
+               :style="{ ...styles.itemContainer, ...props.styles?.itemContainer }"
             >
                <!-- Notification -->
                <slot v-bind="getSlotItem(item)" />
