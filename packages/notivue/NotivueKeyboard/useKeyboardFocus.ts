@@ -1,10 +1,10 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 
-export function useKeyboard() {
-   const isKeyboard = ref(false)
+export function useKeyboardFocus() {
+   const isKeyboardFocus = ref(false)
 
-   const setKeyboardFocus = () => (isKeyboard.value = true)
-   const unsetKeyboardFocus = () => (isKeyboard.value = false)
+   const setKeyboardFocus = () => (isKeyboardFocus.value = true)
+   const unsetKeyboardFocus = () => (isKeyboardFocus.value = false)
 
    const events = [
       ['keydown', setKeyboardFocus],
@@ -20,5 +20,5 @@ export function useKeyboard() {
       events.forEach(([e, handler]) => document.removeEventListener(e, handler))
    })
 
-   return { isKeyboard }
+   return { isKeyboardFocus }
 }

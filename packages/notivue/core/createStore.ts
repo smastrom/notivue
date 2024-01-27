@@ -123,9 +123,9 @@ export function createItems(config: ConfigSlice, queue: QueueSlice) {
    }
 }
 
-type AnimationAttrs = { class: string; onAnimationend: () => void }
-
 export function createElements() {
+   type AnimationAttrs = { class: string; onAnimationend: () => void }
+
    return {
       root: ref<HTMLElement | null>(null),
       rootAttrs: shallowRef<Partial<AnimationAttrs>>({}),
