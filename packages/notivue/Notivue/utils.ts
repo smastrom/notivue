@@ -2,8 +2,8 @@ import type { StoreItem, NotivueItem, HiddenInternalItemData } from 'notivue'
 
 export const hiddenInternalKeys: (keyof HiddenInternalItemData)[] = [
    'timeout',
-   'elapsed',
    'resumedAt',
+   'remaining',
    'animationAttrs',
    'positionStyles',
 ]

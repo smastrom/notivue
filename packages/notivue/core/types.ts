@@ -96,8 +96,8 @@ export interface ExposedInternalItemData extends NotificationClearMethods {
 
 export interface HiddenInternalItemData {
    timeout: number | undefined | (() => void) | void
-   elapsed: number
    resumedAt: number
+   remaining: number
    animationAttrs: Partial<{ class: string; onAnimationend: () => void }>
    positionStyles: CSSProperties
 }

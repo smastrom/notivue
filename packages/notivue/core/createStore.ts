@@ -263,30 +263,33 @@ export function createTimeouts(items: ItemsSlice, animations: AnimationsSlice) {
          this.setStreamPause(false)
          this.setStreamFocus(false)
       },
-      create(id: string, duration: number | undefined, { isResume = false } = {}) {
-         if (
-            duration === 0 ||
-            duration === null ||
-            duration === Infinity ||
-            (this.isStreamPaused.value && !isResume)
-         ) {
-            return undefined
+      create(id: string, duration: number | undefined) {
+         if (Number.isFinite(duration) && duration! > 0) {
+            return window.setTimeout(() => animations.playLeave(id), duration)
          }
-
-         return window.setTimeout(() => animations.playLeave(id), duration)
+         return undefined
       },
       pause() {
          if (items.length === 0 || this.isStreamPaused.value) return
 
-         const pausedAt = Date.now()
-
          console.log('Pausing timeouts')
+
          items.updateAll((item) => {
             window.clearTimeout(item.timeout as number)
 
+            if (!item.timeout) return item
+
+            let remaining = 0
+
+            if (item.remaining == null) {
+               remaining = item.duration - (Date.now() - item.createdAt)
+            } else {
+               remaining = item.remaining - (Date.now() - item.resumedAt)
+            }
+
             return {
                ...item,
-               elapsed: pausedAt - (item.resumedAt ?? item.createdAt) + (item.elapsed ?? 0),
+               remaining,
             }
          })
 
@@ -296,34 +299,16 @@ export function createTimeouts(items: ItemsSlice, animations: AnimationsSlice) {
          if (items.length === 0 || !this.isStreamPaused.value) return
 
          console.log('Resuming timeouts')
+
          items.updateAll((item) => {
             window.clearTimeout(item.timeout as number)
-            /**
-             * 'elapsed' may be equal to 'undefined' if a notification
-             * is pushed while the stream is paused as pause() won't be called.
-             *
-             * To keep leave animation order coherent with the creation time and to avoid
-             * notifications to be dismissed at the same time, we calculate a normalized
-             * elapsed time ranging from 200ms to 1200ms.
-             */
-            if (item.elapsed === undefined) {
-               const createdAtStamps = items.entries.value.map(({ createdAt }) => createdAt)
 
-               const maxStamp = Math.max(...createdAtStamps)
-               const minStamp = Math.min(...createdAtStamps)
-
-               if (minStamp === maxStamp) {
-                  item.elapsed = 1200
-               } else {
-                  const normalizedCreatedAt = (item.createdAt - minStamp) / (maxStamp - minStamp)
-                  item.elapsed = normalizedCreatedAt * (1200 - 200) + 200
-               }
-            }
+            if (!item.timeout) return item
 
             return {
                ...item,
+               timeout: this.create(item.id, item.remaining ?? item.duration),
                resumedAt: Date.now(),
-               timeout: this.create(item.id, item.duration - item.elapsed, { isResume: true }),
             }
          })
 
@@ -391,7 +376,7 @@ export function createPushProxies({
 
             const shouldEnqueue = isQueueActive && !options.skipQueue && hasReachedLimit
 
-            const newEntry = {
+            const item = {
                ...entry,
                createdAt,
                animationAttrs: {
@@ -408,9 +393,9 @@ export function createPushProxies({
             } as StoreItem<T>
 
             if (shouldEnqueue) {
-               queue.add(newEntry)
+               queue.add(item)
             } else {
-               items.add(newEntry)
+               items.add(item)
             }
          }
       },
