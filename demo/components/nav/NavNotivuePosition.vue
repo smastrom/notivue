@@ -48,6 +48,7 @@ function setPosition(position: Position) {
          role="switch"
          :aria-checked="state.centerOnMobile"
          @click="actions.toggleCenterOnMobile"
+         :disabled="config.position.value.endsWith('center')"
       >
          Center on Mobile
       </button>
