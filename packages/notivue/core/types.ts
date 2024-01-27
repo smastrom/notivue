@@ -74,7 +74,7 @@ export interface NotivueConfig {
    /** Animation classes for `enter`, `leave` and `clearAll`. */
    animations?: NotivueAnimations
    /** Tag or element to which the stream will be teleported. */
-   teleportTo?: string | HTMLElement
+   teleportTo?: string | HTMLElement | false
    /** Notifications limit. Defaults to `Infinity`. */
    limit?: number
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, Teleport } from 'vue'
+import { Teleport } from 'vue'
 
 import AriaLive from './AriaLive.vue'
 
@@ -34,20 +34,18 @@ const touchEvents = useTouchEvents()
 useReducedMotion()
 useVisibilityChange()
 useRepositioning()
-
-// Computed
-
-const dataAlign = computed(() => ({
-   'data-notivue-align': config.isTopAlign.value ? 'top' : 'bottom',
-}))
 </script>
 
 <template>
-   <Teleport :to="config.teleportTo.value">
+   <Teleport
+      :to="config.teleportTo.value === false ? undefined : config.teleportTo.value"
+      :disabled="config.teleportTo.value === false"
+   >
       <!-- List Container -->
       <ol
          v-if="items.length > 0"
-         v-bind="{ ...mouseEvents, ...touchEvents, ...elements.rootAttrs.value, ...dataAlign }"
+         v-bind="{ ...mouseEvents, ...touchEvents, ...elements.rootAttrs.value }"
+         :data-notivue-align="config.isTopAlign.value ? 'top' : 'bottom'"
          :aria-label="props.listAriaLabel"
          :ref="elements.root"
          :style="styles.stream"
