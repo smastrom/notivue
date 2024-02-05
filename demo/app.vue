@@ -50,7 +50,7 @@ watch(
                :item="item as NotivueItem<SimpleNotificationProps>"
             />
 
-            <Notifications
+            <Notification
                v-else
                :item="item"
                :theme="{ ...themes[state.theme], '--nv-y-align-has-title': 'flex-start' }"
