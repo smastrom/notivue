@@ -33,7 +33,7 @@ import type { NotivueSwipeProps } from 'notivue'
 
 // Store
 
-const { timeouts, elements, animations } = useStore()
+const { items, timeouts, elements, animations } = useStore()
 
 // Props
 
@@ -57,13 +57,14 @@ const isEnabled = computed(
 
 const itemRef = ref<HTMLElement | null>(null)
 
-const state = shallowReactive({
-   isLocked: false,
+const initialState = {
    isPressed: false,
    isClearing: false,
    startX: 0,
    currentX: 0,
-})
+}
+
+const state = shallowReactive(initialState)
 
 const styles = shallowRef<CSSProperties>({})
 
@@ -78,6 +79,19 @@ function setStyles(properties: CSSProperties) {
 function resetStyles() {
    styles.value = {}
 }
+
+// Side-effects
+
+watch(
+   () => items.length,
+   (newLen, prevLen) => {
+      if (newLen !== prevLen && state.isPressed) {
+         setReturnStyles()
+         setState(initialState)
+      }
+   },
+   { flush: 'post' }
+)
 
 /* ====================================================================================
  * Utils
@@ -171,7 +185,7 @@ function onPointerDown(e: PointerEvent) {
 
    if (!itemRef.value) return
    if (e.button !== 0) return // Only left clicks
-   if (state.isPressed || state.isClearing || state.isLocked) return
+   if (state.isPressed || state.isClearing) return
 
    if (exclude.value) {
       const excludedEls = Array.from(itemRef.value.querySelectorAll(exclude.value))
@@ -206,8 +220,7 @@ function onPointerMove(e: PointerEvent) {
 
    e.stopPropagation()
 
-   if (!state.isPressed) return
-   if (state.isClearing || state.isLocked) return
+   if (!state.isPressed || state.isClearing) return
 
    const { clientWidth } = itemRef.value as HTMLElement
 
@@ -236,12 +249,12 @@ function onPointerMoveClear(e: PointerEvent) {
 
       if (!isLastItem) pauseTimeouts()
    } else {
-      console.log('onPointerMoveClear')
       resumeTimeouts(getDebounceMs(e))
    }
 
-   const animDuration = parseFloat(animations.getTransitionData()?.duration ?? 0) * 1000
-   window.setTimeout(() => (state.isClearing = false), animDuration)
+   setState({
+      isClearing: false,
+   })
 }
 
 /**
@@ -255,8 +268,7 @@ function onPointerUp(e: PointerEvent) {
 
    e.stopPropagation()
 
-   if (!state.isPressed) return
-   if (state.isClearing || state.isLocked) return
+   if (!state.isPressed || state.isClearing) return
 
    if (isMouse(e) && isPointerInside(e)) {
       pauseTimeouts()
@@ -270,10 +282,7 @@ function onPointerUp(e: PointerEvent) {
       startX: 0,
       currentX: 0,
       isPressed: false,
-      isLocked: true,
    })
-
-   window.setTimeout(() => (state.isLocked = false), RETURN_DUR)
 }
 
 /**
@@ -284,8 +293,7 @@ function onPointerLeave(e: PointerEvent) {
 
    e.stopPropagation()
 
-   if (!state.isPressed) return
-   if (state.isClearing || state.isLocked) return
+   if (!state.isPressed || state.isClearing) return
 
    setReturnStyles()
 
@@ -293,7 +301,6 @@ function onPointerLeave(e: PointerEvent) {
       startX: 0,
       currentX: 0,
       isPressed: false,
-      isLocked: false,
    })
 
    resumeTimeouts(getDebounceMs(e))
