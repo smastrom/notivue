@@ -186,6 +186,23 @@
    opacity: 0.65;
 }
 
+.Notivue__spinner {
+   transform-origin: center;
+   animation: Notivue__spinner-kf 0.75s infinite linear;
+}
+
+@keyframes Notivue__spinner-kf {
+   100% {
+      transform: rotate(360deg);
+   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+   .Notivue__spinner {
+      animation: none;
+   }
+}
+
 [dir='rtl'] {
    & .Notivue__notification {
       --tip-width-fx: -1;
