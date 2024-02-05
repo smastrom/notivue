@@ -74,7 +74,6 @@ const astroReExports = [
    'outlinedIcons',
 
    'createNotivue',
-
    'updateConfig',
 
    'DEFAULT_CONFIG',
@@ -85,6 +84,7 @@ const astroReExports = [
    'usePush',
 
    'Notifications',
+   'Notification',
    'NotivueSwipe',
    'NotivueKeyboard',
 ]

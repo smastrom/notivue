@@ -70,7 +70,13 @@ const module = defineNuxtModule({
          addImports({ name, as: name, from: 'notivue' })
       }
 
-      for (const name of ['Notivue', 'NotivueKeyboard', 'Notifications', 'NotivueSwipe']) {
+      for (const name of [
+         'Notivue',
+         'NotivueKeyboard',
+         'Notifications',
+         'Notification',
+         'NotivueSwipe',
+      ]) {
          await addComponent({ name, export: name, filePath: 'notivue' })
       }
    },
