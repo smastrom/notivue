@@ -53,7 +53,7 @@ watch(
             <Notifications
                v-else
                :item="item"
-               :theme="themes[state.theme]"
+               :theme="{ ...themes[state.theme], '--nv-y-align-has-title': 'flex-start' }"
                :icons="state.outlinedIcons ? outlinedIcons : undefined"
             />
          </NotivueSwipe>
