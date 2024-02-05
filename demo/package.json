@@ -10,9 +10,9 @@
    },
    "devDependencies": {
       "@types/luxon": "^3.4.2",
-      "@types/node": "^20.11.7",
+      "@types/node": "^20.11.16",
       "lightningcss": "^1.23.0",
-      "nuxt": "^3.9.3",
+      "nuxt": "^3.10.1",
       "vue": "^3.4.15"
    },
    "dependencies": {

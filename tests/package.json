@@ -10,11 +10,11 @@
       "notivue": "workspace:*"
    },
    "devDependencies": {
-      "@types/node": "^20.11.7",
+      "@types/node": "^20.11.16",
       "@vitejs/plugin-vue": "^5.0.3",
       "@vue/test-utils": "^2.4.4",
       "axe-core": "^4.8.3",
-      "cypress": "^13.6.3",
+      "cypress": "^13.6.4",
       "cypress-axe": "^1.5.0",
       "cypress-real-events": "^1.11.0",
       "typescript": "^5.3.3",
