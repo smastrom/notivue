@@ -16,6 +16,7 @@ export { default as NotivueKeyboard } from '@/NotivueKeyboard/NotivueKeyboard.vu
 export { useNotivueKeyboard } from '@/NotivueKeyboard/useNotivueKeyboard'
 
 export { default as Notifications } from '@/Notifications/Notifications.vue'
+export { default as Notification } from '@/Notifications/Notifications.vue'
 export {
    lightTheme,
    pastelTheme,
