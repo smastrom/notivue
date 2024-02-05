@@ -88,14 +88,14 @@ app.mount('#app')
 
 ```vue
 <script setup>
-import { Notivue, Notifications, push } from 'notivue'
+import { Notivue, Notification, push } from 'notivue'
 </script>
 
 <template>
   <button @click="push.success('Hello from your first notification!')">Push</button>
 
   <Notivue v-slot="item">
-    <Notifications :item="item" />
+    <Notification :item="item" />
   </Notivue>
 
   <!-- RouterView, etc. -->
@@ -173,7 +173,7 @@ export default defineNuxtConfig({
   <button @click="push.success('Hello from your first notification!')">Push</button>
 
   <Notivue v-slot="item">
-    <Notifications :item="item" />
+    <Notification :item="item" />
   </Notivue>
 
   <!-- NuxtLayout, NuxtPage, etc. -->
