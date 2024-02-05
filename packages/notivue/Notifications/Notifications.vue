@@ -21,7 +21,7 @@ watch(
    <div
       :class="Cx.NOTIFICATION"
       :data-notivue="item.type"
-      :data-notivue-has-title="Boolean(true)"
+      :data-notivue-has-title="Boolean(item.title)"
       :style="theme"
    >
       <template v-if="Icon">
