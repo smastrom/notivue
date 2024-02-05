@@ -30,6 +30,7 @@ type ThemeLayoutVars =
    | '--nv-shadow'
    | '--nv-tip-width'
    | '--nv-y-align'
+   | '--nv-y-align-has-title'
 
 type ThemeGlobalColorsVars =
    | '--nv-global-bg'
