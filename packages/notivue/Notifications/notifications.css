@@ -58,6 +58,10 @@
    }
 }
 
+.Notivue__notification[data-notivue-has-title='true'] {
+   align-items: var(--nv-y-align-has-title, var(--nv-y-align));
+}
+
 .Notivue__icon {
    display: flex;
    justify-content: center;
@@ -81,7 +85,7 @@
 }
 
 .Notivue__content-title {
-   line-height: 1;
+   line-height: 1.15;
    font-weight: 700;
    color: var(--nv-fg, var(--nv-global-fg));
    font-size: var(--nv-title-size);

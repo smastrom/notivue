@@ -18,7 +18,12 @@ watch(
 </script>
 
 <template>
-   <div :class="Cx.NOTIFICATION" :data-notivue="item.type" :style="theme">
+   <div
+      :class="Cx.NOTIFICATION"
+      :data-notivue="item.type"
+      :data-notivue-has-title="Boolean(true)"
+      :style="theme"
+   >
       <template v-if="Icon">
          <Transition :name="Cx.TRANSITION" v-if="typeof Icon === 'object'" mode="out-in">
             <Component
