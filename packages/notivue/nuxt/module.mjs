@@ -75,6 +75,7 @@ const module = defineNuxtModule({
          'NotivueKeyboard',
          'Notifications',
          'Notification',
+         'NotificationProgress',
          'NotivueSwipe',
       ]) {
          await addComponent({ name, export: name, filePath: 'notivue' })
