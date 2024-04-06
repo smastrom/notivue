@@ -8,7 +8,7 @@ import { useMouseEvents } from './composables/useMouseEvents'
 import { useTouchEvents } from './composables/useTouchEvents'
 import { useNotivueStyles } from './composables/useNotivueStyles'
 import { useRepositioning } from './composables/useRepositioning'
-import { useVisibilityChange } from './composables/useVisibilityChange'
+import { useWindowFocus } from './composables/useWindowFocus'
 import { useReducedMotion } from './composables/useReducedMotion'
 import { getSlotItem, getAriaLabel } from './utils'
 import { DEFAULT_PROPS } from './constants'
@@ -32,7 +32,7 @@ const mouseEvents = useMouseEvents()
 const touchEvents = useTouchEvents()
 
 useReducedMotion()
-useVisibilityChange()
+useWindowFocus()
 useRepositioning()
 </script>
 
