@@ -24,14 +24,6 @@
    animation: Notivue__clearAll-kf 500ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/**
-* Must use 0.01 instead of 0 for translate/scale/rotate
-* to avoid the animation being broken when minifying
-* with LightningCSS / Parcel.
-*
-* https://github.com/parcel-bundler/lightningcss/issues/288
-*/
-
 @keyframes Notivue__enter-kf {
    0% {
       transform: translate3d(0, var(--notivue-ty), 0) scale(0.25);
@@ -51,7 +43,7 @@
    }
 
    100% {
-      transform: translate3d(0, var(--notivue-ty), 0) scale(0.01);
+      transform: translate3d(0, var(--notivue-ty), 0) scale(0);
       opacity: 0;
    }
 }
