@@ -15,7 +15,8 @@ const cyProps = defineProps<CyNotivueProps>()
 
 const config = useNotivue()
 
-const { pauseOnTouch, pauseOnHover, teleportTo, limit, animations, enqueue } = toRefs(cyProps)
+const { pauseOnTouch, pauseOnHover, teleportTo, limit, animations, enqueue, avoidDuplicates } =
+   toRefs(cyProps)
 
 watchEffect(() => {
    if (animations?.value) config.animations.value = animations.value
@@ -25,6 +26,7 @@ watchEffect(() => {
    if (teleportTo?.value) config.teleportTo.value = teleportTo.value
    if (limit?.value) config.limit.value = limit.value
    if (enqueue?.value) config.enqueue.value = enqueue.value
+   if (avoidDuplicates?.value) config.avoidDuplicates.value = avoidDuplicates.value
 })
 
 function pushAndClear() {
