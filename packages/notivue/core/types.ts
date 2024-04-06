@@ -77,6 +77,8 @@ export interface NotivueConfig {
    teleportTo?: string | HTMLElement | false
    /** Notifications limit. Defaults to `Infinity`. */
    limit?: number
+   /** Whether to prevent duplicate notifications if already displayed. Duplicates will be announced again and their duration replaces the current one. */
+   avoidDuplicates?: boolean
 }
 
 export type NotivueConfigRequired = DeepRequired<NotivueConfig> & {
@@ -92,6 +94,7 @@ export interface NotificationClearMethods {
 
 export interface ExposedInternalItemData extends NotificationClearMethods {
    createdAt: number
+   duplicates: number
 }
 
 export interface HiddenInternalItemData {
