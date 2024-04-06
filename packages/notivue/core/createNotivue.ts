@@ -1,7 +1,7 @@
 import type { App, InjectionKey, Plugin } from 'vue'
 import type { NotivueConfig, NotivueStore } from 'notivue'
 
-import { setPush, createPush as createPush } from './createPush'
+import { setPush, createPush } from './createPush'
 import { createWatchers } from './createWatchers'
 import {
    createConfig,
