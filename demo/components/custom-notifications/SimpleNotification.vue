@@ -11,7 +11,15 @@ defineProps<{
 </script>
 
 <template>
-   <div class="Notification">
+   <div
+      :key="item.duplicates"
+      :class="[
+         'Notification',
+         {
+            Duplicate_Anim: item.duplicates > 0,
+         },
+      ]"
+   >
       <p :role="item.ariaRole" :aria-live="item.ariaLive">
          {{ item.message }}
       </p>
@@ -62,6 +70,27 @@ defineProps<{
    & svg {
       width: 1.25rem;
       height: 1.25rem;
+   }
+}
+
+.Duplicate_Anim {
+   animation: Duplicate_KF 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes Duplicate_KF {
+   0% {
+      transform: scale(1);
+      opacity: 1;
+   }
+
+   50% {
+      transform: scale(1.035);
+      opacity: 0.8;
+   }
+
+   100% {
+      transform: scale(1);
+      opacity: 1;
    }
 }
 </style>

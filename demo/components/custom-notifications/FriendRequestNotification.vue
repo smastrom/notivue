@@ -15,7 +15,15 @@ const { elementsTabIndex } = useNotivueKeyboard()
 </script>
 
 <template>
-   <div class="Notification">
+   <div
+      :key="item.duplicates"
+      :class="[
+         'Notification',
+         {
+            Duplicate_Anim: item.duplicates > 0,
+         },
+      ]"
+   >
       <div class="Avatar">
          <img :src="item.props.profilePicture" alt="profile" class="Picture" />
          <span class="OnlineDot" />
@@ -167,6 +175,25 @@ const { elementsTabIndex } = useNotivueKeyboard()
       background-color: var(--royal-blue);
       color: white;
       opacity: 1;
+   }
+}
+
+.Duplicate_Anim {
+   animation: Duplicate_KF 350ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes Duplicate_KF {
+   0% {
+      transform: scale(1);
+   }
+
+   50% {
+      transform: scale(1.05);
+      box-shadow: 0 0 0 3px var(--royal-blue);
+   }
+
+   100% {
+      transform: scale(1);
    }
 }
 </style>
