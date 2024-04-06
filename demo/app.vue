@@ -39,7 +39,7 @@ watch(
             :item="item as NotivueItem<FriendRequestNotificationProps>"
          />
 
-         <NotivueSwipe v-else :item="item" :disabled="!state.enableSwipe">
+         <NotivueSwipe v-else :item :disabled="!state.enableSwipe">
             <UploadNotification
                v-if="item.props.isUploadNotifiation"
                :item="item as NotivueItem<UploadNotificationProps>"
@@ -52,10 +52,12 @@ watch(
 
             <Notification
                v-else
-               :item="item"
+               :item
                :theme="{ ...themes[state.theme], '--nv-y-align-has-title': 'flex-start' }"
                :icons="state.outlinedIcons ? outlinedIcons : undefined"
-            />
+            >
+               <NotificationProgress :item v-if="state.hasProgress" />
+            </Notification>
          </NotivueSwipe>
       </Notivue>
    </NotivueKeyboard>

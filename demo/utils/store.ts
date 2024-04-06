@@ -8,6 +8,8 @@ const initialState = {
    rtl: false,
    centerOnMobile: false,
    enableSwipe: true,
+   hasProgress: false,
+   noDupes: false,
 }
 
 export function useStore() {
@@ -30,6 +32,9 @@ export function createStore() {
       },
       toggleOutlinedIcons() {
          state.outlinedIcons = !state.outlinedIcons
+      },
+      toggleProgress() {
+         state.hasProgress = !state.hasProgress
       },
       toggleRTL() {
          state.rtl = !state.rtl

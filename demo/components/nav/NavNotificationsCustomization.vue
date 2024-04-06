@@ -6,7 +6,7 @@ function clearAllAndPushOne() {
    push.success(messages.value.success)
 }
 
-async function toggleRenderTitles() {
+function toggleRenderTitles() {
    actions.toggleRenderTitles()
    clearAllAndPushOne()
 }
@@ -15,34 +15,34 @@ function toggleRTL() {
    actions.toggleRTL()
    clearAllAndPushOne()
 }
+
+function toggleProgress() {
+   actions.toggleProgress()
+   clearAllAndPushOne()
+}
+
+const btnProps = {
+   class: 'ButtonBase SwitchButton',
+   role: 'switch',
+}
 </script>
 
 <template>
    <div class="Controls">
-      <button
-         class="ButtonBase SwitchButton"
-         role="switch"
-         :aria-checked="state.renderTitles"
-         @click="toggleRenderTitles"
-      >
+      <button v-bind="btnProps" :aria-checked="state.hasProgress" @click="toggleProgress">
+         Progress
+      </button>
+      <button v-bind="btnProps" :aria-checked="state.renderTitles" @click="toggleRenderTitles">
          Titles
       </button>
       <button
-         class="ButtonBase SwitchButton"
-         role="switch"
+         v-bind="btnProps"
          :aria-checked="state.outlinedIcons"
          @click="actions.toggleOutlinedIcons"
       >
          Outlined
       </button>
-      <button
-         class="ButtonBase SwitchButton"
-         role="switch"
-         :aria-checked="state.rtl"
-         @click="toggleRTL"
-      >
-         RTL
-      </button>
+      <button v-bind="btnProps" :aria-checked="state.rtl" @click="toggleRTL">RTL</button>
    </div>
 </template>
 
@@ -53,4 +53,3 @@ function toggleRTL() {
    grid-auto-flow: row;
 }
 </style>
-utils/store

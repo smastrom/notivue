@@ -30,14 +30,14 @@ const { elementsTabIndex } = useNotivueKeyboard()
          </div>
          <nav class="Buttons">
             <button
-               role="button"
+               type="button"
                @click="item.clear"
                class="Button ButtonReverse"
                :tabIndex="elementsTabIndex"
             >
                Deny
             </button>
-            <button role="button" @click="item.clear" class="Button" :tabIndex="elementsTabIndex">
+            <button type="button" @click="item.clear" class="Button" :tabIndex="elementsTabIndex">
                Accept
             </button>
          </nav>

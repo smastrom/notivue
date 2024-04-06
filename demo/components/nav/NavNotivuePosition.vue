@@ -18,6 +18,11 @@ const isFullWidth = computed(() => state.maxWidth === '100%')
 function setPosition(position: Position) {
    config.update({ position })
 }
+
+const btnProps = {
+   class: 'ButtonBase SwitchButton Switch',
+   role: 'switch',
+}
 </script>
 
 <template>
@@ -35,17 +40,11 @@ function setPosition(position: Position) {
          <IconsArrowIcon :rotate="position.rotate" />
       </div>
 
-      <button
-         class="ButtonBase SwitchButton Switch"
-         role="switch"
-         :aria-checked="isFullWidth"
-         @click="actions.setFullWidth"
-      >
+      <button v-bind="btnProps" :aria-checked="isFullWidth" @click="actions.setFullWidth">
          Full Width
       </button>
       <button
-         class="ButtonBase SwitchButton Switch"
-         role="switch"
+         v-bind="btnProps"
          :aria-checked="state.centerOnMobile"
          @click="actions.toggleCenterOnMobile"
          :disabled="config.position.value.endsWith('center')"
