@@ -46,9 +46,13 @@
       },
       "./notifications.css": "./dist/Notifications/notifications.css",
       "./notifications-progress.css": "./dist/Notifications/notifications-progress.css",
+      "./notification.css": "./dist/Notifications/notifications.css",
+      "./notification-progress.css": "./dist/Notifications/notifications-progress.css",
       "./animations.css": "./dist/core/animations.css",
       "./astro/notifications.css": "./dist/Notifications/notifications.css",
       "./astro/notifications-progress.css": "./dist/Notifications/notifications-progress.css",
+      "./astro/notification.css": "./dist/Notifications/notifications.css",
+      "./astro/notification-progress.css": "./dist/Notifications/notifications-progress.css",
       "./astro/animations.css": "./dist/core/animations.css"
    },
    "module": "dist/index.js",
