@@ -27,6 +27,7 @@ const visuallyHidden: CSSProperties = {
       :role="props.item.ariaRole"
       :aria-live="props.item.ariaLive"
       :key="`${item.id}_${item.type}`"
+      aria-atomic="true"
    >
       {{ getAriaLiveContent(props.item) }}
    </div>

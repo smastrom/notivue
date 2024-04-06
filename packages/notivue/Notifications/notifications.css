@@ -201,6 +201,10 @@
    .Notivue__spinner {
       animation: none;
    }
+
+   .Notivue__duplicate {
+      animation: none;
+   }
 }
 
 [dir='rtl'] {
@@ -222,5 +226,26 @@
 
    & .Notivue__close {
       margin: var(--nv-spacing) 0 var(--nv-spacing) var(--nv-spacing);
+   }
+}
+
+.Notivue__duplicate {
+   animation: Notivue__duplicate-kf 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes Notivue__duplicate-kf {
+   0% {
+      transform: scale(1);
+      opacity: 1;
+   }
+
+   50% {
+      transform: scale(1.035);
+      opacity: 0.8;
+   }
+
+   100% {
+      transform: scale(1);
+      opacity: 1;
    }
 }
