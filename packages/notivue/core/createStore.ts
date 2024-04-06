@@ -1,4 +1,4 @@
-import { ref, shallowRef, computed, triggerRef, nextTick } from 'vue'
+import { ref, shallowRef, computed, triggerRef, nextTick, unref, isRef } from 'vue'
 
 import {
    createRefs,
@@ -8,6 +8,7 @@ import {
 } from './utils'
 import { getSlotItem } from '@/Notivue/utils'
 
+import { isStatic } from './utils'
 import { DEFAULT_CONFIG, NotificationTypeKeys as NKeys } from './constants'
 
 import type {
@@ -96,6 +97,14 @@ export function createItems(config: ConfigSlice, queue: QueueSlice) {
          queue.remove(next.id)
          this.add(next)
       },
+      findDupe(item: StoreItem, entries?: StoreItem[]) {
+         return (entries || this.entries.value).find(
+            (e) =>
+               unref(e.message).replace(/\uFEFF/g, '') === unref(item.message).replace(/\uFEFF/g, '') && // prettier-ignore
+               unref(e.title) === unref(item.title) &&
+               e.type === item.type
+         )
+      },
       get(id: string) {
          return this.entries.value.find((e) => e.id === id)
       },
@@ -177,7 +186,9 @@ export function createAnimations(config: ConfigSlice, items: ItemsSlice, element
 
          window.clearTimeout(item?.timeout as number)
 
-         function onAnimationend() {
+         function onAnimationend(e?: AnimationEvent) {
+            if (e && e.currentTarget !== e.target) return
+
             items.remove(id)
             item?.[isUserTriggered ? 'onManualClear' : 'onAutoClear']?.(getSlotItem(item))
          }
@@ -349,14 +360,47 @@ export function createPushProxies({
          animations.playLeave(id, { isUserTriggered: true, isDestroy })
       },
       push<T extends Obj = Obj>(options: PushOptionsWithInternals<T>) {
-         const createdAt = Date.now()
          const entry = mergeOptions<T>(config.notifications.value, options)
+         const createdAt = Date.now()
+
+         if (config.avoidDuplicates.value && isStatic(entry.type)) {
+            const dupe = items.findDupe(entry as StoreItem)
+
+            if (dupe) {
+               window.clearTimeout(dupe.timeout as number)
+
+               items.update(dupe.id, {
+                  createdAt,
+                  duration: entry.duration,
+                  remaining: undefined,
+                  timeout: timeouts.create(dupe.id, entry.duration),
+                  duplicates: dupe.duplicates + 1,
+               })
+
+               // Trick aria-atomic to announce again the notification
+               isRef(dupe.message) ? (dupe.message.value += '\uFEFF') : (dupe.message += '\uFEFF')
+
+               if (timeouts.isStreamPaused.value) timeouts.pause()
+
+               items.triggerRef()
+            }
+
+            const queueDupe = items.findDupe(entry as StoreItem, queue.entries.value)
+
+            if (queueDupe) {
+               queue.update(queueDupe.id, {
+                  duration: entry.duration,
+                  createdAt,
+                  duplicates: queueDupe.duplicates + 1,
+               })
+            }
+
+            if (queueDupe || dupe) return
+         }
 
          const createTimeout = () => timeouts.create(entry.id, entry.duration)
 
-         const isUpdate = [NKeys.PROMISE_RESOLVE, NKeys.PROMISE_REJECT].includes(options.type)
-
-         if (isUpdate) {
+         if (options.type === NKeys.PROMISE_RESOLVE || options.type === NKeys.PROMISE_REJECT) {
             if (queue.get(entry.id)) {
                queue.update(entry.id, { ...entry, createdAt, timeout: createTimeout })
                queue.triggerRef()
@@ -379,6 +423,7 @@ export function createPushProxies({
             const item = {
                ...entry,
                createdAt,
+               duplicates: 0,
                animationAttrs: {
                   class: animations.isReducedMotion.value ? '' : config.animations.value.enter,
                   onAnimationend() {

@@ -1,4 +1,4 @@
-import { inject, computed, toRefs, reactive } from 'vue'
+import { inject, computed, toRefs, reactive, readonly, ref } from 'vue'
 
 import { isSSR } from './utils'
 import { notivueInjectionKey } from './createNotivue'
@@ -27,11 +27,12 @@ export function useNotivue(): UseNotivueReturn {
       return {
          ...toRefs(reactive(DEFAULT_CONFIG)),
          isTopAlign: computed(() => true),
+         isStreamPaused: readonly(ref(false)),
          update: () => {},
       } as UseNotivueReturn
    }
 
-   return useStore().config
+   return { ...useStore().config, isStreamPaused: readonly(useStore().timeouts.isStreamPaused) }
 }
 
 /**

@@ -85,6 +85,7 @@ const astroReExports = [
 
    'Notifications',
    'Notification',
+   'NotificationProgress',
    'NotivueSwipe',
    'NotivueKeyboard',
 ]

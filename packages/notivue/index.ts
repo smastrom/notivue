@@ -15,8 +15,9 @@ export { updateConfig } from './core/createStore'
 export { default as NotivueKeyboard } from '@/NotivueKeyboard/NotivueKeyboard.vue'
 export { useNotivueKeyboard } from '@/NotivueKeyboard/useNotivueKeyboard'
 
-export { default as Notifications } from '@/Notifications/Notifications.vue'
-export { default as Notification } from '@/Notifications/Notifications.vue'
+export { default as Notifications } from '@/Notifications/Notification.vue'
+export { default as Notification } from '@/Notifications/Notification.vue'
+export { default as NotificationProgress } from '@/Notifications/NotificationProgress.vue'
 export {
    lightTheme,
    pastelTheme,

@@ -28,5 +28,10 @@ export default defineNuxtConfig({
          transformer: 'lightningcss',
       },
    },
-   css: ['assets/style.css', 'notivue/notifications.css', 'notivue/animations.css'],
+   css: [
+      'assets/style.css',
+      'notivue/notifications.css',
+      'notivue/notifications-progress.css',
+      'notivue/animations.css',
+   ],
 })

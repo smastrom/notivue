@@ -11,6 +11,8 @@ export const Classes = {
    CLOSE: CX + 'close',
    CLOSE_ICON: CX + 'close-icon',
    TRANSITION: CX + 'transition',
+   PROGRESS: CX + 'progress',
+   DUPLICATE: CX + 'duplicate',
 }
 
 export const DEFAULT_NOTIFICATIONS_PROPS = {

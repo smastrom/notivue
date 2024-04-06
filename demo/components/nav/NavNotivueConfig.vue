@@ -7,13 +7,6 @@ function togglePauseOnHover() {
    config.update((prevConf) => ({
       pauseOnHover: !prevConf.pauseOnHover,
    }))
-
-   push.info({
-      title: `Pause on hover ${config.pauseOnHover.value ? 'enabled' : 'disabled'}`,
-      message: config.pauseOnHover.value
-         ? 'Notifications will be paused on hover.'
-         : 'Notifications will not be paused on hover.',
-   })
 }
 
 function toggleRtlIfNeeded() {
@@ -26,13 +19,6 @@ function togglePauseOnTouch() {
    config.update((prevConf) => ({
       pauseOnTouch: !prevConf.pauseOnTouch,
    }))
-
-   push.info({
-      title: `Pause on touch ${config.pauseOnTouch.value ? 'enabled' : 'disabled'}`,
-      message: config.pauseOnTouch.value
-         ? 'Notifications will be paused on touch.'
-         : 'Notifications will not be paused on touch.',
-   })
 }
 
 function toggleQueue() {
@@ -41,6 +27,14 @@ function toggleQueue() {
    config.update((prevConf) => ({
       enqueue: !prevConf.enqueue,
    }))
+}
+
+function toggleNoDupes() {
+   config.update((prevConf) => ({
+      avoidDuplicates: !prevConf.avoidDuplicates,
+   }))
+
+   if (config.avoidDuplicates.value) state.hasProgress = true
 }
 
 const enqueuedLength = computed(() => queue.value.length)
@@ -71,14 +65,18 @@ watch(
 watch(config.limit, () => {
    toggleRtlIfNeeded()
 })
+
+const btnProps = {
+   class: 'ButtonBase SwitchButton',
+   role: 'switch',
+}
 </script>
 
 <template>
    <div class="Controls">
       <button
          v-if="isMobile()"
-         class="ButtonBase SwitchButton"
-         role="switch"
+         v-bind="btnProps"
          :aria-checked="config.pauseOnTouch.value"
          @click="togglePauseOnTouch"
       >
@@ -87,8 +85,7 @@ watch(config.limit, () => {
 
       <button
          v-else
-         class="ButtonBase SwitchButton"
-         role="switch"
+         v-bind="btnProps"
          :aria-checked="config.pauseOnHover.value"
          @click="togglePauseOnHover"
       >
@@ -96,18 +93,20 @@ watch(config.limit, () => {
       </button>
 
       <button
-         class="ButtonBase SwitchButton"
+         v-bind="btnProps"
          :disabled="isSwipeDisabled"
-         role="switch"
          :aria-checked="state.enableSwipe"
          @click="actions.toggleSwipe"
       >
          Clear on Swipe
       </button>
 
+      <button v-bind="btnProps" :aria-checked="config.avoidDuplicates.value" @click="toggleNoDupes">
+         No Duplicates
+      </button>
+
       <button
-         class="ButtonBase SwitchButton ButtonTooltip"
-         role="switch"
+         v-bind="btnProps"
          :aria-checked="config.enqueue.value"
          @click="toggleQueue"
          :disabled="isEnqueueDisabled"
@@ -138,6 +137,7 @@ watch(config.limit, () => {
    text-align: center;
    display: flex;
    justify-items: center;
+   padding-right: 1rem;
 
    -webkit-appearance: none;
    appearance: none;
@@ -148,30 +148,9 @@ watch(config.limit, () => {
    background-size: auto 1rem;
 }
 
-.ButtonTooltip {
-   width: 100%;
-}
-
 hr {
    margin: 0.25rem 0;
    border: 0;
    border-bottom: 1px solid var(--divider-color);
-}
-</style>
-
-<style>
-.v-popper__wrapper {
-   max-width: 160px;
-}
-
-.v-popper__inner {
-   background: var(--button-bg-color) !important;
-   color: var(--button-color) !important;
-   font-size: 0.825rem !important;
-   line-height: 1.35;
-}
-
-.v-popper__arrow-outer {
-   border-color: var(--button-bg-color) !important;
 }
 </style>

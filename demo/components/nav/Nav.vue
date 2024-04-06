@@ -52,7 +52,7 @@ nav {
    z-index: 9999;
    bottom: 0;
    left: 0;
-   height: 260px;
+   height: var(--nav-height);
    position: fixed;
    overflow: hidden;
 

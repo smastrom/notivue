@@ -61,6 +61,7 @@ export const DEFAULT_CONFIG: NotivueConfigRequired = {
    teleportTo: 'body',
    notifications: DEFAULT_NOTIFICATION_OPTIONS,
    limit: Infinity,
+   avoidDuplicates: false,
    animations: {
       enter: CLASS_PREFIX + 'enter',
       leave: CLASS_PREFIX + 'leave',

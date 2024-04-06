@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { push, Notivue, Notifications, NotivueIcons, NotivueTheme, type PushOptions } from 'notivue'
+import {
+   push,
+   Notivue,
+   Notifications,
+   NotificationProgress,
+   NotivueIcons,
+   NotivueTheme,
+   type PushOptions,
+} from 'notivue'
 
 export interface CyNotificationsProps {
    options?: PushOptions
@@ -15,11 +23,13 @@ const cyProps = defineProps<CyNotificationsProps>()
    <div>
       <Notivue v-slot="item">
          <Notifications
-            :item="item"
+            :item
             :icons="cyProps.icons"
             :theme="cyProps.theme"
             :hideClose="cyProps.hideClose"
-         />
+         >
+            <NotificationProgress :item />
+         </Notifications>
       </Notivue>
 
       <button class="Success" @click="push.success(cyProps.options ?? {})">Success</button>

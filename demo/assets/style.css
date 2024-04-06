@@ -40,7 +40,7 @@
    -moz-osx-font-smoothing: grayscale;
    -webkit-text-size-adjust: 100%;
    --app-font-family: 'PT Sans Narrow', Avenir, Helvetica, Arial, sans-serif;
-   --nav-height: 260px;
+   --nav-height: 280px;
    --royal-blue: #438bff;
    --focus-ring: 0px 0px 0px 2px #fff, 0px 0px 0px 4px var(--royal-blue);
    --focus-ring-xl: 0px 0px 0px 2px #fff, 0px 0px 0px 5px var(--royal-blue);

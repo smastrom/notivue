@@ -1,6 +1,13 @@
 import { reactive, toRaw, toRefs, type ToRefs } from 'vue'
 
-import type { NotivueConfigRequired, Obj, PushOptionsWithInternals } from 'notivue'
+import { NotificationTypeKeys as NKeys } from './constants'
+
+import type {
+   NotificationType,
+   NotivueConfigRequired,
+   Obj,
+   PushOptionsWithInternals,
+} from 'notivue'
 
 export const isSSR = typeof window === 'undefined'
 
@@ -58,3 +65,6 @@ export function toRawConfig<T extends Obj>(config: ToRefs<T>) {
       {}
    ) as T
 }
+
+export const isStatic = (type: NotificationType) =>
+   type === NKeys.SUCCESS || type === NKeys.ERROR || type === NKeys.WARNING || type === NKeys.INFO
