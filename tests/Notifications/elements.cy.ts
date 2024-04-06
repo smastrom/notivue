@@ -1,8 +1,11 @@
 import { NotivueIcons, outlinedIcons } from 'notivue'
 
 import { Classes as _Classes } from '@/Notifications/constants'
+import { DEFAULT_ANIM_DURATION } from '@/support/utils'
 
 const { TRANSITION, ...Classes } = _Classes
+
+const defaultClasses = Object.values(Classes).filter((className) => className !== Classes.DUPLICATE)
 
 it('All elements are rendered and only exists one element per class', () => {
    cy.mountNotifications({
@@ -15,9 +18,23 @@ it('All elements are rendered and only exists one element per class', () => {
       .get('.Success')
       .click()
 
-   Object.values(Classes).forEach((className) => {
+   defaultClasses.forEach((className) => {
       cy.get(`.${className}`).should('exist').and('have.length', 1)
    })
+})
+
+it('Duplicate class is added correctly', () => {
+   cy.mountNotifications(undefined, {
+      avoidDuplicates: true,
+   })
+
+      .get('.Success')
+      .click()
+      .wait(DEFAULT_ANIM_DURATION)
+      .get('.Success')
+      .click()
+
+   cy.get(`.${Classes.DUPLICATE}`).should('exist').and('have.length', 1)
 })
 
 it('Title is not rendered by default (if empty string) while all other elements are', () => {
@@ -26,7 +43,7 @@ it('Title is not rendered by default (if empty string) while all other elements 
       .get('.Success')
       .click()
 
-   Object.values(Classes).forEach((className) => {
+   defaultClasses.forEach((className) => {
       if (className === Classes.TITLE) {
          cy.get(`.${className}`).should('not.exist')
       } else {

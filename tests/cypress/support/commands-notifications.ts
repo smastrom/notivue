@@ -4,12 +4,12 @@ import { Classes } from '@/Notifications/constants'
 
 import Notivue, { CyNotificationsProps } from '@/tests/Notifications/components/Notivue.vue'
 
-import { createNotivue, type NotivueTheme } from 'notivue'
+import { createNotivue, type NotivueTheme, type NotivueConfig } from 'notivue'
 
 declare global {
    namespace Cypress {
       interface Chainable {
-         mountNotifications(props?: CyNotificationsProps): Chainable<any>
+         mountNotifications(props?: CyNotificationsProps, config?: NotivueConfig): Chainable<any>
          checkTheme(theme: NotivueTheme): Chainable<any>
          mountAndCheckTheme(theme: NotivueTheme): Chainable<any>
       }
@@ -24,8 +24,8 @@ Cypress.Commands.add('checkTheme', (theme: NotivueTheme) => {
    })
 })
 
-Cypress.Commands.add('mountNotifications', (props = {}) => {
-   const notivue = createNotivue()
+Cypress.Commands.add('mountNotifications', (props = {}, config = {}) => {
+   const notivue = createNotivue(config)
 
    return mount(Notivue, {
       global: {
