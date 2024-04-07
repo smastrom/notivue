@@ -17,10 +17,6 @@
       animation: Notivue__progress-kf var(--nv-anim-dur) linear forwards;
       transform-origin: left;
       border-radius: 0 var(--nv-radius, 0) var(--nv-radius, 0) 0;
-
-      @media (prefers-reduced-motion: reduce) {
-         animation: none;
-      }
    }
 
    [dir='rtl'] {
@@ -44,6 +40,8 @@
    }
 }
 
-.Notivue__progress {
-   display: none;
+@media (prefers-reduced-motion: reduce) {
+   .Notivue__progress {
+      display: none;
+   }
 }
