@@ -380,7 +380,7 @@ export function createPushProxies({
                   duration: entry.duration,
                   remaining: undefined,
                   timeout: timeouts.create(dupe.id, entry.duration),
-                  duplicates: dupe.duplicates + 1,
+                  duplicateCount: dupe.duplicateCount + 1,
                })
 
                // Trick aria-atomic to announce again the notification
@@ -395,7 +395,7 @@ export function createPushProxies({
                queue.update(queueDupe.id, {
                   duration: entry.duration,
                   createdAt,
-                  duplicates: queueDupe.duplicates + 1,
+                  duplicateCount: queueDupe.duplicateCount + 1,
                })
             }
 
@@ -427,7 +427,7 @@ export function createPushProxies({
             const item = {
                ...entry,
                createdAt,
-               duplicates: 0,
+               duplicateCount: 0,
                animationAttrs: {
                   class: animations.isReducedMotion.value ? '' : config.animations.value.enter,
                   onAnimationend() {

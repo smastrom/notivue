@@ -19,8 +19,8 @@ watch(
 
 <template>
    <div
-      :class="[Cx.NOTIFICATION, { [Cx.DUPLICATE]: item.duplicates > 0 }]"
-      :key="item.duplicates"
+      :class="[Cx.NOTIFICATION, { [Cx.DUPLICATE]: item.duplicateCount > 0 }]"
+      :key="item.duplicateCount"
       :data-notivue="item.type"
       :data-notivue-has-title="Boolean(item.title)"
       :style="theme"
@@ -29,7 +29,7 @@ watch(
          <Transition :name="Cx.TRANSITION" v-if="typeof Icon === 'object'" mode="out-in">
             <Component
                v-if="typeof Icon === 'object'"
-               :key="item.duplicates"
+               :key="item.duplicateCount"
                :is="Icon"
                :class="Cx.ICON"
                aria-hidden="true"
