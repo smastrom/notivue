@@ -12,9 +12,6 @@ on:
 jobs:
    cypress-run:
       runs-on: ubuntu-latest
-      if: >
-         (github.event_name == 'push' && github.actor == 'smastrom') ||
-         (github.event_name == 'pull_request' && github.actor != 'smastrom')
       steps:
          - uses: actions/checkout@v3
          - name: Install Node.js
