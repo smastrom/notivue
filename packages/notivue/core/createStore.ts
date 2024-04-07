@@ -327,7 +327,7 @@ export function createTimeouts(items: ItemsSlice, animations: AnimationsSlice) {
             return {
                ...item,
                timeout: this.create(item.id, item.remaining ?? item.duration),
-               resumedAt: Date.now(), // ...which corresponds to the duration itself when the stream is resumed
+               resumedAt: Date.now(), // ...which corresponds to the duration itself when the stream is resumed for the first time
             }
          })
       },
