@@ -97,8 +97,8 @@ export function createItems(config: ConfigSlice, queue: QueueSlice) {
          queue.remove(next.id)
          this.add(next)
       },
-      findDupe(item: StoreItem, entries?: StoreItem[]) {
-         return (entries || this.entries.value).find(
+      findDupe(item: StoreItem) {
+         return this.entries.value.find(
             (e) =>
                unref(e.message).replace(/\uFEFF/g, '') === unref(item.message).replace(/\uFEFF/g, '') && // prettier-ignore
                unref(e.title) === unref(item.title) &&
@@ -274,26 +274,34 @@ export function createTimeouts(items: ItemsSlice, animations: AnimationsSlice) {
          this.setStreamPause(false)
          this.setStreamFocus(false)
       },
-      create(id: string, duration: number | undefined) {
-         if (Number.isFinite(duration) && duration! > 0) {
+      create(id: string, duration: number): number | undefined {
+         if (this.isStreamPaused.value) return
+
+         if (Number.isFinite(duration) && duration > 0) {
             return window.setTimeout(() => animations.playLeave(id), duration)
          }
-         return undefined
       },
       pause() {
          if (items.length === 0 || this.isStreamPaused.value) return
 
          console.log('Pausing timeouts')
 
+         this.setStreamPause()
+
          items.updateAll((item) => {
             window.clearTimeout(item.timeout as number)
 
-            if (!item.timeout) return item
+            if (item.duration === Infinity) return item
 
             let remaining = 0
 
             if (item.remaining == null) {
-               remaining = item.duration - (Date.now() - item.createdAt)
+               /**
+                * If a dynamic notification is updated while the stream is paused and then the
+                * stream is resumed -> paused again, the below subtraction must use `resumedAt`,
+                * instead of `createdAt` to properly sync with the item duration...
+                */
+               remaining = item.duration - (Date.now() - (item.resumedAt ?? item.createdAt))
             } else {
                remaining = item.remaining - (Date.now() - item.resumedAt)
             }
@@ -303,27 +311,25 @@ export function createTimeouts(items: ItemsSlice, animations: AnimationsSlice) {
                remaining,
             }
          })
-
-         this.setStreamPause()
       },
       resume() {
          if (items.length === 0 || !this.isStreamPaused.value) return
 
          console.log('Resuming timeouts')
 
+         this.setStreamPause(false)
+
          items.updateAll((item) => {
             window.clearTimeout(item.timeout as number)
 
-            if (!item.timeout) return item
+            if (item.duration === Infinity) return item
 
             return {
                ...item,
                timeout: this.create(item.id, item.remaining ?? item.duration),
-               resumedAt: Date.now(),
+               resumedAt: Date.now(), // ...which corresponds to the duration itself when the stream is resumed
             }
          })
-
-         this.setStreamPause(false)
       },
       resumeWithDebounce(ms: number) {
          this.debounceTimeout = window.setTimeout(() => {
@@ -380,12 +386,10 @@ export function createPushProxies({
                // Trick aria-atomic to announce again the notification
                isRef(dupe.message) ? (dupe.message.value += '\uFEFF') : (dupe.message += '\uFEFF')
 
-               if (timeouts.isStreamPaused.value) timeouts.pause()
-
                items.triggerRef()
             }
 
-            const queueDupe = items.findDupe(entry as StoreItem, queue.entries.value)
+            const queueDupe = items.findDupe.call(queue, entry as StoreItem)
 
             if (queueDupe) {
                queue.update(queueDupe.id, {
@@ -412,13 +416,13 @@ export function createPushProxies({
             const isQueueActive = config.enqueue.value
             const hasReachedLimit = items.length >= config.limit.value
             const shouldDiscard = !isQueueActive && hasReachedLimit
+            const shouldEnqueue = isQueueActive && !options.skipQueue && hasReachedLimit
 
             if (shouldDiscard) {
-               const exceedingItems = items.entries.value.slice(config.limit.value - 1)
-               exceedingItems.forEach(({ id }) => timeouts.create(id, 1))
+               items.entries.value
+                  .slice(config.limit.value - 1)
+                  .forEach((e) => timeouts.create(e.id, 1))
             }
-
-            const shouldEnqueue = isQueueActive && !options.skipQueue && hasReachedLimit
 
             const item = {
                ...entry,
