@@ -31,6 +31,7 @@ type ThemeLayoutVars =
    | '--nv-tip-width'
    | '--nv-y-align'
    | '--nv-y-align-has-title'
+   | '--nv-progress-height'
 
 type ThemeGlobalColorsVars =
    | '--nv-global-bg'

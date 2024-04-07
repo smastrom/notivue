@@ -7,7 +7,6 @@ const layout: NotivueTheme = {
    '--nv-icon-size': '1.25rem',
    '--nv-title-size': '0.925rem',
    '--nv-message-size': '0.925rem',
-   '--nv-tip-width': '0px',
    '--nv-y-align': 'center',
 }
 
