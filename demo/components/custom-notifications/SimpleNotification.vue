@@ -12,11 +12,11 @@ defineProps<{
 
 <template>
    <div
-      :key="item.duplicates"
+      :key="item.duplicateCount"
       :class="[
          'Notification',
          {
-            Duplicate_Anim: item.duplicates > 0,
+            Duplicate_Anim: item.duplicateCount > 0,
          },
       ]"
    >

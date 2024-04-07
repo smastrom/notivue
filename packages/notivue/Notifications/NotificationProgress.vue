@@ -13,7 +13,7 @@ defineProps<{
 <template>
    <div
       v-if="Number.isFinite(item.duration)"
-      :key="item.duplicates"
+      :key="item.duplicateCount"
       :class="Cx.PROGRESS"
       :style="{
          animationPlayState: isStreamPaused ? 'paused' : 'running',

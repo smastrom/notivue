@@ -21,7 +21,7 @@ describe('Duplicates', () => {
       cy.getNotifications().should('have.length', 10, { timeout: 0 })
    })
 
-   it.only('Should replace duration correctly', () => {
+   it('Should replace duration correctly', () => {
       cy.mountNotivue({ config: { avoidDuplicates: true } })
 
       cy.get('.Success').click()

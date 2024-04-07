@@ -94,7 +94,7 @@ export interface NotificationClearMethods {
 
 export interface ExposedInternalItemData extends NotificationClearMethods {
    createdAt: number
-   duplicates: number
+   duplicateCount: number
 }
 
 export interface HiddenInternalItemData {
