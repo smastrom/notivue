@@ -1,11 +1,9 @@
 @media (prefers-reduced-motion: no-preference) {
-   .Notivue__notification {
-      &:has(.Notivue__progress) {
-         border-radius: var(--nv-radius, 0) var(--nv-radius, 0) var(--nv-radius, 0) 0;
+   .Notivue__notification:has(.Notivue__progress) {
+      border-radius: var(--nv-radius, 0) var(--nv-radius, 0) var(--nv-radius, 0) 0;
 
-         & .Notivue__content-message {
-            margin-bottom: 4px;
-         }
+      & .Notivue__content-message {
+         margin-bottom: var(--nv-progress-height, 4px);
       }
    }
 
@@ -14,7 +12,7 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 4px;
+      height: var(--nv-progress-height, 4px);
       background-color: var(--nv-accent);
       animation: Notivue__progress-kf var(--nv-anim-dur) linear forwards;
       transform-origin: left;
@@ -25,8 +23,15 @@
       }
    }
 
-   [dir='rtl'] .Notivue__progress {
-      transform-origin: right;
+   [dir='rtl'] {
+      & .Notivue__progress {
+         transform-origin: right;
+         border-radius: var(--nv-radius, 0) 0 0 var(--nv-radius, 0);
+      }
+
+      & .Notivue__notification:has(.Notivue__progress) {
+         border-radius: var(--nv-radius, 0) var(--nv-radius, 0) 0 var(--nv-radius, 0);
+      }
    }
 
    @keyframes Notivue__progress-kf {
@@ -39,8 +44,6 @@
    }
 }
 
-@media (prefers-reduced-motion: reduce) {
-   .Notivue__progress {
-      display: none;
-   }
+.Notivue__progress {
+   display: none;
 }
