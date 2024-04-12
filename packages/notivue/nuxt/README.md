@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://cdn.smastrom.io/notivue-readme.svg" width="800" height="650" alt="notivue" />
+<img src="https://cdn.smastrom.io/notivue-readme.svg" width="800" height="auto" alt="notivue" />
 
 <br />
 
