@@ -53,7 +53,7 @@ watch(
             <Notification
                v-else
                :item
-               :theme="{ ...themes[state.theme], '--nv-y-align-has-title': 'flex-start' }"
+               :theme="themes[state.theme]"
                :icons="state.outlinedIcons ? outlinedIcons : undefined"
             >
                <NotificationProgress :item v-if="state.hasProgress" />

@@ -45,9 +45,6 @@ _Customize animations with CSS classes_
 **♿️ Fully accessible**  
 _Built-in announcements, reduced-motion and keyboard support_
 
-**💫 Nuxt and Astro modules**  
-_Built-in Nuxt and Astro ad-hoc modules_
-
 **📜 Complete yet friendly documentation**  
 _You're covered with a plain-language [documentation](https://notivuedocs.netlify.app/)_
 
@@ -65,35 +62,26 @@ pnpm add notivue
 
 <br />
 
-## Vite
+## Usage
 
-> :bulb: See [↓ below](#nuxt) for **Nuxt**
-
-**main.js/ts**
+**nuxt.config.ts**
 
 ```ts
-import { createApp } from 'vue'
-import { createNotivue } from 'notivue'
-
-import App from './App.vue'
-
-import 'notivue/notification.css' // Only needed if using built-in <Notification />
-import 'notivue/animations.css' // Only needed if using default animations
-
-const notivue = createNotivue(/* Options */)
-const app = createApp(App)
-
-app.use(notivue)
-app.mount('#app')
+export default defineNuxtConfig({
+  modules: ['notivue/nuxt'],
+  css: [
+    'notivue/notification.css', // Only needed if using built-in notifications
+    'notivue/animations.css' // Only needed if using built-in animations
+  ],
+  notivue: {
+    // Options
+  }
+})
 ```
 
-**App.vue**
+**app.vue**
 
 ```vue
-<script setup>
-import { Notivue, Notification, push } from 'notivue'
-</script>
-
 <template>
   <button @click="push.success('Hi! I am your first notification!')">Push</button>
 
@@ -101,7 +89,7 @@ import { Notivue, Notification, push } from 'notivue'
     <Notification :item="item" />
   </Notivue>
 
-  <!-- RouterView, etc. -->
+  <!-- NuxtLayout, NuxtPage, etc. -->
 </template>
 ```
 
@@ -109,10 +97,6 @@ import { Notivue, Notification, push } from 'notivue'
 <summary><strong>Headless, with custom components</strong></summary>
 
 ```vue
-<script setup>
-import { Notivue, push } from 'notivue'
-</script>
-
 <template>
   <button @click="push.success('Hi! I am your first notification!')">Push</button>
 
@@ -149,39 +133,6 @@ import { Notivue, push } from 'notivue'
 ```
 
 </details>
-
-<br />
-
-## Nuxt
-
-**nuxt.config.ts**
-
-```ts
-export default defineNuxtConfig({
-  modules: ['notivue/nuxt'],
-  css: [
-    'notivue/notification.css', // Only needed if using built-in <Notification />
-    'notivue/animations.css' // Only needed if using default animations
-  ],
-  notivue: {
-    // Options
-  }
-})
-```
-
-**app.vue**
-
-```vue
-<template>
-  <button @click="push.success('Hi! I am your first notification!')">Push</button>
-
-  <Notivue v-slot="item">
-    <Notification :item="item" />
-  </Notivue>
-
-  <!-- NuxtLayout, NuxtPage, etc. -->
-</template>
-```
 
 <br />
 
