@@ -6,11 +6,15 @@ import {
    DEFAULT_NOTIFICATION_OPTIONS as defaultNot,
 } from '@/core/constants'
 
-import type { UseNotivueReturn, NotivueConfig, NotivueConfigRequired } from 'notivue'
+import { ref } from 'vue'
+
+import type { NotivueConfig, NotivueConfigRequired, ConfigSlice } from 'notivue'
 
 type ConfigPairs<K extends keyof NotivueConfig> = [K, NotivueConfig[K]]
 
 describe('Update method', () => {
+   const isRunning = ref(true)
+
    test('Should update primitive properties', () => {
       const newConf: ConfigPairs<keyof NotivueConfig>[] = [
          ['pauseOnTouch', false],
@@ -22,7 +26,7 @@ describe('Update method', () => {
          ['limit', Math.random() * 100],
       ]
 
-      const config = createConfig({}) as UseNotivueReturn
+      const config = createConfig({}, isRunning) as ConfigSlice
 
       for (const [key, value] of newConf) {
          expect(config[key].value).not.toBe(value)
@@ -37,7 +41,7 @@ describe('Update method', () => {
       test('Animations', () => {
          const animations = { enter: 'Vitest_Enter', leave: 'Vitest_Leave' }
 
-         const config = createConfig({})
+         const config = createConfig({}, isRunning) as ConfigSlice
 
          config.update({ animations })
 
@@ -59,7 +63,7 @@ describe('Update method', () => {
             'promise-reject': { duration: Math.random() * 100 },
          }
 
-         const config = createConfig({}) as UseNotivueReturn
+         const config = createConfig({}, isRunning) as ConfigSlice
 
          config.update({ notifications: newConf })
 
@@ -89,7 +93,7 @@ describe('Update method', () => {
          },
       }
 
-      const c = createConfig(userConf) as UseNotivueReturn
+      const c = createConfig(userConf, isRunning) as ConfigSlice
 
       let prevConf = {} as NotivueConfigRequired
 
