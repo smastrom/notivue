@@ -92,7 +92,7 @@ export function toRawConfig<T extends Obj>(config: ToRefs<T>) {
 export const isStatic = (type: NotificationType) =>
    type === NType.SUCCESS || type === NType.ERROR || type === NType.WARNING || type === NType.INFO
 
-const internalKeys: (keyof InternalKeys)[] = [
+export const internalKeys: (keyof InternalKeys)[] = [
    'timeout',
    'resumedAt',
    'remaining',
