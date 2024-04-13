@@ -8,8 +8,8 @@ import {
 } from './utils'
 import { getSlotItem } from '@/Notivue/utils'
 
-import { isStatic } from './utils'
-import { DEFAULT_CONFIG, NotificationTypeKeys as NKeys } from './constants'
+import { isStatic, getSlotItem } from './utils'
+import { DEFAULT_CONFIG, NotificationTypeKeys as NType } from './constants'
 
 import type {
    DeepPartial,
@@ -404,7 +404,7 @@ export function createPushProxies({
 
          const createTimeout = () => timeouts.create(entry.id, entry.duration)
 
-         if (options.type === NKeys.PROMISE_RESOLVE || options.type === NKeys.PROMISE_REJECT) {
+         if (options.type === NType.PROMISE_RESOLVE || options.type === NType.PROMISE_REJECT) {
             if (queue.get(entry.id)) {
                queue.update(entry.id, { ...entry, createdAt, timeout: createTimeout })
                queue.triggerRef()

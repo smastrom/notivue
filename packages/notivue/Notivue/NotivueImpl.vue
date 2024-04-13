@@ -4,13 +4,16 @@ import { Teleport } from 'vue'
 import AriaLive from './AriaLive.vue'
 
 import { useStore } from '@/core/useStore'
+import { getSlotItem } from '@/core/utils'
+
 import { useMouseEvents } from './composables/useMouseEvents'
 import { useTouchEvents } from './composables/useTouchEvents'
 import { useNotivueStyles } from './composables/useNotivueStyles'
 import { useRepositioning } from './composables/useRepositioning'
 import { useWindowFocus } from './composables/useWindowFocus'
 import { useReducedMotion } from './composables/useReducedMotion'
-import { getSlotItem, getAriaLabel } from './utils'
+
+import { getAriaLabel } from './utils'
 import { DEFAULT_PROPS } from './constants'
 
 import type { NotivueProps, NotivueComponentSlot } from 'notivue'

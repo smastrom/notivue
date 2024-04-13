@@ -1,8 +1,11 @@
 import { reactive, toRaw, toRefs, type ToRefs } from 'vue'
 
-import { NotificationTypeKeys as NKeys } from './constants'
+import { NotificationTypeKeys as NType } from './constants'
 
 import type {
+   StoreItem,
+   NotivueItem,
+   HiddenInternalItemData as InternalKeys,
    NotificationType,
    NotivueConfigRequired,
    Obj,
@@ -11,9 +14,7 @@ import type {
 
 export const isSSR = typeof window === 'undefined'
 
-export function isMouse(event: PointerEvent) {
-   return event.pointerType === 'mouse'
-}
+export const isMouse = (e: PointerEvent) => e.pointerType === 'mouse'
 
 export function mergeDeep<T extends Obj>(target: T, source: Record<string, any>): T {
    const merged: T = { ...target }
@@ -41,7 +42,7 @@ export function mergeNotificationOptions<T extends Obj = Obj>(
       ...configOptions[pushOptions.type],
       ...configOptions.global,
       ...pushOptions,
-      ...(pushOptions.type === 'promise' ? { duration: Infinity } : {}), // Force duration infinity
+      ...(pushOptions.type === 'promise' ? { duration: Infinity } : {}), // Enforce this
    }
 }
 
@@ -67,4 +68,18 @@ export function toRawConfig<T extends Obj>(config: ToRefs<T>) {
 }
 
 export const isStatic = (type: NotificationType) =>
-   type === NKeys.SUCCESS || type === NKeys.ERROR || type === NKeys.WARNING || type === NKeys.INFO
+   type === NType.SUCCESS || type === NType.ERROR || type === NType.WARNING || type === NType.INFO
+
+const internalKeys: (keyof InternalKeys)[] = [
+   'timeout',
+   'resumedAt',
+   'remaining',
+   'animationAttrs',
+   'positionStyles',
+]
+
+export function getSlotItem(item: StoreItem) {
+   return Object.fromEntries(
+      Object.entries(item).filter(([key]) => !internalKeys.includes(key as keyof InternalKeys))
+   ) as NotivueItem
+}

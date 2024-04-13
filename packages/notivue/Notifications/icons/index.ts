@@ -1,6 +1,6 @@
 import { markRaw as raw, type SVGAttributes } from 'vue'
 
-import { NotificationTypeKeys as NKeys } from '@/core/constants'
+import { NotificationTypeKeys as NType } from '@/core/constants'
 
 import SuccessIcon from './SuccessIcon.vue'
 import ErrorIcon from './ErrorIcon.vue'
@@ -34,23 +34,23 @@ export const featherProps: SVGAttributes = {
 }
 
 export const filledIcons: NotivueIcons = {
-   [NKeys.SUCCESS]: raw(SuccessIcon),
-   [NKeys.ERROR]: raw(ErrorIcon),
-   [NKeys.INFO]: raw(InfoIcon),
-   [NKeys.WARNING]: raw(ErrorIcon),
-   [NKeys.PROMISE]: raw(PromiseIcon),
-   [NKeys.PROMISE_RESOLVE]: raw(SuccessIcon),
-   [NKeys.PROMISE_REJECT]: raw(ErrorIcon),
+   [NType.SUCCESS]: raw(SuccessIcon),
+   [NType.ERROR]: raw(ErrorIcon),
+   [NType.INFO]: raw(InfoIcon),
+   [NType.WARNING]: raw(ErrorIcon),
+   [NType.PROMISE]: raw(PromiseIcon),
+   [NType.PROMISE_RESOLVE]: raw(SuccessIcon),
+   [NType.PROMISE_REJECT]: raw(ErrorIcon),
    close: raw(CloseIcon),
 }
 
 export const outlinedIcons: NotivueIcons = {
-   [NKeys.SUCCESS]: raw(SuccessOutlineIcon),
-   [NKeys.ERROR]: raw(ErrorOutlineIcon),
-   [NKeys.INFO]: raw(InfoOutlineIcon),
-   [NKeys.WARNING]: raw(ErrorOutlineIcon),
-   [NKeys.PROMISE]: raw(PromiseIcon),
-   [NKeys.PROMISE_RESOLVE]: raw(SuccessOutlineIcon),
-   [NKeys.PROMISE_REJECT]: raw(ErrorOutlineIcon),
+   [NType.SUCCESS]: raw(SuccessOutlineIcon),
+   [NType.ERROR]: raw(ErrorOutlineIcon),
+   [NType.INFO]: raw(InfoOutlineIcon),
+   [NType.WARNING]: raw(ErrorOutlineIcon),
+   [NType.PROMISE]: raw(PromiseIcon),
+   [NType.PROMISE_RESOLVE]: raw(SuccessOutlineIcon),
+   [NType.PROMISE_REJECT]: raw(ErrorOutlineIcon),
    close: raw(CloseIcon),
 }

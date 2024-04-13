@@ -1,4 +1,4 @@
-import { NotificationTypeKeys as NKeys } from './constants'
+import { NotificationTypeKeys as NType } from './constants'
 import { createPushProxies } from './createStore'
 
 import type { NotificationType, Push, PushParameter } from 'notivue'
@@ -25,18 +25,18 @@ export function createPush(proxies: ReturnType<typeof createPushProxies>): Push 
    }
 
    return {
-      success: (options) => push(options, NKeys.SUCCESS),
-      error: (options) => push(options, NKeys.ERROR),
-      warning: (options) => push(options, NKeys.WARNING),
-      info: (options) => push(options, NKeys.INFO),
+      success: (options) => push(options, NType.SUCCESS),
+      error: (options) => push(options, NType.ERROR),
+      warning: (options) => push(options, NType.WARNING),
+      info: (options) => push(options, NType.INFO),
       promise: (options) => {
-         const { id, clear, destroy } = push(options, NKeys.PROMISE)
+         const { id, clear, destroy } = push(options, NType.PROMISE)
 
          return {
-            resolve: (options) => push(options, NKeys.PROMISE_RESOLVE, id),
-            reject: (options) => push(options, NKeys.PROMISE_REJECT, id),
-            success: (options) => push(options, NKeys.PROMISE_RESOLVE, id),
-            error: (options) => push(options, NKeys.PROMISE_REJECT, id),
+            resolve: (options) => push(options, NType.PROMISE_RESOLVE, id),
+            reject: (options) => push(options, NType.PROMISE_REJECT, id),
+            success: (options) => push(options, NType.PROMISE_RESOLVE, id),
+            error: (options) => push(options, NType.PROMISE_REJECT, id),
             clear,
             destroy,
          }
