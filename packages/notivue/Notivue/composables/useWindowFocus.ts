@@ -3,24 +3,16 @@ import { onMounted, onBeforeUnmount } from 'vue'
 import { useStore } from '@/core/useStore'
 
 export function useWindowFocus() {
-   const { items, config, timeouts } = useStore()
+   const { config, timeouts } = useStore()
 
    function onWinFocus() {
       if (timeouts.isStreamFocused.value) return
-
-      if (config.pauseOnTabChange.value) {
-         timeouts.resume()
-      }
+      if (config.pauseOnTabChange.value) timeouts.resume()
    }
 
    function onWinBlur() {
       if (timeouts.isStreamFocused.value) return
-
-      if (config.pauseOnTabChange.value) {
-         timeouts.pause()
-      } else {
-         items.clear()
-      }
+      if (config.pauseOnTabChange.value) timeouts.pause()
    }
 
    onMounted(() => {
