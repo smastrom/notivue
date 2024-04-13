@@ -3,6 +3,18 @@ import { watch } from 'vue'
 import type { NotivueStore } from 'notivue'
 
 export function createStoreWatchers(store: NotivueStore) {
+   const unwatchCount = watch(
+      () => [
+         store.items.createdCount.value,
+         store.items.clearedCount.value,
+         store.items.destroyedCount.value,
+      ],
+      () => {
+         store.animations.updatePositions()
+      },
+      { flush: 'post' }
+   )
+
    const unwatchPosition = watch(
       store.config.position,
       () => {
@@ -32,6 +44,7 @@ export function createStoreWatchers(store: NotivueStore) {
    )
 
    return () => {
+      unwatchCount()
       unwatchPosition()
       unwatchRoot()
       unwatchAnimations()

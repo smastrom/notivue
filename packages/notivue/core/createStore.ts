@@ -78,12 +78,30 @@ export function createQueue() {
 
 export function createItems(config: ConfigSlice, queue: QueueSlice) {
    return {
+      createdCount: ref(0),
+      addCreated() {
+         this.createdCount.value++
+      },
+      clearedCount: ref(0),
+      addCleared() {
+         this.clearedCount.value++
+      },
+      destroyedCount: ref(0),
+      addDestroyed() {
+         this.destroyedCount.value++
+      },
+      resetCount() {
+         this.createdCount.value = 0
+         this.clearedCount.value = 0
+         this.destroyedCount.value = 0
+      },
       entries: shallowRef<StoreItem[]>([]),
       get length() {
          return this.entries.value.length
       },
       add(item: StoreItem) {
          this.entries.value.unshift(item)
+         this.addCreated()
          this.triggerRef()
       },
       addFromQueue() {
@@ -194,7 +212,10 @@ export function createAnimations(config: ConfigSlice, items: ItemsSlice, element
 
          const { leave = '' } = config.animations.value
 
-         if (!item || !leave || isDestroy || this.isReducedMotion.value) return onAnimationend()
+         if (!item || !leave || isDestroy || this.isReducedMotion.value) {
+            items.addDestroyed()
+            return onAnimationend()
+         }
 
          items.update(id, {
             positionStyles: {
@@ -207,7 +228,7 @@ export function createAnimations(config: ConfigSlice, items: ItemsSlice, element
             },
          })
 
-         this.updatePositions()
+         items.addCleared()
       },
       playClearAll() {
          const { clearAll = '' } = config.animations.value
