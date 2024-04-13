@@ -45,9 +45,6 @@ _Customize animations with CSS classes_
 **♿️ Fully accessible**  
 _Built-in announcements, reduced-motion and keyboard support_
 
-**📜 Complete yet friendly documentation**  
-_You're covered with a plain-language [documentation](https://notivuedocs.netlify.app/)_
-
 <br />
 
 ## Installation
