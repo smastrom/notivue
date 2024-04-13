@@ -3,6 +3,9 @@ import { getHead } from './utils/head'
 export default defineNuxtConfig({
    modules: ['notivue/nuxt'],
    ssr: true,
+   devtools: {
+      enabled: false,
+   },
    experimental: {
       componentIslands: true,
    },
@@ -22,7 +25,12 @@ export default defineNuxtConfig({
       head: getHead(),
    },
    vite: {
+      esbuild: {
+         minifyIdentifiers: !import.meta.env.DEV,
+         minifySyntax: !import.meta.env.DEV,
+      },
       build: {
+         minify: import.meta.env.DEV ? false : 'esbuild',
          cssMinify: 'lightningcss',
       },
       css: {

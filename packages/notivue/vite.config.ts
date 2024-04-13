@@ -24,10 +24,12 @@ export default defineConfig({
    },
    esbuild: {
       drop: isFinalBundle ? ['console'] : [],
+      ...(!isFinalBundle ? { minifyIdentifiers: false, minifySyntax: false } : {}),
    },
    build: {
       emptyOutDir: isFinalBundle,
       target: 'es2015',
+      minify: isFinalBundle ? 'esbuild' : false,
       lib: {
          entry: 'index.ts',
          fileName: 'index',
