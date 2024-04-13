@@ -8,6 +8,7 @@ export default defineNuxtConfig({
    },
    notivue: {
       // addPlugin: true,
+      // startOnCreation: true,
       notifications: {
          global: {
             // duration: Infinity,

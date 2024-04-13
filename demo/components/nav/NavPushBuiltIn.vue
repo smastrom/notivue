@@ -1,6 +1,5 @@
 <script setup lang="ts">
-const { state } = useStore()
-const { messages } = useStore()
+const { state, messages } = useStore()
 
 async function asyncRefMessagePush() {
    const initialMessage = ref(state.rtl ? 'جاري تحميل الملفات...' : 'Preparing to upload files...')

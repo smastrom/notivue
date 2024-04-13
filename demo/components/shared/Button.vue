@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
    text: string
+   isDisabled?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -9,7 +10,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-   <button @click="emit('click')" class="ButtonBase" role="button">
+   <button @click="emit('click')" class="ButtonBase" role="button" :disabled="isDisabled">
       <slot />
       <span>{{ props.text }}</span>
    </button>
