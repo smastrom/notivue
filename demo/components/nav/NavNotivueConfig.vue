@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const config = useNotivue()
 const { queue } = useNotifications()
-const { state, actions } = useStore()
+const { state, actions, messages } = useStore()
 
 function togglePauseOnHover() {
    config.update((prevConf) => ({
@@ -30,11 +30,15 @@ function toggleQueue() {
 }
 
 function toggleNoDupes() {
+   push.destroyAll()
+
    config.update((prevConf) => ({
       avoidDuplicates: !prevConf.avoidDuplicates,
    }))
 
    if (config.avoidDuplicates.value) state.hasProgress = true
+
+   push.success(messages.value.success)
 }
 
 const enqueuedLength = computed(() => queue.value.length)
