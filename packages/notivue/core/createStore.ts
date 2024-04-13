@@ -6,7 +6,6 @@ import {
    mergeNotificationOptions as mergeOptions,
    toRawConfig,
 } from './utils'
-import { getSlotItem } from '@/Notivue/utils'
 
 import { isStatic, getSlotItem } from './utils'
 import { DEFAULT_CONFIG, NotificationTypeKeys as NType } from './constants'

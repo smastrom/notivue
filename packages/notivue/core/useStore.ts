@@ -1,6 +1,6 @@
 import { inject, computed, toRefs, reactive, readonly, ref } from 'vue'
 
-import { isSSR } from './utils'
+import { isSSR, getSlotItem } from './utils'
 import { notivueInjectionKey } from './createNotivue'
 import { push } from './createPush'
 import { DEFAULT_CONFIG } from './constants'
@@ -26,13 +26,19 @@ export function useNotivue(): UseNotivueReturn {
    if (isSSR) {
       return {
          ...toRefs(reactive(DEFAULT_CONFIG)),
-         isTopAlign: computed(() => true),
-         isStreamPaused: readonly(ref(false)),
          update: () => {},
+         isTopAlign: computed(() => true),
+         isStreamPaused: ref(false),
       } as UseNotivueReturn
    }
 
-   return { ...useStore().config, isStreamPaused: readonly(useStore().timeouts.isStreamPaused) }
+   const store = useStore()
+
+   return {
+      ...store.config,
+      isStreamPaused: readonly(store.timeouts.isStreamPaused),
+      isTopAlign: computed(() => store.config.position.value.indexOf('top') === 0),
+   }
 }
 
 /**
@@ -61,9 +67,9 @@ export function usePush() {
 export function useNotifications(): NotivueComputedEntries {
    if (isSSR) {
       return {
-         entries: computed(() => [] as NotivueItem[]),
-         queue: computed(() => [] as NotivueItem[]),
-      }
+         entries: computed(() => []),
+         queue: computed(() => []),
+      } as NotivueComputedEntries
    }
 
    const store = useStore()

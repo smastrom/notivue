@@ -179,7 +179,6 @@ export interface Push {
 }
 
 export type ConfigSlice = ToRefs<NotivueConfigRequired> & {
-   isTopAlign: ComputedRef<boolean>
    update: (newConfig: UpdateParam) => void
 }
 
@@ -205,7 +204,10 @@ export interface NotivueComputedEntries {
 
 // New v2.1.0 aliases
 
-export type UseNotivueReturn = ConfigSlice & { isStreamPaused: Readonly<Ref<boolean>> }
+export type UseNotivueReturn = ConfigSlice & {
+   isStreamPaused: Readonly<Ref<boolean>>
+   isTopAlign: ComputedRef<boolean>
+}
 
 export type NotivueNotificationOptions = NotificationOptions
 export type NotivuePosition = Position
