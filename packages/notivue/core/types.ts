@@ -223,6 +223,10 @@ export type NotivueNotificationType = NotificationType
 
 export type PushClearMethods = NotificationClearMethods
 
+// New v2.3.3 aliases
+
+export type NotificationTypes = NotificationType
+
 // Aliases prev 1.2.0
 
 export type NotivueSlot = NotivueItem
