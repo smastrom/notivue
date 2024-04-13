@@ -1,4 +1,4 @@
-import { ref, shallowRef, computed, triggerRef, nextTick, unref, isRef } from 'vue'
+import { ref, shallowRef, triggerRef, unref, isRef, type Ref } from 'vue'
 
 import {
    createConfigRefs,
@@ -61,19 +61,20 @@ export function createQueue() {
       },
       add(item: StoreItem) {
          this.entries.value.push(item)
-         this.triggerRef()
+         triggerRef(this.entries)
       },
       get(id: string) {
          return this.entries.value.find((e) => e.id === id)
       },
       update(id: string, newOptions: DeepPartial<StoreItem>) {
-         Object.assign(this.get(id) ?? {}, newOptions)
-      },
-      triggerRef() {
-         triggerRef(this.entries)
+         const entry = this.get(id)
+         if (entry) Object.assign(entry, newOptions)
       },
       remove(id: string) {
          this.entries.value = this.entries.value.filter((e) => e.id !== id)
+      },
+      triggerRef() {
+         triggerRef(this.entries)
       },
       clear() {
          this.entries.value = []
@@ -131,25 +132,23 @@ export function createItems(config: ConfigSlice, queue: QueueSlice) {
          return this.entries.value.find((e) => e.id === id)
       },
       update(id: string, newOptions: DeepPartial<StoreItem>) {
-         Object.assign(this.get(id) ?? {}, newOptions)
+         const entry = this.get(id)
+         if (entry) Object.assign(entry, newOptions)
       },
       triggerRef() {
          triggerRef(this.entries)
       },
-      updateAll(updateItem: (item: StoreItem) => StoreItem) {
-         this.entries.value = this.entries.value.map(updateItem)
+      updateAll(updateFn: (item: StoreItem) => StoreItem) {
+         this.entries.value = this.entries.value.map(updateFn)
       },
       remove(id: string) {
          this.entries.value = this.entries.value.filter((e) => e.id !== id)
 
          const shouldDequeue = queue.length > 0 && this.length < config.limit.value
-         if (shouldDequeue) {
-            nextTick(() => this.addFromQueue())
-         }
+         if (shouldDequeue) this.addFromQueue()
       },
       clear() {
          this.entries.value = []
-         queue.clear()
       },
    }
 }
@@ -166,7 +165,7 @@ export function createElements() {
       items: ref<HTMLElement[]>([]),
       getSortedItems() {
          // This is a bit dirty, but it's better than cloning and reversing the array on every repositioning
-         return this.items.value.sort((a, b) => +b.dataset.notivueId! - +a.dataset.notivueId!)
+         return this.items.value.sort((a, b) => +b.dataset.notivueItem! - +a.dataset.notivueItem!)
       },
       containers: ref<HTMLElement[]>([]),
    }
@@ -367,7 +366,7 @@ export function createTimeouts(items: ItemsSlice, animations: AnimationsSlice) {
             return {
                ...item,
                timeout: this.create(item.id, item.remaining ?? item.duration),
-               resumedAt: Date.now(), // ...which corresponds to the duration itself when the stream is resumed for the first time
+               resumedAt: Date.now(), // ...which corresponds to the item duration when the stream is resumed for the first time
             }
          })
       },
@@ -448,7 +447,6 @@ export function createPushProxies({
          if (options.type === NType.PROMISE_RESOLVE || options.type === NType.PROMISE_REJECT) {
             if (queue.get(entry.id)) {
                queue.update(entry.id, { ...entry, createdAt, timeout: createTimeout })
-               queue.triggerRef()
             } else {
                items.update(entry.id, { ...entry, createdAt, timeout: createTimeout() })
                items.triggerRef()
