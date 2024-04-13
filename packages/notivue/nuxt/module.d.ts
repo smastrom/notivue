@@ -3,6 +3,7 @@ import * as _nuxt_schema from '@nuxt/schema'
 import type { NotificationType, NotificationOptions, NotivueConfig } from 'notivue'
 
 type ModuleOptions = Omit<NotivueConfig, 'notifications'> & {
+   startOnCreation?: boolean
    /**
     * Whether to create and inject the notivue store in the Vue app.
     * Equivalent of calling `createNotivue(app)` in the main.js of a non-nuxt app.

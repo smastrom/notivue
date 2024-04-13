@@ -1,7 +1,7 @@
 import { ref, shallowRef, computed, triggerRef, nextTick, unref, isRef } from 'vue'
 
 import {
-   createRefs,
+   createConfigRefs,
    mergeDeep,
    mergeNotificationOptions as mergeOptions,
    toRawConfig,
@@ -27,25 +27,30 @@ import type {
 
 export let updateConfig: (newConfig: UpdateParam) => void = () => {}
 
-export function createConfig(userConfig: NotivueConfig) {
-   const config = createRefs(DEFAULT_CONFIG, userConfig)
-   const isTopAlign = computed(() => config.position.value.startsWith('top'))
+export function createConfig(userConfig: NotivueConfig, isRunning: Ref<boolean>) {
+   const config = createConfigRefs(DEFAULT_CONFIG, userConfig, isRunning)
 
    function update(newConfig: UpdateParam) {
-      if (typeof newConfig === 'function') newConfig = newConfig(toRawConfig(config))
+      if (!isRunning.value) return
 
-      for (const key of Object.keys(newConfig) as (keyof NotivueConfig)[]) {
-         if (typeof config[key].value === 'object') {
-            config[key].value = mergeDeep(config[key].value as Obj, newConfig[key] as any)
+      if (typeof newConfig === 'function') {
+         newConfig = newConfig(toRawConfig(config))
+      }
+
+      for (const key in newConfig) {
+         type K = keyof NotivueConfig
+
+         if (typeof config[key as K].value === 'object') {
+            config[key as K].value = mergeDeep(config[key as K].value as Obj, newConfig[key as K] as any) // prettier-ignore
          } else {
-            config[key].value = newConfig[key] as any
+            config[key as K].value = newConfig[key as K] as any
          }
       }
    }
 
    updateConfig = update
 
-   return { ...config, isTopAlign, update }
+   return { ...config, update }
 }
 
 export function createQueue() {
@@ -167,50 +172,59 @@ export function createElements() {
    }
 }
 
-export function createAnimations(config: ConfigSlice, items: ItemsSlice, elements: ElementsSlice) {
-   type TransitionData = { duration: string; easing: string }
+export function createAnimations(
+   config: ConfigSlice,
+   items: ItemsSlice,
+   queue: QueueSlice,
+   elements: ElementsSlice
+) {
+   type TransitionStyles = { transitionDuration: string; transitionTimingFunction: string }
 
    return {
       isReducedMotion: ref(false),
-      transitionData: null as null | TransitionData,
+      transitionStyles: null as null | TransitionStyles,
       setReducedMotion(newVal: boolean) {
          this.isReducedMotion.value = newVal
       },
-      getTransitionData() {
-         if (!this.transitionData) this.setTransitionData()
-         return this.transitionData as TransitionData
+      getTransitionStyles() {
+         if (!this.transitionStyles) this.syncTransitionStyles()
+         return this.transitionStyles
       },
-      resetTransitionData() {
-         this.transitionData = null
+      resetTransitionStyles() {
+         this.transitionStyles = null
       },
-      setTransitionData() {
+      syncTransitionStyles() {
+         const mountedRoot = elements.root.value
+         if (!mountedRoot) return // If the root is not yet queryable, try to sync the next push
+
          const enterClass = config.animations.value.enter
-         const animEl = enterClass ? elements.root.value?.querySelector(`.${enterClass}`) : null
+         const animEl = enterClass ? mountedRoot.querySelector(`.${enterClass}`) : null
+
+         console.log('Syncing transition styles')
 
          if (!animEl) {
-            this.transitionData = { duration: '0s', easing: 'ease' }
+            this.transitionStyles = { transitionDuration: '0s', transitionTimingFunction: 'ease' }
          } else {
-            const style = window.getComputedStyle(animEl)
+            const styles = window.getComputedStyle(animEl)
 
-            this.transitionData = {
-               duration: style.animationDuration,
-               easing: style.animationTimingFunction,
+            this.transitionStyles = {
+               transitionDuration: styles.animationDuration,
+               transitionTimingFunction: styles.animationTimingFunction,
             }
          }
       },
       playLeave(id: string, { isDestroy = false, isUserTriggered = false } = {}) {
+         const { leave = '' } = config.animations.value
          const item = items.get(id)
 
          window.clearTimeout(item?.timeout as number)
 
-         function onAnimationend(e?: AnimationEvent) {
+         const onAnimationend = (e?: AnimationEvent) => {
             if (e && e.currentTarget !== e.target) return
 
-            items.remove(id)
             item?.[isUserTriggered ? 'onManualClear' : 'onAutoClear']?.(getSlotItem(item))
+            items.remove(id)
          }
-
-         const { leave = '' } = config.animations.value
 
          if (!item || !leave || isDestroy || this.isReducedMotion.value) {
             items.addDestroyed()
@@ -231,43 +245,49 @@ export function createAnimations(config: ConfigSlice, items: ItemsSlice, element
          items.addCleared()
       },
       playClearAll() {
-         const { clearAll = '' } = config.animations.value
-
          items.entries.value.forEach((e) => window.clearTimeout(e.timeout as number))
 
-         if (!clearAll || this.isReducedMotion.value) return items.clear()
+         const { clearAll = '' } = config.animations.value
+
+         const onAnimationend = () => {
+            queue.clear()
+            items.clear()
+         }
+
+         if (!clearAll || this.isReducedMotion.value) return onAnimationend()
 
          elements.setRootAttrs({
             class: clearAll,
-            onAnimationend: () => items.clear(),
+            onAnimationend,
          })
       },
       updatePositions({ isImmediate = false } = {}) {
+         const transitionStyles = this.getTransitionStyles()
+         if (!transitionStyles) return
+
+         console.log('Updating positions')
+
          const isReduced = this.isReducedMotion.value || isImmediate
+         const isTopAlign = config.position.value.indexOf('top') === 0
          const leaveClass = config.animations.value.leave
 
          let accPrevHeights = 0
 
          for (const el of elements.getSortedItems()) {
-            const id = el.dataset.notivueId!
+            const id = el.dataset.notivueItem!
             const item = items.get(id)
 
-            if (!el || !item || item.animationAttrs.class === leaveClass) continue
-
-            const { duration: transitionDuration, easing: transitionTimingFunction } =
-               this.getTransitionData()
+            if (!el || !item || item.animationAttrs.class === leaveClass) continue // prettier-ignore
 
             items.update(id, {
                positionStyles: {
                   willChange: 'transform',
                   transform: `translate3d(0, ${accPrevHeights}px, 0)`,
-                  ...(isReduced
-                     ? { transition: 'none' }
-                     : { transitionDuration, transitionTimingFunction }),
+                  ...(isReduced ? { transition: 'none' } : transitionStyles),
                },
             })
 
-            accPrevHeights += (config.isTopAlign.value ? 1 : -1) * el.clientHeight
+            accPrevHeights += (isTopAlign ? 1 : -1) * el.clientHeight
          }
 
          items.triggerRef()
@@ -374,6 +394,7 @@ export function createPushProxies({
 }) {
    return {
       destroyAll() {
+         queue.clear()
          items.clear()
       },
       clearAll() {

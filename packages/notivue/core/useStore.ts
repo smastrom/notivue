@@ -1,16 +1,31 @@
 import { inject, computed, toRefs, reactive, readonly, ref } from 'vue'
 
 import { isSSR, getSlotItem } from './utils'
-import { notivueInjectionKey } from './createNotivue'
+import { notivueInjectionKey, notivueInstanceInjectionKey } from './createNotivue'
 import { push } from './createPush'
 import { DEFAULT_CONFIG } from './constants'
 
-import { getSlotItem } from '@/Notivue/utils'
-
-import type { NotivueStore, UseNotivueReturn, NotivueComputedEntries, NotivueItem } from 'notivue'
+import type {
+   NotivueStore,
+   UseNotivueReturn,
+   NotivueComputedEntries,
+   NotivueInstance,
+} from 'notivue'
 
 export function useStore() {
    return inject(notivueInjectionKey) as NotivueStore
+}
+
+export function useNotivueInstance(): NotivueInstance {
+   if (isSSR) {
+      return {
+         isRunning: ref(true),
+         startInstance: () => {},
+         stopInstance: () => {},
+      } as NotivueInstance
+   }
+
+   return inject(notivueInstanceInjectionKey) as NotivueInstance
 }
 
 /**

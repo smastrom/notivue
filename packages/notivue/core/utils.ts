@@ -1,4 +1,4 @@
-import { reactive, toRaw, toRefs, type ToRefs } from 'vue'
+import { toRaw, customRef, type Ref, type ToRefs } from 'vue'
 
 import { NotificationTypeKeys as NType } from './constants'
 
@@ -56,8 +56,30 @@ function isPlainObject(value: unknown) {
    return prototype === null || Object.getPrototypeOf(prototype) === null
 }
 
-export function createRefs<T extends Obj>(target: T, source: Record<string, any>) {
-   return toRefs(reactive(mergeDeep(target, source))) as ToRefs<T>
+export function createConfigRefs<T extends Obj>(
+   target: T,
+   source: Record<string, any>,
+   isRunning: Ref<boolean>
+) {
+   const conf = mergeDeep(target, source) as T
+
+   function configRef<T>(value: T) {
+      return customRef((track, trigger) => ({
+         get() {
+            track()
+            return value
+         },
+         set(newValue) {
+            if (!isRunning.value) return
+
+            value = newValue
+            trigger()
+         },
+      }))
+   }
+
+   for (const key in conf) conf[key] = configRef(conf[key]) as any
+   return conf as ToRefs<T>
 }
 
 export function toRawConfig<T extends Obj>(config: ToRefs<T>) {

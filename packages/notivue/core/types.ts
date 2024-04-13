@@ -188,6 +188,12 @@ export type QueueSlice = ReturnType<typeof createQueue>
 export type ItemsSlice = ReturnType<typeof createItems>
 export type ElementsSlice = ReturnType<typeof createElements>
 
+export type NotivueInstance = {
+   isRunning: Readonly<Ref<boolean>>
+   startInstance: () => void
+   stopInstance: () => void
+}
+
 export type NotivueStore = {
    config: ConfigSlice
    animations: AnimationsSlice
