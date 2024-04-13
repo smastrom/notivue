@@ -1,6 +1,8 @@
 import { defineNuxtModule, addPluginTemplate, addImports, addComponent } from '@nuxt/kit'
 import { defu } from 'defu'
 
+import { getFunctions, getObjects, getComponents } from '../shared/exports'
+
 const module = defineNuxtModule({
    meta: {
       name: 'nuxt/notivue',
@@ -48,36 +50,11 @@ const module = defineNuxtModule({
          })
       }
 
-      for (const name of [
-         'push',
-
-         'usePush',
-         'useNotivue',
-         'useNotifications',
-         'useNotivueKeyboard',
-
-         'updateConfig',
-
-         'lightTheme',
-         'pastelTheme',
-         'materialTheme',
-         'darkTheme',
-         'slateTheme',
-
-         'outlinedIcons',
-         'filledIcons',
-      ]) {
+      for (const name of [...getFunctions(), ...getObjects({ omit: ['DEFAULT_CONFIG'] })]) {
          addImports({ name, as: name, from: 'notivue' })
       }
 
-      for (const name of [
-         'Notivue',
-         'NotivueKeyboard',
-         'Notifications',
-         'Notification',
-         'NotificationProgress',
-         'NotivueSwipe',
-      ]) {
+      for (const name of getComponents()) {
          await addComponent({ name, export: name, filePath: 'notivue' })
       }
    },

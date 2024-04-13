@@ -5,6 +5,9 @@ import { writeFileSync } from 'fs'
 import vue from '@vitejs/plugin-vue'
 import dts from 'vite-plugin-dts'
 
+// @ts-ignore
+import { getFunctions, getObjects, getComponents } from './shared/exports'
+
 const path = (url: string) => fileURLToPath(new URL(url, import.meta.url))
 
 const isFinalBundle = !process.argv.includes('--watch')
@@ -52,6 +55,12 @@ export default defineConfig({
       {
          name: 'write-astro-entry',
          closeBundle() {
+            const astroReExports = [
+               ...getFunctions({ omit: ['push'] }),
+               ...getComponents({ omit: ['Notivue'] }),
+               ...getObjects(),
+            ]
+
             writeFileSync(
                'dist/astro.js',
                [
@@ -64,30 +73,3 @@ export default defineConfig({
       },
    ],
 })
-
-const astroReExports = [
-   'lightTheme',
-   'pastelTheme',
-   'materialTheme',
-   'darkTheme',
-   'slateTheme',
-
-   'filledIcons',
-   'outlinedIcons',
-
-   'createNotivue',
-   'updateConfig',
-
-   'DEFAULT_CONFIG',
-
-   'useNotivueKeyboard',
-   'useNotifications',
-   'useNotivue',
-   'usePush',
-
-   'Notifications',
-   'Notification',
-   'NotificationProgress',
-   'NotivueSwipe',
-   'NotivueKeyboard',
-]
