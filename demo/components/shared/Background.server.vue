@@ -41,7 +41,7 @@
          <nav>
             <a href="https://github.com/smastrom/notivue" target="_blank">GitHub</a>
             <span>—</span>
-            <a href="https://docs.notivue.smastrom.ioo/" target="_blank">Docs</a>
+            <a href="https://docs.notivue.smastrom.io/" target="_blank">Docs</a>
          </nav>
       </div>
    </div>
