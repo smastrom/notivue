@@ -45,9 +45,6 @@ _Customize animations with CSS classes_
 **♿️ Fully accessible**  
 _Built-in announcements, reduced-motion and keyboard support_
 
-**📜 Complete yet friendly documentation**  
-_You're covered with a plain-language [documentation](https://notivuedocs.netlify.app/)_
-
 <br />
 
 ## Installation
@@ -78,6 +75,16 @@ export default defineNuxtConfig({
   }
 })
 ```
+
+<blockquote>
+
+:bulb: After installing the module, any function, object and component mentioned in the [documentation](https://notivuedocs.netlify.app) can be auto-imported except for types which must be imported manually if needed.
+
+```ts
+import type { NotivueConfig, NotivueItem /*, ... */ } from 'notivue'
+```
+
+</blockquote>
 
 **app.vue**
 

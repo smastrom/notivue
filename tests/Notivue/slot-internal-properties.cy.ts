@@ -1,12 +1,12 @@
 import { parseText } from '@/support/utils'
-import { hiddenInternalKeys } from '@/Notivue/utils'
+import { internalKeys } from '@/core/utils'
 
 it('Hidden internal properties are never defined', () => {
    cy.mountNotivue()
 
       .clickRandomStatic()
       .getNotifications()
-      .then((el) => expect(parseText(el)).to.not.have.keys(hiddenInternalKeys))
+      .then((el) => expect(parseText(el)).to.not.have.keys(internalKeys))
 })
 
 it('Exposed internal properties are always defined', () => {

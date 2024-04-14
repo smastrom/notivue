@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const config = useNotivue()
 const { queue } = useNotifications()
-const { state, actions } = useStore()
+const { state, actions, messages } = useStore()
 
 function togglePauseOnHover() {
    config.update((prevConf) => ({
@@ -30,11 +30,15 @@ function toggleQueue() {
 }
 
 function toggleNoDupes() {
+   push.destroyAll()
+
    config.update((prevConf) => ({
       avoidDuplicates: !prevConf.avoidDuplicates,
    }))
 
    if (config.avoidDuplicates.value) state.hasProgress = true
+
+   push.success(messages.value.success)
 }
 
 const enqueuedLength = computed(() => queue.value.length)
@@ -105,6 +109,14 @@ const btnProps = {
          No Duplicates
       </button>
 
+      <select class="ButtonBase Select" v-model="config.limit.value" aria-label="Limit">
+         <option selected :value="Infinity">No Limit</option>
+         <option :value="1">Limit - 1</option>
+         <option :value="3">Limit - 3</option>
+         <option :value="5">Limit - 5</option>
+         <option :value="10">Limit - 10</option>
+      </select>
+
       <button
          v-bind="btnProps"
          :aria-checked="config.enqueue.value"
@@ -113,16 +125,6 @@ const btnProps = {
       >
          Enqueue ({{ enqueuedLength }})
       </button>
-
-      <hr />
-
-      <select class="ButtonBase Select" v-model="config.limit.value" aria-label="Limit">
-         <option selected :value="Infinity">No Limit</option>
-         <option :value="1">Limit - 1</option>
-         <option :value="3">Limit - 3</option>
-         <option :value="5">Limit - 5</option>
-         <option :value="10">Limit - 10</option>
-      </select>
    </div>
 </template>
 
@@ -146,11 +148,5 @@ const btnProps = {
    background-position: right 0.45em top 50%;
    background-repeat: no-repeat;
    background-size: auto 1rem;
-}
-
-hr {
-   margin: 0.25rem 0;
-   border: 0;
-   border-bottom: 1px solid var(--divider-color);
 }
 </style>

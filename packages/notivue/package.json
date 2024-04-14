@@ -1,6 +1,6 @@
 {
    "name": "notivue",
-   "version": "2.3.2",
+   "version": "2.4.0",
    "private": false,
    "description": "Fully-featured toast notification system for Vue and Nuxt",
    "keywords": [
@@ -32,8 +32,8 @@
    "type": "module",
    "exports": {
       ".": {
-         "types": "./dist/index.d.ts",
-         "import": "./dist/index.js"
+         "import": "./dist/index.js",
+         "types": "./dist/index.d.ts"
       },
       "./nuxt": {
          "import": "./nuxt/module.mjs",
@@ -59,12 +59,13 @@
    "types": "dist/index.d.ts",
    "files": [
       "dist/*",
-      "nuxt/*"
+      "nuxt/*",
+      "shared/exports.js"
    ],
    "scripts": {
       "prebuild": "cp ../../README.md ../../LICENSE .",
       "build": "rm -rf dist && vue-tsc && vite build && pnpm build:css",
-      "postbuild": "rm -rf *.tgz && npm pack && ./scripts/verify-tarball.sh",
+      "postbuild": "rm -rf *.tgz && npm pack && ./scripts/verify-tarball.sh && node ./scripts/verify-exports.js",
       "build:css": "esbuild ./Notifications/notifications.css ./Notifications/notifications-progress.css ./core/animations.css --bundle --outdir=dist --minify --target=chrome58,edge16,firefox57,node12,safari11",
       "watch": "rm -rf dist && concurrently \"vite build --watch\" \"pnpm build:css --watch\""
    },

@@ -41,7 +41,11 @@ export type Position =
    | 'bottom-center'
    | 'bottom-right'
 
-export type NotivueAnimations = { enter?: string; leave?: string; clearAll?: string }
+export interface NotivueAnimations {
+   enter?: string
+   leave?: string
+   clearAll?: string
+}
 
 export interface NotificationOptions {
    /** String to use as default title, an empty string doesn't render the title. */
@@ -179,7 +183,6 @@ export interface Push {
 }
 
 export type ConfigSlice = ToRefs<NotivueConfigRequired> & {
-   isTopAlign: ComputedRef<boolean>
    update: (newConfig: UpdateParam) => void
 }
 
@@ -189,7 +192,13 @@ export type QueueSlice = ReturnType<typeof createQueue>
 export type ItemsSlice = ReturnType<typeof createItems>
 export type ElementsSlice = ReturnType<typeof createElements>
 
-export type NotivueStore = {
+export interface NotivueInstance {
+   isRunning: Readonly<Ref<boolean>>
+   startInstance: () => void
+   stopInstance: () => void
+}
+
+export interface NotivueStore {
    config: ConfigSlice
    animations: AnimationsSlice
    timeouts: TimeoutsSlice
@@ -205,7 +214,10 @@ export interface NotivueComputedEntries {
 
 // New v2.1.0 aliases
 
-export type UseNotivueReturn = ConfigSlice & { isStreamPaused: Readonly<Ref<boolean>> }
+export type UseNotivueReturn = ConfigSlice & {
+   isStreamPaused: Readonly<Ref<boolean>>
+   isTopAlign: ComputedRef<boolean>
+}
 
 export type NotivueNotificationOptions = NotificationOptions
 export type NotivuePosition = Position
@@ -214,6 +226,10 @@ export type NotivueNotificationType = NotificationType
 // New v2.1.1 aliases
 
 export type PushClearMethods = NotificationClearMethods
+
+// New v2.4.0 aliases
+
+export type NotificationTypes = NotificationType
 
 // Aliases prev 1.2.0
 

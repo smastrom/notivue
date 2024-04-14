@@ -7,7 +7,12 @@ import Notivue, { type CyNotivueProps } from '@/tests/Notivue/components/Notivue
 
 import { createNotivue, type NotivueConfig } from 'notivue'
 
-type MountNotificationsOptions = { config?: NotivueConfig; props?: CyNotivueProps }
+type MountNotificationsOptions = {
+   config?: NotivueConfig & {
+      startOnCreation?: boolean
+   }
+   props?: CyNotivueProps
+}
 
 declare global {
    namespace Cypress {

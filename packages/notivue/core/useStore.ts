@@ -1,19 +1,47 @@
 import { inject, computed, toRefs, reactive, readonly, ref } from 'vue'
 
-import { isSSR } from './utils'
-import { notivueInjectionKey } from './createNotivue'
+import { isSSR, getSlotItem } from './utils'
+import { notivueInjectionKey, notivueInstanceInjectionKey } from './createNotivue'
 import { push } from './createPush'
 import { DEFAULT_CONFIG } from './constants'
 
-import { getSlotItem } from '@/Notivue/utils'
-
-import type { NotivueStore, UseNotivueReturn, NotivueComputedEntries, NotivueItem } from 'notivue'
+import type {
+   NotivueStore,
+   UseNotivueReturn,
+   NotivueComputedEntries,
+   NotivueInstance,
+} from 'notivue'
 
 export function useStore() {
    return inject(notivueInjectionKey) as NotivueStore
 }
 
 /**
+ * Composable to start and stop the Notivue instance.
+ *
+ * @returns
+ *
+ * - `startInstance` - Starts or restarts the Notivue instance.
+ * - `stopInstance` - Stops the Notivue instance.
+ * - `isRunning` - Readonly ref to check if the Notivue instance is running.
+ *
+ * @docs https://notivuedocs.netlify.app/api/use-notivue-instance
+ */
+export function useNotivueInstance(): NotivueInstance {
+   if (isSSR) {
+      return {
+         isRunning: ref(true),
+         startInstance: () => {},
+         stopInstance: () => {},
+      } as NotivueInstance
+   }
+
+   return inject(notivueInstanceInjectionKey) as NotivueInstance
+}
+
+/**
+ * Composable to get and update the current Notivue config.
+ *
  * @returns
  *
  * The current [configuration](https://notivuedocs.netlify.app/customization/configuration)
@@ -26,13 +54,19 @@ export function useNotivue(): UseNotivueReturn {
    if (isSSR) {
       return {
          ...toRefs(reactive(DEFAULT_CONFIG)),
-         isTopAlign: computed(() => true),
-         isStreamPaused: readonly(ref(false)),
          update: () => {},
+         isTopAlign: computed(() => true),
+         isStreamPaused: ref(false),
       } as UseNotivueReturn
    }
 
-   return { ...useStore().config, isStreamPaused: readonly(useStore().timeouts.isStreamPaused) }
+   const store = useStore()
+
+   return {
+      ...store.config,
+      isStreamPaused: readonly(store.timeouts.isStreamPaused),
+      isTopAlign: computed(() => store.config.position.value.indexOf('top') === 0),
+   }
 }
 
 /**
@@ -49,6 +83,8 @@ export function usePush() {
 }
 
 /**
+ * Composable to get the current displayed notifications and queue.
+ *
  * @returns
  *
  * Object of two computed properties:
@@ -61,9 +97,9 @@ export function usePush() {
 export function useNotifications(): NotivueComputedEntries {
    if (isSSR) {
       return {
-         entries: computed(() => [] as NotivueItem[]),
-         queue: computed(() => [] as NotivueItem[]),
-      }
+         entries: computed(() => []),
+         queue: computed(() => []),
+      } as NotivueComputedEntries
    }
 
    const store = useStore()

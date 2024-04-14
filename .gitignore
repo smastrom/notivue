@@ -19,3 +19,5 @@ cypress/screenshots
 
 .nuxt
 pnpm-lock.yaml
+
+astro-dev

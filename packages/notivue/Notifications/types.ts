@@ -69,3 +69,7 @@ type ThemeVars =
    | WarningColorsVars
    | InfoColorsVars
    | PromiseColorsVars
+
+// New v2.4.0 aliases
+
+export type NotificationProps = NotificationsProps
