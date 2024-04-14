@@ -16,6 +16,17 @@ export function useStore() {
    return inject(notivueInjectionKey) as NotivueStore
 }
 
+/**
+ * Composable to start and stop the Notivue instance.
+ *
+ * @returns
+ *
+ * - `startInstance` - Starts or restarts the Notivue instance.
+ * - `stopInstance` - Stops the Notivue instance.
+ * - `isRunning` - Readonly ref to check if the Notivue instance is running.
+ *
+ * @docs https://notivuedocs.netlify.app/api/use-notivue-instance
+ */
 export function useNotivueInstance(): NotivueInstance {
    if (isSSR) {
       return {
@@ -29,6 +40,8 @@ export function useNotivueInstance(): NotivueInstance {
 }
 
 /**
+ * Composable to get and update the current Notivue config.
+ *
  * @returns
  *
  * The current [configuration](https://notivuedocs.netlify.app/customization/configuration)
@@ -70,6 +83,8 @@ export function usePush() {
 }
 
 /**
+ * Composable to get the current displayed notifications and queue.
+ *
  * @returns
  *
  * Object of two computed properties:
