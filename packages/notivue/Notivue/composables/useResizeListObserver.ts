@@ -12,7 +12,7 @@ export function useResizeListObserver(elements: HTMLElement[], onSizeChange: () 
                // The element is being added to the DOM, skip
                calls.add(e.target)
             } else {
-               // The element is being removed from the DOM and its height never changed, remove
+               // The element is being removed from the DOM and its size never changed, remove
                if (Object.values(e.contentRect.toJSON()).every((val) => val === 0)) {
                   calls.delete(e.target)
                   observer.unobserve(e.target)

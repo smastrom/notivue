@@ -41,7 +41,11 @@ export type Position =
    | 'bottom-center'
    | 'bottom-right'
 
-export type NotivueAnimations = { enter?: string; leave?: string; clearAll?: string }
+export interface NotivueAnimations {
+   enter?: string
+   leave?: string
+   clearAll?: string
+}
 
 export interface NotificationOptions {
    /** String to use as default title, an empty string doesn't render the title. */
@@ -188,13 +192,13 @@ export type QueueSlice = ReturnType<typeof createQueue>
 export type ItemsSlice = ReturnType<typeof createItems>
 export type ElementsSlice = ReturnType<typeof createElements>
 
-export type NotivueInstance = {
+export interface NotivueInstance {
    isRunning: Readonly<Ref<boolean>>
    startInstance: () => void
    stopInstance: () => void
 }
 
-export type NotivueStore = {
+export interface NotivueStore {
    config: ConfigSlice
    animations: AnimationsSlice
    timeouts: TimeoutsSlice
