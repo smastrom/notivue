@@ -1,6 +1,6 @@
 import type { VueWrapper } from '@vue/test-utils'
 
-function isInstanceStopped() {
+function testStoppedInstance() {
    cy.getNotifications().should('have.length', 0, { timeout: 0 })
    cy.get('.QueueCount').should('have.text', '0')
    cy.get('.EntriesCount').should('have.text', '0')
@@ -13,7 +13,7 @@ it('Instance is stopped correctly', () => {
    cy.get('.StopInstance').click()
    cy.clickAllStatic()
 
-   isInstanceStopped()
+   testStoppedInstance()
 })
 
 it('No new entries are added to the store if instance is stopped', () => {
@@ -29,7 +29,7 @@ it('No new entries are added to the store if instance is stopped', () => {
    }
 
    cy.get('.StopInstance').click()
-   isInstanceStopped()
+   testStoppedInstance()
 })
 
 it('Plugin can be installed without starting the instance', () => {
@@ -40,7 +40,7 @@ it('Plugin can be installed without starting the instance', () => {
    })
 
    cy.clickAllStatic()
-   isInstanceStopped()
+   testStoppedInstance()
 })
 
 it('Instance can be stopped and started again', () => {
@@ -49,7 +49,7 @@ it('Instance can be stopped and started again', () => {
    for (let i = 0; i < 10; i++) {
       cy.get('.StopInstance').click()
       cy.clickAllStatic()
-      isInstanceStopped()
+      testStoppedInstance()
 
       cy.get('.StartInstance')
          .click()
@@ -64,28 +64,30 @@ it('Instance can be stopped and started again', () => {
 it('Config is not updated if instance is stopped', () => {
    cy.mountNotivue()
 
+   const differentConfig = {
+      pauseOnHover: false,
+      pauseOnTouch: false,
+      pauseOnTabChange: false,
+      enqueue: true,
+      position: 'bottom-center',
+      teleportTo: 'html',
+      limit: 3,
+      avoidDuplicates: true,
+   }
+
    cy.get('.Config')
       .invoke('text')
       .then((initialConfig) => {
          cy.get('.StopInstance').click()
 
          cy.get<VueWrapper>('@vue').then((wrapper) => {
-            wrapper.setProps({
-               pauseOnHover: false,
-               pauseOnTouch: false,
-               pauseOnTabChange: false,
-               enqueue: true,
-               position: 'bottom-center',
-               teleportTo: 'html',
-               limit: 3,
-               avoidDuplicates: true,
-            })
-         })
+            wrapper.setProps(differentConfig)
 
-         cy.get('.Config')
-            .invoke('text')
-            .should((updatedConfig) => {
-               expect(updatedConfig).to.eq(initialConfig)
-            })
+            cy.get('.Config')
+               .invoke('text')
+               .should((updatedConfig) => {
+                  expect(updatedConfig).to.eq(initialConfig)
+               })
+         })
       })
 })
