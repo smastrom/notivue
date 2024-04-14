@@ -67,8 +67,8 @@ pnpm add notivue
 export default defineNuxtConfig({
   modules: ['notivue/nuxt'],
   css: [
-    'notivue/notification.css', // Only needed if using built-in notifications
-    'notivue/animations.css' // Only needed if using built-in animations
+    'notivue/notification.css', // Only needed if using built-in <Notification />
+    'notivue/animations.css' // Only needed if using default animations
   ],
   notivue: {
     // Options
@@ -135,7 +135,7 @@ import type { NotivueConfig, NotivueItem /*, ... */ } from 'notivue'
     </div>
   </Notivue>
 
-  <!-- RouterView, etc. -->
+  <!-- NuxtLayout, NuxtPage, etc. -->
 </template>
 ```
 
