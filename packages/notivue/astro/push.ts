@@ -1,12 +1,10 @@
 import type { PushOptions } from 'notivue'
 import type { PushAstroEvent, MaybeAstroPushPromiseReturn } from './types'
 
-let eventId = 0
-
 export function pushEvent<T extends Omit<PushAstroEvent, 'resultEventName'>>(
    detail: T
 ): MaybeAstroPushPromiseReturn<T> {
-   eventId++
+   const eventId = Date.now()
 
    // Prepare to listen for the result of the notification that will be created by NotivueAstro...
    let pushResult = {} as MaybeAstroPushPromiseReturn<T>
