@@ -61,7 +61,7 @@ export function createQueue() {
       },
       add(item: StoreItem) {
          this.entries.value.push(item)
-         triggerRef(this.entries)
+         this.triggerRef()
       },
       get(id: string) {
          return this.entries.value.find((e) => e.id === id)

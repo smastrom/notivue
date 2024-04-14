@@ -46,7 +46,7 @@ useRepositioning()
    >
       <!-- List Container -->
       <ol
-         v-if="items.length > 0"
+         v-if="items.entries.value.length > 0"
          v-bind="{ ...mouseEvents, ...touchEvents, ...elements.rootAttrs.value }"
          :data-notivue-align="config.position.value.split('-')[0]"
          :aria-label="props.listAriaLabel"
