@@ -428,7 +428,7 @@ export function createPushProxies({
                   duplicateCount: queueDupe.duplicateCount + 1,
                })
 
-               queue.triggerRef() // This is actually not needed...
+               queue.triggerRef() // This is actually not needed in this context...
             }
 
             if (queueDupe || dupe) return
@@ -439,7 +439,7 @@ export function createPushProxies({
          if (options.type === NType.PROMISE_RESOLVE || options.type === NType.PROMISE_REJECT) {
             if (queue.get(entry.id)) {
                queue.update(entry.id, { ...entry, createdAt, timeout: createTimeout })
-               queue.triggerRef() // ...but we're exposing the queue via `useNotifications` so this is needed
+               queue.triggerRef() // ...but we're exposing the queue via `useNotifications` so consumers may need this
             } else {
                items.update(entry.id, { ...entry, createdAt, timeout: createTimeout() })
                items.triggerRef()
