@@ -17,7 +17,7 @@ function onPush(e: CustomEvent<PushAstroEvent>) {
    // Create the notification as usual
    const notification = push[e.detail.type](e.detail)
 
-   // Dispatch the push result
+   // Dispatch the result
    window.dispatchEvent(
       new CustomEvent(e.detail.resultEventName, {
          detail: notification,

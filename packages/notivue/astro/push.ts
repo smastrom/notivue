@@ -8,20 +8,20 @@ export function pushEvent<T extends Omit<PushAstroEvent, 'resultEventName'>>(
 ): MaybeAstroPushPromiseReturn<T> {
    eventId++
 
-   // Listen for the result of the notification that will be created by NotivueAstro...
+   // Prepare to listen for the result of the notification that will be created by NotivueAstro...
    let pushResult = {} as MaybeAstroPushPromiseReturn<T>
    const resultEventName = `notivue:id:${eventId}`
 
    // ...upon receival, save the result and remove the listener
-   window.addEventListener(resultEventName, saveResult as EventListener, {
-      once: true,
-   })
+   window.addEventListener(
+      resultEventName,
+      ((e: CustomEvent<MaybeAstroPushPromiseReturn<T>>) => {
+         pushResult = e.detail
+      }) as EventListener,
+      { once: true }
+   )
 
-   function saveResult(e: CustomEvent<MaybeAstroPushPromiseReturn<T>>) {
-      pushResult = e.detail
-   }
-
-   // Dispatch the incoming push options to the receiver to create the notification
+   // Dispatch the incoming push options to NotivueAstro to create the notification
    window.dispatchEvent(
       new CustomEvent('notivue:push', {
          detail: {
@@ -32,6 +32,7 @@ export function pushEvent<T extends Omit<PushAstroEvent, 'resultEventName'>>(
       })
    )
 
+   // Return the result
    return pushResult
 }
 
