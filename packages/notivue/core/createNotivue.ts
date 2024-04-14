@@ -62,15 +62,15 @@ function createInstance(startOnCreation: boolean) {
 
       if (startOnCreation) setPush(push)
 
-      let unwatchStore = startOnCreation ? watchStore() : () => {}
+      let unwatchStore = startOnCreation ? watchStore() : [() => {}]
 
       const instance = {
          isRunning: isRunningReadonly,
          startInstance() {
             if (isRunning.value) return
 
-            unwatchStore = watchStore()
             setPush(push)
+            unwatchStore = watchStore()
 
             isRunning.value = true
          },
@@ -79,11 +79,11 @@ function createInstance(startOnCreation: boolean) {
 
             store.items.clear()
             store.queue.clear()
-            store.items.resetCount()
+            store.items.clearEffects()
             store.animations.resetTransitionStyles()
 
             setPush(createPushMock())
-            unwatchStore()
+            unwatchStore.forEach((unwatch) => unwatch())
 
             isRunning.value = false
          },

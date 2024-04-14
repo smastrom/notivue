@@ -84,31 +84,21 @@ export function createQueue() {
 
 export function createItems(config: ConfigSlice, queue: QueueSlice) {
    return {
-      createdCount: ref(0),
-      addCreated() {
-         this.createdCount.value++
-      },
-      clearedCount: ref(0),
-      addCleared() {
-         this.clearedCount.value++
-      },
-      destroyedCount: ref(0),
-      addDestroyed() {
-         this.destroyedCount.value++
-      },
-      resetCount() {
-         this.createdCount.value = 0
-         this.clearedCount.value = 0
-         this.destroyedCount.value = 0
-      },
       entries: shallowRef<StoreItem[]>([]),
       get length() {
          return this.entries.value.length
       },
+      effectsCount: ref(0),
+      addEffect() {
+         this.effectsCount.value++
+      },
+      clearEffects() {
+         this.effectsCount.value = 0
+      },
       add(item: StoreItem) {
          this.entries.value.unshift(item)
-         this.addCreated()
          this.triggerRef()
+         this.addEffect()
       },
       addFromQueue() {
          const next = {
@@ -226,7 +216,7 @@ export function createAnimations(
          }
 
          if (!item || !leave || isDestroy || this.isReducedMotion.value) {
-            items.addDestroyed()
+            items.addEffect()
             return onAnimationend()
          }
 
@@ -241,7 +231,7 @@ export function createAnimations(
             },
          })
 
-         items.addCleared()
+         items.addEffect()
       },
       playClearAll() {
          items.entries.value.forEach((e) => window.clearTimeout(e.timeout as number))
@@ -449,7 +439,7 @@ export function createPushProxies({
          if (options.type === NType.PROMISE_RESOLVE || options.type === NType.PROMISE_REJECT) {
             if (queue.get(entry.id)) {
                queue.update(entry.id, { ...entry, createdAt, timeout: createTimeout })
-               queue.triggerRef() // ...but we're exposing the queue `useNotifications` so this is needed
+               queue.triggerRef() // ...but we're exposing the queue via `useNotifications` so this is needed
             } else {
                items.update(entry.id, { ...entry, createdAt, timeout: createTimeout() })
                items.triggerRef()
