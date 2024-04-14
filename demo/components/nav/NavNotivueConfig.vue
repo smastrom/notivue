@@ -138,8 +138,8 @@ const btnProps = {
 .Select {
    text-align: center;
    display: flex;
-   justify-items: center;
    padding-right: 1rem;
+   cursor: pointer;
 
    -webkit-appearance: none;
    appearance: none;
