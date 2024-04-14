@@ -1,8 +1,8 @@
-const description = 'Notivue is a fully-featured toast notification system for Vue and Nuxt.'
+const description = 'Notivue is a powerful toast notification system for Vue and Nuxt.'
 
 export function getHead() {
    return {
-      title: 'Notivue - Fully-featured toast notification system for Vue and Nuxt',
+      title: 'Notivue - Powerful toast notification system for Vue and Nuxt',
       link: [
          {
             rel: 'icon',
