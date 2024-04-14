@@ -30,11 +30,9 @@ watch(isRunning, (newVal) => {
       dir="ltr"
    >
       <template v-if="isRunning">
-         Notivue is now running again. This will be dismissed shortly.</template
+         Notivue is now running again. This notice will be dismissed shortly.</template
       >
-      <template v-else>
-         Notivue instance has been stopped. Restart it to create notifications.
-      </template>
+      <template v-else> Notivue has been stopped. Restart it to create notifications. </template>
    </div>
 
    <nav dir="ltr">

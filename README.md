@@ -8,7 +8,7 @@
 
 ### Powerful toast notification system for Vue and Nuxt
 
-[Live Demo](https://notivue.smastrom.io) - [Documentation](https://notivuedocs.netlify.app)
+[Live Demo](https://notivue.smastrom.io) - [Documentation](https://docs.notivue.smastrom.io)
 
 ---
 

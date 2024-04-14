@@ -1,7 +1,9 @@
+import { unref } from 'vue'
+
 import { NotificationTypeKeys as NType } from './constants'
 import { createPushProxies } from './createStore'
 
-import type { NotificationType, Push, PushParameter } from 'notivue'
+import type { NotificationType, Push, PushOptions, PushParameter } from 'notivue'
 
 export const push = createPushMock()
 
@@ -13,9 +15,11 @@ export function createPush(proxies: ReturnType<typeof createPushProxies>): Push 
    let createCount = 0
 
    function push(options: PushParameter, type: NotificationType, id = `${createCount++}`) {
-      if (typeof options === 'string') options = { message: options }
+      if (typeof unref(options) === 'string') {
+         options = { message: options } as PushOptions
+      }
 
-      proxies.push({ ...options, id, type })
+      proxies.push({ ...(options as PushOptions), id, type })
 
       return {
          id,

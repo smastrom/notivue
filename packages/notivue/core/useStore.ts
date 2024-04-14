@@ -25,7 +25,7 @@ export function useStore() {
  * - `stopInstance` - Stops the Notivue instance.
  * - `isRunning` - Readonly ref to check if the Notivue instance is running.
  *
- * @docs https://notivuedocs.netlify.app/api/use-notivue-instance
+ * @docs https://docs.notivue.smastrom.io/api/use-notivue-instance
  */
 export function useNotivueInstance(): NotivueInstance {
    if (isSSR) {
@@ -44,11 +44,11 @@ export function useNotivueInstance(): NotivueInstance {
  *
  * @returns
  *
- * The current [configuration](https://notivuedocs.netlify.app/customization/configuration)
+ * The current [configuration](https://docs.notivue.smastrom.io/customization/configuration)
  * where each property is a [ref](https://vuejs.org/guide/essentials/reactivity-fundamentals.html#ref)
  * that allows for reactive updates and side effects watching.
  *
- * @docs https://notivuedocs.netlify.app/api/use-notivue
+ * @docs https://docs.notivue.smastrom.io/api/use-notivue
  */
 export function useNotivue(): UseNotivueReturn {
    if (isSSR) {
@@ -92,7 +92,7 @@ export function usePush() {
  * - `entries` - read-only reactive array of all the current displayed notifications
  * - `queue` - read-only reactive array of all the notifications waiting to be displayed
  *
- * @docs https://notivuedocs.netlify.app/api/use-notifications
+ * @docs https://docs.notivue.smastrom.io/api/use-notifications
  */
 export function useNotifications(): NotivueComputedEntries {
    if (isSSR) {

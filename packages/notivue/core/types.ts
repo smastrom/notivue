@@ -150,7 +150,9 @@ export type StoreItem<T extends Obj = Obj> = DeepRequired<NotificationOptions> &
 /** Portion of the store item exposed to slot */
 export type NotivueItem<T extends Obj = Obj> = Omit<StoreItem<T>, keyof HiddenInternalItemData>
 
-export type PushParameter<T extends Obj = Obj> = PushOptions<T> | NotificationOptions['message']
+export type PushParameter<T extends Obj = Obj> =
+   | PushOptions<T>
+   | Exclude<NotificationOptions['message'], undefined> // NonNullable doesn't work?
 
 export type PushStatic = <T extends Obj = Obj>(
    options: PushParameter<T>

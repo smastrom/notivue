@@ -3,7 +3,7 @@ const { state, messages } = useStore()
 
 async function asyncRefMessagePush() {
    const initialMessage = ref(state.rtl ? 'جاري تحميل الملفات...' : 'Preparing to upload files...')
-   const notification = push.promise({ message: initialMessage })
+   const notification = push.promise(initialMessage)
 
    for (let n = 1; n < 4; n++) {
       await new Promise((resolve) => setTimeout(resolve, getRandomInt(1000, 2000)))
