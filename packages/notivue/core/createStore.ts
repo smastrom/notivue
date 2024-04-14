@@ -27,7 +27,7 @@ import type {
 
 export let updateConfig: (newConfig: UpdateParam) => void = () => {}
 
-export function createConfig(userConfig: NotivueConfig, isRunning: Ref<boolean>) {
+export function createConfig(userConfig: NotivueConfig, isRunning: Readonly<Ref<boolean>>) {
    const config = createConfigRefs(DEFAULT_CONFIG, userConfig, isRunning)
 
    function update(newConfig: UpdateParam) {
@@ -437,6 +437,8 @@ export function createPushProxies({
                   createdAt,
                   duplicateCount: queueDupe.duplicateCount + 1,
                })
+
+               queue.triggerRef() // This is actually not needed...
             }
 
             if (queueDupe || dupe) return
@@ -447,6 +449,7 @@ export function createPushProxies({
          if (options.type === NType.PROMISE_RESOLVE || options.type === NType.PROMISE_REJECT) {
             if (queue.get(entry.id)) {
                queue.update(entry.id, { ...entry, createdAt, timeout: createTimeout })
+               queue.triggerRef() // ...but we're exposing the queue `useNotifications` so this is needed
             } else {
                items.update(entry.id, { ...entry, createdAt, timeout: createTimeout() })
                items.triggerRef()
