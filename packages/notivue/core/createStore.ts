@@ -247,14 +247,17 @@ export function createAnimations(
          })
       },
       updatePositions({ isImmediate = false } = {}) {
-         this.transitionStyles === null
-            ? window.requestAnimationFrame(() => {
-                 this.syncTransitionStyles()
-                 window.requestAnimationFrame(() => {
-                    this.updatePositionsImpl(isImmediate)
-                 })
-              })
-            : this.updatePositionsImpl(isImmediate)
+         if (!this.transitionStyles) {
+            // Runs the first time a notification is rendered
+            window.requestAnimationFrame(() => {
+               this.syncTransitionStyles()
+               window.requestAnimationFrame(() => {
+                  this.updatePositionsImpl(isImmediate)
+               })
+            })
+         } else {
+            this.updatePositionsImpl(isImmediate)
+         }
       },
       updatePositionsImpl(isImmediate: boolean) {
          console.log('Updating positions')
