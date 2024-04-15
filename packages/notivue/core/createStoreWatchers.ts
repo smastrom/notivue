@@ -5,7 +5,7 @@ import type { NotivueStore } from 'notivue'
 export function createStoreWatchers(store: NotivueStore) {
    return [
       watch(
-         store.items.effectsCount,
+         store.items.lifecycleEventsCount,
          () => {
             store.animations.updatePositions()
          },

@@ -88,17 +88,17 @@ export function createItems(config: ConfigSlice, queue: QueueSlice) {
       get length() {
          return this.entries.value.length
       },
-      effectsCount: ref(0),
-      addEffect() {
-         this.effectsCount.value++
+      lifecycleEventsCount: ref(0),
+      addLifecycleEvent() {
+         this.lifecycleEventsCount.value++
       },
-      clearEffects() {
-         this.effectsCount.value = 0
+      clearLifecycleEvents() {
+         this.lifecycleEventsCount.value = 0
       },
       add(item: StoreItem) {
          this.entries.value.unshift(item)
          this.triggerRef()
-         this.addEffect()
+         this.addLifecycleEvent()
       },
       addFromQueue() {
          const next = {
@@ -216,7 +216,7 @@ export function createAnimations(
          }
 
          if (!item || !leave || isDestroy || this.isReducedMotion.value) {
-            items.addEffect()
+            items.addLifecycleEvent()
             return onAnimationend()
          }
 
