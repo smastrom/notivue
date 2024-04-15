@@ -2,9 +2,11 @@ name: Tests
 
 on:
    pull_request:
+      branches:
+         - main
    push:
       branches:
-         - '*'
+         - main
       tags-ignore:
          - '*'
    workflow_call:
