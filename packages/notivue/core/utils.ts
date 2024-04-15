@@ -14,8 +14,6 @@ import type {
 
 export const isSSR = typeof window === 'undefined'
 
-export const isMouse = (e: PointerEvent) => e.pointerType === 'mouse'
-
 export function mergeDeep<T extends Obj>(target: T, source: Record<string, any>): T {
    const merged: T = { ...target }
 
@@ -96,6 +94,7 @@ export const internalKeys: (keyof InternalKeys)[] = [
    'timeout',
    'resumedAt',
    'remaining',
+   // Maybe in future releases these could be exposed
    'animationAttrs',
    'positionStyles',
 ]

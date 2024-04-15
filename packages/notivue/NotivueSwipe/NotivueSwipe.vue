@@ -12,7 +12,7 @@ import {
 } from 'vue'
 
 import { useStore } from '@/core/useStore'
-import { isMouse } from '@/core/utils'
+import { isMouse } from '@/Notivue/utils'
 import { NotificationTypeKeys as NType } from '@/core/constants'
 import { DEFAULT_PROPS, DEBOUNCE, RETURN_DUR } from './constants'
 

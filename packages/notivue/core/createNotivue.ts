@@ -80,7 +80,6 @@ function createInstance(startOnCreation: boolean) {
             store.items.clear()
             store.queue.clear()
             store.items.clearLifecycleEvents()
-            store.animations.resetTransitionStyles()
 
             setPush(createPushMock())
             unwatchStore.forEach((unwatch) => unwatch())

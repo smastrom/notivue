@@ -1,6 +1,6 @@
 import { computed } from 'vue'
 
-import { isMouse } from '@/core/utils'
+import { isMouse } from '@/Notivue/utils'
 import { useStore } from '@/core/useStore'
 
 export function useMouseEvents() {

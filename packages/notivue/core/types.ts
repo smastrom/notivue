@@ -77,6 +77,17 @@ export interface NotivueConfig {
    notifications?: Partial<NotificationTypesOptions>
    /** Animation classes for `enter`, `leave` and `clearAll`. */
    animations?: NotivueAnimations
+   /** Transition property applied when repositioning notifications. Must match the following pattern:
+    *
+    * `transform <duration> <timing-function>`
+    *
+    * @example
+    *
+    * ```ts
+    * transition: 'transform 0.35s cubic-bezier(0.5, 1, 0.25, 1)'
+    * ```
+    */
+   transition?: string
    /** Tag or element to which the stream will be teleported. */
    teleportTo?: string | HTMLElement | false
    /** Notifications limit. Defaults to `Infinity`. */

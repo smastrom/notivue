@@ -1,7 +1,7 @@
 import { computed, onBeforeUnmount } from 'vue'
 
 import { useStore } from '@/core/useStore'
-import { isMouse } from '@/core/utils'
+import { isMouse } from '@/Notivue/utils'
 
 /**
  * The logic follows this pattern:
