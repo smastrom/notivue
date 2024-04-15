@@ -30,14 +30,5 @@ export function createStoreWatchers(store: NotivueStore) {
          },
          { flush: 'post' }
       ),
-
-      watch(
-         () => store.config.animations.value.enter,
-         (newEnter, prevEnter) => {
-            if (newEnter !== prevEnter) {
-               store.animations.resetTransitionStyles()
-            }
-         }
-      ),
    ]
 }

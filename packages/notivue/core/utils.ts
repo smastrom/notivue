@@ -94,6 +94,7 @@ export const internalKeys: (keyof InternalKeys)[] = [
    'timeout',
    'resumedAt',
    'remaining',
+   // Maybe in future releases these could be exposed
    'animationAttrs',
    'positionStyles',
 ]

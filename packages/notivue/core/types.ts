@@ -77,6 +77,8 @@ export interface NotivueConfig {
    notifications?: Partial<NotificationTypesOptions>
    /** Animation classes for `enter`, `leave` and `clearAll`. */
    animations?: NotivueAnimations
+   /** Transition styles in the form of `<duration> <timing-function>`. */
+   transitionStyles?: string
    /** Tag or element to which the stream will be teleported. */
    teleportTo?: string | HTMLElement | false
    /** Notifications limit. Defaults to `Infinity`. */

@@ -167,36 +167,10 @@ export function createAnimations(
    queue: QueueSlice,
    elements: ElementsSlice
 ) {
-   let tStyles = ['0.35s', 'cubic-bezier(0.5, 1, 0.25, 1)']
-
    return {
       isReducedMotion: ref(false),
-      transitionStyles: null as null | Pick<CSSProperties, 'transitionDuration' | 'transitionTimingFunction'>, // prettier-ignore
       setReducedMotion(newVal: boolean) {
          this.isReducedMotion.value = newVal
-      },
-      resetTransitionStyles() {
-         this.transitionStyles = null
-      },
-      syncTransitionStyles() {
-         const { enter } = config.animations.value
-
-         if (!enter) {
-            tStyles = ['0s', 'ease']
-         } else {
-            const animEl = elements.root.value?.querySelector(`.${enter}`)
-            if (animEl) {
-               console.log('Syncing transition styles')
-
-               const style = window.getComputedStyle(animEl)
-               tStyles = [style.animationDuration, style.animationTimingFunction]
-            }
-         }
-
-         this.transitionStyles = {
-            transitionDuration: tStyles[0],
-            transitionTimingFunction: tStyles[1],
-         }
       },
       playLeave(id: string, { isDestroy = false, isUserTriggered = false } = {}) {
          const { leave = '' } = config.animations.value
@@ -247,19 +221,6 @@ export function createAnimations(
          })
       },
       updatePositions({ isImmediate = false } = {}) {
-         if (!this.transitionStyles) {
-            // Runs the first time a notification is rendered
-            window.requestAnimationFrame(() => {
-               this.syncTransitionStyles()
-               window.requestAnimationFrame(() => {
-                  this.updatePositionsImpl(isImmediate)
-               })
-            })
-         } else {
-            this.updatePositionsImpl(isImmediate)
-         }
-      },
-      updatePositionsImpl(isImmediate: boolean) {
          console.log('Updating positions')
 
          const isReduced = this.isReducedMotion.value || isImmediate
@@ -276,9 +237,8 @@ export function createAnimations(
 
             items.update(id, {
                positionStyles: {
-                  willChange: 'transform',
                   transform: `translate3d(0, ${accPrevHeights}px, 0)`,
-                  ...(isReduced ? { transition: 'none' } : this.transitionStyles),
+                  transition: `transform ${isReduced ? '0s ease' : config.transitionStyles.value}`,
                },
             })
 
