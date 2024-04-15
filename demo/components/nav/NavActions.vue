@@ -1,24 +1,12 @@
 <script setup lang="ts">
-const { entries } = useNotifications()
-
 const { isRunning, startInstance, stopInstance } = useNotivueInstance()
 </script>
 
 <template>
-   <SharedButton
-      @click="push.clearAll()"
-      text="Dismiss All"
-      :isDisabled="entries.length === 0"
-      :key="entries.length"
-   >
+   <SharedButton @click="push.clearAll" text="Dismiss All">
       <IconsDismissIcon />
    </SharedButton>
-   <SharedButton
-      @click="push.destroyAll()"
-      text="Destroy All"
-      :isDisabled="entries.length === 0"
-      :key="entries.length"
-   >
+   <SharedButton @click="push.destroyAll" text="Destroy All">
       <IconsDestroyIcon />
    </SharedButton>
 
