@@ -62,7 +62,7 @@ export const DEFAULT_CONFIG: NotivueConfigRequired = {
    notifications: DEFAULT_NOTIFICATION_OPTIONS,
    limit: Infinity,
    avoidDuplicates: false,
-   transitionStyles: '0.35s cubic-bezier(0.5, 1, 0.25, 1)',
+   transition: 'transform 0.35s cubic-bezier(0.5, 1, 0.25, 1)',
    animations: {
       enter: CLASS_PREFIX + 'enter',
       leave: CLASS_PREFIX + 'leave',

@@ -238,7 +238,7 @@ export function createAnimations(
             items.update(id, {
                positionStyles: {
                   transform: `translate3d(0, ${accPrevHeights}px, 0)`,
-                  transition: `transform ${isReduced ? '0s ease' : config.transitionStyles.value}`,
+                  transition: isReduced ? 'none' : config.transition.value,
                },
             })
 
