@@ -1,4 +1,4 @@
-import { ref, shallowRef, triggerRef, unref, isRef, type Ref } from 'vue'
+import { ref, shallowRef, triggerRef, unref, isRef, type Ref, type CSSProperties } from 'vue'
 
 import {
    createConfigRefs,
@@ -167,39 +167,35 @@ export function createAnimations(
    queue: QueueSlice,
    elements: ElementsSlice
 ) {
-   type TransitionStyles = { transitionDuration: string; transitionTimingFunction: string }
+   let tStyles = ['0.35s', 'cubic-bezier(0.5, 1, 0.25, 1)']
 
    return {
       isReducedMotion: ref(false),
-      transitionStyles: null as null | TransitionStyles,
+      transitionStyles: null as null | Pick<CSSProperties, 'transitionDuration' | 'transitionTimingFunction'>, // prettier-ignore
       setReducedMotion(newVal: boolean) {
          this.isReducedMotion.value = newVal
-      },
-      getTransitionStyles() {
-         if (!this.transitionStyles) this.syncTransitionStyles()
-         return this.transitionStyles
       },
       resetTransitionStyles() {
          this.transitionStyles = null
       },
       syncTransitionStyles() {
-         const mountedRoot = elements.root.value
-         if (!mountedRoot) return // If the root is not yet queryable, try to sync the next push
+         const { enter } = config.animations.value
 
-         const enterClass = config.animations.value.enter
-         const animEl = enterClass ? mountedRoot.querySelector(`.${enterClass}`) : null
-
-         console.log('Syncing transition styles')
-
-         if (!animEl) {
-            this.transitionStyles = { transitionDuration: '0s', transitionTimingFunction: 'ease' }
+         if (!enter) {
+            tStyles = ['0s', 'ease']
          } else {
-            const styles = window.getComputedStyle(animEl)
+            const animEl = elements.root.value?.querySelector(`.${enter}`)
+            if (animEl) {
+               console.log('Syncing transition styles')
 
-            this.transitionStyles = {
-               transitionDuration: styles.animationDuration,
-               transitionTimingFunction: styles.animationTimingFunction,
+               const style = window.getComputedStyle(animEl)
+               tStyles = [style.animationDuration, style.animationTimingFunction]
             }
+         }
+
+         this.transitionStyles = {
+            transitionDuration: tStyles[0],
+            transitionTimingFunction: tStyles[1],
          }
       },
       playLeave(id: string, { isDestroy = false, isUserTriggered = false } = {}) {
@@ -231,7 +227,7 @@ export function createAnimations(
             },
          })
 
-         items.addEffect()
+         items.addLifecycleEvent()
       },
       playClearAll() {
          items.entries.value.forEach((e) => window.clearTimeout(e.timeout as number))
@@ -251,9 +247,16 @@ export function createAnimations(
          })
       },
       updatePositions({ isImmediate = false } = {}) {
-         const transitionStyles = this.getTransitionStyles()
-         if (!transitionStyles) return
-
+         this.transitionStyles === null
+            ? window.requestAnimationFrame(() => {
+                 this.syncTransitionStyles()
+                 window.requestAnimationFrame(() => {
+                    this.updatePositionsImpl(isImmediate)
+                 })
+              })
+            : this.updatePositionsImpl(isImmediate)
+      },
+      updatePositionsImpl(isImmediate: boolean) {
          console.log('Updating positions')
 
          const isReduced = this.isReducedMotion.value || isImmediate
@@ -272,7 +275,7 @@ export function createAnimations(
                positionStyles: {
                   willChange: 'transform',
                   transform: `translate3d(0, ${accPrevHeights}px, 0)`,
-                  ...(isReduced ? { transition: 'none' } : transitionStyles),
+                  ...(isReduced ? { transition: 'none' } : this.transitionStyles),
                },
             })
 
