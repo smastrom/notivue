@@ -29,7 +29,6 @@ watch(
          <Transition :name="Cx.TRANSITION" v-if="typeof Icon === 'object'" mode="out-in">
             <Component
                v-if="typeof Icon === 'object'"
-               :key="item.duplicateCount"
                :is="Icon"
                :class="Cx.ICON"
                aria-hidden="true"
