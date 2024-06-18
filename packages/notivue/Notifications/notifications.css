@@ -138,7 +138,6 @@
 
 .Notivue__close {
    position: relative;
-   margin: 0;
    cursor: pointer;
    padding: calc(var(--nv-spacing) / 2);
    margin: var(--nv-spacing) var(--nv-spacing) var(--nv-spacing) 0;
