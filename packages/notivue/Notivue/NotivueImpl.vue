@@ -9,7 +9,7 @@ import { getSlotItem } from '@/core/utils'
 import { useMouseEvents } from './composables/useMouseEvents'
 import { useTouchEvents } from './composables/useTouchEvents'
 import { useNotivueStyles } from './composables/useNotivueStyles'
-import { useRepositioning } from './composables/useRepositioning'
+import { useSizes } from './composables/useSizes'
 import { useWindowFocus } from './composables/useWindowFocus'
 import { useReducedMotion } from './composables/useReducedMotion'
 
@@ -36,7 +36,7 @@ const touchEvents = useTouchEvents()
 
 useReducedMotion()
 useWindowFocus()
-useRepositioning()
+useSizes()
 </script>
 
 <template>
