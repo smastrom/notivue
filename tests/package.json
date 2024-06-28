@@ -10,17 +10,17 @@
       "notivue": "workspace:*"
    },
    "devDependencies": {
-      "@types/node": "^20.12.7",
-      "@vitejs/plugin-vue": "^5.0.4",
-      "@vue/test-utils": "^2.4.5",
-      "axe-core": "^4.9.0",
-      "cypress": "^13.7.3",
+      "@types/node": "^20.14.9",
+      "@vitejs/plugin-vue": "^5.0.5",
+      "@vue/test-utils": "^2.4.6",
+      "axe-core": "^4.9.1",
+      "cypress": "^13.12.0",
       "cypress-axe": "^1.5.0",
-      "cypress-real-events": "^1.12.0",
-      "typescript": "^5.4.5",
-      "vite": "^5.2.8",
-      "vitest": "^1.5.0",
-      "vue": "^3.4.21",
-      "vue-tsc": "^2.0.13"
+      "cypress-real-events": "^1.13.0",
+      "typescript": "^5.5.2",
+      "vite": "^5.3.2",
+      "vitest": "^1.6.0",
+      "vue": "^3.4.31",
+      "vue-tsc": "^2.0.22"
    }
 }
