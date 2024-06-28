@@ -23,9 +23,24 @@ import type {
    TimeoutsSlice,
    AnimationsSlice,
    UpdateParam,
+   NotivueStore,
 } from 'notivue'
 
 export let updateConfig: (newConfig: UpdateParam) => void = () => {}
+
+export function createStore(
+   userConfig: NotivueConfig,
+   isRunning: Readonly<Ref<boolean>>
+): NotivueStore {
+   const config = createConfig(userConfig, isRunning)
+   const queue = createQueue()
+   const items = createItems(config, queue)
+   const elements = createElements()
+   const animations = createAnimations(config, items, queue, elements)
+   const timeouts = createTimeouts(items, animations)
+
+   return { config, queue, items, elements, animations, timeouts }
+}
 
 export function createConfig(userConfig: NotivueConfig, isRunning: Readonly<Ref<boolean>>) {
    const config = createConfigRefs(DEFAULT_CONFIG, userConfig, isRunning)
@@ -158,6 +173,14 @@ export function createElements() {
          return this.items.value.sort((a, b) => +b.dataset.notivueItem! - +a.dataset.notivueItem!)
       },
       containers: ref<HTMLElement[]>([]),
+   } as {
+      // Suppress TS7056
+      root: Ref<HTMLElement | null>
+      rootAttrs: Ref<Partial<AnimationAttrs>>
+      items: Ref<HTMLElement[]>
+      containers: Ref<HTMLElement[]>
+      setRootAttrs(newAttrs: Partial<AnimationAttrs>): void
+      getSortedItems(): HTMLElement[]
    }
 }
 
@@ -429,9 +452,11 @@ export function createPushProxies({
                animationAttrs: {
                   class: animations.isReducedMotion.value ? '' : config.animations.value.enter,
                   onAnimationend() {
-                     items.update(entry.id, {
-                        animationAttrs: { class: '', onAnimationend: undefined },
-                     })
+                     if (item.animationAttrs.class === config.animations.value.enter) {
+                        items.update(entry.id, {
+                           animationAttrs: { class: '', onAnimationend: () => {} },
+                        })
+                     }
                   },
                },
                timeout: shouldEnqueue ? createTimeout : createTimeout(),

@@ -5,6 +5,7 @@
    "tabWidth": 3,
    "trailingComma": "es5",
    "useTabs": false,
+   "plugins": ["prettier-plugin-astro"],
    "overrides": [
       {
          "files": "README.md",
@@ -12,6 +13,11 @@
             "tabWidth": 2,
             "trailingComma": "none",
             "printWidth": 90
+         }
+      },      {
+         "files": "*.astro",
+         "options": {
+            "parser": "astro"
          }
       }
    ]

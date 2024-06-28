@@ -13,7 +13,7 @@ watch(isRunning, (newVal) => {
    shouldDisplayNotice.value = true
 
    if (newVal) {
-      window.setTimeout(() => {
+      timeout = window.setTimeout(() => {
          shouldDisplayNotice.value = false
       }, 3000)
    }

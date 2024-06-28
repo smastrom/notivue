@@ -2,7 +2,7 @@ import { useWindowSize } from './useWindowSize'
 import { useResizeListObserver } from './useResizeListObserver'
 import { useStore } from '@/core/useStore'
 
-export function useRepositioning() {
+export function useSizes() {
    const { elements, animations } = useStore()
 
    useWindowSize(() => animations.updatePositions({ isImmediate: true }))

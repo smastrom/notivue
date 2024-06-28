@@ -11,13 +11,5 @@ dist
 
 notivue-*.tgz
 
-cypress/downloads
-cypress/screenshots
-
-*.sublime-workspace
-*.sublime-project
-
 .nuxt
 pnpm-lock.yaml
-
-astro-dev

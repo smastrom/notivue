@@ -1,7 +1,7 @@
 import { inject, computed, toRefs, reactive, readonly, ref } from 'vue'
 
 import { isSSR, getSlotItem } from './utils'
-import { notivueInjectionKey, notivueInstanceInjectionKey } from './createNotivue'
+import { notivueInjectionKey, notivueInstanceInjectionKey } from './symbols'
 import { push } from './createPush'
 import { DEFAULT_CONFIG } from './constants'
 
