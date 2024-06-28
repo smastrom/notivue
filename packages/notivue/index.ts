@@ -3,6 +3,7 @@ export { push as pushAstro } from './astro/push'
 
 export { updateConfig } from '@/core/createStore'
 export { createNotivue } from '@/core/createNotivue'
+export { createNotivue as createNotivueAstro } from './astro/createNotivue'
 
 export { startInstance, stopInstance } from '@/core/createInstance'
 
