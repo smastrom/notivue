@@ -34,7 +34,7 @@ export const exports = {
       'NotificationProgress',
       'NotificationsProgress', // Alias
    ],
-   astro: ['NotivueAstro', 'pushAstro'],
+   astro: ['NotivueAstro', 'pushAstro', 'createNotivueAstro'],
 }
 
 const getExports = (type, omit) => exports[type].filter((name) => !omit.includes(name))

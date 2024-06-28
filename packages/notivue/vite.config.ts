@@ -57,7 +57,7 @@ export default defineConfig({
          name: 'write-astro-entry',
          closeBundle() {
             const astroReExports = [
-               ...getFunctions({ omit: ['push'] }),
+               ...getFunctions({ omit: ['push', 'createNotivue'] }),
                ...getComponents({ omit: ['Notivue'] }),
                ...getObjects(),
             ]
@@ -67,6 +67,7 @@ export default defineConfig({
                [
                   'export { pushAstro as push } from "./index.js";',
                   'export { NotivueAstro as Notivue } from "./index.js";',
+                  'export { createNotivueAstro as createNotivue } from "./index.js";',
                   ...astroReExports.map((name) => `export { ${name} } from "./index.js";`),
                ].join('\n')
             )

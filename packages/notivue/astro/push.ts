@@ -1,4 +1,4 @@
-import type { PushOptions } from 'notivue'
+import type { Push, PushOptions } from 'notivue'
 import type { PushAstroEvent, MaybeAstroPushPromiseReturn } from './types'
 
 export function pushEvent<T extends Omit<PushAstroEvent, 'resultEventName'>>(
@@ -47,4 +47,4 @@ export const push = {
    destroyAll() {
       window.dispatchEvent(new CustomEvent('notivue:destroy-all'))
    },
-}
+} as Push
