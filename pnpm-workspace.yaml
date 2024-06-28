@@ -2,3 +2,4 @@ packages:
    - 'packages/*'
    - 'tests'
    - 'demo'
+   - 'astro-playground'
