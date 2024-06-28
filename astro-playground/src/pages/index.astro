@@ -1,0 +1,13 @@
+---
+import Layout from '../layouts/Layout.astro'
+
+import VueComponent from '../components/VueComponent.vue'
+import { ReactComponent } from '../components/ReactComponent'
+---
+
+<Layout>
+   <VueComponent client:load />
+   <ReactComponent client:load />
+   <a href="/about">About</a>
+</Layout>
+

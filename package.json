@@ -7,6 +7,7 @@
    },
    "scripts": {
       "dev": "pnpm build && concurrently \"pnpm -C packages/notivue run watch\" \"pnpm -C demo install && pnpm -C demo run dev --host\"",
+      "dev:astro": "pnpm build && concurrently \"pnpm -C packages/notivue run watch\" \"pnpm -C astro-playground install && pnpm -C astro-playground run dev --host\"",
       "build": "pnpm -C packages/notivue run build",
       "build:demo": "pnpm build && pnpm install && pnpm -C demo run build",
       "test": "pnpm build && pnpm install && pnpm -C tests run test",

@@ -1,0 +1,28 @@
+---
+import { ViewTransitions } from 'astro:transitions'
+
+import Notivue from '@/components/Notivue.vue'
+
+import 'notivue/astro/notification.css'
+import 'notivue/astro/animations.css'
+
+import '@/styles/reset.css'
+---
+
+<html lang="en">
+   <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="icon" href="/favicon.svg" />
+
+      <ViewTransitions />
+   </head>
+
+   <body>
+      <slot />
+
+      <div id="notivue_teleport" transition:persist transition:persist-props>
+         <Notivue client:only="vue" />
+      </div>
+   </body>
+</html>
