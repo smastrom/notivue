@@ -13,14 +13,14 @@
       "test": "pnpm build && pnpm install && pnpm -C tests run test",
       "test:gui": "pnpm build && concurrently \"pnpm -C packages/notivue run watch\" \"pnpm -C tests install && pnpm -C tests run test:gui\"",
       "test:unit": "pnpm -C tests run test:unit",
-      "prepare": "husky install"
+      "prepare": "husky"
    },
    "devDependencies": {
       "concurrently": "^8.2.2",
-      "husky": "^9.0.11",
-      "lint-staged": "^15.2.7",
-      "prettier": "^3.3.2",
-      "prettier-plugin-astro": "^0.14.0"
+      "husky": "^9.1.5",
+      "lint-staged": "^15.2.9",
+      "prettier": "^3.3.3",
+      "prettier-plugin-astro": "^0.14.1"
    },
    "lint-staged": {
       "*.{js,ts,vue,json,css,md}": "prettier --write"

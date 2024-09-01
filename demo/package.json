@@ -10,13 +10,13 @@
    },
    "devDependencies": {
       "@types/luxon": "^3.4.2",
-      "@types/node": "^20.14.9",
-      "lightningcss": "^1.25.1",
-      "nuxt": "^3.12.2",
-      "vue": "^3.4.31"
+      "@types/node": "^22.5.1",
+      "lightningcss": "^1.26.0",
+      "nuxt": "^3.13.0",
+      "vue": "^3.4.38"
    },
    "dependencies": {
-      "luxon": "^3.4.4",
+      "luxon": "^3.5.0",
       "notivue": "workspace:*"
    }
 }
