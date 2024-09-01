@@ -1,4 +1,4 @@
-import { ref, shallowRef, triggerRef, unref, isRef, type Ref, type CSSProperties } from 'vue'
+import { ref, shallowRef, triggerRef, unref, isRef, type Ref } from 'vue'
 
 import {
    createConfigRefs,

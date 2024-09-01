@@ -2,11 +2,14 @@
 import Layout from '@/layouts/Layout.astro'
 
 import VueComponent from '@/components/VueComponent.vue'
+import AstroComponent from '@/components/AstroComponent.astro'
 import { ReactComponent } from '@/components/ReactComponent'
 ---
 
 <Layout>
+   <a href="/">Home</a>
+
    <VueComponent client:load />
    <ReactComponent client:load />
-   <a href="/">Home</a>
+   <AstroComponent client:load />
 </Layout>

@@ -10,5 +10,4 @@ export default (app: App) => {
    if (import.meta.env.SSR) return
 
    app.use(notivue as unknown as Plugin)
-   console.log('Injected!', app)
 }
