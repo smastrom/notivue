@@ -6,19 +6,21 @@
       "node": ">=20.0.0"
    },
    "scripts": {
-      "dev": "pnpm build && concurrently \"pnpm -C packages/notivue run watch\" \"pnpm -C demo install && pnpm -C demo run dev --host\"",
+      "dev": "pnpm build && concurrently \"pnpm -C packages/notivue run watch\" \"pnpm -C playground install && pnpm -C playground run dev --host\"",
+      "dev:astro": "pnpm build && concurrently \"pnpm -C packages/notivue run watch\" \"pnpm -C astro-playground install && pnpm -C astro-playground run dev --host\"",
       "build": "pnpm -C packages/notivue run build",
-      "build:demo": "pnpm build && pnpm install && pnpm -C demo run build",
+      "build:playground": "pnpm build && pnpm install && pnpm -C playground run build",
       "test": "pnpm build && pnpm install && pnpm -C tests run test",
       "test:gui": "pnpm build && concurrently \"pnpm -C packages/notivue run watch\" \"pnpm -C tests install && pnpm -C tests run test:gui\"",
       "test:unit": "pnpm -C tests run test:unit",
-      "prepare": "husky install"
+      "prepare": "husky"
    },
    "devDependencies": {
       "concurrently": "^8.2.2",
-      "husky": "^8.0.3",
-      "lint-staged": "^15.2.2",
-      "prettier": "^3.2.5"
+      "husky": "^9.1.5",
+      "lint-staged": "^15.2.9",
+      "prettier": "^3.3.3",
+      "prettier-plugin-astro": "^0.14.1"
    },
    "lint-staged": {
       "*.{js,ts,vue,json,css,md}": "prettier --write"

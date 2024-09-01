@@ -1,5 +1,5 @@
 {
-   "name": "notivue-demo",
+   "name": "notivue-playground",
    "private": true,
    "scripts": {
       "build": "nuxt build",
@@ -10,13 +10,13 @@
    },
    "devDependencies": {
       "@types/luxon": "^3.4.2",
-      "@types/node": "^20.12.5",
-      "lightningcss": "^1.24.1",
-      "nuxt": "^3.11.2",
-      "vue": "^3.4.21"
+      "@types/node": "^22.5.1",
+      "lightningcss": "^1.26.0",
+      "nuxt": "^3.13.0",
+      "vue": "^3.4.38"
    },
    "dependencies": {
-      "luxon": "^3.4.4",
+      "luxon": "^3.5.0",
       "notivue": "workspace:*"
    }
 }

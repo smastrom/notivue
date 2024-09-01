@@ -1,0 +1,59 @@
+<div>
+   <h3>From a Script Tag</h3>
+
+   <button data-static>Push</button>
+   <button data-promise>Push Promise</button>
+   <button data-clear-all>Clear All</button>
+   <button data-destroy-all>Destroy All</button>
+</div>
+
+<script>
+   import { push } from 'notivue/astro'
+
+   function pushStatic() {
+      push.success({
+         title: 'Vue Notification',
+         message: 'Notification from a Script Tag!',
+      })
+   }
+
+   function pushPromise() {
+      const promise = push.promise({
+         title: 'Loading Notification...',
+         message: 'Loading notification from a Script Tag...',
+      })
+
+      setTimeout(() => {
+         promise.resolve({
+            title: 'Notification',
+            message: 'Loaded notification from a Script Tag!',
+         })
+      }, 2000)
+   }
+
+   const events = [
+      ['data-static', pushStatic],
+      ['data-promise', pushPromise],
+      ['data-clear-all', push.clearAll],
+      ['data-destroy-all', push.destroyAll],
+   ] as const
+
+   function addListeners() {
+      events.forEach(([e, fn]) => {
+         document.querySelector(`[${e}]`)?.addEventListener('click', fn)
+      })
+   }
+
+   function removeListeners() {
+      events.forEach(([e, fn]) => {
+         document.querySelector(`[${e}]`)?.removeEventListener('click', fn)
+      })
+   }
+
+   addListeners()
+
+   // Only needed if using View Transitions
+
+   document.addEventListener('astro:before-swap', removeListeners)
+   document.addEventListener('astro:after-swap', addListeners)
+</script>

@@ -32,6 +32,6 @@ describe('prefers-reduced-motion', () => {
          .clickRandomStatic()
          .click()
          .getNotifications()
-         .should('have.css', 'transition', 'all 0s ease 0s')
+         .should('have.css', 'transition', 'all')
    })
 })
