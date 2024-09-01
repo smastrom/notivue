@@ -1,5 +1,5 @@
 {
-   "name": "notivue-demo",
+   "name": "notivue-playground",
    "private": true,
    "scripts": {
       "build": "nuxt build",
