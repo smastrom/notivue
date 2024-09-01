@@ -1,12 +1,10 @@
 import { push } from 'notivue/astro'
 
 function pushStatic() {
-   const notification = push.info({
+   push.info({
       title: 'React Notification',
       message: 'Notification from React!',
    })
-
-   // console.log('React - Push Result', notification)
 }
 
 function pushPromise() {
@@ -27,6 +25,7 @@ export function ReactComponent() {
    return (
       <div>
          <h3>From React</h3>
+
          <button onClick={pushStatic}>Push</button>
          <button onClick={pushPromise}>Push Promise</button>
          <button onClick={push.clearAll}>Clear All</button>

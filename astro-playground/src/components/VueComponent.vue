@@ -2,12 +2,10 @@
 import { push } from 'notivue/astro'
 
 function pushStatic() {
-   const notification = push.success({
+   push.success({
       title: 'Vue Notification',
       message: 'Notification from Vue!',
    })
-
-   // console.log('Vue - Push Result', notification)
 }
 
 function pushPromise() {
@@ -31,7 +29,6 @@ function pushPromise() {
 
       <button @click="pushStatic">Push</button>
       <button @click="pushPromise">Push Promise</button>
-
       <button @click="push.clearAll">Clear All</button>
       <button @click="push.destroyAll">Destroy All</button>
    </div>
