@@ -1,5 +1,4 @@
 @font-face {
-   font-display: swap;
    font-family: 'Inter';
    font-style: normal;
    font-weight: 400;
@@ -7,26 +6,26 @@
 }
 
 @font-face {
-   font-display: swap;
    font-family: 'Inter';
    font-style: normal;
    font-weight: 700;
    src: url('inter-v13-latin-700.woff2') format('woff2');
 }
+
 @font-face {
-   font-display: swap;
    font-family: 'PT Sans Narrow';
    font-style: normal;
    font-weight: 400;
    src: url('pt-sans-narrow-v17-latin-regular.woff2') format('woff2');
+   font-display: block;
 }
 
 @font-face {
-   font-display: swap;
    font-family: 'PT Sans Narrow';
    font-style: normal;
    font-weight: 700;
    src: url('pt-sans-narrow-v17-latin-700.woff2') format('woff2');
+   font-display: block;
 }
 
 :root {

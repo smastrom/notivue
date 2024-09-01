@@ -13,6 +13,16 @@ import SimpleNotification, {
    type SimpleNotificationProps,
 } from '@/components/custom-notifications/SimpleNotification.vue'
 
+useServerHead({
+   link: ['regular', '700'].map((w) => ({
+      rel: 'preload',
+      href: `pt-sans-narrow-v17-latin-${w}.woff2`,
+      as: 'font',
+      type: 'font/woff2',
+      crossorigin: '',
+   })),
+})
+
 const { state } = useStore()
 const config = useNotivue()
 
