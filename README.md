@@ -1,12 +1,6 @@
-<div align="center">
-
-<img src="https://cdn.smastrom.io/notivue-readme.svg" width="800" height="auto" alt="notivue" />
-
-<br />
-
 # Notivue
 
-### Powerful toast notification system for Vue, Nuxt and Astro
+### Powerful toast notification system for Vue
 
 [Live Demo](https://notivue.smastrom.io) - [Documentation](https://docs.notivue.smastrom.io)
 
@@ -15,12 +9,6 @@
 **Examples:** [Custom Components](https://stackblitz.com/edit/vitejs-vite-9jkh73?file=src%2Fcomponents%2FPage.vue) -
 [Nuxt](https://stackblitz.com/edit/nuxt-starter-fnhcmx?file=pages%2Findex.vue) -
 [Astro](https://stackblitz.com/edit/withastro-astro-qyesvk?file=src%2Fcomponents%2FVueComponent.vue)
-
-<br />
-
-</div>
-
-<br />
 
 ## Features
 
@@ -34,7 +22,7 @@ _Themes, icons, progress bar, and native RTL support_
 _Use your own components while Notivue handles the rest_
 
 **💊 Drop-in components to enhance notifications**  
-_NotificationSwipe_ (alias `NotivueSwipe`), _NotivueKeyboard_, all optional and customizable\_
+_NotificationSwipe_ (alias `NotivueSwipe`), _NotivueKeyboard_, all optional and customizable
 
 **🌀 Dynamic Notifications**  
 _Update pending notifications with a breeze_
@@ -48,8 +36,6 @@ _Built-in announcements, reduced-motion and keyboard support_
 **💫 Nuxt and Astro modules**  
 _Built-in Nuxt and Astro ad-hoc modules_
 
-<br />
-
 ## Installation
 
 ```shell
@@ -62,9 +48,7 @@ pnpm add notivue
 
 > :bulb: Beyond this quick start — Nuxt/Astro setup, **`notify`** / callbacks, stream config, built-in styling, headless mode, full API — lives in the [documentation](https://docs.notivue.smastrom.io). The legacy **`push`** name remains exported as an alias.
 
-<br />
-
-## Vite
+## Quick start (Vite)
 
 > :bulb: See [↓ below](#nuxt) for **Nuxt** and [↓ Astro](#astro).
 
@@ -79,7 +63,14 @@ import App from './App.vue'
 import 'notivue/notification.css' // Only needed if using built-in <Notification />
 import 'notivue/animations.css' // Only needed if using default animations
 
-const notivue = createNotivue(/* Options */)
+const notivue = createNotivue({
+   position: 'bottom-right',
+   pauseOnHover: true,
+   pauseOnTabChange: true,
+   limit: 4,
+   enqueue: true,
+   // ... other options
+})
 const app = createApp(App)
 
 app.use(notivue)
@@ -94,7 +85,12 @@ import { Notivue, Notification, notify } from 'notivue'
 </script>
 
 <template>
-   <button @click="notify.success('Hi! I am your first notification!')">Notify</button>
+   <button
+      type="button"
+      @click="notify.success('Changes saved. They will sync when you are back online.')"
+   >
+      Save changes
+   </button>
 
    <Notivue v-slot="item">
       <Notification :item="item" />
@@ -104,50 +100,105 @@ import { Notivue, Notification, notify } from 'notivue'
 </template>
 ```
 
-**App.vue (headless — your own markup)**  
-_No `notification.css` needed; wire `aria-live` / `role` and `item.clear` yourself._
+### Swipe to dismiss
+
+Wrap the notification in **`NotificationSwipe`** so toasts can be cleared with a horizontal swipe. Use the same wrapper around the built-in **`Notification`** or around a **custom component** (see the `<Toast>` example below). Alias: `NotivueSwipe`.
 
 ```vue
 <script setup>
-import { Notivue, notify } from 'notivue'
+import { Notivue, Notification, NotificationSwipe, notify } from 'notivue'
 </script>
 
 <template>
-   <button @click="notify.success('Hi! I am your first notification!')">Notify</button>
+   <button
+      type="button"
+      @click="notify.success('Changes saved. They will sync when you are back online.')"
+   >
+      Save changes
+   </button>
 
    <Notivue v-slot="item">
-      <!-- Your notification 👇 -->
-      <div class="rounded-full flex py-2 pl-3 bg-slate-700 text-slate-50 text-sm">
-         <p :role="item.ariaRole" :aria-live="item.ariaLive" aria-atomic="true">
-            {{ item.message }}
-         </p>
-
-         <button
-            @click="item.clear"
-            aria-label="Dismiss"
-            class="pl-3 pr-2 hover:text-red-300 transition-colors"
-            tabindex="-1"
-         >
-            <svg
-               xmlns="http://www.w3.org/2000/svg"
-               viewBox="0 0 20 20"
-               fill="currentColor"
-               class="w-5 h-5"
-               aria-hidden="true"
-            >
-               <path
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
-               />
-            </svg>
-         </button>
-      </div>
+      <NotificationSwipe :item="item">
+         <Notification :item="item" />
+      </NotificationSwipe>
    </Notivue>
 
    <!-- RouterView, etc. -->
 </template>
 ```
 
-<br />
+### Custom components — your own markup
+
+**components/Toast.vue**
+
+```vue
+<script setup lang="ts">
+import type { NotivueItem } from 'notivue'
+
+// Custom props
+export interface ToastProps {
+   from: string
+}
+
+defineProps<{
+   item: NotivueItem<ToastProps>
+}>()
+</script>
+
+<template>
+   <div class="Toast">
+      <div class="Toast-body">
+         <p :role="item.ariaRole" :aria-live="item.ariaLive" aria-atomic="true">
+            {{ item.message }}
+         </p>
+         <p class="Toast-meta">{{ item.props.from }}</p>
+      </div>
+
+      <button type="button" class="Toast-dismiss" @click="item.clear" aria-label="Dismiss">
+         ×
+      </button>
+   </div>
+</template>
+```
+
+**App.vue**
+
+```vue
+<script setup lang="ts">
+import { Notivue, NotificationSwipe, notify } from 'notivue'
+
+import Toast, { type ToastProps } from './components/Toast.vue'
+
+function showNotification(message: string, from: string) {
+   notify.success<ToastProps>({
+      message,
+      props: { from },
+   })
+}
+</script>
+
+<template>
+   <button
+      type="button"
+      @click="
+         showNotification(
+            'Payment recorded. We emailed a receipt to the customer.',
+            'Product Management'
+         )
+      "
+   >
+      Record payment
+   </button>
+
+   <Notivue v-slot="item">
+      <NotificationSwipe :item="item">
+         <Toast :item="item" />
+      </NotificationSwipe>
+   </Notivue>
+
+   <!-- RouterView, etc. -->
+</template>
+```
 
 ## Nuxt
 
@@ -161,7 +212,12 @@ export default defineNuxtConfig({
       'notivue/animations.css', // Only needed if using default animations
    ],
    notivue: {
-      // Options
+      position: 'bottom-right',
+      pauseOnHover: true,
+      pauseOnTabChange: true,
+      limit: 4,
+      enqueue: true,
+      // ... other options
    },
 })
 ```
@@ -170,7 +226,12 @@ export default defineNuxtConfig({
 
 ```vue
 <template>
-   <button @click="notify.success('Hi! I am your first notification!')">Notify</button>
+   <button
+      type="button"
+      @click="notify.success('Changes saved. They will sync when you are back online.')"
+   >
+      Save changes
+   </button>
 
    <Notivue v-slot="item">
       <Notification :item="item" />
@@ -180,8 +241,6 @@ export default defineNuxtConfig({
 </template>
 ```
 
-<br />
-
 ## Astro
 
 > :bulb: Import from **`notivue/astro`** (not `notivue`). CSS: **`notivue/astro/notification.css`** and **`notivue/astro/animations.css`** when you use the built-in UI and default animations.
@@ -190,14 +249,10 @@ export default defineNuxtConfig({
 
 [Installation → Astro](https://docs.notivue.smastrom.io/installation/astro.html) — `createNotivue` in the Vue app entry, Notivue island, `client:only`, view transitions.
 
-<br />
-
 ## Thanks
 
 - [Ionic Team](https://ionic.io/) for the icons
 - [Uktash Verna](https://github.com/n3r4zzurr0) for the animated spinner
-
-<br />
 
 ## License
 
