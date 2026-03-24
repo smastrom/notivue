@@ -1,5 +1,5 @@
-export { push } from '@/core/createPush'
-export { push as pushAstro } from './astro/push'
+export { notify, push } from '@/core/createNotify'
+export { notify as notifyAstro, push as pushAstro } from './astro/push'
 
 export { updateConfig } from '@/core/createStore'
 export { createNotivue } from '@/core/createNotivue'
@@ -7,7 +7,13 @@ export { createNotivue as createNotivueAstro } from './astro/createNotivue'
 
 export { startInstance, stopInstance } from '@/core/createInstance'
 
-export { usePush, useNotivue, useNotifications, useNotivueInstance } from '@/core/useStore'
+export {
+   useNotify,
+   usePush,
+   useNotivue,
+   useNotifications,
+   useNotivueInstance,
+} from '@/core/useStore'
 export { useNotivueKeyboard } from '@/NotivueKeyboard/useNotivueKeyboard'
 
 export { default as Notivue } from '@/Notivue/Notivue.vue'

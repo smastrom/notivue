@@ -123,77 +123,114 @@ export interface HiddenInternalItemData {
 /** Options added internally when creating a notification. */
 export type InternalItemData = ExposedInternalItemData & HiddenInternalItemData
 
-// Push
+// Notify (public API; `push` kept as an alias for backwards compatibility)
 
-export interface PushProps<T extends Obj = Obj> {
+export interface NotifyProps<T extends Obj = Obj> {
    props?: T
 }
 
-export interface PushSpecificOptions {
+/** @deprecated Use NotifyProps */
+export type PushProps<T extends Obj = Obj> = NotifyProps<T>
+
+export interface NotifySpecificOptions {
    skipQueue?: boolean
    ariaLiveOnly?: boolean
 }
 
-export interface PushCallbacks {
+/** @deprecated Use NotifySpecificOptions */
+export type PushSpecificOptions = NotifySpecificOptions
+
+export interface NotifyCallbacks {
    onAutoClear?: (item: NotivueItem) => void
    onManualClear?: (item: NotivueItem) => void
 }
 
-/** Defined by the user when calling push() */
-export type PushOptions<T extends Obj = Obj> = NotificationOptions &
-   PushProps<T> &
-   PushSpecificOptions &
-   PushCallbacks
+/** @deprecated Use NotifyCallbacks */
+export type PushCallbacks = NotifyCallbacks
 
-/** Added in background after calling push() */
-export type InternalPushOptions = { id: string; type: NotificationType }
+/** Defined by the user when calling notify() */
+export type NotifyOptions<T extends Obj = Obj> = NotificationOptions &
+   NotifyProps<T> &
+   NotifySpecificOptions &
+   NotifyCallbacks
 
-export type PushOptionsWithInternals<T extends Obj = Obj> = PushOptions<T> & InternalPushOptions
+/** @deprecated Use NotifyOptions */
+export type PushOptions<T extends Obj = Obj> = NotifyOptions<T>
+
+/** Added in background after calling notify() */
+export type InternalNotifyOptions = { id: string; type: NotificationType }
+
+/** @deprecated Use InternalNotifyOptions */
+export type InternalPushOptions = InternalNotifyOptions
+
+export type NotifyOptionsWithInternals<T extends Obj = Obj> = NotifyOptions<T> &
+   InternalNotifyOptions
+
+/** @deprecated Use NotifyOptionsWithInternals */
+export type PushOptionsWithInternals<T extends Obj = Obj> = NotifyOptionsWithInternals<T>
 
 /** Final shape of the store item */
 export type StoreItem<T extends Obj = Obj> = DeepRequired<NotificationOptions> &
-   Required<PushProps<T>> &
-   InternalPushOptions &
+   Required<NotifyProps<T>> &
+   InternalNotifyOptions &
    InternalItemData &
-   PushSpecificOptions &
-   PushCallbacks
+   NotifySpecificOptions &
+   NotifyCallbacks
 
 /** Portion of the store item exposed to slot */
 export type NotivueItem<T extends Obj = Obj> = Omit<StoreItem<T>, keyof HiddenInternalItemData>
 
-export type PushParameter<T extends Obj = Obj> =
-   | PushOptions<T>
+export type NotifyParameter<T extends Obj = Obj> =
+   | NotifyOptions<T>
    | Exclude<NotificationOptions['message'], undefined> // NonNullable doesn't work?
 
-export type PushStatic = <T extends Obj = Obj>(
-   options: PushParameter<T>
+/** @deprecated Use NotifyParameter */
+export type PushParameter<T extends Obj = Obj> = NotifyParameter<T>
+
+export type NotifyStatic = <T extends Obj = Obj>(
+   options: NotifyParameter<T>
 ) => NotificationClearMethods
 
-export type PushPromiseReturnMethod = <T extends Obj = Obj>(
-   options: PushParameter<T>
+/** @deprecated Use NotifyStatic */
+export type PushStatic = NotifyStatic
+
+export type NotifyPromiseReturnMethod = <T extends Obj = Obj>(
+   options: NotifyParameter<T>
 ) => NotificationClearMethods
 
-export interface PushPromiseReturn {
-   resolve: PushPromiseReturnMethod
-   success: PushPromiseReturnMethod
-   reject: PushPromiseReturnMethod
-   error: PushPromiseReturnMethod
+/** @deprecated Use NotifyPromiseReturnMethod */
+export type PushPromiseReturnMethod = NotifyPromiseReturnMethod
+
+export interface NotifyPromiseReturn {
+   resolve: NotifyPromiseReturnMethod
+   success: NotifyPromiseReturnMethod
+   reject: NotifyPromiseReturnMethod
+   error: NotifyPromiseReturnMethod
 }
 
-export type PushPromise = <T extends Obj = Obj>(
-   options: PushParameter<T>
-) => NotificationClearMethods & PushPromiseReturn
+/** @deprecated Use NotifyPromiseReturn */
+export type PushPromiseReturn = NotifyPromiseReturn
 
-export interface Push {
-   success: PushStatic
-   error: PushStatic
-   info: PushStatic
-   warning: PushStatic
-   promise: PushPromise
-   load: PushPromise
+export type NotifyPromise = <T extends Obj = Obj>(
+   options: NotifyParameter<T>
+) => NotificationClearMethods & NotifyPromiseReturn
+
+/** @deprecated Use NotifyPromise */
+export type PushPromise = NotifyPromise
+
+export interface Notify {
+   success: NotifyStatic
+   error: NotifyStatic
+   info: NotifyStatic
+   warning: NotifyStatic
+   promise: NotifyPromise
+   load: NotifyPromise
    clearAll: () => void
    destroyAll: () => void
 }
+
+/** @deprecated Use Notify */
+export type Push = Notify
 
 export type ConfigSlice = ToRefs<NotivueConfigRequired> & {
    update: (newConfig: UpdateParam) => void
@@ -238,7 +275,10 @@ export type NotivueNotificationType = NotificationType
 
 // New v2.1.1 aliases
 
-export type PushClearMethods = NotificationClearMethods
+export type NotifyClearMethods = NotificationClearMethods
+
+/** @deprecated Use NotifyClearMethods */
+export type PushClearMethods = NotifyClearMethods
 
 // New v2.4.0 aliases
 
@@ -247,6 +287,9 @@ export type NotificationTypes = NotificationType
 // Aliases prev 1.2.0
 
 export type NotivueSlot = NotivueItem
-export type UserPushOptions = PushOptions
+export type UserNotifyOptions = NotifyOptions
+
+/** @deprecated Use UserNotifyOptions */
+export type UserPushOptions = UserNotifyOptions
 export type ClearFunctions = NotificationClearMethods
 export type ClearMethods = NotificationClearMethods

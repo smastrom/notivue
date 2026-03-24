@@ -14,7 +14,7 @@ import type {
    DeepPartial,
    StoreItem,
    NotivueConfig,
-   PushOptionsWithInternals,
+   NotifyOptionsWithInternals,
    Obj,
    ConfigSlice,
    ItemsSlice,
@@ -360,7 +360,7 @@ export function createTimeouts(items: ItemsSlice, animations: AnimationsSlice) {
    }
 }
 
-export function createPushProxies({
+export function createNotifyProxies({
    config,
    items,
    queue,
@@ -387,7 +387,7 @@ export function createPushProxies({
 
          animations.playLeave(id, { isUserTriggered: true, isDestroy })
       },
-      push<T extends Obj = Obj>(options: PushOptionsWithInternals<T>) {
+      notify<T extends Obj = Obj>(options: NotifyOptionsWithInternals<T>) {
          const entry = mergeOptions<T>(config.notifications.value, options)
          const createdAt = Date.now()
 
@@ -476,3 +476,6 @@ export function createPushProxies({
       },
    }
 }
+
+/** @deprecated Use createNotifyProxies */
+export const createPushProxies = createNotifyProxies

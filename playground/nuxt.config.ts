@@ -1,5 +1,6 @@
 import { getHead } from './utils/head'
 
+/** App sources intentionally use `push` (not `notify`) for regression testing; both APIs are equivalent. */
 export default defineNuxtConfig({
    srcDir: '.',
    modules: ['notivue/nuxt'],

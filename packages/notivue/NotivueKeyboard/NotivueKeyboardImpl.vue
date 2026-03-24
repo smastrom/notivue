@@ -12,13 +12,13 @@ import {
 } from 'vue'
 
 import { useNotivue, useStore } from '@/core/useStore'
-import { push } from '@/core/createPush'
+import { notify } from '@/core/createNotify'
 import { focusableEls, keyboardInjectionKey, DEFAULT_PROPS } from './constants'
 import { useKeyboardFocus } from './useKeyboardFocus'
 import { useLastFocused } from './useLastFocused'
 
 import type {
-   PushOptions,
+   NotifyOptions,
    TabIndexValue,
    ContainersTabIndexMap,
    NotivueKeyboardProps,
@@ -48,12 +48,12 @@ const sharedOptions = {
    },
 } as const
 
-const leavePushOptions = computed<PushOptions>(() => ({
+const leaveNotifyOptions = computed<NotifyOptions>(() => ({
    message: leaveMessage.value,
    ...sharedOptions,
 }))
 
-const emptyPushOptions = computed<PushOptions>(() => ({
+const emptyNotifyOptions = computed<NotifyOptions>(() => ({
    message: emptyMessage.value,
    ...sharedOptions,
 }))
@@ -126,7 +126,7 @@ function onStreamLeave({ announce = true } = {}) {
    if (announce && announcementsCount < maxAnnouncements.value) {
       announcementsCount++
 
-      push.info(leavePushOptions.value)
+      notify.info(leaveNotifyOptions.value)
    }
 }
 
@@ -359,7 +359,7 @@ function onComboKeyDown(e: KeyboardEvent) {
          if (candidateContainers.value.length > 0) {
             onStreamEnter()
          } else {
-            push.info(emptyPushOptions.value)
+            notify.info(emptyNotifyOptions.value)
          }
       }
    }

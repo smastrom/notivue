@@ -2,7 +2,7 @@ import { inject, computed, toRefs, reactive, readonly, ref } from 'vue'
 
 import { isSSR, getSlotItem } from './utils'
 import { notivueInjectionKey, notivueInstanceInjectionKey } from './symbols'
-import { push } from './createPush'
+import { notify } from './createNotify'
 import { DEFAULT_CONFIG } from './constants'
 
 import type {
@@ -70,16 +70,27 @@ export function useNotivue(): UseNotivueReturn {
 }
 
 /**
- * @deprecated
- *
- * Since version 2.0.0, import `push` directly instead.
+ * Returns the shared `notify` API (same object as legacy `push`).
  *
  * ```ts
- * import { push } from 'notivue'
+ * import { notify } from 'notivue'
+ * ```
+ *
+ * @docs https://docs.notivue.smastrom.io/api/push
+ */
+export function useNotify() {
+   return notify
+}
+
+/**
+ * @deprecated Use `useNotify` or import `notify` / `push` directly.
+ *
+ * ```ts
+ * import { notify } from 'notivue'
  * ```
  */
 export function usePush() {
-   return push
+   return notify
 }
 
 /**

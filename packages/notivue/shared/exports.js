@@ -1,11 +1,13 @@
 export const exports = {
    functions: [
       'createNotivue',
+      'notify',
       'push',
       'updateConfig',
       'startInstance',
       'stopInstance',
 
+      'useNotify',
       'usePush',
       'useNotivue',
       'useNotivueInstance',
@@ -34,7 +36,7 @@ export const exports = {
       'NotificationProgress',
       'NotificationsProgress', // Alias
    ],
-   astro: ['NotivueAstro', 'pushAstro', 'createNotivueAstro'],
+   astro: ['NotivueAstro', 'notifyAstro', 'pushAstro', 'createNotivueAstro'],
 }
 
 const getExports = (type, omit) => exports[type].filter((name) => !omit.includes(name))

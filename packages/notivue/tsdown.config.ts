@@ -48,13 +48,14 @@ export default defineConfig({
    hooks: {
       'build:done'() {
          const astroReExports = [
-            ...getFunctions({ omit: ['push', 'createNotivue'] }),
+            ...getFunctions({ omit: ['notify', 'push', 'createNotivue'] }),
             ...getComponents({ omit: ['Notivue'] }),
             ...getObjects(),
          ]
          writeFileSync(
             'dist/astro.js',
             [
+               'export { notifyAstro as notify } from "./index.js";',
                'export { pushAstro as push } from "./index.js";',
                'export { NotivueAstro as Notivue } from "./index.js";',
                'export { createNotivueAstro as createNotivue } from "./index.js";',

@@ -34,7 +34,7 @@ _Themes, icons, progress bar, and native RTL support_
 _Use your own components while Notivue handles the rest_
 
 **💊 Drop-in components to enhance notifications**  
-_NotivueSwipe, NotivueKeyboard, all optional and customizable_
+_NotivueSwipe_, _NotivueKeyboard_, all optional and customizable\_
 
 **🌀 Dynamic Notifications**  
 _Update pending notifications with a breeze_
@@ -60,7 +60,7 @@ pnpm add notivue
 # bun i notivue
 ```
 
-> :bulb: Beyond this quick start — Nuxt/Astro setup, `push` and callbacks, stream config, built-in styling, headless mode, full API — lives in the [documentation](https://docs.notivue.smastrom.io).
+> :bulb: Beyond this quick start — Nuxt/Astro setup, **`notify`** / callbacks, stream config, built-in styling, headless mode, full API — lives in the [documentation](https://docs.notivue.smastrom.io). The legacy **`push`** name remains exported as an alias.
 
 <br />
 
@@ -90,11 +90,11 @@ app.mount('#app')
 
 ```vue
 <script setup>
-import { Notivue, Notification, push } from 'notivue'
+import { Notivue, Notification, notify } from 'notivue'
 </script>
 
 <template>
-   <button @click="push.success('Hi! I am your first notification!')">Push</button>
+   <button @click="notify.success('Hi! I am your first notification!')">Notify</button>
 
    <Notivue v-slot="item">
       <Notification :item="item" />
@@ -109,11 +109,11 @@ _No `notification.css` needed; wire `aria-live` / `role` and `item.clear` yourse
 
 ```vue
 <script setup>
-import { Notivue, push } from 'notivue'
+import { Notivue, notify } from 'notivue'
 </script>
 
 <template>
-   <button @click="push.success('Hi! I am your first notification!')">Push</button>
+   <button @click="notify.success('Hi! I am your first notification!')">Notify</button>
 
    <Notivue v-slot="item">
       <!-- Your notification 👇 -->
@@ -170,7 +170,7 @@ export default defineNuxtConfig({
 
 ```vue
 <template>
-   <button @click="push.success('Hi! I am your first notification!')">Push</button>
+   <button @click="notify.success('Hi! I am your first notification!')">Notify</button>
 
    <Notivue v-slot="item">
       <Notification :item="item" />

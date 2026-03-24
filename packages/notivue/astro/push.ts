@@ -34,7 +34,7 @@ export function pushEvent<T extends Omit<PushAstroEvent, 'resultEventName'>>(
    return pushResult
 }
 
-export const push = {
+const astroNotifyApi = {
    success: (options: PushOptions) => pushEvent({ ...options, type: 'success' }),
    info: (options: PushOptions) => pushEvent({ ...options, type: 'info' }),
    error: (options: PushOptions) => pushEvent({ ...options, type: 'error' }),
@@ -48,3 +48,6 @@ export const push = {
       window.dispatchEvent(new CustomEvent('notivue:destroy-all'))
    },
 } as Push
+
+export const push = astroNotifyApi
+export const notify = astroNotifyApi
