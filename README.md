@@ -6,7 +6,7 @@
 
 # Notivue
 
-### Powerful toast notification system for Vue and Nuxt
+### Powerful toast notification system for Vue, Nuxt and Astro
 
 [Live Demo](https://notivue.smastrom.io) - [Documentation](https://docs.notivue.smastrom.io)
 
@@ -60,11 +60,13 @@ pnpm add notivue
 # bun i notivue
 ```
 
+> :bulb: Beyond this quick start — Nuxt/Astro setup, `push` and callbacks, stream config, built-in styling, headless mode, full API — lives in the [documentation](https://docs.notivue.smastrom.io).
+
 <br />
 
 ## Vite
 
-> :bulb: See [↓ below](#nuxt) for **Nuxt**
+> :bulb: See [↓ below](#nuxt) for **Nuxt** and [↓ Astro](#astro).
 
 **main.js/ts**
 
@@ -102,8 +104,8 @@ import { Notivue, Notification, push } from 'notivue'
 </template>
 ```
 
-<details>
-<summary><strong>Headless, with custom components</strong></summary>
+**App.vue (headless — your own markup)**  
+_No `notification.css` needed; wire `aria-live` / `role` and `item.clear` yourself._
 
 ```vue
 <script setup>
@@ -145,8 +147,6 @@ import { Notivue, push } from 'notivue'
 </template>
 ```
 
-</details>
-
 <br />
 
 ## Nuxt
@@ -179,6 +179,16 @@ export default defineNuxtConfig({
    <!-- NuxtLayout, NuxtPage, etc. -->
 </template>
 ```
+
+<br />
+
+## Astro
+
+> :bulb: Import from **`notivue/astro`** (not `notivue`). CSS: **`notivue/astro/notification.css`** and **`notivue/astro/animations.css`** when you use the built-in UI and default animations.
+
+> **Note:** Astro **6** is not supported yet.
+
+[Installation → Astro](https://docs.notivue.smastrom.io/installation/astro.html) — `createNotivue` in the Vue app entry, Notivue island, `client:only`, view transitions.
 
 <br />
 
