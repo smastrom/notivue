@@ -16,18 +16,18 @@ import { isMouse } from '@/Notivue/utils'
 import { NotificationTypeKeys as NType } from '@/core/constants'
 import { DEFAULT_PROPS, DEBOUNCE, RETURN_DUR } from './constants'
 
-import type { NotivueSwipeProps } from 'notivue'
+import type { NotificationSwipeProps } from 'notivue'
 
 /**
  * MOUSE - Notivue's mouse events (get from 'useMouseEvents') will still handle the pause/resume logic
- * on hover. NotivueSwipe will only additionally pause timeouts while swiping and resume them
+ * on hover. NotificationSwipe only additionally pauses timeouts while swiping and resumes them
  * when clearing.
  *
  * TOUCH / PEN - Notivue's touch events (get from 'useTouchEvents') execution is prevented when
- * using NotivueSwipe. That's because a more granular timeout control is required due
+ * using NotificationSwipe. That's because a more granular timeout control is required due
  * to all possible interactions hence the whole touch logic is handled here.
  *
- * When releasing, leaving or clearing a notification via Swipe a small debounce time is added to
+ * When releasing, leaving or clearing a notification via swipe, a small debounce time is added to
  * improve UX.
  */
 
@@ -37,7 +37,7 @@ const { items, timeouts, elements, animations } = useStore()
 
 // Props
 
-const props = withDefaults(defineProps<NotivueSwipeProps>(), DEFAULT_PROPS)
+const props = withDefaults(defineProps<NotificationSwipeProps>(), DEFAULT_PROPS)
 
 const touchOnly = toRef(props, 'touchOnly')
 const exclude = toRef(props, 'exclude')
@@ -179,7 +179,7 @@ function onPointerDown(e: PointerEvent) {
 
    /**
     * Prevents `useTouchEvents` events to fire, which is what
-    * we're looking for so they doen't interfere with NotivueSwipe logic.
+    * we're looking for so they don't interfere with NotificationSwipe logic.
     */
    e.stopPropagation()
 

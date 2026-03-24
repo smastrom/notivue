@@ -18,6 +18,8 @@ export { useNotivueKeyboard } from '@/NotivueKeyboard/useNotivueKeyboard'
 
 export { default as Notivue } from '@/Notivue/Notivue.vue'
 export { default as NotivueAstro } from './astro/Notivue.vue'
+export { default as NotificationSwipe } from '@/NotivueSwipe/NotivueSwipe.vue'
+/** @deprecated Use `NotificationSwipe`. */
 export { default as NotivueSwipe } from '@/NotivueSwipe/NotivueSwipe.vue'
 export { default as NotivueKeyboard } from '@/NotivueKeyboard/NotivueKeyboard.vue'
 

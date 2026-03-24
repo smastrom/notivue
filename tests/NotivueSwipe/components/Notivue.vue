@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { push, Notivue, NotivueSwipe, type NotivueSwipeProps } from 'notivue'
+import { push, Notivue, NotificationSwipe, type NotificationSwipeProps } from 'notivue'
 
 import { SWIPE_NOTIFICATION_WIDTH } from '@/support/utils'
 
-export type CyNotivueSwipeProps = Omit<NotivueSwipeProps, 'item'>
+export type CyNotificationSwipeProps = Omit<NotificationSwipeProps, 'item'>
 
-const cyProps = defineProps<CyNotivueSwipeProps>()
+/** @deprecated Use `CyNotificationSwipeProps`. */
+export type CyNotivueSwipeProps = CyNotificationSwipeProps
+
+const cyProps = defineProps<CyNotificationSwipeProps>()
 
 function pushPromise() {
    push.load({
@@ -24,7 +27,7 @@ function pushSuccess() {
 
 <template>
    <Notivue v-slot="item">
-      <NotivueSwipe
+      <NotificationSwipe
          :item="item"
          :disabled="cyProps.disabled"
          :touchOnly="cyProps.touchOnly"
@@ -42,7 +45,7 @@ function pushSuccess() {
             <button class="CloseButton" @click="item.clear">Close</button>
             <a href="#" class="Link">Link</a>
          </div>
-      </NotivueSwipe>
+      </NotificationSwipe>
    </Notivue>
 
    <button class="Success" @click="pushSuccess">Push Success</button>

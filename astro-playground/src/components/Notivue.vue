@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { Notivue, NotivueSwipe, Notification } from 'notivue/astro'
+import { Notivue, NotificationSwipe, Notification } from 'notivue/astro'
 </script>
 
 <template>
    <Notivue v-slot="item">
-      <NotivueSwipe :item="item">
+      <NotificationSwipe :item="item">
          <Notification :item="item" />
-      </NotivueSwipe>
+      </NotificationSwipe>
    </Notivue>
 </template>
