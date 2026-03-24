@@ -91,7 +91,6 @@ describe('Entering the stream', () => {
 
       cy.realPress('Tab') // Leave the stream
          .realPress('Tab') // Try to enter again
-
          .get('@relatedTarget')
          .should('be.focused')
    })

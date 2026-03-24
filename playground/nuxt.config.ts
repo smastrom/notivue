@@ -1,6 +1,8 @@
 import { getHead } from './utils/head'
 
 export default defineNuxtConfig({
+   // Nuxt 4 defaults to srcDir `app/`; keep sources at project root
+   srcDir: '.',
    modules: ['notivue/nuxt'],
    ssr: true,
    devtools: {
@@ -10,12 +12,8 @@ export default defineNuxtConfig({
       componentIslands: true,
    },
    notivue: {
-      // addPlugin: true,
-      // startOnCreation: true,
       notifications: {
-         global: {
-            // duration: Infinity,
-         },
+         global: {},
       },
    },
    nitro: {
@@ -25,16 +23,15 @@ export default defineNuxtConfig({
       head: getHead(),
    },
    vite: {
-      esbuild: {
-         minifyIdentifiers: !import.meta.env.DEV,
-         minifySyntax: !import.meta.env.DEV,
-      },
-      build: {
-         minify: import.meta.env.DEV ? false : 'esbuild',
-         cssMinify: 'lightningcss',
+      optimizeDeps: {
+         include: ['luxon'],
       },
       css: {
          transformer: 'lightningcss',
+      },
+      build: {
+         minify: import.meta.env.DEV ? false : 'oxc',
+         cssMinify: 'lightningcss',
       },
    },
    css: [

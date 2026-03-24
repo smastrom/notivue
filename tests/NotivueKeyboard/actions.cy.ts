@@ -10,7 +10,6 @@ describe('Actions', () => {
          .realPress('Tab') // Go last action of first container
 
          .pushCandidateSilently() // id: 3
-
          .focused()
          .should('have.data', 'notivueContainer', 3)
    })
@@ -27,7 +26,6 @@ describe('Actions', () => {
 
          .realPress('Tab')
          .realPress('Tab') // Go to action of 2nd container (id: 1)
-
          .realPress(Math.random() > 0.5 ? 'Space' : 'Enter')
 
          .focused()
@@ -47,7 +45,6 @@ describe('Actions', () => {
 
          .realPress('Tab')
          .realPress('Tab') // Go to action of last container
-
          .realPress(Math.random() > 0.5 ? 'Space' : 'Enter')
 
       cy.get('@relatedTarget').should('be.focused').checkLeaveAnnouncement()
@@ -67,7 +64,6 @@ describe('Actions', () => {
 
          .realPress('Tab')
          .realPress('Tab') // Go to action of 2nd container
-
          .focused()
          .realClick()
 

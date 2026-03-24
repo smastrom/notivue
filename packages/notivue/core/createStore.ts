@@ -56,7 +56,9 @@ export function createConfig(userConfig: NotivueConfig, isRunning: Readonly<Ref<
          type K = keyof NotivueConfig
 
          if (typeof config[key as K].value === 'object') {
-            config[key as K].value = mergeDeep(config[key as K].value as Obj, newConfig[key as K] as any) // prettier-ignore
+            const prev = config[key as K].value as Obj
+            const next = newConfig[key as K] as any
+            config[key as K].value = mergeDeep(prev, next)
          } else {
             config[key as K].value = newConfig[key as K] as any
          }
@@ -126,12 +128,12 @@ export function createItems(config: ConfigSlice, queue: QueueSlice) {
          this.add(next)
       },
       findDupe(item: StoreItem) {
-         return this.entries.value.find(
-            (e) =>
-               unref(e.message).replace(/\uFEFF/g, '') === unref(item.message).replace(/\uFEFF/g, '') && // prettier-ignore
-               unref(e.title) === unref(item.title) &&
-               e.type === item.type
-         )
+         return this.entries.value.find((e) => {
+            const sameMessage =
+               unref(e.message).replace(/\uFEFF/g, '') ===
+               unref(item.message).replace(/\uFEFF/g, '')
+            return sameMessage && unref(e.title) === unref(item.title) && e.type === item.type
+         })
       },
       get(id: string) {
          return this.entries.value.find((e) => e.id === id)
@@ -256,7 +258,8 @@ export function createAnimations(
             const id = el.dataset.notivueItem!
             const item = items.get(id)
 
-            if (!el || !item || item.animationAttrs.class === leaveClass) continue // prettier-ignore
+            if (!el || !item) continue
+            if (item.animationAttrs.class === leaveClass) continue
 
             items.update(id, {
                positionStyles: {

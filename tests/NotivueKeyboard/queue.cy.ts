@@ -8,7 +8,6 @@ describe('Queue', () => {
          .realPress('Tab')
          .realPress('Tab')
          .realPress('Space') // Dismiss first candidate (id: 0)
-
          .focused()
          .and('have.data', 'notivueContainer', 1)
    })
@@ -23,7 +22,6 @@ describe('Queue', () => {
          .realPress('Tab')
          .realPress('Tab')
          .realPress('Space') // Dismiss last candidate (id: 1)
-
          .focused()
          .and('have.data', 'notivueContainer', 0)
    })

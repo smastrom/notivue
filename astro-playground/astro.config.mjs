@@ -13,7 +13,10 @@ export default defineConfig({
    ],
    vite: {
       optimizeDeps: {
-         include: ['notivue'],
+         include: ['notivue', 'notivue/astro'],
+      },
+      ssr: {
+         noExternal: ['notivue'],
       },
    },
 })
