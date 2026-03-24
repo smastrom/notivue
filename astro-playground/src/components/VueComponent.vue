@@ -8,16 +8,16 @@ function pushStatic() {
    })
 }
 
-function pushPromise() {
-   const promise = push.promise({
-      title: 'Loading Vue Notification...',
-      message: 'Loading notification from Vue...',
+function pushDynamic() {
+   const pending = push.promise({
+      title: 'Updating…',
+      message: 'This dynamic notification is still updating.',
    })
 
    setTimeout(() => {
-      promise.resolve({
-         title: 'Vue Notification',
-         message: 'Loaded notification from Vue!',
+      pending.resolve({
+         title: 'Vue notification',
+         message: 'Update finished — notification from Vue.',
       })
    }, 2000)
 }
@@ -28,7 +28,7 @@ function pushPromise() {
       <h3>From Vue</h3>
 
       <button @click="pushStatic">Push</button>
-      <button @click="pushPromise">Push Promise</button>
+      <button @click="pushDynamic">Push dynamic</button>
       <button @click="push.clearAll">Clear All</button>
       <button @click="push.destroyAll">Destroy All</button>
    </div>

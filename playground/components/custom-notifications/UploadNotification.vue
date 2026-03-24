@@ -10,7 +10,8 @@ const notification = defineProps<{
    item: NotivueItem<UploadNotificationProps>
 }>()
 
-const isPromise = computed(() => notification.item.type === 'promise')
+/** Built-in `promise` type: notification still updating (dynamic) before resolve/reject. */
+const isDynamic = computed(() => notification.item.type === 'promise')
 </script>
 
 <template>
@@ -18,7 +19,7 @@ const isPromise = computed(() => notification.item.type === 'promise')
       <div class="Header">
          <div class="Title">
             <h3 :aria-live="item.ariaLive" :role="item.ariaRole">{{ item.message }}</h3>
-            <button class="Close" @click="item.clear" v-if="!isPromise">
+            <button class="Close" @click="item.clear" v-if="!isDynamic">
                <IconsCloseIcon />
             </button>
          </div>
@@ -31,7 +32,7 @@ const isPromise = computed(() => notification.item.type === 'promise')
          <p class="FileName">{{ item.props.fileName }}</p>
       </div>
 
-      <div class="Progress" v-if="isPromise">
+      <div class="Progress" v-if="isDynamic">
          <div class="indeterminate-progress-bar">
             <div class="indeterminate-progress-bar__progress"></div>
          </div>

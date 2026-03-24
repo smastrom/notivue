@@ -7,16 +7,16 @@ function pushStatic() {
    })
 }
 
-function pushPromise() {
-   const promise = push.promise({
-      title: 'Loading React Notification...',
-      message: 'Loading notification from React...',
+function pushDynamic() {
+   const pending = push.promise({
+      title: 'Updating…',
+      message: 'This dynamic notification is still updating.',
    })
 
    setTimeout(() => {
-      promise.resolve({
-         title: 'React Notification',
-         message: 'Loaded notification from React!',
+      pending.resolve({
+         title: 'React notification',
+         message: 'Update finished — notification from React.',
       })
    }, 2000)
 }
@@ -27,7 +27,7 @@ export function ReactComponent() {
          <h3>From React</h3>
 
          <button onClick={pushStatic}>Push</button>
-         <button onClick={pushPromise}>Push Promise</button>
+         <button onClick={pushDynamic}>Push dynamic</button>
          <button onClick={push.clearAll}>Clear All</button>
          <button onClick={push.destroyAll}>Destroy All</button>
       </div>

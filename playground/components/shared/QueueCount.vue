@@ -20,7 +20,7 @@ const wrapperStyles = computed(() => {
             </span>
          </span>
 
-         <span>Enqueued</span>
+         <span>In queue</span>
       </div>
    </Transition>
 </template>

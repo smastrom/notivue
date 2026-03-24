@@ -19,7 +19,7 @@ function pushFriendRequest() {
    resetOptions()
 
    push.info<FriendRequestNotificationProps>({
-      title: 'New Message Request',
+      title: 'New message request',
       message: `Stephanie LaGarde wants to send you a message.`,
       props: {
          name: 'Stephanie LaGarde',
@@ -37,15 +37,15 @@ async function pushFileUpload() {
 
    const props = { isUploadNotifiation: true, fileName: 'excel-sheet.xlsx' }
 
-   const promise = push.promise<UploadNotificationProps>({
-      message: 'Your file is being uploaded...',
+   const pending = push.promise<UploadNotificationProps>({
+      message: 'Uploading your file…',
       props,
    })
 
    await new Promise((resolve) => setTimeout(resolve, getRandomInt(2000, 4000)))
 
-   promise.resolve({
-      message: 'Your file has been successfully uploaded.',
+   pending.resolve({
+      message: 'Your file was uploaded successfully.',
       props,
    })
 }
@@ -54,7 +54,7 @@ function pushSimple() {
    resetOptions()
 
    push.success<SimpleNotificationProps>({
-      message: `Your message has been deleted.`,
+      message: 'Your message was deleted.',
       props: {
          isSimpleNotification: true,
       },
@@ -79,10 +79,10 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-   <SharedButton @click="pushFriendRequest" text="Actions">
+   <SharedButton @click="pushFriendRequest" text="Friend request">
       <IconsVueIcon />
    </SharedButton>
-   <SharedButton @click="pushFileUpload" text="Promise">
+   <SharedButton @click="pushFileUpload" text="Dynamic">
       <IconsVueIcon />
    </SharedButton>
    <SharedButton @click="pushSimple" text="Simple">

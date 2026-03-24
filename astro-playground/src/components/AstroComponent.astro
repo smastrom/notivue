@@ -2,7 +2,7 @@
    <h3>From a Script Tag</h3>
 
    <button data-static>Push</button>
-   <button data-promise>Push Promise</button>
+   <button data-dynamic>Push dynamic</button>
    <button data-clear-all>Clear All</button>
    <button data-destroy-all>Destroy All</button>
 </div>
@@ -17,23 +17,23 @@
       })
    }
 
-   function pushPromise() {
-      const promise = push.promise({
-         title: 'Loading Notification...',
-         message: 'Loading notification from a Script Tag...',
+   function pushDynamic() {
+      const pending = push.promise({
+         title: 'Updating…',
+         message: 'This dynamic notification is still updating.',
       })
 
       setTimeout(() => {
-         promise.resolve({
+         pending.resolve({
             title: 'Notification',
-            message: 'Loaded notification from a Script Tag!',
+            message: 'Update finished — notification from a script tag.',
          })
       }, 2000)
    }
 
    const events = [
       ['data-static', pushStatic],
-      ['data-promise', pushPromise],
+      ['data-dynamic', pushDynamic],
       ['data-clear-all', push.clearAll],
       ['data-destroy-all', push.destroyAll],
    ] as const

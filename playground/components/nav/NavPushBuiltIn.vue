@@ -17,13 +17,13 @@ async function asyncRefMessagePush() {
 async function asyncPush() {
    if (Math.random() > 0.7) return asyncRefMessagePush()
 
-   const promise = push.promise(messages.value.promise)
+   const pending = push.promise(messages.value.dynamic)
    await new Promise((resolve) => setTimeout(resolve, getRandomInt(2000, 4000)))
 
    if (Math.random() > 0.5) {
-      promise.resolve(messages.value.success)
+      pending.resolve(messages.value.success)
    } else {
-      promise.reject(messages.value.error)
+      pending.reject(messages.value.error)
    }
 }
 </script>
@@ -48,13 +48,13 @@ async function asyncPush() {
    <SharedButton @click="push.error(messages.error)" text="Error">
       <IconsWarnIcon :isWarn="false" />
    </SharedButton>
-   <SharedButton @click="push.warning(messages.warning)" text="Warn">
+   <SharedButton @click="push.warning(messages.warning)" text="Warning">
       <IconsWarnIcon isWarn />
    </SharedButton>
    <SharedButton @click="push.info(messages.info)" text="Info">
       <IconsInfoIcon />
    </SharedButton>
-   <SharedButton @click="asyncPush" text="Promise">
+   <SharedButton @click="asyncPush" text="Dynamic">
       <IconsPromiseIcon />
    </SharedButton>
 </template>

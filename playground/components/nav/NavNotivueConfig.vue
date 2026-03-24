@@ -58,10 +58,10 @@ watch(
       toggleRtlIfNeeded()
 
       push.info({
-         title: `Swipe to clear ${isEnabled ? 'enabled' : 'disabled'}`,
+         title: `Swipe to dismiss ${isEnabled ? 'on' : 'off'}`,
          message: isEnabled
-            ? 'Swipe left or right on a notification to clear it.'
-            : 'Enable it again to use it.',
+            ? 'Swipe a notification left or right to dismiss it.'
+            : 'Turn "Clear on Swipe" back on to try swipe-to-dismiss.',
       })
    }
 )
@@ -109,12 +109,16 @@ const btnProps = {
          No Duplicates
       </button>
 
-      <select class="ButtonBase Select" v-model="config.limit.value" aria-label="Limit">
-         <option selected :value="Infinity">No Limit</option>
-         <option :value="1">Limit - 1</option>
-         <option :value="3">Limit - 3</option>
-         <option :value="5">Limit - 5</option>
-         <option :value="10">Limit - 10</option>
+      <select
+         class="ButtonBase Select"
+         v-model="config.limit.value"
+         aria-label="Maximum notifications on screen"
+      >
+         <option selected :value="Infinity">No limit</option>
+         <option :value="1">Max 1</option>
+         <option :value="3">Max 3</option>
+         <option :value="5">Max 5</option>
+         <option :value="10">Max 10</option>
       </select>
 
       <button
@@ -123,7 +127,7 @@ const btnProps = {
          @click="toggleQueue"
          :disabled="isEnqueueDisabled"
       >
-         Enqueue ({{ enqueuedLength }})
+         Queue ({{ enqueuedLength }})
       </button>
    </div>
 </template>
