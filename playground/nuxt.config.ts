@@ -1,7 +1,6 @@
 import { getHead } from './utils/head'
 
 export default defineNuxtConfig({
-   // Nuxt 4 defaults to srcDir `app/`; keep sources at project root
    srcDir: '.',
    modules: ['notivue/nuxt'],
    ssr: true,
@@ -30,7 +29,7 @@ export default defineNuxtConfig({
          transformer: 'lightningcss',
       },
       build: {
-         minify: import.meta.env.DEV ? false : 'oxc',
+         minify: !import.meta.env.DEV,
          cssMinify: 'lightningcss',
       },
    },
