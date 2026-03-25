@@ -1,14 +1,14 @@
-import { push } from 'notivue/astro'
+import { notify } from 'notivue/astro'
 
-function pushStatic() {
-   push.info({
+function notifyStatic() {
+   notify.info({
       title: 'React Notification',
       message: 'Notification from React!',
    })
 }
 
-function pushDynamic() {
-   const pending = push.promise({
+function notifyDynamic() {
+   const pending = notify.promise({
       title: 'Updating…',
       message: 'This dynamic notification is still updating.',
    })
@@ -26,10 +26,10 @@ export function ReactComponent() {
       <div>
          <h3>From React</h3>
 
-         <button onClick={pushStatic}>Push</button>
-         <button onClick={pushDynamic}>Push dynamic</button>
-         <button onClick={push.clearAll}>Clear All</button>
-         <button onClick={push.destroyAll}>Destroy All</button>
+         <button onClick={notifyStatic}>Push</button>
+         <button onClick={notifyDynamic}>Push dynamic</button>
+         <button onClick={notify.clearAll}>Clear All</button>
+         <button onClick={notify.destroyAll}>Destroy All</button>
       </div>
    )
 }

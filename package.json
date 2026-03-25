@@ -5,7 +5,7 @@
       "build": "pnpm -C packages/notivue run build",
       "build:playground": "pnpm build && pnpm install && pnpm -C playground run build",
       "dev": "pnpm build && concurrently \"pnpm -C packages/notivue run watch\" \"pnpm -C playground run dev --host\"",
-      "dev:astro": "pnpm build && concurrently \"pnpm -C packages/notivue run watch\" \"pnpm -C astro-playground run dev --host\"",
+      "dev:astro": "pnpm build && concurrently \"pnpm -C packages/notivue run watch\" \"pnpm -C playground-astro run dev --host\"",
       "format": "oxfmt .",
       "format:check": "oxfmt --check .",
       "prepare": "husky",

@@ -8,17 +8,17 @@
 </div>
 
 <script>
-   import { push } from 'notivue/astro'
+   import { notify } from 'notivue/astro'
 
-   function pushStatic() {
-      push.success({
+   function notifyStatic() {
+      notify.success({
          title: 'Vue Notification',
          message: 'Notification from a Script Tag!',
       })
    }
 
-   function pushDynamic() {
-      const pending = push.promise({
+   function notifyDynamic() {
+      const pending = notify.promise({
          title: 'Updating…',
          message: 'This dynamic notification is still updating.',
       })
@@ -32,10 +32,10 @@
    }
 
    const events = [
-      ['data-static', pushStatic],
-      ['data-dynamic', pushDynamic],
-      ['data-clear-all', push.clearAll],
-      ['data-destroy-all', push.destroyAll],
+      ['data-static', notifyStatic],
+      ['data-dynamic', notifyDynamic],
+      ['data-clear-all', notify.clearAll],
+      ['data-destroy-all', notify.destroyAll],
    ] as const
 
    function addListeners() {

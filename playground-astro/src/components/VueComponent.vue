@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { push } from 'notivue/astro'
+import { notify } from 'notivue/astro'
 
-function pushStatic() {
-   push.success({
+function notifyStatic() {
+   notify.success({
       title: 'Vue Notification',
       message: 'Notification from Vue!',
    })
 }
 
-function pushDynamic() {
-   const pending = push.promise({
+function notifyDynamic() {
+   const pending = notify.promise({
       title: 'Updating…',
       message: 'This dynamic notification is still updating.',
    })
@@ -27,9 +27,9 @@ function pushDynamic() {
    <div>
       <h3>From Vue</h3>
 
-      <button @click="pushStatic">Push</button>
-      <button @click="pushDynamic">Push dynamic</button>
-      <button @click="push.clearAll">Clear All</button>
-      <button @click="push.destroyAll">Destroy All</button>
+      <button @click="notifyStatic">Push</button>
+      <button @click="notifyDynamic">Push dynamic</button>
+      <button @click="notify.clearAll">Clear All</button>
+      <button @click="notify.destroyAll">Destroy All</button>
    </div>
 </template>
