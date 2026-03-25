@@ -7,11 +7,15 @@ import type {
 } from 'notivue'
 
 export type PushAstroEvent = NotifyOptions & {
-   type: Exclude<NotificationType, 'promise-resolve' | 'promise-reject'>
+   type: Exclude<
+      NotificationType,
+      'loading-success' | 'loading-error' | 'promise-resolve' | 'promise-reject'
+   >
    resultEventName: string
 }
 
-export type MaybeAstroPushPromiseReturn<T> = T extends PushOptions & { type: 'promise' }
+/** `type: 'promise'` is a deprecated alias of `loading`. */
+export type MaybeAstroPushPromiseReturn<T> = T extends PushOptions & { type: 'loading' | 'promise' }
    ? PushPromiseReturn
    : T extends PushOptions
      ? ClearFunctions

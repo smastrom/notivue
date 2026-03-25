@@ -44,12 +44,13 @@ const exclude = toRef(props, 'exclude')
 const isDisabledByUser = toRef(props, 'disabled')
 const threshold = toRef(props, 'threshold')
 
-const isPromise = computed(() => props.item.type === NType.PROMISE)
+/** Pending dynamic notification (`notify.loading()`). */
+const isLoading = computed(() => props.item.type === NType.LOADING)
 const isEnabled = computed(
    () =>
       !timeouts.isStreamFocused.value &&
       !isDisabledByUser.value &&
-      !isPromise.value &&
+      !isLoading.value &&
       props.item.duration < Infinity
 )
 

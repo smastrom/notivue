@@ -1,5 +1,17 @@
 import type { NotivueTheme } from 'notivue'
 
+/** Duplicate `--nv-promise-*` as `--nv-loading-*` when missing (deprecated alias support). */
+function withLoadingColorAliases<T extends NotivueTheme>(theme: T): T {
+   const out = { ...theme } as Record<string, string>
+   for (const [k, v] of Object.entries(theme)) {
+      if (k.startsWith('--nv-promise')) {
+         const lk = k.replace('--nv-promise', '--nv-loading')
+         if (out[lk] === undefined) out[lk] = v
+      }
+   }
+   return out as T
+}
+
 const layout: NotivueTheme = {
    '--nv-width': '350px',
    '--nv-spacing': '0.625rem',
@@ -14,7 +26,7 @@ const shadow = {
    '--nv-shadow': 'rgba(0, 0, 0, 0.06) 0px 4px 6px -1px, rgba(0, 0, 0, 0.03) 0px 2px 4px -1px',
 }
 
-export const lightTheme: NotivueTheme = {
+export const lightTheme: NotivueTheme = withLoadingColorAliases({
    ...layout,
    ...shadow,
 
@@ -26,9 +38,9 @@ export const lightTheme: NotivueTheme = {
    '--nv-warning-accent': '#F59E0B',
    '--nv-info-accent': '#3E8EFF',
    '--nv-promise-accent': '#171717',
-}
+})
 
-export const pastelTheme: NotivueTheme = {
+export const pastelTheme: NotivueTheme = withLoadingColorAliases({
    ...layout,
    ...shadow,
 
@@ -51,9 +63,9 @@ export const pastelTheme: NotivueTheme = {
    '--nv-promise-bg': '#FFF',
    '--nv-promise-accent': '#334155',
    '--nv-promise-fg': '#334155',
-}
+})
 
-export const materialTheme: NotivueTheme = {
+export const materialTheme: NotivueTheme = withLoadingColorAliases({
    ...layout,
    ...shadow,
 
@@ -71,9 +83,9 @@ export const materialTheme: NotivueTheme = {
    '--nv-promise-bg': '#FFF',
    '--nv-promise-fg': '#334155',
    '--nv-promise-accent': '#64748B',
-}
+})
 
-export const darkTheme: NotivueTheme = {
+export const darkTheme: NotivueTheme = withLoadingColorAliases({
    ...layout,
    '--nv-border-width': '1px',
 
@@ -86,9 +98,9 @@ export const darkTheme: NotivueTheme = {
    '--nv-warning-accent': '#FFE554',
    '--nv-info-accent': '#5FD4FF',
    '--nv-promise-accent': '#D0D0D0',
-}
+})
 
-export const slateTheme: NotivueTheme = {
+export const slateTheme: NotivueTheme = withLoadingColorAliases({
    ...layout,
    '--nv-border-width': '1px',
 
@@ -101,4 +113,4 @@ export const slateTheme: NotivueTheme = {
    '--nv-warning-accent': '#FFE554',
    '--nv-info-accent': '#5FD4FF',
    '--nv-promise-accent': '#D0D0D0',
-}
+})

@@ -76,7 +76,7 @@ export function useNotivue(): UseNotivueReturn {
  * import { notify } from 'notivue'
  * ```
  *
- * @docs https://docs.notivue.smastrom.io/api/push
+ * @docs https://docs.notivue.smastrom.io/api/notify.html#usenotify
  */
 export function useNotify() {
    return notify

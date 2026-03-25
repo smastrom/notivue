@@ -39,6 +39,7 @@ export {
 export { filledIcons, outlinedIcons } from '@/Notifications/icons'
 
 export { DEFAULT_CONFIG } from '@/core/constants'
+export { toCanonicalNotificationType } from '@/core/utils'
 
 export * from '@/core/types'
 export * from '@/Notivue/types'

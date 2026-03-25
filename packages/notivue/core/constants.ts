@@ -4,15 +4,24 @@ export const CLASS_PREFIX = 'Notivue__'
 
 export const DEFAULT_DURATION = 6000
 
-export const NotificationTypeKeys: Record<string, NTypeU> = {
+/**
+ * Canonical string literals for `NotificationType`. `LOADING*` is canonical; `PROMISE*` are deprecated aliases (normalized at runtime).
+ */
+export const NotificationTypeKeys = {
    SUCCESS: 'success',
    ERROR: 'error',
    WARNING: 'warning',
    INFO: 'info',
+   LOADING: 'loading',
+   LOADING_SUCCESS: 'loading-success',
+   LOADING_ERROR: 'loading-error',
+   /** @deprecated Deprecated alias of `LOADING`. */
    PROMISE: 'promise',
+   /** @deprecated Deprecated alias of `LOADING_SUCCESS`. */
    PROMISE_RESOLVE: 'promise-resolve',
+   /** @deprecated Deprecated alias of `LOADING_ERROR`. */
    PROMISE_REJECT: 'promise-reject',
-}
+} as const satisfies Record<string, NTypeU>
 
 const success: NotificationOptions = {
    title: '',
@@ -28,7 +37,7 @@ const error: NotificationOptions = {
    ariaRole: 'alert',
 }
 
-const promise: NotificationOptions = {
+const loadingPending: NotificationOptions = {
    ...success,
    duration: Infinity,
 }
@@ -47,7 +56,10 @@ export const DEFAULT_NOTIFICATION_OPTIONS = {
    [NotificationTypeKeys.ERROR]: error,
    [NotificationTypeKeys.WARNING]: warning,
    [NotificationTypeKeys.INFO]: info,
-   [NotificationTypeKeys.PROMISE]: promise,
+   [NotificationTypeKeys.LOADING]: loadingPending,
+   [NotificationTypeKeys.LOADING_SUCCESS]: success,
+   [NotificationTypeKeys.LOADING_ERROR]: error,
+   [NotificationTypeKeys.PROMISE]: loadingPending,
    [NotificationTypeKeys.PROMISE_RESOLVE]: success,
    [NotificationTypeKeys.PROMISE_REJECT]: error,
 } as NotivueConfigRequired['notifications']

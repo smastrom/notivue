@@ -45,7 +45,7 @@ watch(
       </div>
 
       <button
-         v-if="!props.hideClose && Close && item.type !== 'promise'"
+         v-if="!props.hideClose && Close && item.type !== 'loading'"
          :class="Cx.CLOSE"
          :aria-label="closeAriaLabel"
          type="button"

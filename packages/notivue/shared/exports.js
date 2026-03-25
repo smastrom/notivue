@@ -13,6 +13,8 @@ export const exports = {
       'useNotivueInstance',
       'useNotifications',
       'useNotivueKeyboard',
+
+      'toCanonicalNotificationType',
    ],
    objects: [
       'DEFAULT_CONFIG',

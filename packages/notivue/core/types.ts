@@ -8,7 +8,7 @@ import {
    createAnimations,
 } from './createStore'
 
-// Utils
+// —— Utilities
 
 export type DeepRequired<T> = {
    [K in keyof T]-?: T[K] extends object ? DeepRequired<T[K]> : T[K]
@@ -20,17 +20,22 @@ export type DeepPartial<T> = {
 
 export type Obj = Record<string, any>
 
-// Config
+// —— Stream: kinds, layout, `createNotivue` config, config patches
 
-export type UpdateParam = NotivueConfig | ((config: NotivueConfigRequired) => NotivueConfig)
-
+/** `data-notivue` value per item. Legacy `promise*` literals are normalized when enqueued. */
 export type NotificationType =
    | 'success'
    | 'error'
    | 'info'
    | 'warning'
+   | 'loading'
+   | 'loading-success'
+   | 'loading-error'
+   /** @deprecated Alias of `'loading'`. */
    | 'promise'
+   /** @deprecated Alias of `'loading-success'`. */
    | 'promise-resolve'
+   /** @deprecated Alias of `'loading-error'`. */
    | 'promise-reject'
 
 export type Position =
@@ -48,51 +53,30 @@ export interface NotivueAnimations {
 }
 
 export interface NotificationOptions {
-   /** String to use as default title, an empty string doesn't render the title. */
+   /** Default title (`''` hides the title). */
    title?: string | Ref<string>
-   /** String to use as default message. */
    message?: string | Ref<string>
-   /** Duration of the notification. */
    duration?: number
-   /** Value of `aria-live` attribute. */
    ariaLive?: 'polite' | 'assertive'
-   /** Value of `role` attribute. */
    ariaRole?: 'alert' | 'status'
 }
 
 export type NotificationTypesOptions = Record<NotificationType | 'global', NotificationOptions>
 
 export interface NotivueConfig {
-   /** Whether to pause all notifications when hovering over them with mouse. */
    pauseOnHover?: boolean
-   /** Whether to pause all notifications when tapping on them with touch devices. */
    pauseOnTouch?: boolean
-   /** Whether to pause all notifications when switching tabs or window. */
    pauseOnTabChange?: boolean
-   /** Wheter to enqueue notifications when limit is reached. */
    enqueue?: boolean
-   /** Position of notifications, one of 'top-left', 'top-center', 'top-right', 'bottom-left', 'bottom-center', 'bottom-right'. */
+   /** Stream anchor; see `Position`. */
    position?: Position
-   /** Notification options for each type. */
    notifications?: Partial<NotificationTypesOptions>
-   /** Animation classes for `enter`, `leave` and `clearAll`. */
    animations?: NotivueAnimations
-   /** Transition property applied when repositioning notifications. Must match the following pattern:
-    *
-    * `transform <duration> <timing-function>`
-    *
-    * @example
-    *
-    * ```ts
-    * transition: 'transform 0.35s cubic-bezier(0.5, 1, 0.25, 1)'
-    * ```
-    */
+   /** Must match `transform <duration> <timing-function>`. */
    transition?: string
-   /** Tag or element to which the stream will be teleported. */
    teleportTo?: string | HTMLElement | false
-   /** Notifications limit. Defaults to `Infinity`. */
+   /** @default Infinity */
    limit?: number
-   /** Whether to prevent duplicate notifications if already displayed. Duplicates will be announced again and their duration replaces the current one. */
    avoidDuplicates?: boolean
 }
 
@@ -100,7 +84,15 @@ export type NotivueConfigRequired = DeepRequired<NotivueConfig> & {
    notifications: DeepRequired<NotificationTypesOptions>
 }
 
-// Store Item
+/** `updateConfig` / `config.update`: partial config or updater from merged config. */
+export type NotivueConfigUpdateParam =
+   | NotivueConfig
+   | ((config: NotivueConfigRequired) => NotivueConfig)
+
+/** @deprecated Use `NotivueConfigUpdateParam`. */
+export type UpdateParam = NotivueConfigUpdateParam
+
+// —— Store item (internal + slot-facing)
 
 export interface NotificationClearMethods {
    clear: () => void
@@ -120,16 +112,15 @@ export interface HiddenInternalItemData {
    positionStyles: CSSProperties
 }
 
-/** Options added internally when creating a notification. */
 export type InternalItemData = ExposedInternalItemData & HiddenInternalItemData
 
-// Notify (public API; `push` kept as an alias for backwards compatibility)
+// —— `notify()` / `push`
 
 export interface NotifyProps<T extends Obj = Obj> {
    props?: T
 }
 
-/** @deprecated Use NotifyProps */
+/** @deprecated Use `NotifyProps`. */
 export type PushProps<T extends Obj = Obj> = NotifyProps<T>
 
 export interface NotifySpecificOptions {
@@ -137,7 +128,7 @@ export interface NotifySpecificOptions {
    ariaLiveOnly?: boolean
 }
 
-/** @deprecated Use NotifySpecificOptions */
+/** @deprecated Use `NotifySpecificOptions`. */
 export type PushSpecificOptions = NotifySpecificOptions
 
 export interface NotifyCallbacks {
@@ -145,31 +136,28 @@ export interface NotifyCallbacks {
    onManualClear?: (item: NotivueItem) => void
 }
 
-/** @deprecated Use NotifyCallbacks */
+/** @deprecated Use `NotifyCallbacks`. */
 export type PushCallbacks = NotifyCallbacks
 
-/** Defined by the user when calling notify() */
 export type NotifyOptions<T extends Obj = Obj> = NotificationOptions &
    NotifyProps<T> &
    NotifySpecificOptions &
    NotifyCallbacks
 
-/** @deprecated Use NotifyOptions */
+/** @deprecated Use `NotifyOptions`. */
 export type PushOptions<T extends Obj = Obj> = NotifyOptions<T>
 
-/** Added in background after calling notify() */
 export type InternalNotifyOptions = { id: string; type: NotificationType }
 
-/** @deprecated Use InternalNotifyOptions */
+/** @deprecated Use `InternalNotifyOptions`. */
 export type InternalPushOptions = InternalNotifyOptions
 
 export type NotifyOptionsWithInternals<T extends Obj = Obj> = NotifyOptions<T> &
    InternalNotifyOptions
 
-/** @deprecated Use NotifyOptionsWithInternals */
+/** @deprecated Use `NotifyOptionsWithInternals`. */
 export type PushOptionsWithInternals<T extends Obj = Obj> = NotifyOptionsWithInternals<T>
 
-/** Final shape of the store item */
 export type StoreItem<T extends Obj = Obj> = DeepRequired<NotificationOptions> &
    Required<NotifyProps<T>> &
    InternalNotifyOptions &
@@ -177,63 +165,77 @@ export type StoreItem<T extends Obj = Obj> = DeepRequired<NotificationOptions> &
    NotifySpecificOptions &
    NotifyCallbacks
 
-/** Portion of the store item exposed to slot */
 export type NotivueItem<T extends Obj = Obj> = Omit<StoreItem<T>, keyof HiddenInternalItemData>
 
 export type NotifyParameter<T extends Obj = Obj> =
    | NotifyOptions<T>
-   | Exclude<NotificationOptions['message'], undefined> // NonNullable doesn't work?
+   | Exclude<NotificationOptions['message'], undefined>
 
-/** @deprecated Use NotifyParameter */
+/** @deprecated Use `NotifyParameter`. */
 export type PushParameter<T extends Obj = Obj> = NotifyParameter<T>
 
-export type NotifyStatic = <T extends Obj = Obj>(
+/** Shared arity for methods that only take options and return clear handles. */
+type NotifyOptionsToClearMethods = <T extends Obj = Obj>(
    options: NotifyParameter<T>
 ) => NotificationClearMethods
 
-/** @deprecated Use NotifyStatic */
+export type NotifyStatic = NotifyOptionsToClearMethods
+
+/** @deprecated Use `NotifyStatic`. */
 export type PushStatic = NotifyStatic
 
-export type NotifyPromiseReturnMethod = <T extends Obj = Obj>(
-   options: NotifyParameter<T>
-) => NotificationClearMethods
+export type NotifyPromiseReturnMethod = NotifyOptionsToClearMethods
 
-/** @deprecated Use NotifyPromiseReturnMethod */
+/** @deprecated Use `NotifyPromiseReturnMethod`. */
 export type PushPromiseReturnMethod = NotifyPromiseReturnMethod
 
-export interface NotifyPromiseReturn {
-   resolve: NotifyPromiseReturnMethod
+/** Handle from `notify.loading()`; prefer `success` / `error` (`resolve` / `reject` are aliases). */
+export interface NotifyLoadingReturn {
    success: NotifyPromiseReturnMethod
-   reject: NotifyPromiseReturnMethod
    error: NotifyPromiseReturnMethod
+   resolve: NotifyPromiseReturnMethod
+   reject: NotifyPromiseReturnMethod
 }
 
-/** @deprecated Use NotifyPromiseReturn */
-export type PushPromiseReturn = NotifyPromiseReturn
+/** @deprecated Use `NotifyLoadingReturn`. */
+export type NotifyLoadReturn = NotifyLoadingReturn
+/** @deprecated Use `NotifyLoadingReturn`. */
+export type NotifyPromiseReturn = NotifyLoadingReturn
+/** @deprecated Use `NotifyLoadingReturn`. */
+export type PushPromiseReturn = NotifyLoadingReturn
 
-export type NotifyPromise = <T extends Obj = Obj>(
+export type NotifyLoading = <T extends Obj = Obj>(
    options: NotifyParameter<T>
-) => NotificationClearMethods & NotifyPromiseReturn
+) => NotificationClearMethods & NotifyLoadingReturn
 
-/** @deprecated Use NotifyPromise */
-export type PushPromise = NotifyPromise
+/** @deprecated Use `NotifyLoading`. */
+export type NotifyLoad = NotifyLoading
+/** @deprecated Use `NotifyLoading`. */
+export type NotifyPromise = NotifyLoading
+/** @deprecated Use `NotifyLoading`. */
+export type PushPromise = NotifyLoading
 
 export interface Notify {
    success: NotifyStatic
    error: NotifyStatic
    info: NotifyStatic
    warning: NotifyStatic
-   promise: NotifyPromise
-   load: NotifyPromise
+   loading: NotifyLoading
+   /** @deprecated Use `loading`. */
+   load: NotifyLoading
+   /** @deprecated Use `loading`. */
+   promise: NotifyLoading
    clearAll: () => void
    destroyAll: () => void
 }
 
-/** @deprecated Use Notify */
+/** @deprecated Use `Notify`. */
 export type Push = Notify
 
+// —— Store slices
+
 export type ConfigSlice = ToRefs<NotivueConfigRequired> & {
-   update: (newConfig: UpdateParam) => void
+   update: (newConfig: NotivueConfigUpdateParam) => void
 }
 
 export type AnimationsSlice = ReturnType<typeof createAnimations>
@@ -262,34 +264,28 @@ export interface NotivueComputedEntries {
    queue: ComputedRef<NotivueItem[]>
 }
 
-// New v2.1.0 aliases
-
 export type UseNotivueReturn = ConfigSlice & {
    isStreamPaused: Readonly<Ref<boolean>>
    isTopAlign: ComputedRef<boolean>
 }
 
+// —— Extra public names (historical / ergonomics)
+
 export type NotivueNotificationOptions = NotificationOptions
 export type NotivuePosition = Position
 export type NotivueNotificationType = NotificationType
-
-// New v2.1.1 aliases
-
 export type NotifyClearMethods = NotificationClearMethods
 
-/** @deprecated Use NotifyClearMethods */
+/** @deprecated Use `NotifyClearMethods`. */
 export type PushClearMethods = NotifyClearMethods
 
-// New v2.4.0 aliases
-
 export type NotificationTypes = NotificationType
-
-// Aliases prev 1.2.0
 
 export type NotivueSlot = NotivueItem
 export type UserNotifyOptions = NotifyOptions
 
-/** @deprecated Use UserNotifyOptions */
+/** @deprecated Use `UserNotifyOptions`. */
 export type UserPushOptions = UserNotifyOptions
+
 export type ClearFunctions = NotificationClearMethods
 export type ClearMethods = NotificationClearMethods

@@ -5,6 +5,7 @@ import {
    mergeDeep,
    mergeNotificationOptions as mergeOptions,
    toRawConfig,
+   toCanonicalNotificationType,
 } from './utils'
 
 import { isStatic, getSlotItem } from './utils'
@@ -22,11 +23,11 @@ import type {
    ElementsSlice,
    TimeoutsSlice,
    AnimationsSlice,
-   UpdateParam,
+   NotivueConfigUpdateParam,
    NotivueStore,
 } from 'notivue'
 
-export let updateConfig: (newConfig: UpdateParam) => void = () => {}
+export let updateConfig: (newConfig: NotivueConfigUpdateParam) => void = () => {}
 
 export function createStore(
    userConfig: NotivueConfig,
@@ -45,7 +46,7 @@ export function createStore(
 export function createConfig(userConfig: NotivueConfig, isRunning: Readonly<Ref<boolean>>) {
    const config = createConfigRefs(DEFAULT_CONFIG, userConfig, isRunning)
 
-   function update(newConfig: UpdateParam) {
+   function update(newConfig: NotivueConfigUpdateParam) {
       if (!isRunning.value) return
 
       if (typeof newConfig === 'function') {
@@ -388,7 +389,8 @@ export function createNotifyProxies({
          animations.playLeave(id, { isUserTriggered: true, isDestroy })
       },
       notify<T extends Obj = Obj>(options: NotifyOptionsWithInternals<T>) {
-         const entry = mergeOptions<T>(config.notifications.value, options)
+         const opts = { ...options, type: toCanonicalNotificationType(options.type) }
+         const entry = mergeOptions<T>(config.notifications.value, opts)
          const createdAt = Date.now()
 
          if (config.avoidDuplicates.value && isStatic(entry.type)) {
@@ -428,7 +430,7 @@ export function createNotifyProxies({
 
          const createTimeout = () => timeouts.create(entry.id, entry.duration)
 
-         if (options.type === NType.PROMISE_RESOLVE || options.type === NType.PROMISE_REJECT) {
+         if (opts.type === NType.LOADING_SUCCESS || opts.type === NType.LOADING_ERROR) {
             if (queue.get(entry.id)) {
                queue.update(entry.id, { ...entry, createdAt, timeout: createTimeout })
                queue.triggerRef() // ...but we're exposing the queue via `useNotifications` so consumers may need this
@@ -440,7 +442,7 @@ export function createNotifyProxies({
             const isQueueActive = config.enqueue.value
             const hasReachedLimit = items.length >= config.limit.value
             const shouldDiscard = !isQueueActive && hasReachedLimit
-            const shouldEnqueue = isQueueActive && !options.skipQueue && hasReachedLimit
+            const shouldEnqueue = isQueueActive && !opts.skipQueue && hasReachedLimit
 
             if (shouldDiscard) {
                items.entries.value

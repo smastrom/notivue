@@ -1,4 +1,5 @@
 [data-notivue='success'],
+[data-notivue='loading-success'],
 [data-notivue='promise-resolve'] {
    --nv-bg: var(--nv-success-bg);
    --nv-fg: var(--nv-success-fg);
@@ -7,6 +8,7 @@
 }
 
 [data-notivue='error'],
+[data-notivue='loading-error'],
 [data-notivue='promise-reject'] {
    --nv-bg: var(--nv-error-bg);
    --nv-fg: var(--nv-error-fg);
@@ -28,11 +30,12 @@
    --nv-border: var(--nv-info-border);
 }
 
+[data-notivue='loading'],
 [data-notivue='promise'] {
-   --nv-bg: var(--nv-promise-bg);
-   --nv-fg: var(--nv-promise-fg);
-   --nv-accent: var(--nv-promise-accent, var(--nv-global-accent));
-   --nv-border: var(--nv-promise-border);
+   --nv-bg: var(--nv-loading-bg, var(--nv-promise-bg));
+   --nv-fg: var(--nv-loading-fg, var(--nv-promise-fg));
+   --nv-accent: var(--nv-loading-accent, var(--nv-promise-accent, var(--nv-global-accent)));
+   --nv-border: var(--nv-loading-border, var(--nv-promise-border));
 }
 
 .Notivue__notification {

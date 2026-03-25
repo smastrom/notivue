@@ -34,25 +34,32 @@ export function createNotify(proxies: ReturnType<typeof createNotifyProxies>): N
       }
    }
 
+   function loading(options: NotifyParameter) {
+      const { id, clear, destroy } = dispatch(options, NType.LOADING)
+
+      return {
+         success: (o: NotifyParameter) => dispatch(o, NType.LOADING_SUCCESS, id),
+         error: (o: NotifyParameter) => dispatch(o, NType.LOADING_ERROR, id),
+         resolve: (o: NotifyParameter) => dispatch(o, NType.LOADING_SUCCESS, id),
+         reject: (o: NotifyParameter) => dispatch(o, NType.LOADING_ERROR, id),
+         clear,
+         destroy,
+      }
+   }
+
    return {
       success: (options) => dispatch(options, NType.SUCCESS),
       error: (options) => dispatch(options, NType.ERROR),
       warning: (options) => dispatch(options, NType.WARNING),
       info: (options) => dispatch(options, NType.INFO),
-      promise: (options) => {
-         const { id, clear, destroy } = dispatch(options, NType.PROMISE)
-
-         return {
-            resolve: (options) => dispatch(options, NType.PROMISE_RESOLVE, id),
-            reject: (options) => dispatch(options, NType.PROMISE_REJECT, id),
-            success: (options) => dispatch(options, NType.PROMISE_RESOLVE, id),
-            error: (options) => dispatch(options, NType.PROMISE_REJECT, id),
-            clear,
-            destroy,
-         }
+      loading,
+      /** @deprecated Deprecated alias of `loading`. */
+      load(options: NotifyParameter) {
+         return loading(options)
       },
-      load(options) {
-         return this.promise(options)
+      /** @deprecated Deprecated alias of `loading`. */
+      promise(options: NotifyParameter) {
+         return loading(options)
       },
       clearAll: () => proxies.clearAll(),
       destroyAll: () => proxies.destroyAll(),
