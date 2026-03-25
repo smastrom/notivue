@@ -3,10 +3,10 @@ const { isRunning, startInstance, stopInstance } = useNotivueInstance()
 </script>
 
 <template>
-   <SharedButton @click="push.clearAll" text="Dismiss All">
+   <SharedButton @click="notify.clearAll" text="Dismiss All">
       <IconsDismissIcon />
    </SharedButton>
-   <SharedButton @click="push.destroyAll" text="Destroy All">
+   <SharedButton @click="notify.destroyAll" text="Destroy All">
       <IconsDestroyIcon />
    </SharedButton>
 

@@ -30,7 +30,7 @@ function toggleQueue() {
 }
 
 function toggleNoDupes() {
-   push.destroyAll()
+   notify.destroyAll()
 
    config.update((prevConf) => ({
       avoidDuplicates: !prevConf.avoidDuplicates,
@@ -38,7 +38,7 @@ function toggleNoDupes() {
 
    if (config.avoidDuplicates.value) state.hasProgress = true
 
-   push.success(messages.value.success)
+   notify.success(messages.value.success)
 }
 
 const enqueuedLength = computed(() => queue.value.length)
@@ -57,7 +57,7 @@ watch(
    (isEnabled) => {
       toggleRtlIfNeeded()
 
-      push.info({
+      notify.info({
          title: `Swipe to dismiss ${isEnabled ? 'on' : 'off'}`,
          message: isEnabled
             ? 'Swipe a notification left or right to dismiss it.'

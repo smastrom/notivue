@@ -3,7 +3,7 @@ const { state, messages } = useStore()
 
 async function asyncRefMessagePush() {
    const initialMessage = ref(state.rtl ? 'جاري تحميل الملفات...' : 'Preparing to upload files...')
-   const notification = push.promise(initialMessage)
+   const notification = notify.promise(initialMessage)
 
    for (let n = 1; n < 4; n++) {
       await new Promise((resolve) => setTimeout(resolve, getRandomInt(1000, 2000)))
@@ -17,7 +17,7 @@ async function asyncRefMessagePush() {
 async function asyncPush() {
    if (Math.random() > 0.7) return asyncRefMessagePush()
 
-   const pending = push.promise(messages.value.dynamic)
+   const pending = notify.promise(messages.value.dynamic)
    await new Promise((resolve) => setTimeout(resolve, getRandomInt(2000, 4000)))
 
    if (Math.random() > 0.5) {
@@ -31,7 +31,7 @@ async function asyncPush() {
 <template>
    <SharedButton
       @click="
-         push.success({
+         notify.success({
             ...messages.success,
             onAutoClear: (item) => {
                // console.log('AutoClear!', item)
@@ -45,13 +45,13 @@ async function asyncPush() {
    >
       <IconsSuccessIcon />
    </SharedButton>
-   <SharedButton @click="push.error(messages.error)" text="Error">
+   <SharedButton @click="notify.error(messages.error)" text="Error">
       <IconsWarnIcon :isWarn="false" />
    </SharedButton>
-   <SharedButton @click="push.warning(messages.warning)" text="Warning">
+   <SharedButton @click="notify.warning(messages.warning)" text="Warning">
       <IconsWarnIcon isWarn />
    </SharedButton>
-   <SharedButton @click="push.info(messages.info)" text="Info">
+   <SharedButton @click="notify.info(messages.info)" text="Info">
       <IconsInfoIcon />
    </SharedButton>
    <SharedButton @click="asyncPush" text="Dynamic">

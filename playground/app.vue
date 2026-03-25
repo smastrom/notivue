@@ -33,7 +33,7 @@ const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme }
 
 watch(
    () => [config.enqueue.value, config.limit.value],
-   () => push.destroyAll()
+   () => notify.destroyAll()
 )
 </script>
 

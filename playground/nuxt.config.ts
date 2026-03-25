@@ -1,6 +1,6 @@
 import { getHead } from './utils/head'
 
-/** App sources intentionally use `push` (not `notify`) for regression testing; both APIs are equivalent. */
+/** `NavPushHeadless.vue` keeps the legacy `push` export and `Push*` types for alias regression testing. */
 export default defineNuxtConfig({
    srcDir: '.',
    modules: ['notivue/nuxt'],

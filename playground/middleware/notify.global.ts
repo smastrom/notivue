@@ -4,5 +4,5 @@ export default defineNuxtRouteMiddleware(() => {
       return {}
    })
 
-   push.info('Welcome to Notivue! Use the controls below to test it out.')
+   notify.info('Welcome to Notivue! Use the controls below to test it out.')
 })

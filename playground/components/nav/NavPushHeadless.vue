@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import profilePicture from '@/assets/profile-picture.jpg?url'
 
+import { push, type PushOptions } from 'notivue'
+
 import type { UploadNotificationProps } from '@/components/custom-notifications/UploadNotification.vue'
 import type { FriendRequestNotificationProps } from '@/components/custom-notifications/FriendRequestNotification.vue'
 import type { SimpleNotificationProps } from '@/components/custom-notifications/SimpleNotification.vue'
@@ -53,12 +55,14 @@ async function pushFileUpload() {
 function pushSimple() {
    resetOptions()
 
-   push.success<SimpleNotificationProps>({
+   const options = {
       message: 'Your message was deleted.',
       props: {
          isSimpleNotification: true,
       },
-   })
+   } satisfies PushOptions<SimpleNotificationProps>
+
+   push.success<SimpleNotificationProps>(options)
 }
 
 function pushUsingComboKey(e: KeyboardEvent) {
