@@ -20,7 +20,7 @@ export function createProvides(startOnCreation: boolean, userConfig: NotivueConf
       store,
       instance,
       notify,
-      push: notify,
+      push: notify, // Legacy alias for backwards compatibility
    }
 }
 

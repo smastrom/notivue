@@ -1,6 +1,12 @@
-import type { ClearFunctions, PushPromiseReturn, NotificationType, PushOptions } from 'notivue'
+import type {
+   ClearFunctions,
+   PushPromiseReturn,
+   NotificationType,
+   PushOptions,
+   NotifyOptions,
+} from 'notivue'
 
-export type PushAstroEvent = PushOptions & {
+export type PushAstroEvent = NotifyOptions & {
    type: Exclude<NotificationType, 'promise-resolve' | 'promise-reject'>
    resultEventName: string
 }
