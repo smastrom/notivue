@@ -11,9 +11,9 @@ export type CyNotivueSwipeProps = CyNotificationSwipeProps
 const cyProps = defineProps<CyNotificationSwipeProps>()
 
 function pushPromise() {
-   push.load({
+   push.loading({
       title: 'Promise',
-      message: 'This is a promise notification and should not be swipeable',
+      message: 'This pending dynamic notification should not be swipeable',
    })
 }
 
