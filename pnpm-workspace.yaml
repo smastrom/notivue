@@ -3,3 +3,4 @@ packages:
    - 'tests'
    - 'playground'
    - 'playground-astro'
+   - 'docs'

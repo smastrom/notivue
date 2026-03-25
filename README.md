@@ -1,10 +1,10 @@
+<img src="https://cdn.smastrom.io/notivue-readme.svg" width="800" height="auto" alt="notivue" />
+
 # Notivue
 
 ### Powerful toast notification system for Vue
 
 [Live Demo](https://notivue.smastrom.io) - [Documentation](https://docs.notivue.smastrom.io)
-
-<img src="https://cdn.smastrom.io/notivue-readme.svg" width="800" height="auto" alt="notivue" />
 
 ---
 
@@ -14,29 +14,21 @@
 
 ## Features
 
-**🧬 Fully modular with zero dependencies**  
-_Granularly include only the features you need_
+🧬 **Fully modular with zero dependencies** - Zero bloat, only the logic you actually import reaches your production bundle.
 
-**✅ Beautiful, ready-made notifications included**  
-_Themes, icons, progress bar, and native RTL support_
+✅ **Beautiful, ready-made notifications included** - Accessible, CSS-variable-based themes with built-in dark mode, progress bars, and RTL support.
 
-**🧩 Headless API**  
-_Use your own components while Notivue handles the rest_
+🧩 **Headless API** - Total decoupling of logic and UI; bring your own custom components while Notivue manages the stack and lifecycle
 
-**💊 Drop-in components to enhance notifications**  
-_NotificationSwipe_, _NotivueKeyboard_, all optional and customizable
+🌀 **Dynamic Notifications (Promise API)** - Update a single notification from _loading_ to _success_ or _error_ using a reactive handle
 
-**🌀 Dynamic Notifications**  
-_Update pending notifications with a breeze_
+💊 **Drop-in components to enhance notifications** - Optional add-ons like _NotivueSwipe_ for touch gestures and _NotivueKeyboard_ for keyboard navigation
 
-**🎢 Slick transitions and animations**  
-_Customize animations with CSS classes_
+♿️ **Fully accessible (A11y)** - WAI-ARIA compliant with automatic live regions, _reduced-motion_ support and built-in keyboard navigation.
 
-**♿️ Fully accessible**  
-_Built-in announcements, reduced-motion and keyboard support_
+🛡️ **Battle-tested** - 150+ E2E tests ensuring consistent behavior and reliability
 
-**💫 Nuxt and Astro modules**  
-_Built-in Nuxt and Astro ad-hoc modules_
+💫 **Nuxt and Astro modules** - Framework-specific wrappers providing seamless integration and zero boilerplate
 
 ## Installation
 
@@ -66,12 +58,12 @@ import 'notivue/notification.css' // Only needed if using built-in <Notification
 import 'notivue/animations.css' // Only needed if using default animations
 
 const notivue = createNotivue({
-   position: 'bottom-right',
-   pauseOnHover: true,
-   pauseOnTabChange: true,
-   limit: 4,
-   enqueue: true,
-   // ... other options
+  position: 'bottom-right',
+  pauseOnHover: true,
+  pauseOnTabChange: true,
+  limit: 4,
+  enqueue: true,
+  // other options...
 })
 const app = createApp(App)
 
@@ -87,18 +79,18 @@ import { Notivue, Notification, notify } from 'notivue'
 </script>
 
 <template>
-   <button
-      type="button"
-      @click="notify.success('Changes saved. They will sync when you are back online.')"
-   >
-      Save changes
-   </button>
+  <button
+    type="button"
+    @click="notify.success('Changes saved. They will sync when you are back online.')"
+  >
+    Save changes
+  </button>
 
-   <Notivue v-slot="item">
-      <Notification :item="item" />
-   </Notivue>
+  <Notivue v-slot="item">
+    <Notification :item="item" />
+  </Notivue>
 
-   <!-- RouterView, etc. -->
+  <!-- RouterView, etc. -->
 </template>
 ```
 
@@ -112,20 +104,20 @@ import { Notivue, Notification, NotificationSwipe, notify } from 'notivue'
 </script>
 
 <template>
-   <button
-      type="button"
-      @click="notify.success('Changes saved. They will sync when you are back online.')"
-   >
-      Save changes
-   </button>
+  <button
+    type="button"
+    @click="notify.success('Changes saved. They will sync when you are back online.')"
+  >
+    Save changes
+  </button>
 
-   <Notivue v-slot="item">
-      <NotificationSwipe :item="item">
-         <Notification :item="item" />
-      </NotificationSwipe>
-   </Notivue>
+  <Notivue v-slot="item">
+    <NotificationSwipe :item="item">
+      <Notification :item="item" />
+    </NotificationSwipe>
+  </Notivue>
 
-   <!-- RouterView, etc. -->
+  <!-- RouterView, etc. -->
 </template>
 ```
 
@@ -139,27 +131,25 @@ import type { NotivueItem } from 'notivue'
 
 // Custom props
 export interface ToastProps {
-   from: string
+  from: string
 }
 
 defineProps<{
-   item: NotivueItem<ToastProps>
+  item: NotivueItem<ToastProps>
 }>()
 </script>
 
 <template>
-   <div class="Toast">
-      <div class="Toast-body">
-         <p :role="item.ariaRole" :aria-live="item.ariaLive" aria-atomic="true">
-            {{ item.message }}
-         </p>
-         <p class="Toast-meta">{{ item.props.from }}</p>
-      </div>
+  <div class="Toast">
+    <div class="Toast-body">
+      <p :role="item.ariaRole" :aria-live="item.ariaLive" aria-atomic="true">
+        {{ item.message }}
+      </p>
+      <p class="Toast-meta">{{ item.props.from }}</p>
+    </div>
 
-      <button type="button" class="Toast-dismiss" @click="item.clear" aria-label="Dismiss">
-         ×
-      </button>
-   </div>
+    <button type="button" class="Toast-dismiss" @click="item.clear" aria-label="Dismiss">×</button>
+  </div>
 </template>
 ```
 
@@ -172,33 +162,33 @@ import { Notivue, NotificationSwipe, notify } from 'notivue'
 import Toast, { type ToastProps } from './components/Toast.vue'
 
 function showNotification(message: string, from: string) {
-   notify.success<ToastProps>({
-      message,
-      props: { from },
-   })
+  notify.success<ToastProps>({
+    message,
+    props: { from },
+  })
 }
 </script>
 
 <template>
-   <button
-      type="button"
-      @click="
-         showNotification(
-            'Payment recorded. We emailed a receipt to the customer.',
-            'Product Management'
-         )
-      "
-   >
-      Record payment
-   </button>
+  <button
+    type="button"
+    @click="
+      showNotification(
+        'Payment recorded. We emailed a receipt to the customer.',
+        'Product Management'
+      )
+    "
+  >
+    Record payment
+  </button>
 
-   <Notivue v-slot="item">
-      <NotificationSwipe :item="item">
-         <Toast :item="item" />
-      </NotificationSwipe>
-   </Notivue>
+  <Notivue v-slot="item">
+    <NotificationSwipe :item="item">
+      <Toast :item="item" />
+    </NotificationSwipe>
+  </Notivue>
 
-   <!-- RouterView, etc. -->
+  <!-- RouterView, etc. -->
 </template>
 ```
 
@@ -208,19 +198,19 @@ function showNotification(message: string, from: string) {
 
 ```ts
 export default defineNuxtConfig({
-   modules: ['notivue/nuxt'],
-   css: [
-      'notivue/notification.css', // Only needed if using built-in <Notification />
-      'notivue/animations.css', // Only needed if using default animations
-   ],
-   notivue: {
-      position: 'bottom-right',
-      pauseOnHover: true,
-      pauseOnTabChange: true,
-      limit: 4,
-      enqueue: true,
-      // ... other options
-   },
+  modules: ['notivue/nuxt'],
+  css: [
+    'notivue/notification.css', // Only needed if using built-in <Notification />
+    'notivue/animations.css', // Only needed if using default animations
+  ],
+  notivue: {
+    position: 'bottom-right',
+    pauseOnHover: true,
+    pauseOnTabChange: true,
+    limit: 4,
+    enqueue: true,
+    // other options...
+  },
 })
 ```
 
@@ -228,18 +218,18 @@ export default defineNuxtConfig({
 
 ```vue
 <template>
-   <button
-      type="button"
-      @click="notify.success('Changes saved. They will sync when you are back online.')"
-   >
-      Save changes
-   </button>
+  <button
+    type="button"
+    @click="notify.success('Changes saved. They will sync when you are back online.')"
+  >
+    Save changes
+  </button>
 
-   <Notivue v-slot="item">
-      <Notification :item="item" />
-   </Notivue>
+  <Notivue v-slot="item">
+    <Notification :item="item" />
+  </Notivue>
 
-   <!-- NuxtLayout, NuxtPage, etc. -->
+  <!-- NuxtLayout, NuxtPage, etc. -->
 </template>
 ```
 

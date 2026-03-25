@@ -9,5 +9,13 @@
    "ignorePatterns": [".vscode/**", "node_modules/**", "dist/**", "target/**"],
    "sortPackageJson": {
       "sortScripts": true
-   }
+   },
+   "overrides": [
+      {
+         "files": ["*.md"],
+         "options": {
+            "tabWidth": 2
+         }
+      }
+   ]
 }

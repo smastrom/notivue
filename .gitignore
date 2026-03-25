@@ -15,4 +15,4 @@ notivue-*.tgz
 .nuxt
 pnpm-lock.yaml
 
-docs
+docs/
