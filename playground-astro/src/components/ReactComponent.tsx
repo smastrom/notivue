@@ -8,13 +8,13 @@ function notifyStatic() {
 }
 
 function notifyDynamic() {
-   const pending = notify.promise({
+   const notification = notify.promise({
       title: 'Updating…',
       message: 'This dynamic notification is still updating.',
    })
 
    setTimeout(() => {
-      pending.resolve({
+      notification.resolve({
          title: 'React notification',
          message: 'Update finished — notification from React.',
       })

@@ -39,14 +39,14 @@ async function pushFileUpload() {
 
    const props = { isUploadNotifiation: true, fileName: 'excel-sheet.xlsx' }
 
-   const pending = push.promise<UploadNotificationProps>({
+   const notification = push.loading<UploadNotificationProps>({
       message: 'Uploading your file…',
       props,
    })
 
    await new Promise((resolve) => setTimeout(resolve, getRandomInt(2000, 4000)))
 
-   pending.resolve({
+   notification.success({
       message: 'Your file was uploaded successfully.',
       props,
    })

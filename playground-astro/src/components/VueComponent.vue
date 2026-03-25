@@ -9,13 +9,13 @@ function notifyStatic() {
 }
 
 function notifyDynamic() {
-   const pending = notify.promise({
+   const notification = notify.loading({
       title: 'Updating…',
       message: 'This dynamic notification is still updating.',
    })
 
    setTimeout(() => {
-      pending.resolve({
+      notification.success({
          title: 'Vue notification',
          message: 'Update finished — notification from Vue.',
       })

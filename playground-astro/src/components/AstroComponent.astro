@@ -18,13 +18,13 @@
    }
 
    function notifyDynamic() {
-      const pending = notify.promise({
+      const notification = notify.promise({
          title: 'Updating…',
          message: 'This dynamic notification is still updating.',
       })
 
       setTimeout(() => {
-         pending.resolve({
+         notification.resolve({
             title: 'Notification',
             message: 'Update finished — notification from a script tag.',
          })

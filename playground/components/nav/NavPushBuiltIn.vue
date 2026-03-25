@@ -3,7 +3,7 @@ const { state, messages } = useStore()
 
 async function asyncRefMessagePush() {
    const initialMessage = ref(state.rtl ? 'جاري تحميل الملفات...' : 'Preparing to upload files...')
-   const notification = notify.promise(initialMessage)
+   const notification = notify.loading(initialMessage)
 
    for (let n = 1; n < 4; n++) {
       await new Promise((resolve) => setTimeout(resolve, getRandomInt(1000, 2000)))
@@ -11,19 +11,19 @@ async function asyncRefMessagePush() {
    }
 
    await new Promise((resolve) => setTimeout(resolve, getRandomInt(1000, 2000)))
-   notification.resolve(state.rtl ? 'تم تحميل جميع الملفات!' : 'All files uploaded!')
+   notification.success(state.rtl ? 'تم تحميل جميع الملفات!' : 'All files uploaded!')
 }
 
 async function asyncPush() {
    if (Math.random() > 0.7) return asyncRefMessagePush()
 
-   const pending = notify.promise(messages.value.dynamic)
+   const notification = notify.loading(messages.value.dynamic)
    await new Promise((resolve) => setTimeout(resolve, getRandomInt(2000, 4000)))
 
    if (Math.random() > 0.5) {
-      pending.resolve(messages.value.success)
+      notification.success(messages.value.success)
    } else {
-      pending.reject(messages.value.error)
+      notification.error(messages.value.error)
    }
 }
 </script>

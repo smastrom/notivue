@@ -10,8 +10,8 @@ const notification = defineProps<{
    item: NotivueItem<UploadNotificationProps>
 }>()
 
-/** Built-in `promise` type: notification still updating (dynamic) before resolve/reject. */
-const isDynamic = computed(() => notification.item.type === 'promise')
+/** Pending dynamic notification (`notify.loading()`). */
+const isDynamic = computed(() => notification.item.type === 'loading')
 </script>
 
 <template>
