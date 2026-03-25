@@ -4,6 +4,8 @@
 
 [Live Demo](https://notivue.smastrom.io) - [Documentation](https://docs.notivue.smastrom.io)
 
+<img src="https://cdn.smastrom.io/notivue-readme.svg" width="800" height="auto" alt="notivue" />
+
 ---
 
 **Examples:** [Custom Components](https://stackblitz.com/edit/vitejs-vite-9jkh73?file=src%2Fcomponents%2FPage.vue) -
@@ -22,7 +24,7 @@ _Themes, icons, progress bar, and native RTL support_
 _Use your own components while Notivue handles the rest_
 
 **💊 Drop-in components to enhance notifications**  
-_NotificationSwipe_ (alias `NotivueSwipe`), _NotivueKeyboard_, all optional and customizable
+_NotificationSwipe_, _NotivueKeyboard_, all optional and customizable
 
 **🌀 Dynamic Notifications**  
 _Update pending notifications with a breeze_
@@ -38,7 +40,7 @@ _Built-in Nuxt and Astro ad-hoc modules_
 
 ## Installation
 
-```shell
+```bash
 pnpm add notivue
 
 # npm i notivue
@@ -46,11 +48,11 @@ pnpm add notivue
 # bun i notivue
 ```
 
-> :bulb: Beyond this quick start — Nuxt/Astro setup, **`notify`** / callbacks, stream config, built-in styling, headless mode, full API — lives in the [documentation](https://docs.notivue.smastrom.io). The legacy **`push`** name remains exported as an alias.
+> :bulb: Beyond this quick start — Nuxt/Astro setup, **`notify`** / callbacks, stream config, built-in styling, headless mode, full API — lives in the [documentation](https://docs.notivue.smastrom.io).
 
 ## Quick start (Vite)
 
-> :bulb: See [↓ below](#nuxt) for **Nuxt** and [↓ Astro](#astro).
+> :bulb: See ↓ below for [Nuxt](#nuxt) and [Astro](#astro).
 
 **main.js/ts**
 
@@ -100,9 +102,9 @@ import { Notivue, Notification, notify } from 'notivue'
 </template>
 ```
 
-### Swipe to dismiss
+### Swipe to dismiss (Optional)
 
-Wrap the notification in **`NotificationSwipe`** so toasts can be cleared with a horizontal swipe. Use the same wrapper around the built-in **`Notification`** or around a **custom component** (see the `<Toast>` example below). Alias: `NotivueSwipe`.
+Wrap the notification in **`NotificationSwipe`** so toasts can be cleared with a horizontal swipe. Use the same wrapper around the built-in **`Notification`** or around a **custom component** (see the `<Toast>` example below).
 
 ```vue
 <script setup>
