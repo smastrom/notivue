@@ -265,7 +265,8 @@ export interface NotivueComputedEntries {
 }
 
 export type UseNotivueReturn = ConfigSlice & {
-   isStreamPaused: Readonly<Ref<boolean>>
+   isStreamPaused: ComputedRef<boolean>
+   /** @deprecated Create computed property instead: `computed(() => config.position.value.startsWith('top'))`. */
    isTopAlign: ComputedRef<boolean>
 }
 

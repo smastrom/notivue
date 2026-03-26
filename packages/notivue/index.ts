@@ -7,13 +7,10 @@ export { createNotivue as createNotivueAstro } from './astro/createNotivue'
 
 export { startInstance, stopInstance } from '@/core/createInstance'
 
-export {
-   useNotify,
-   usePush,
-   useNotivue,
-   useNotifications,
-   useNotivueInstance,
-} from '@/core/useStore'
+export { useNotivue, useNotifications, useNotivueInstance } from '@/core/useStore'
+
+/** @deprecated Import `notify` from `notivue` instead of `useNotify()` or `usePush()`. */
+export { useNotify, usePush } from '@/core/useStore'
 export { useNotivueKeyboard } from '@/NotivueKeyboard/useNotivueKeyboard'
 
 export { default as Notivue } from '@/Notivue/Notivue.vue'

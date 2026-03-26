@@ -43,7 +43,9 @@ const astroNotifyApi = {
    error: (options: PushOptions) => pushEvent({ ...options, type: 'error' }),
    warning: (options: PushOptions) => pushEvent({ ...options, type: 'warning' }),
    loading: dynamicNotification,
+   /** @deprecated Use `loading`. */
    load: dynamicNotification,
+   /** @deprecated Use `loading`. */
    promise: dynamicNotification,
    clearAll() {
       window.dispatchEvent(new CustomEvent('notivue:clear-all'))

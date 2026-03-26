@@ -250,7 +250,7 @@ export function createAnimations(
          console.log('Updating positions')
 
          const isReduced = this.isReducedMotion.value || isImmediate
-         const isTopAlign = config.position.value.indexOf('top') === 0
+         const isTopAlign = config.position.value.startsWith('top')
          const leaveClass = config.animations.value.leave
 
          let accPrevHeights = 0

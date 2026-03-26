@@ -1,4 +1,4 @@
-import { inject, computed, toRefs, reactive, readonly, ref } from 'vue'
+import { inject, computed, toRefs, reactive, readonly, ref, type ComputedRef } from 'vue'
 
 import { isSSR, getSlotItem } from './utils'
 import { notivueInjectionKey, notivueInstanceInjectionKey } from './symbols'
@@ -56,7 +56,7 @@ export function useNotivue(): UseNotivueReturn {
          ...toRefs(reactive(DEFAULT_CONFIG)),
          update: () => {},
          isTopAlign: computed(() => true),
-         isStreamPaused: ref(false),
+         isStreamPaused: ref(false) as ComputedRef<boolean>,
       } as UseNotivueReturn
    }
 
@@ -64,30 +64,32 @@ export function useNotivue(): UseNotivueReturn {
 
    return {
       ...store.config,
-      isStreamPaused: readonly(store.timeouts.isStreamPaused),
+      isStreamPaused: readonly(store.timeouts.isStreamPaused) as ComputedRef<boolean>,
       isTopAlign: computed(() => store.config.position.value.indexOf('top') === 0),
    }
 }
 
 /**
- * Returns the shared `notify` API (same object as legacy `push`).
+ * @deprecated Import `notify` from `notivue` instead of calling `useNotify()` in setup.
  *
  * ```ts
  * import { notify } from 'notivue'
  * ```
  *
- * @docs https://docs.notivue.smastrom.io/api/notify.html#usenotify
+ * @see https://docs.notivue.smastrom.io/api/notify.html
  */
 export function useNotify() {
    return notify
 }
 
 /**
- * @deprecated Use `useNotify` or import `notify` / `push` directly.
+ * @deprecated Import `notify` from `notivue` instead of `usePush()`.
  *
  * ```ts
  * import { notify } from 'notivue'
  * ```
+ *
+ * @see https://docs.notivue.smastrom.io/api/notify.html
  */
 export function usePush() {
    return notify
