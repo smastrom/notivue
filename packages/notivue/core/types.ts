@@ -75,7 +75,7 @@ export interface NotivueConfig {
    /** Must match `transform <duration> <timing-function>`. */
    transition?: string
    teleportTo?: string | HTMLElement | false
-   /** @default Infinity */
+   /** Use `-1` for unlimited. @default -1 */
    limit?: number
    avoidDuplicates?: boolean
 }
@@ -132,7 +132,16 @@ export interface NotifySpecificOptions {
 export type PushSpecificOptions = NotifySpecificOptions
 
 export interface NotifyCallbacks {
+   /** Runs when the notification's duration expires (timeout). */
+   onTimedOut?: (item: NotivueItem) => void
+   /** Runs when the user dismisses the notification or `clear()` / `clearAll()` is called. */
+   onClear?: (item: NotivueItem) => void
+   /** Runs when `destroy()` or `destroyAll()` is called. */
+   onDestroy?: (item: NotivueItem) => void
+
+   /** @deprecated Use `onTimedOut`. */
    onAutoClear?: (item: NotivueItem) => void
+   /** @deprecated Use `onClear`. */
    onManualClear?: (item: NotivueItem) => void
 }
 

@@ -9,7 +9,8 @@ export const focusableEls =
 export const DEFAULT_PROPS = {
    comboKey: 'n',
    handleClicks: true,
-   leaveMessage: "You're leaving the notifications stream. Press Control + N to navigate it again.",
+   leaveMessage:
+      'You left the notifications stream. Press Tab or Control + N to navigate it again.',
    emptyMessage: 'No notifications to navigate',
    renderAnnouncement: true,
    maxAnnouncements: 2,

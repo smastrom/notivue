@@ -51,7 +51,7 @@ export const DEFAULT_CONFIG: NotivueConfigRequired = {
    position: 'top-center',
    teleportTo: 'body',
    notifications: DEFAULT_NOTIFICATION_OPTIONS,
-   limit: Infinity,
+   limit: -1,
    avoidDuplicates: false,
    transition: 'transform 0.35s cubic-bezier(0.5, 1, 0.25, 1)',
    animations: {

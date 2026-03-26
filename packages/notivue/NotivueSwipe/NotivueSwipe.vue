@@ -13,6 +13,7 @@ import {
 
 import { useStore } from '@/core/useStore'
 import { isMouse } from '@/Notivue/utils'
+import { isUnlimited } from '@/core/utils'
 import { NotificationTypeKeys as NType } from '@/core/constants'
 import { DEFAULT_PROPS, DEBOUNCE, RETURN_DUR } from './constants'
 
@@ -51,7 +52,7 @@ const isEnabled = computed(
       !timeouts.isStreamFocused.value &&
       !isDisabledByUser.value &&
       !isLoading.value &&
-      props.item.duration < Infinity
+      !isUnlimited(props.item.duration)
 )
 
 // Internal

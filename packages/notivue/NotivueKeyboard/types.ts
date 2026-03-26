@@ -20,7 +20,7 @@ export interface NotivueKeyboardData {
 
 export interface NotivueKeyboardProps {
    /**
-    * Key to combine with Shift to enter or exit the stream.
+    * Key to combine with Control to enter or exit the stream.
     *
     * @default "n"
     */
@@ -33,9 +33,9 @@ export interface NotivueKeyboardProps {
     */
    handleClicks?: boolean
    /**
-    * Text to be announced when leaving the stream
+    * Text to be announced when leaving the stream.
     *
-    * @default "You're leaving the notifications stream. Press Control + N to navigate it again."
+    * @default "You left the notifications stream. Press Tab or Control + N to navigate it again."
     */
    leaveMessage?: string
    /**

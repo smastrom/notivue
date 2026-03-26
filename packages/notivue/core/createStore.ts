@@ -8,7 +8,7 @@ import {
    toCanonicalNotificationType,
 } from './utils'
 
-import { isStatic, getSlotItem } from './utils'
+import { isStatic, getSlotItem, isUnlimited } from './utils'
 import { DEFAULT_CONFIG, NotificationTypeKeys as NType } from './constants'
 
 import type {
@@ -152,7 +152,9 @@ export function createItems(config: ConfigSlice, queue: QueueSlice) {
       remove(id: string) {
          this.entries.value = this.entries.value.filter((e) => e.id !== id)
 
-         const shouldDequeue = queue.length > 0 && this.length < config.limit.value
+         const shouldDequeue =
+            queue.length > 0 &&
+            (isUnlimited(config.limit.value) || this.length < config.limit.value)
          if (shouldDequeue) this.addFromQueue()
       },
       clear() {
@@ -207,7 +209,18 @@ export function createAnimations(
          const onAnimationend = (e?: AnimationEvent) => {
             if (e && e.currentTarget !== e.target) return
 
-            item?.[isUserTriggered ? 'onManualClear' : 'onAutoClear']?.(getSlotItem(item))
+            if (item) {
+               const slotItem = getSlotItem(item)
+
+               if (isDestroy) {
+                  ;(item.onDestroy ?? item.onManualClear)?.(slotItem)
+               } else if (isUserTriggered) {
+                  ;(item.onClear ?? item.onManualClear)?.(slotItem)
+               } else {
+                  ;(item.onTimedOut ?? item.onAutoClear)?.(slotItem)
+               }
+            }
+
             items.remove(id)
          }
 
@@ -235,6 +248,10 @@ export function createAnimations(
          const { clearAll = '' } = config.animations.value
 
          const onAnimationend = () => {
+            items.entries.value.forEach((item) => {
+               const slotItem = getSlotItem(item)
+               ;(item.onClear ?? item.onManualClear)?.(slotItem)
+            })
             queue.clear()
             items.clear()
          }
@@ -313,7 +330,7 @@ export function createTimeouts(items: ItemsSlice, animations: AnimationsSlice) {
          items.updateAll((item) => {
             window.clearTimeout(item.timeout as number)
 
-            if (item.duration === Infinity) return item
+            if (isUnlimited(item.duration)) return item
 
             let remaining = 0
 
@@ -344,7 +361,7 @@ export function createTimeouts(items: ItemsSlice, animations: AnimationsSlice) {
          items.updateAll((item) => {
             window.clearTimeout(item.timeout as number)
 
-            if (item.duration === Infinity) return item
+            if (isUnlimited(item.duration)) return item
 
             return {
                ...item,
@@ -376,6 +393,11 @@ export function createNotifyProxies({
 }) {
    return {
       destroyAll() {
+         items.entries.value.forEach((item) => {
+            window.clearTimeout(item.timeout as number)
+            const slotItem = getSlotItem(item)
+            ;(item.onDestroy ?? item.onManualClear)?.(slotItem)
+         })
          queue.clear()
          items.clear()
       },
@@ -440,7 +462,8 @@ export function createNotifyProxies({
             }
          } else {
             const isQueueActive = config.enqueue.value
-            const hasReachedLimit = items.length >= config.limit.value
+            const hasReachedLimit =
+               !isUnlimited(config.limit.value) && items.length >= config.limit.value
             const shouldDiscard = !isQueueActive && hasReachedLimit
             const shouldEnqueue = isQueueActive && !opts.skipQueue && hasReachedLimit
 

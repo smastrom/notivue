@@ -30,7 +30,7 @@ function pushFriendRequest() {
       },
       ariaRole: 'alert',
       ariaLive: 'assertive',
-      duration: Infinity,
+      duration: -1,
    })
 }
 

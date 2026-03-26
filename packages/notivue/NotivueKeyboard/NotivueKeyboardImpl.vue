@@ -161,7 +161,7 @@ function setCandidates(newContainers: HTMLElement[]) {
 
          _focusableEls.push(...innerFocusableEls)
 
-         if (innerFocusableEls.length > 1) {
+         if (innerFocusableEls.length > 0) {
             _ids.qualified.push(id)
             _candidateContainers.push(container)
          } else {

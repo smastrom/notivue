@@ -33,11 +33,14 @@ async function asyncPush() {
       @click="
          notify.success({
             ...messages.success,
-            onAutoClear: (item) => {
-               // console.log('AutoClear!', item)
+            onTimedOut: (item) => {
+               // console.log('TimedOut!', item)
             },
-            onManualClear: (item) => {
-               // console.log('Manual Clear!', item)
+            onClear: (item) => {
+               // console.log('Clear!', item)
+            },
+            onDestroy: (item) => {
+               // console.log('Destroy!', item)
             },
          })
       "

@@ -45,7 +45,7 @@ describe('Default options match the slot content', () => {
 
             .get('.Promise')
             .click()
-            .checkSlotAgainst({ ...promise, duration: null }) // Infinity is not valid
+            .checkSlotAgainst({ ...promise, duration: -1 })
       })
    })
 

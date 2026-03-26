@@ -12,7 +12,7 @@ const cyProps = withDefaults(defineProps<CyNotivueKeyboardProps>(), {
    handleClicks: true,
    renderAnnouncement: true,
    enqueue: false,
-   limit: Infinity,
+   limit: -1,
    maxAnnouncements: 2,
 })
 

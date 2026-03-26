@@ -42,7 +42,7 @@ function toggleNoDupes() {
 }
 
 const enqueuedLength = computed(() => queue.value.length)
-const isEnqueueDisabled = computed(() => config.limit.value === Infinity)
+const isEnqueueDisabled = computed(() => config.limit.value === -1)
 const isSwipeDisabled = computed(() => !config.pauseOnHover.value)
 
 watch(
@@ -114,7 +114,7 @@ const btnProps = {
          v-model="config.limit.value"
          aria-label="Maximum notifications on screen"
       >
-         <option selected :value="Infinity">No limit</option>
+         <option selected :value="-1">No limit</option>
          <option :value="1">Max 1</option>
          <option :value="3">Max 3</option>
          <option :value="5">Max 5</option>

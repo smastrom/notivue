@@ -15,6 +15,10 @@ import type {
 
 export const isSSR = typeof window === 'undefined'
 
+export function isUnlimited(value: number | null | undefined): boolean {
+   return value == null || value === Infinity || value === -1
+}
+
 export function mergeDeep<T extends Obj>(target: T, source: Record<string, any>): T {
    const merged: T = { ...target }
 
@@ -73,7 +77,7 @@ export function mergeNotificationOptions<T extends Obj = Obj>(
       ...configOptions.global,
       ...notificationTypeConfigSlice(configOptions, type),
       ...pushOptions,
-      ...(type === 'loading' ? { duration: Infinity } : {}),
+      ...(type === 'loading' ? { duration: -1 } : {}),
       type,
    }
 }

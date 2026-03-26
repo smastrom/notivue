@@ -53,12 +53,6 @@ const { elementsTabIndex } = useNotivueKeyboard()
    </div>
 </template>
 
-<style>
-[data-notivue-container]:focus-visible {
-   outline: none;
-}
-</style>
-
 <style scoped>
 [data-notivue-container]:focus-visible .Notification {
    outline: none;
