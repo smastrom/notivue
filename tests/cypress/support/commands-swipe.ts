@@ -1,6 +1,6 @@
 import { mount } from 'cypress/vue'
 
-import Notivue, { type CyNotificationSwipeProps } from '@/tests/NotivueSwipe/components/Notivue.vue'
+import Notivue, { type CyNotivueSwipeProps } from '@/tests/NotivueSwipe/components/Notivue.vue'
 
 import { DEFAULT_ANIM_DURATION as ANIM_DUR } from '@/support/utils'
 import { createNotivue } from 'notivue'
@@ -8,7 +8,7 @@ import { createNotivue } from 'notivue'
 declare global {
    namespace Cypress {
       interface Chainable {
-         mountSwipe(props?: CyNotificationSwipeProps): Chainable<any>
+         mountSwipe(props?: CyNotivueSwipeProps): Chainable<any>
          pushSwipeSuccess(): Chainable<any>
       }
    }

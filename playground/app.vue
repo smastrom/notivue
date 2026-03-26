@@ -49,7 +49,7 @@ watch(
             :item="item as NotivueItem<FriendRequestNotificationProps>"
          />
 
-         <NotificationSwipe v-else :item :disabled="!state.enableSwipe">
+         <NotivueSwipe v-else :item :disabled="!state.enableSwipe">
             <UploadNotification
                v-if="item.props.isUploadNotifiation"
                :item="item as NotivueItem<UploadNotificationProps>"
@@ -68,7 +68,7 @@ watch(
             >
                <NotificationProgress :item v-if="state.hasProgress" />
             </Notification>
-         </NotificationSwipe>
+         </NotivueSwipe>
       </Notivue>
    </NotivueKeyboard>
 

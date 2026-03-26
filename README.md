@@ -96,11 +96,11 @@ import { Notivue, Notification, notify } from 'notivue'
 
 ### Swipe to dismiss (Optional)
 
-Wrap the notification in **`NotificationSwipe`** so toasts can be cleared with a horizontal swipe. Use the same wrapper around the built-in **`Notification`** or around a **custom component** (see the `<Toast>` example below).
+Wrap the notification in **`NotivueSwipe`** so toasts can be cleared with a horizontal swipe. Use the same wrapper around the built-in **`Notification`** or around a **custom component** (see the `<Toast>` example below).
 
 ```vue
 <script setup>
-import { Notivue, Notification, NotificationSwipe, notify } from 'notivue'
+import { Notivue, Notification, NotivueSwipe, notify } from 'notivue'
 </script>
 
 <template>
@@ -112,9 +112,9 @@ import { Notivue, Notification, NotificationSwipe, notify } from 'notivue'
   </button>
 
   <Notivue v-slot="item">
-    <NotificationSwipe :item="item">
+    <NotivueSwipe :item="item">
       <Notification :item="item" />
-    </NotificationSwipe>
+    </NotivueSwipe>
   </Notivue>
 
   <!-- RouterView, etc. -->
@@ -157,7 +157,7 @@ defineProps<{
 
 ```vue
 <script setup lang="ts">
-import { Notivue, NotificationSwipe, notify } from 'notivue'
+import { Notivue, NotivueSwipe, notify } from 'notivue'
 
 import Toast, { type ToastProps } from './components/Toast.vue'
 
@@ -183,9 +183,9 @@ function showNotification(message: string, from: string) {
   </button>
 
   <Notivue v-slot="item">
-    <NotificationSwipe :item="item">
+    <NotivueSwipe :item="item">
       <Toast :item="item" />
-    </NotificationSwipe>
+    </NotivueSwipe>
   </Notivue>
 
   <!-- RouterView, etc. -->

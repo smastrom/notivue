@@ -30,8 +30,8 @@ export const exports = {
    ],
    components: [
       'Notivue',
-      'NotificationSwipe',
-      'NotivueSwipe', // Alias
+      'NotivueSwipe',
+      'NotificationSwipe', // Alias
       'NotivueKeyboard',
 
       'Notification',

@@ -34,7 +34,7 @@ _Themes, icons, progress bar, and native RTL support_
 _Use your own components while Notivue handles the rest_
 
 **💊 Drop-in components to enhance notifications**  
-_NotificationSwipe_ (alias `NotivueSwipe`), _NotivueKeyboard_, all optional and customizable\_
+_NotivueSwipe_ (alias `NotificationSwipe`), _NotivueKeyboard_, all optional and customizable\_
 
 **🌀 Dynamic Notifications**  
 _Update pending notifications with a breeze_

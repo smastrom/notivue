@@ -12,7 +12,7 @@ import { isMouse } from '@/Notivue/utils'
  * If users keep tapping on the stream, once timeouts
  * are resumed, they will pause again after 2 seconds and so on.
  *
- * This is never triggered when NotificationSwipe is used as that
+ * This is never triggered when NotivueSwipe is used as that
  * pointerdown event is not propagated.
  */
 

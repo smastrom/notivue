@@ -1,6 +1,6 @@
 import type { NotivueItem } from 'notivue'
 
-export interface NotificationSwipeProps {
+export interface NotivueSwipeProps {
    /** Notification item from the `<Notivue>` slot (`v-slot="item"`). */
    item: NotivueItem
    /**
@@ -44,5 +44,5 @@ export interface NotificationSwipeProps {
    destroy?: boolean
 }
 
-/** @deprecated Use `NotificationSwipeProps`. */
-export type NotivueSwipeProps = NotificationSwipeProps
+/** @deprecated Use `NotivueSwipeProps`. */
+export type NotificationSwipeProps = NotivueSwipeProps
