@@ -23,45 +23,24 @@ export const NotificationTypeKeys = {
    PROMISE_REJECT: 'promise-reject',
 } as const satisfies Record<string, NTypeU>
 
-const success: NotificationOptions = {
-   title: '',
-   message: '',
-   duration: DEFAULT_DURATION,
-   ariaLive: 'polite',
-   ariaRole: 'status',
-}
-
-const error: NotificationOptions = {
-   ...success,
-   ariaLive: 'assertive',
-   ariaRole: 'alert',
-}
-
-const loadingPending: NotificationOptions = {
-   ...success,
-   duration: Infinity,
-}
-
-const warning: NotificationOptions = {
-   ...error,
-   ariaLive: 'polite',
-}
-
-const info: NotificationOptions = {
-   ...success,
-}
-
 export const DEFAULT_NOTIFICATION_OPTIONS = {
-   [NotificationTypeKeys.SUCCESS]: success,
-   [NotificationTypeKeys.ERROR]: error,
-   [NotificationTypeKeys.WARNING]: warning,
-   [NotificationTypeKeys.INFO]: info,
-   [NotificationTypeKeys.LOADING]: loadingPending,
-   [NotificationTypeKeys.LOADING_SUCCESS]: success,
-   [NotificationTypeKeys.LOADING_ERROR]: error,
-   [NotificationTypeKeys.PROMISE]: loadingPending,
-   [NotificationTypeKeys.PROMISE_RESOLVE]: success,
-   [NotificationTypeKeys.PROMISE_REJECT]: error,
+   global: {
+      title: '',
+      message: '',
+      duration: DEFAULT_DURATION,
+      ariaLive: 'polite',
+      ariaRole: 'status',
+   },
+   [NotificationTypeKeys.SUCCESS]: {},
+   [NotificationTypeKeys.ERROR]: { ariaLive: 'assertive', ariaRole: 'alert' },
+   [NotificationTypeKeys.WARNING]: { ariaRole: 'alert' },
+   [NotificationTypeKeys.INFO]: {},
+   [NotificationTypeKeys.LOADING]: {},
+   [NotificationTypeKeys.LOADING_SUCCESS]: {},
+   [NotificationTypeKeys.LOADING_ERROR]: { ariaLive: 'assertive', ariaRole: 'alert' },
+   [NotificationTypeKeys.PROMISE]: {},
+   [NotificationTypeKeys.PROMISE_RESOLVE]: {},
+   [NotificationTypeKeys.PROMISE_REJECT]: { ariaLive: 'assertive', ariaRole: 'alert' },
 } as NotivueConfigRequired['notifications']
 
 export const DEFAULT_CONFIG: NotivueConfigRequired = {
