@@ -70,8 +70,8 @@ export function mergeNotificationOptions<T extends Obj = Obj>(
    const type = toCanonicalNotificationType(pushOptions.type)
 
    return {
-      ...notificationTypeConfigSlice(configOptions, type),
       ...configOptions.global,
+      ...notificationTypeConfigSlice(configOptions, type),
       ...pushOptions,
       ...(type === 'loading' ? { duration: Infinity } : {}),
       type,
