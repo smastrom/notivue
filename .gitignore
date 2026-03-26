@@ -16,3 +16,4 @@ notivue-*.tgz
 pnpm-lock.yaml
 
 docs/
+.claude/

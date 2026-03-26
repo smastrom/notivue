@@ -25,7 +25,7 @@ export function useStore() {
  * - `stopInstance` - Stops the Notivue instance.
  * - `isRunning` - Readonly ref to check if the Notivue instance is running.
  *
- * @docs https://docs.notivue.smastrom.io/api/use-notivue-instance
+ * @docs https://docs.notivue.smastrom.io/api/composables/use-notivue-instance.html
  */
 export function useNotivueInstance(): NotivueInstance {
    if (isSSR) {
@@ -44,11 +44,11 @@ export function useNotivueInstance(): NotivueInstance {
  *
  * @returns
  *
- * The current [configuration](https://docs.notivue.smastrom.io/customization/configuration)
+ * The current [global configuration](https://docs.notivue.smastrom.io/stream/configuration/global-configuration.html)
  * where each property is a [ref](https://vuejs.org/guide/essentials/reactivity-fundamentals.html#ref)
  * that allows for reactive updates and side effects watching.
  *
- * @docs https://docs.notivue.smastrom.io/api/use-notivue
+ * @docs https://docs.notivue.smastrom.io/api/composables/use-notivue.html
  */
 export function useNotivue(): UseNotivueReturn {
    if (isSSR) {
@@ -76,7 +76,7 @@ export function useNotivue(): UseNotivueReturn {
  * import { notify } from 'notivue'
  * ```
  *
- * @see https://docs.notivue.smastrom.io/api/notify.html
+ * @see https://docs.notivue.smastrom.io/api/utils/notify.html
  */
 export function useNotify() {
    return notify
@@ -89,7 +89,7 @@ export function useNotify() {
  * import { notify } from 'notivue'
  * ```
  *
- * @see https://docs.notivue.smastrom.io/api/notify.html
+ * @see https://docs.notivue.smastrom.io/api/utils/notify.html
  */
 export function usePush() {
    return notify
@@ -105,7 +105,7 @@ export function usePush() {
  * - `entries` - read-only reactive array of all the current displayed notifications
  * - `queue` - read-only reactive array of all the notifications waiting to be displayed
  *
- * @docs https://docs.notivue.smastrom.io/api/use-notifications
+ * @docs https://docs.notivue.smastrom.io/api/composables/use-notifications.html
  */
 export function useNotifications(): NotivueComputedEntries {
    if (isSSR) {
