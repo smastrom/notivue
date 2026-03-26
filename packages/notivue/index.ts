@@ -11,6 +11,7 @@ export { useNotivue, useNotifications, useNotivueInstance } from '@/core/useStor
 
 /** @deprecated Import `notify` from `notivue` instead of `useNotify()` or `usePush()`. */
 export { useNotify, usePush } from '@/core/useStore'
+/** @deprecated NotivueKeyboard now manages focus automatically. This composable is no longer needed. */
 export { useNotivueKeyboard } from '@/NotivueKeyboard/useNotivueKeyboard'
 
 export { default as Notivue } from '@/Notivue/Notivue.vue'

@@ -1,17 +1,14 @@
-import { inject, ref, computed } from 'vue'
-
-import { keyboardInjectionKey } from './constants'
-import { isSSR } from '@/core/utils'
+import { ref, computed } from 'vue'
 
 import type { NotivueKeyboardData } from 'notivue'
 
+/**
+ * @deprecated NotivueKeyboard now manages focus automatically.
+ * This composable is no longer needed — remove it from your code.
+ */
 export function useNotivueKeyboard(): NotivueKeyboardData {
-   if (isSSR) {
-      return {
-         elementsTabIndex: ref(-1),
-         containersTabIndex: computed(() => ({})),
-      }
+   return {
+      elementsTabIndex: ref(0),
+      containersTabIndex: computed(() => ({})),
    }
-
-   return inject(keyboardInjectionKey) as NotivueKeyboardData
 }
