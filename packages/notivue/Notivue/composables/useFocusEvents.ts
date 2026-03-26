@@ -1,10 +1,11 @@
+import { computed } from 'vue'
+
 import { useStore } from '@/core/useStore'
 
 export function useFocusEvents() {
    const { timeouts } = useStore()
 
    function onFocusin() {
-      timeouts.setStreamFocus()
       timeouts.pause()
    }
 
@@ -13,10 +14,9 @@ export function useFocusEvents() {
       const newTarget = e.relatedTarget as HTMLElement | null
 
       if (!newTarget || !stream.contains(newTarget)) {
-         timeouts.setStreamFocus(false)
          timeouts.resume()
       }
    }
 
-   return { onFocusin, onFocusout }
+   return computed(() => (!timeouts.isStreamFocused.value ? { onFocusin, onFocusout } : {}))
 }

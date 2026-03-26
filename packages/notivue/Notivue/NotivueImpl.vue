@@ -79,7 +79,7 @@ useSizes()
                v-else
                v-bind="item.animationAttrs"
                :aria-label="getAriaLabel(item)"
-               :tabindex="containersTabIndex?.[item.id] ?? -1"
+               tabindex="-1"
                :data-notivue-container="item.id"
                :ref="elements.containers"
                :style="{ ...styles.itemContainer, ...props.styles?.itemContainer }"
