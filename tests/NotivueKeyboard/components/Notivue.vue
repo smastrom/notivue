@@ -57,7 +57,6 @@ onBeforeUnmount(() => {
 
 <template>
    <NotivueKeyboard
-      v-slot="{ containersTabIndex }"
       :comboKey="cyProps.comboKey"
       :handleClicks="cyProps.handleClicks"
       :leaveMessage="cyProps.leaveMessage"
@@ -65,7 +64,7 @@ onBeforeUnmount(() => {
       :renderAnnouncement="cyProps.renderAnnouncement"
       :maxAnnouncements="cyProps.maxAnnouncements"
    >
-      <Notivue :containersTabIndex="containersTabIndex" v-slot="item">
+      <Notivue v-slot="item">
          <Candidate :item="item" v-if="item.props.isCandidate" />
          <Unqualified :item="item" v-else />
       </Notivue>

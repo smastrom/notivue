@@ -38,12 +38,8 @@ watch(
 </script>
 
 <template>
-   <NotivueKeyboard v-slot="{ containersTabIndex }">
-      <Notivue
-         :class="{ CenterOnMobile: state.centerOnMobile }"
-         :containersTabIndex="containersTabIndex"
-         v-slot="item"
-      >
+   <NotivueKeyboard>
+      <Notivue :class="{ CenterOnMobile: state.centerOnMobile }" v-slot="item">
          <FriendRequestNotification
             v-if="item.props.isFriendRequestNotification"
             :item="item as NotivueItem<FriendRequestNotificationProps>"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useNotivueKeyboard, type NotivueItem } from 'notivue'
+import type { NotivueItem } from 'notivue'
 
 const props = defineProps<{
    item: NotivueItem
@@ -12,8 +12,6 @@ function onPrimaryAction() {
 function onSecondaryAction() {
    props.item.clear()
 }
-
-const { elementsTabIndex } = useNotivueKeyboard()
 </script>
 
 <template>
@@ -24,20 +22,10 @@ const { elementsTabIndex } = useNotivueKeyboard()
       </div>
 
       <nav>
-         <button
-            @click="onPrimaryAction"
-            class="CandidateAction"
-            type="button"
-            :tabindex="elementsTabIndex"
-         >
+         <button @click="onPrimaryAction" class="CandidateAction" type="button">
             Primary Action
          </button>
-         <button
-            @click="onSecondaryAction"
-            class="CandidateAction"
-            type="button"
-            :tabindex="elementsTabIndex"
-         >
+         <button @click="onSecondaryAction" class="CandidateAction" type="button">
             Secondary Action
          </button>
       </nav>

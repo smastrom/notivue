@@ -10,8 +10,6 @@ export interface FriendRequestNotificationProps {
 defineProps<{
    item: NotivueItem<FriendRequestNotificationProps>
 }>()
-
-const { elementsTabIndex } = useNotivueKeyboard()
 </script>
 
 <template>
@@ -37,17 +35,8 @@ const { elementsTabIndex } = useNotivueKeyboard()
             </p>
          </div>
          <nav class="Buttons">
-            <button
-               type="button"
-               @click="item.clear"
-               class="Button ButtonReverse"
-               :tabIndex="elementsTabIndex"
-            >
-               Deny
-            </button>
-            <button type="button" @click="item.clear" class="Button" :tabIndex="elementsTabIndex">
-               Accept
-            </button>
+            <button type="button" @click="item.clear" class="Button ButtonReverse">Deny</button>
+            <button type="button" @click="item.clear" class="Button">Accept</button>
          </nav>
       </div>
    </div>
