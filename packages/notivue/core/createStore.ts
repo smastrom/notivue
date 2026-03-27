@@ -248,10 +248,6 @@ export function createAnimations(
          const { clearAll = '' } = config.animations.value
 
          const onAnimationend = () => {
-            items.entries.value.forEach((item) => {
-               const slotItem = getSlotItem(item)
-               ;(item.onClear ?? item.onManualClear)?.(slotItem)
-            })
             queue.clear()
             items.clear()
          }
@@ -395,8 +391,6 @@ export function createNotifyProxies({
       destroyAll() {
          items.entries.value.forEach((item) => {
             window.clearTimeout(item.timeout as number)
-            const slotItem = getSlotItem(item)
-            ;(item.onDestroy ?? item.onManualClear)?.(slotItem)
          })
          queue.clear()
          items.clear()

@@ -20,6 +20,8 @@ export type DeepPartial<T> = {
 
 export type Obj = Record<string, any>
 
+export type Prettify<T> = { [K in keyof T]: T[K] } & {}
+
 // —— Stream: kinds, layout, `createNotivue` config, config patches
 
 /** `data-notivue` value per item. Legacy `promise*` literals are normalized when enqueued. */
@@ -116,12 +118,12 @@ export type InternalItemData = ExposedInternalItemData & HiddenInternalItemData
 
 // —— `notify()` / `push`
 
-export interface NotifyProps<T extends Obj = Obj> {
+export interface NotifyProps<T extends object = Obj> {
    props?: T
 }
 
 /** @deprecated Use `NotifyProps`. */
-export type PushProps<T extends Obj = Obj> = NotifyProps<T>
+export type PushProps<T extends object = Obj> = NotifyProps<T>
 
 export interface NotifySpecificOptions {
    skipQueue?: boolean
@@ -134,9 +136,9 @@ export type PushSpecificOptions = NotifySpecificOptions
 export interface NotifyCallbacks {
    /** Runs when the notification's duration expires (timeout). */
    onTimedOut?: (item: NotivueItem) => void
-   /** Runs when the user dismisses the notification or `clear()` / `clearAll()` is called. */
+   /** Runs when the user dismisses the notification or `clear()` is called. */
    onClear?: (item: NotivueItem) => void
-   /** Runs when `destroy()` or `destroyAll()` is called. */
+   /** Runs when `destroy()` is called. */
    onDestroy?: (item: NotivueItem) => void
 
    /** @deprecated Use `onTimedOut`. */
@@ -148,43 +150,44 @@ export interface NotifyCallbacks {
 /** @deprecated Use `NotifyCallbacks`. */
 export type PushCallbacks = NotifyCallbacks
 
-export type NotifyOptions<T extends Obj = Obj> = NotificationOptions &
-   NotifyProps<T> &
-   NotifySpecificOptions &
-   NotifyCallbacks
+export type NotifyOptions<T extends object = Obj> = Prettify<
+   NotificationOptions & NotifyProps<T> & NotifySpecificOptions & NotifyCallbacks
+>
 
 /** @deprecated Use `NotifyOptions`. */
-export type PushOptions<T extends Obj = Obj> = NotifyOptions<T>
+export type PushOptions<T extends object = Obj> = NotifyOptions<T>
 
 export type InternalNotifyOptions = { id: string; type: NotificationType }
 
 /** @deprecated Use `InternalNotifyOptions`. */
 export type InternalPushOptions = InternalNotifyOptions
 
-export type NotifyOptionsWithInternals<T extends Obj = Obj> = NotifyOptions<T> &
+export type NotifyOptionsWithInternals<T extends object = Obj> = NotifyOptions<T> &
    InternalNotifyOptions
 
 /** @deprecated Use `NotifyOptionsWithInternals`. */
-export type PushOptionsWithInternals<T extends Obj = Obj> = NotifyOptionsWithInternals<T>
+export type PushOptionsWithInternals<T extends object = Obj> = NotifyOptionsWithInternals<T>
 
-export type StoreItem<T extends Obj = Obj> = DeepRequired<NotificationOptions> &
+export type StoreItem<T extends object = Obj> = DeepRequired<NotificationOptions> &
    Required<NotifyProps<T>> &
    InternalNotifyOptions &
    InternalItemData &
    NotifySpecificOptions &
    NotifyCallbacks
 
-export type NotivueItem<T extends Obj = Obj> = Omit<StoreItem<T>, keyof HiddenInternalItemData>
+export type NotivueItem<T extends object = Obj> = Prettify<
+   Omit<StoreItem<T>, keyof HiddenInternalItemData>
+>
 
-export type NotifyParameter<T extends Obj = Obj> =
+export type NotifyParameter<T extends object = Obj> =
    | NotifyOptions<T>
    | Exclude<NotificationOptions['message'], undefined>
 
 /** @deprecated Use `NotifyParameter`. */
-export type PushParameter<T extends Obj = Obj> = NotifyParameter<T>
+export type PushParameter<T extends object = Obj> = NotifyParameter<T>
 
 /** Shared arity for methods that only take options and return clear handles. */
-type NotifyOptionsToClearMethods = <T extends Obj = Obj>(
+type NotifyOptionsToClearMethods = <T extends object = Obj>(
    options: NotifyParameter<T>
 ) => NotificationClearMethods
 
@@ -213,7 +216,7 @@ export type NotifyPromiseReturn = NotifyLoadingReturn
 /** @deprecated Use `NotifyLoadingReturn`. */
 export type PushPromiseReturn = NotifyLoadingReturn
 
-export type NotifyLoading = <T extends Obj = Obj>(
+export type NotifyLoading = <T extends object = Obj>(
    options: NotifyParameter<T>
 ) => NotificationClearMethods & NotifyLoadingReturn
 
@@ -273,29 +276,40 @@ export interface NotivueComputedEntries {
    queue: ComputedRef<NotivueItem[]>
 }
 
-export type UseNotivueReturn = ConfigSlice & {
-   isStreamPaused: ComputedRef<boolean>
-   /** @deprecated Create computed property instead: `computed(() => config.position.value.startsWith('top'))`. */
-   isTopAlign: ComputedRef<boolean>
-}
+export type UseNotivueReturn = Prettify<
+   ConfigSlice & {
+      isStreamPaused: ComputedRef<boolean>
+      /** @deprecated Create computed property instead: `computed(() => config.position.value.startsWith('top'))`. */
+      isTopAlign: ComputedRef<boolean>
+   }
+>
 
 // —— Extra public names (historical / ergonomics)
 
+/** @deprecated Use `NotificationOptions`. */
 export type NotivueNotificationOptions = NotificationOptions
+/** @deprecated Use `Position`. */
 export type NotivuePosition = Position
+/** @deprecated Use `NotificationType`. */
 export type NotivueNotificationType = NotificationType
+/** @deprecated Use `NotificationClearMethods`. */
 export type NotifyClearMethods = NotificationClearMethods
 
-/** @deprecated Use `NotifyClearMethods`. */
-export type PushClearMethods = NotifyClearMethods
+/** @deprecated Use `NotificationClearMethods`. */
+export type PushClearMethods = NotificationClearMethods
 
+/** @deprecated Use `NotificationType`. */
 export type NotificationTypes = NotificationType
 
+/** @deprecated Use `NotivueItem`. */
 export type NotivueSlot = NotivueItem
+/** @deprecated Use `NotifyOptions`. */
 export type UserNotifyOptions = NotifyOptions
 
-/** @deprecated Use `UserNotifyOptions`. */
-export type UserPushOptions = UserNotifyOptions
+/** @deprecated Use `NotifyOptions`. */
+export type UserPushOptions = NotifyOptions
 
+/** @deprecated Use `NotificationClearMethods`. */
 export type ClearFunctions = NotificationClearMethods
+/** @deprecated Use `NotificationClearMethods`. */
 export type ClearMethods = NotificationClearMethods
