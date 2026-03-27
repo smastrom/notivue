@@ -13,6 +13,7 @@ import {
 
 import { useStore } from '@/core/useStore'
 import { isMouse } from '@/Notivue/utils'
+import { isUnlimited } from '@/core/utils'
 import { NotificationTypeKeys as NType } from '@/core/constants'
 import { DEFAULT_PROPS, DEBOUNCE, RETURN_DUR } from './constants'
 
@@ -20,14 +21,14 @@ import type { NotivueSwipeProps } from 'notivue'
 
 /**
  * MOUSE - Notivue's mouse events (get from 'useMouseEvents') will still handle the pause/resume logic
- * on hover. NotivueSwipe will only additionally pause timeouts while swiping and resume them
+ * on hover. NotivueSwipe only additionally pauses timeouts while swiping and resumes them
  * when clearing.
  *
  * TOUCH / PEN - Notivue's touch events (get from 'useTouchEvents') execution is prevented when
  * using NotivueSwipe. That's because a more granular timeout control is required due
  * to all possible interactions hence the whole touch logic is handled here.
  *
- * When releasing, leaving or clearing a notification via Swipe a small debounce time is added to
+ * When releasing, leaving or clearing a notification via swipe, a small debounce time is added to
  * improve UX.
  */
 
@@ -44,13 +45,14 @@ const exclude = toRef(props, 'exclude')
 const isDisabledByUser = toRef(props, 'disabled')
 const threshold = toRef(props, 'threshold')
 
-const isPromise = computed(() => props.item.type === NType.PROMISE)
+/** Pending dynamic notification (`notify.loading()`). */
+const isLoading = computed(() => props.item.type === NType.LOADING)
 const isEnabled = computed(
    () =>
       !timeouts.isStreamFocused.value &&
       !isDisabledByUser.value &&
-      !isPromise.value &&
-      props.item.duration < Infinity
+      !isLoading.value &&
+      !isUnlimited(props.item.duration)
 )
 
 // Internal
@@ -179,7 +181,7 @@ function onPointerDown(e: PointerEvent) {
 
    /**
     * Prevents `useTouchEvents` events to fire, which is what
-    * we're looking for so they doen't interfere with NotivueSwipe logic.
+    * we're looking for so they don't interfere with NotivueSwipe logic.
     */
    e.stopPropagation()
 

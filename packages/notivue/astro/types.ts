@@ -1,11 +1,21 @@
-import type { ClearFunctions, PushPromiseReturn, NotificationType, PushOptions } from 'notivue'
+import type {
+   ClearFunctions,
+   PushPromiseReturn,
+   NotificationType,
+   PushOptions,
+   NotifyOptions,
+} from 'notivue'
 
-export type PushAstroEvent = PushOptions & {
-   type: Exclude<NotificationType, 'promise-resolve' | 'promise-reject'>
+export type PushAstroEvent = NotifyOptions & {
+   type: Exclude<
+      NotificationType,
+      'loading-success' | 'loading-error' | 'promise-resolve' | 'promise-reject'
+   >
    resultEventName: string
 }
 
-export type MaybeAstroPushPromiseReturn<T> = T extends PushOptions & { type: 'promise' }
+/** `type: 'promise'` is a deprecated alias of `loading`. */
+export type MaybeAstroPushPromiseReturn<T> = T extends PushOptions & { type: 'loading' | 'promise' }
    ? PushPromiseReturn
    : T extends PushOptions
      ? ClearFunctions

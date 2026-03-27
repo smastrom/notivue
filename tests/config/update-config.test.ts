@@ -73,6 +73,9 @@ describe('Update method', () => {
             error: { ...defaultNot.error, ...newConf.error },
             info: { ...defaultNot.info, ...newConf.info },
             warning: { ...defaultNot.warning, ...newConf.warning },
+            loading: defaultNot.loading,
+            'loading-success': defaultNot['loading-success'],
+            'loading-error': defaultNot['loading-error'],
             promise: { ...defaultNot.promise, ...newConf.promise },
             'promise-resolve': { ...defaultNot['promise-resolve'], ...newConf['promise-resolve'] },
             'promise-reject': { ...defaultNot['promise-reject'], ...newConf['promise-reject'] },
@@ -160,6 +163,9 @@ describe('Update method', () => {
 
          success: { ...prevNot.success, duration: defaultNot.success.duration * 2 },
          warning: { ...prevNot.warning, duration: defaultNot.warning.duration * 2 },
+         loading: prevNot.loading,
+         'loading-success': prevNot['loading-success'],
+         'loading-error': prevNot['loading-error'],
          promise: { ...prevNot.promise, duration: 100 },
 
          'promise-resolve': { ...prevNot['promise-resolve'], duration: 100 },

@@ -23,7 +23,7 @@ describe('Push', () => {
          .should('have.length', 0)
    })
 
-   it('Updates and dismisses promises', () => {
+   it('Updates and dismisses dynamic (load) notifications', () => {
       cy.mountNotivue()
 
          .get('.PushPromiseAndResolve')

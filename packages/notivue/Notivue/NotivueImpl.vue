@@ -6,6 +6,7 @@ import AriaLive from './AriaLive.vue'
 import { useStore } from '@/core/useStore'
 import { getSlotItem } from '@/core/utils'
 
+import { useFocusEvents } from './composables/useFocusEvents'
 import { useMouseEvents } from './composables/useMouseEvents'
 import { useTouchEvents } from './composables/useTouchEvents'
 import { useNotivueStyles } from './composables/useNotivueStyles'
@@ -31,6 +32,7 @@ const { config, items, elements } = useStore()
 // Composables
 
 const styles = useNotivueStyles()
+const focusEvents = useFocusEvents()
 const mouseEvents = useMouseEvents()
 const touchEvents = useTouchEvents()
 
@@ -47,7 +49,7 @@ useSizes()
       <!-- List Container -->
       <ol
          v-if="items.entries.value.length > 0"
-         v-bind="{ ...mouseEvents, ...touchEvents, ...elements.rootAttrs.value }"
+         v-bind="{ ...focusEvents, ...mouseEvents, ...touchEvents, ...elements.rootAttrs.value }"
          :data-notivue-align="config.position.value.split('-')[0]"
          :aria-label="props.listAriaLabel"
          :ref="elements.root"
@@ -77,7 +79,7 @@ useSizes()
                v-else
                v-bind="item.animationAttrs"
                :aria-label="getAriaLabel(item)"
-               :tabindex="containersTabIndex?.[item.id] ?? -1"
+               tabindex="-1"
                :data-notivue-container="item.id"
                :ref="elements.containers"
                :style="{ ...styles.itemContainer, ...props.styles?.itemContainer }"

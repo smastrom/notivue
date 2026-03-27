@@ -24,7 +24,7 @@ defineProps<{
          {{ item.message }}
       </p>
 
-      <button @click="item.clear" aria-label="Dismiss" tabindex="-1" class="CloseButton">
+      <button @click="item.clear" aria-label="Dismiss" class="CloseButton">
          <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"

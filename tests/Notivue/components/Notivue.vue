@@ -71,7 +71,7 @@ function pushWithAutoClearCallback() {
    })
 
    push.promise(pushCallbacks).reject(pushCallbacks)
-   push.load(pushCallbacks).success(pushCallbacks)
+   push.loading(pushCallbacks).success(pushCallbacks)
 }
 
 function pushWithManualClearCallback() {
@@ -82,7 +82,7 @@ function pushWithManualClearCallback() {
    })
 
    notifications.push(push.promise(pushCallbacks).resolve(pushCallbacks))
-   notifications.push(push.load(pushCallbacks).error(pushCallbacks))
+   notifications.push(push.loading(pushCallbacks).error(pushCallbacks))
 
    notifications.forEach((n) => n.clear())
 }
@@ -110,7 +110,7 @@ async function pushPromiseAndResolve() {
 }
 
 async function pushPromiseAndReject() {
-   const promise = push.load(cyProps.options ?? {})
+   const promise = push.loading(cyProps.options ?? {})
    await new Promise((resolve) => setTimeout(resolve, RESOLVE_REJECT_DELAY))
 
    promise.error(cyProps.newOptions ?? cyProps.options ?? {})
@@ -131,7 +131,7 @@ async function pushPromiseAndReject() {
       <button class="Error" @click="push.error(options ?? {})">Error</button>
       <button class="Warning" @click="push.warning(options ?? {})">Warning</button>
       <button class="Info" @click="push.info(options ?? {})">Info</button>
-      <button class="Promise" @click="push.load(options ?? {})">Promise</button>
+      <button class="Promise" @click="push.loading(options ?? {})">Loading</button>
 
       <!-------------------------------- Clear all Tests ---------------------------------->
 

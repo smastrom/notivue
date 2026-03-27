@@ -1,8 +1,11 @@
+import { readFileSync } from 'node:fs'
+
 import { getHead } from './utils/head'
+
+const { version } = JSON.parse(readFileSync('../packages/notivue/package.json', 'utf-8'))
 
 export default defineNuxtConfig({
    modules: ['notivue/nuxt'],
-   ssr: true,
    devtools: {
       enabled: false,
    },
@@ -10,12 +13,8 @@ export default defineNuxtConfig({
       componentIslands: true,
    },
    notivue: {
-      // addPlugin: true,
-      // startOnCreation: true,
       notifications: {
-         global: {
-            // duration: Infinity,
-         },
+         global: {},
       },
    },
    nitro: {
@@ -25,16 +24,17 @@ export default defineNuxtConfig({
       head: getHead(),
    },
    vite: {
-      esbuild: {
-         minifyIdentifiers: !import.meta.env.DEV,
-         minifySyntax: !import.meta.env.DEV,
+      define: {
+         __NOTIVUE_VERSION__: JSON.stringify(version),
       },
-      build: {
-         minify: import.meta.env.DEV ? false : 'esbuild',
-         cssMinify: 'lightningcss',
+      optimizeDeps: {
+         include: ['luxon'],
       },
       css: {
          transformer: 'lightningcss',
+      },
+      build: {
+         cssMinify: 'lightningcss',
       },
    },
    css: [

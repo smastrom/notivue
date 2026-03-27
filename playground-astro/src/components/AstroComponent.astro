@@ -2,40 +2,40 @@
    <h3>From a Script Tag</h3>
 
    <button data-static>Push</button>
-   <button data-promise>Push Promise</button>
+   <button data-dynamic>Push dynamic</button>
    <button data-clear-all>Clear All</button>
    <button data-destroy-all>Destroy All</button>
 </div>
 
 <script>
-   import { push } from 'notivue/astro'
+   import { notify } from 'notivue/astro'
 
-   function pushStatic() {
-      push.success({
+   function notifyStatic() {
+      notify.success({
          title: 'Vue Notification',
          message: 'Notification from a Script Tag!',
       })
    }
 
-   function pushPromise() {
-      const promise = push.promise({
-         title: 'Loading Notification...',
-         message: 'Loading notification from a Script Tag...',
+   function notifyDynamic() {
+      const notification = notify.promise({
+         title: 'Updating…',
+         message: 'This dynamic notification is still updating.',
       })
 
       setTimeout(() => {
-         promise.resolve({
+         notification.resolve({
             title: 'Notification',
-            message: 'Loaded notification from a Script Tag!',
+            message: 'Update finished — notification from a script tag.',
          })
       }, 2000)
    }
 
    const events = [
-      ['data-static', pushStatic],
-      ['data-promise', pushPromise],
-      ['data-clear-all', push.clearAll],
-      ['data-destroy-all', push.destroyAll],
+      ['data-static', notifyStatic],
+      ['data-dynamic', notifyDynamic],
+      ['data-clear-all', notify.clearAll],
+      ['data-destroy-all', notify.destroyAll],
    ] as const
 
    function addListeners() {

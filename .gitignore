@@ -4,6 +4,7 @@ pnpm-debug.log*
 
 .vscode
 .idea
+.cursor
 .DS_Store
 
 node_modules
@@ -13,3 +14,6 @@ notivue-*.tgz
 
 .nuxt
 pnpm-lock.yaml
+docs/
+.claude/
+KEYBOARD_FINDINGS.md

@@ -45,11 +45,10 @@ watch(
       </div>
 
       <button
-         v-if="!props.hideClose && Close && item.type !== 'promise'"
+         v-if="!props.hideClose && Close && item.type !== 'loading'"
          :class="Cx.CLOSE"
          :aria-label="closeAriaLabel"
          type="button"
-         tabindex="-1"
          @click="item.clear"
       >
          <Component v-if="typeof Close === 'object'" :is="Close" :class="Cx.CLOSE_ICON" />

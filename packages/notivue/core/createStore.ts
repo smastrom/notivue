@@ -5,16 +5,17 @@ import {
    mergeDeep,
    mergeNotificationOptions as mergeOptions,
    toRawConfig,
+   toCanonicalNotificationType,
 } from './utils'
 
-import { isStatic, getSlotItem } from './utils'
+import { isStatic, getSlotItem, isUnlimited } from './utils'
 import { DEFAULT_CONFIG, NotificationTypeKeys as NType } from './constants'
 
 import type {
    DeepPartial,
    StoreItem,
    NotivueConfig,
-   PushOptionsWithInternals,
+   NotifyOptionsWithInternals,
    Obj,
    ConfigSlice,
    ItemsSlice,
@@ -22,11 +23,11 @@ import type {
    ElementsSlice,
    TimeoutsSlice,
    AnimationsSlice,
-   UpdateParam,
+   NotivueConfigUpdateParam,
    NotivueStore,
 } from 'notivue'
 
-export let updateConfig: (newConfig: UpdateParam) => void = () => {}
+export let updateConfig: (newConfig: NotivueConfigUpdateParam) => void = () => {}
 
 export function createStore(
    userConfig: NotivueConfig,
@@ -45,7 +46,7 @@ export function createStore(
 export function createConfig(userConfig: NotivueConfig, isRunning: Readonly<Ref<boolean>>) {
    const config = createConfigRefs(DEFAULT_CONFIG, userConfig, isRunning)
 
-   function update(newConfig: UpdateParam) {
+   function update(newConfig: NotivueConfigUpdateParam) {
       if (!isRunning.value) return
 
       if (typeof newConfig === 'function') {
@@ -56,7 +57,9 @@ export function createConfig(userConfig: NotivueConfig, isRunning: Readonly<Ref<
          type K = keyof NotivueConfig
 
          if (typeof config[key as K].value === 'object') {
-            config[key as K].value = mergeDeep(config[key as K].value as Obj, newConfig[key as K] as any) // prettier-ignore
+            const prev = config[key as K].value as Obj
+            const next = newConfig[key as K] as any
+            config[key as K].value = mergeDeep(prev, next)
          } else {
             config[key as K].value = newConfig[key as K] as any
          }
@@ -126,12 +129,12 @@ export function createItems(config: ConfigSlice, queue: QueueSlice) {
          this.add(next)
       },
       findDupe(item: StoreItem) {
-         return this.entries.value.find(
-            (e) =>
-               unref(e.message).replace(/\uFEFF/g, '') === unref(item.message).replace(/\uFEFF/g, '') && // prettier-ignore
-               unref(e.title) === unref(item.title) &&
-               e.type === item.type
-         )
+         return this.entries.value.find((e) => {
+            const sameMessage =
+               unref(e.message).replace(/\uFEFF/g, '') ===
+               unref(item.message).replace(/\uFEFF/g, '')
+            return sameMessage && unref(e.title) === unref(item.title) && e.type === item.type
+         })
       },
       get(id: string) {
          return this.entries.value.find((e) => e.id === id)
@@ -149,7 +152,9 @@ export function createItems(config: ConfigSlice, queue: QueueSlice) {
       remove(id: string) {
          this.entries.value = this.entries.value.filter((e) => e.id !== id)
 
-         const shouldDequeue = queue.length > 0 && this.length < config.limit.value
+         const shouldDequeue =
+            queue.length > 0 &&
+            (isUnlimited(config.limit.value) || this.length < config.limit.value)
          if (shouldDequeue) this.addFromQueue()
       },
       clear() {
@@ -204,7 +209,18 @@ export function createAnimations(
          const onAnimationend = (e?: AnimationEvent) => {
             if (e && e.currentTarget !== e.target) return
 
-            item?.[isUserTriggered ? 'onManualClear' : 'onAutoClear']?.(getSlotItem(item))
+            if (item) {
+               const slotItem = getSlotItem(item)
+
+               if (isDestroy) {
+                  ;(item.onDestroy ?? item.onManualClear)?.(slotItem)
+               } else if (isUserTriggered) {
+                  ;(item.onClear ?? item.onManualClear)?.(slotItem)
+               } else {
+                  ;(item.onTimedOut ?? item.onAutoClear)?.(slotItem)
+               }
+            }
+
             items.remove(id)
          }
 
@@ -247,7 +263,7 @@ export function createAnimations(
          console.log('Updating positions')
 
          const isReduced = this.isReducedMotion.value || isImmediate
-         const isTopAlign = config.position.value.indexOf('top') === 0
+         const isTopAlign = config.position.value.startsWith('top')
          const leaveClass = config.animations.value.leave
 
          let accPrevHeights = 0
@@ -256,7 +272,8 @@ export function createAnimations(
             const id = el.dataset.notivueItem!
             const item = items.get(id)
 
-            if (!el || !item || item.animationAttrs.class === leaveClass) continue // prettier-ignore
+            if (!el || !item) continue
+            if (item.animationAttrs.class === leaveClass) continue
 
             items.update(id, {
                positionStyles: {
@@ -309,7 +326,7 @@ export function createTimeouts(items: ItemsSlice, animations: AnimationsSlice) {
          items.updateAll((item) => {
             window.clearTimeout(item.timeout as number)
 
-            if (item.duration === Infinity) return item
+            if (isUnlimited(item.duration)) return item
 
             let remaining = 0
 
@@ -340,7 +357,7 @@ export function createTimeouts(items: ItemsSlice, animations: AnimationsSlice) {
          items.updateAll((item) => {
             window.clearTimeout(item.timeout as number)
 
-            if (item.duration === Infinity) return item
+            if (isUnlimited(item.duration)) return item
 
             return {
                ...item,
@@ -357,7 +374,7 @@ export function createTimeouts(items: ItemsSlice, animations: AnimationsSlice) {
    }
 }
 
-export function createPushProxies({
+export function createNotifyProxies({
    config,
    items,
    queue,
@@ -372,6 +389,9 @@ export function createPushProxies({
 }) {
    return {
       destroyAll() {
+         items.entries.value.forEach((item) => {
+            window.clearTimeout(item.timeout as number)
+         })
          queue.clear()
          items.clear()
       },
@@ -384,8 +404,9 @@ export function createPushProxies({
 
          animations.playLeave(id, { isUserTriggered: true, isDestroy })
       },
-      push<T extends Obj = Obj>(options: PushOptionsWithInternals<T>) {
-         const entry = mergeOptions<T>(config.notifications.value, options)
+      notify<T extends Obj = Obj>(options: NotifyOptionsWithInternals<T>) {
+         const opts = { ...options, type: toCanonicalNotificationType(options.type) }
+         const entry = mergeOptions<T>(config.notifications.value, opts)
          const createdAt = Date.now()
 
          if (config.avoidDuplicates.value && isStatic(entry.type)) {
@@ -425,7 +446,7 @@ export function createPushProxies({
 
          const createTimeout = () => timeouts.create(entry.id, entry.duration)
 
-         if (options.type === NType.PROMISE_RESOLVE || options.type === NType.PROMISE_REJECT) {
+         if (opts.type === NType.LOADING_SUCCESS || opts.type === NType.LOADING_ERROR) {
             if (queue.get(entry.id)) {
                queue.update(entry.id, { ...entry, createdAt, timeout: createTimeout })
                queue.triggerRef() // ...but we're exposing the queue via `useNotifications` so consumers may need this
@@ -435,9 +456,10 @@ export function createPushProxies({
             }
          } else {
             const isQueueActive = config.enqueue.value
-            const hasReachedLimit = items.length >= config.limit.value
+            const hasReachedLimit =
+               !isUnlimited(config.limit.value) && items.length >= config.limit.value
             const shouldDiscard = !isQueueActive && hasReachedLimit
-            const shouldEnqueue = isQueueActive && !options.skipQueue && hasReachedLimit
+            const shouldEnqueue = isQueueActive && !opts.skipQueue && hasReachedLimit
 
             if (shouldDiscard) {
                items.entries.value
@@ -473,3 +495,6 @@ export function createPushProxies({
       },
    }
 }
+
+/** @deprecated Use createNotifyProxies */
+export const createPushProxies = createNotifyProxies

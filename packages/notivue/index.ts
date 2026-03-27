@@ -1,5 +1,5 @@
-export { push } from '@/core/createPush'
-export { push as pushAstro } from './astro/push'
+export { notify, push } from '@/core/createNotify'
+export { notify as notifyAstro, push as pushAstro } from './astro/push'
 
 export { updateConfig } from '@/core/createStore'
 export { createNotivue } from '@/core/createNotivue'
@@ -7,12 +7,18 @@ export { createNotivue as createNotivueAstro } from './astro/createNotivue'
 
 export { startInstance, stopInstance } from '@/core/createInstance'
 
-export { usePush, useNotivue, useNotifications, useNotivueInstance } from '@/core/useStore'
+export { useNotivue, useNotifications, useNotivueInstance } from '@/core/useStore'
+
+/** @deprecated Import `notify` from `notivue` instead of `useNotify()` or `usePush()`. */
+export { useNotify, usePush } from '@/core/useStore'
+/** @deprecated NotivueKeyboard now manages focus automatically. This composable is no longer needed. */
 export { useNotivueKeyboard } from '@/NotivueKeyboard/useNotivueKeyboard'
 
 export { default as Notivue } from '@/Notivue/Notivue.vue'
 export { default as NotivueAstro } from './astro/Notivue.vue'
 export { default as NotivueSwipe } from '@/NotivueSwipe/NotivueSwipe.vue'
+/** @deprecated Use `NotivueSwipe`. */
+export { default as NotificationSwipe } from '@/NotivueSwipe/NotivueSwipe.vue'
 export { default as NotivueKeyboard } from '@/NotivueKeyboard/NotivueKeyboard.vue'
 
 export { default as Notifications } from '@/Notifications/Notification.vue'
@@ -31,6 +37,7 @@ export {
 export { filledIcons, outlinedIcons } from '@/Notifications/icons'
 
 export { DEFAULT_CONFIG } from '@/core/constants'
+export { toCanonicalNotificationType } from '@/core/utils'
 
 export * from '@/core/types'
 export * from '@/Notivue/types'

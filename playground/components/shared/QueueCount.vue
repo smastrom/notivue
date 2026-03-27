@@ -1,10 +1,10 @@
 <script setup lang="ts">
 const { queue } = useNotifications()
 
-const { isTopAlign } = useNotivue()
+const { position } = useNotivue()
 
 const wrapperStyles = computed(() => {
-   if (isTopAlign.value) {
+   if (position.value.startsWith('top')) {
       return { bottom: 'calc(var(--nav-height) + 1.25rem)' }
    }
    return { top: '1.25rem' }
@@ -20,7 +20,7 @@ const wrapperStyles = computed(() => {
             </span>
          </span>
 
-         <span>Enqueued</span>
+         <span>In queue</span>
       </div>
    </Transition>
 </template>

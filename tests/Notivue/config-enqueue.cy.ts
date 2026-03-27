@@ -32,7 +32,7 @@ describe('Enqueue', () => {
       }
    })
 
-   it('Should update promises in the queue', () => {
+   it('Should update dynamic notifications in the queue', () => {
       const limit = 1
       const resolvedMessage = 'Promise resolved in the queue!'
 

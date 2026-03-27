@@ -38,20 +38,21 @@ const baseStyles: Record<NotivueElements, CSSProperties> = {
    itemContainer: {
       ...boxSizing,
       maxWidth: '100%',
+      outline: 'none',
       padding: `0 0 var(--nv-gap, 0.75rem) 0`,
       pointerEvents: 'auto',
    },
 }
 
 export function useNotivueStyles() {
-   const { isTopAlign, position } = useNotivue()
+   const { position } = useNotivue()
 
    /**
     * Simulates overflow-hidden only on the opposite side of the current vertical align.
     * This will not clip enter animations but will contain the stream vertically.
     */
    const offset = computed<CSSProperties>(() => {
-      const isTop = isTopAlign.value
+      const isTop = position.value.startsWith('top')
 
       // IMPORTANT: Order of values must match 'top right bottom left'
       const inset = [
@@ -68,7 +69,7 @@ export function useNotivueStyles() {
    })
 
    const xAlignment = computed<CSSProperties>(() => ({
-      [isTopAlign.value ? 'top' : 'bottom']: '0',
+      [position.value.startsWith('top') ? 'top' : 'bottom']: '0',
       justifyContent: `var(--nv-root-x-align, ${
          position.value.endsWith('left')
             ? 'flex-start'

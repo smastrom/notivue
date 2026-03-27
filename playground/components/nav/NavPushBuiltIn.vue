@@ -3,7 +3,7 @@ const { state, messages } = useStore()
 
 async function asyncRefMessagePush() {
    const initialMessage = ref(state.rtl ? 'جاري تحميل الملفات...' : 'Preparing to upload files...')
-   const notification = push.promise(initialMessage)
+   const notification = notify.loading(initialMessage)
 
    for (let n = 1; n < 4; n++) {
       await new Promise((resolve) => setTimeout(resolve, getRandomInt(1000, 2000)))
@@ -11,19 +11,19 @@ async function asyncRefMessagePush() {
    }
 
    await new Promise((resolve) => setTimeout(resolve, getRandomInt(1000, 2000)))
-   notification.resolve(state.rtl ? 'تم تحميل جميع الملفات!' : 'All files uploaded!')
+   notification.success(state.rtl ? 'تم تحميل جميع الملفات!' : 'All files uploaded!')
 }
 
 async function asyncPush() {
    if (Math.random() > 0.7) return asyncRefMessagePush()
 
-   const promise = push.promise(messages.value.promise)
+   const notification = notify.loading(messages.value.dynamic)
    await new Promise((resolve) => setTimeout(resolve, getRandomInt(2000, 4000)))
 
    if (Math.random() > 0.5) {
-      promise.resolve(messages.value.success)
+      notification.success(messages.value.success)
    } else {
-      promise.reject(messages.value.error)
+      notification.error(messages.value.error)
    }
 }
 </script>
@@ -31,13 +31,16 @@ async function asyncPush() {
 <template>
    <SharedButton
       @click="
-         push.success({
+         notify.success({
             ...messages.success,
-            onAutoClear: (item) => {
-               // console.log('AutoClear!', item)
+            onTimedOut: (item) => {
+               // console.log('TimedOut!', item)
             },
-            onManualClear: (item) => {
-               // console.log('Manual Clear!', item)
+            onClear: (item) => {
+               // console.log('Clear!', item)
+            },
+            onDestroy: (item) => {
+               // console.log('Destroy!', item)
             },
          })
       "
@@ -45,16 +48,16 @@ async function asyncPush() {
    >
       <IconsSuccessIcon />
    </SharedButton>
-   <SharedButton @click="push.error(messages.error)" text="Error">
+   <SharedButton @click="notify.error(messages.error)" text="Error">
       <IconsWarnIcon :isWarn="false" />
    </SharedButton>
-   <SharedButton @click="push.warning(messages.warning)" text="Warn">
+   <SharedButton @click="notify.warning(messages.warning)" text="Warning">
       <IconsWarnIcon isWarn />
    </SharedButton>
-   <SharedButton @click="push.info(messages.info)" text="Info">
+   <SharedButton @click="notify.info(messages.info)" text="Info">
       <IconsInfoIcon />
    </SharedButton>
-   <SharedButton @click="asyncPush" text="Promise">
+   <SharedButton @click="asyncPush" text="Dynamic">
       <IconsPromiseIcon />
    </SharedButton>
 </template>

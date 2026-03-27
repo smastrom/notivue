@@ -10,7 +10,6 @@ describe('Actions', () => {
          .realPress('Tab') // Go last action of first container
 
          .pushCandidateSilently() // id: 3
-
          .focused()
          .should('have.data', 'notivueContainer', 3)
    })
@@ -27,30 +26,28 @@ describe('Actions', () => {
 
          .realPress('Tab')
          .realPress('Tab') // Go to action of 2nd container (id: 1)
-
          .realPress(Math.random() > 0.5 ? 'Space' : 'Enter')
 
          .focused()
          .should('have.data', 'notivueContainer', 0)
    })
 
-   it('Should leave stream if pressing Space or Enter on action in last container', () => {
+   it('Should focus previous candidate if pressing Space or Enter on action in last container', () => {
       cy.mountKeyboard()
 
          .pushCandidate()
          .pushCandidate()
-         .as('relatedTarget')
 
          .realPress('Tab')
          .realPress('Tab')
          .realPress('Tab')
 
          .realPress('Tab')
-         .realPress('Tab') // Go to action of last container
-
+         .realPress('Tab') // Go to action of last container (id: 0, sorted last)
          .realPress(Math.random() > 0.5 ? 'Space' : 'Enter')
 
-      cy.get('@relatedTarget').should('be.focused').checkLeaveAnnouncement()
+         .focused()
+         .should('have.data', 'notivueContainer', 1) // Falls back to previous candidate
    })
 
    it('Should leave stream if clicking with mouse an action in any container', () => {
@@ -67,7 +64,6 @@ describe('Actions', () => {
 
          .realPress('Tab')
          .realPress('Tab') // Go to action of 2nd container
-
          .focused()
          .realClick()
 

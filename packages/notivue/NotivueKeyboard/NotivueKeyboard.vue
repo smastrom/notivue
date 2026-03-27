@@ -17,12 +17,8 @@ defineSlots<NotivueKeyboardSlot>()
 
 <template>
    <NotivueClientOnly>
-      <NotivueKeyboardImpl
-         v-bind="props"
-         v-slot="{ containersTabIndex, elementsTabIndex }"
-         v-if="isRunning"
-      >
-         <slot v-bind="{ containersTabIndex, elementsTabIndex }" />
+      <NotivueKeyboardImpl v-bind="props" v-if="isRunning">
+         <slot />
       </NotivueKeyboardImpl>
    </NotivueClientOnly>
 </template>

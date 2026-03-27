@@ -1,28 +1,32 @@
 {
    "name": "notivue-monorepo",
    "private": true,
-   "packageManager": "pnpm@8.14.3",
-   "engines": {
-      "node": ">=20.0.0"
-   },
    "scripts": {
-      "dev": "pnpm build && concurrently \"pnpm -C packages/notivue run watch\" \"pnpm -C playground install && pnpm -C playground run dev --host\"",
-      "dev:astro": "pnpm build && concurrently \"pnpm -C packages/notivue run watch\" \"pnpm -C astro-playground install && pnpm -C astro-playground run dev --host\"",
       "build": "pnpm -C packages/notivue run build",
       "build:playground": "pnpm build && pnpm install && pnpm -C playground run build",
+      "dev": "pnpm build && concurrently \"pnpm -C packages/notivue run watch\" \"pnpm -C playground run dev --host\"",
+      "dev:astro": "pnpm build && concurrently \"pnpm -C packages/notivue run watch\" \"pnpm -C playground-astro run dev --host\"",
+      "docs:build": "pnpm -C docs run build",
+      "docs:dev": "pnpm -C docs run dev",
+      "docs:preview": "pnpm -C docs run preview",
+      "format": "oxfmt .",
+      "format:check": "oxfmt --check .",
+      "prepare": "husky",
       "test": "pnpm build && pnpm install && pnpm -C tests run test",
-      "test:gui": "pnpm build && concurrently \"pnpm -C packages/notivue run watch\" \"pnpm -C tests install && pnpm -C tests run test:gui\"",
-      "test:unit": "pnpm -C tests run test:unit",
-      "prepare": "husky"
+      "test:gui": "pnpm build && concurrently \"pnpm -C packages/notivue run watch\" \"pnpm -C tests run test:gui\"",
+      "test:unit": "pnpm -C tests run test:unit"
    },
    "devDependencies": {
-      "concurrently": "^8.2.2",
-      "husky": "^9.1.5",
-      "lint-staged": "^15.2.9",
-      "prettier": "^3.3.3",
-      "prettier-plugin-astro": "^0.14.1"
+      "concurrently": "^9.1.2",
+      "husky": "^9.1.7",
+      "lint-staged": "^15.4.3",
+      "oxfmt": "^0.42.0"
    },
    "lint-staged": {
-      "*.{js,ts,vue,json,css,md}": "prettier --write"
-   }
+      "*.{js,ts,mts,cts,mjs,cjs,vue,json,css,md}": "oxfmt --write"
+   },
+   "engines": {
+      "node": ">=20.19.0"
+   },
+   "packageManager": "pnpm@9.15.9"
 }

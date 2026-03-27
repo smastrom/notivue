@@ -38,9 +38,9 @@ export const filledIcons: NotivueIcons = {
    [NType.ERROR]: raw(ErrorIcon),
    [NType.INFO]: raw(InfoIcon),
    [NType.WARNING]: raw(ErrorIcon),
-   [NType.PROMISE]: raw(PromiseIcon),
-   [NType.PROMISE_RESOLVE]: raw(SuccessIcon),
-   [NType.PROMISE_REJECT]: raw(ErrorIcon),
+   [NType.LOADING]: raw(PromiseIcon),
+   [NType.LOADING_SUCCESS]: raw(SuccessIcon),
+   [NType.LOADING_ERROR]: raw(ErrorIcon),
    close: raw(CloseIcon),
 }
 
@@ -49,8 +49,8 @@ export const outlinedIcons: NotivueIcons = {
    [NType.ERROR]: raw(ErrorOutlineIcon),
    [NType.INFO]: raw(InfoOutlineIcon),
    [NType.WARNING]: raw(ErrorOutlineIcon),
-   [NType.PROMISE]: raw(PromiseIcon),
-   [NType.PROMISE_RESOLVE]: raw(SuccessOutlineIcon),
-   [NType.PROMISE_REJECT]: raw(ErrorOutlineIcon),
+   [NType.LOADING]: raw(PromiseIcon),
+   [NType.LOADING_SUCCESS]: raw(SuccessOutlineIcon),
+   [NType.LOADING_ERROR]: raw(ErrorOutlineIcon),
    close: raw(CloseIcon),
 }

@@ -28,22 +28,19 @@ const config = useNotivue()
 
 const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme } as const
 
-!isSSR &&
+if (import.meta.client) {
    watchEffect(() => document.documentElement.style.setProperty('--nv-root-width', state.maxWidth))
+}
 
 watch(
    () => [config.enqueue.value, config.limit.value],
-   () => push.destroyAll()
+   () => notify.destroyAll()
 )
 </script>
 
 <template>
-   <NotivueKeyboard v-slot="{ containersTabIndex }">
-      <Notivue
-         :class="{ CenterOnMobile: state.centerOnMobile }"
-         :containersTabIndex="containersTabIndex"
-         v-slot="item"
-      >
+   <NotivueKeyboard>
+      <Notivue :class="{ CenterOnMobile: state.centerOnMobile }" v-slot="item">
          <FriendRequestNotification
             v-if="item.props.isFriendRequestNotification"
             :item="item as NotivueItem<FriendRequestNotificationProps>"

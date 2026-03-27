@@ -8,13 +8,6 @@
    "plugins": ["prettier-plugin-astro"],
    "overrides": [
       {
-         "files": "README.md",
-         "options": {
-            "tabWidth": 2,
-            "trailingComma": "none",
-            "printWidth": 90
-         }
-      },      {
          "files": "*.astro",
          "options": {
             "parser": "astro"

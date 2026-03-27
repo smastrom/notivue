@@ -4,52 +4,43 @@ export const CLASS_PREFIX = 'Notivue__'
 
 export const DEFAULT_DURATION = 6000
 
-export const NotificationTypeKeys: Record<string, NTypeU> = {
+/**
+ * Canonical string literals for `NotificationType`. `LOADING*` is canonical; `PROMISE*` are deprecated aliases (normalized at runtime).
+ */
+export const NotificationTypeKeys = {
    SUCCESS: 'success',
    ERROR: 'error',
    WARNING: 'warning',
    INFO: 'info',
+   LOADING: 'loading',
+   LOADING_SUCCESS: 'loading-success',
+   LOADING_ERROR: 'loading-error',
+   /** @deprecated Deprecated alias of `LOADING`. */
    PROMISE: 'promise',
+   /** @deprecated Deprecated alias of `LOADING_SUCCESS`. */
    PROMISE_RESOLVE: 'promise-resolve',
+   /** @deprecated Deprecated alias of `LOADING_ERROR`. */
    PROMISE_REJECT: 'promise-reject',
-}
-
-const success: NotificationOptions = {
-   title: '',
-   message: '',
-   duration: DEFAULT_DURATION,
-   ariaLive: 'polite',
-   ariaRole: 'status',
-}
-
-const error: NotificationOptions = {
-   ...success,
-   ariaLive: 'assertive',
-   ariaRole: 'alert',
-}
-
-const promise: NotificationOptions = {
-   ...success,
-   duration: Infinity,
-}
-
-const warning: NotificationOptions = {
-   ...error,
-   ariaLive: 'polite',
-}
-
-const info: NotificationOptions = {
-   ...success,
-}
+} as const satisfies Record<string, NTypeU>
 
 export const DEFAULT_NOTIFICATION_OPTIONS = {
-   [NotificationTypeKeys.SUCCESS]: success,
-   [NotificationTypeKeys.ERROR]: error,
-   [NotificationTypeKeys.WARNING]: warning,
-   [NotificationTypeKeys.INFO]: info,
-   [NotificationTypeKeys.PROMISE]: promise,
-   [NotificationTypeKeys.PROMISE_RESOLVE]: success,
-   [NotificationTypeKeys.PROMISE_REJECT]: error,
+   global: {
+      title: '',
+      message: '',
+      duration: DEFAULT_DURATION,
+      ariaLive: 'polite',
+      ariaRole: 'status',
+   },
+   [NotificationTypeKeys.SUCCESS]: {},
+   [NotificationTypeKeys.ERROR]: { ariaLive: 'assertive', ariaRole: 'alert' },
+   [NotificationTypeKeys.WARNING]: { ariaRole: 'alert' },
+   [NotificationTypeKeys.INFO]: {},
+   [NotificationTypeKeys.LOADING]: {},
+   [NotificationTypeKeys.LOADING_SUCCESS]: {},
+   [NotificationTypeKeys.LOADING_ERROR]: { ariaLive: 'assertive', ariaRole: 'alert' },
+   [NotificationTypeKeys.PROMISE]: {},
+   [NotificationTypeKeys.PROMISE_RESOLVE]: {},
+   [NotificationTypeKeys.PROMISE_REJECT]: { ariaLive: 'assertive', ariaRole: 'alert' },
 } as NotivueConfigRequired['notifications']
 
 export const DEFAULT_CONFIG: NotivueConfigRequired = {
@@ -60,7 +51,7 @@ export const DEFAULT_CONFIG: NotivueConfigRequired = {
    position: 'top-center',
    teleportTo: 'body',
    notifications: DEFAULT_NOTIFICATION_OPTIONS,
-   limit: Infinity,
+   limit: -1,
    avoidDuplicates: false,
    transition: 'transform 0.35s cubic-bezier(0.5, 1, 0.25, 1)',
    animations: {

@@ -1,9 +1,9 @@
 import { readonly, ref } from 'vue'
 
-import { createPushMock, setPush } from './createPush'
+import { createNotifyMock, setNotify } from './createNotify'
 import { createStoreWatchers } from './createStoreWatchers'
 
-import type { NotivueStore, Push } from 'notivue'
+import type { NotivueStore, Notify } from 'notivue'
 
 export let startInstance: () => void = () => {}
 export let stopInstance: () => void = () => {}
@@ -12,10 +12,10 @@ export function createInstance(startOnCreation: boolean) {
    const isRunning = ref(startOnCreation)
    const isRunningReadonly = readonly(isRunning)
 
-   function setupInstance(store: NotivueStore, push: Push) {
+   function setupInstance(store: NotivueStore, notify: Notify) {
       const watchStore = () => createStoreWatchers(store)
 
-      if (startOnCreation) setPush(push)
+      if (startOnCreation) setNotify(notify)
 
       let unwatchStore = startOnCreation ? watchStore() : [() => {}]
 
@@ -24,7 +24,7 @@ export function createInstance(startOnCreation: boolean) {
          startInstance() {
             if (isRunning.value) return
 
-            setPush(push)
+            setNotify(notify)
             unwatchStore = watchStore()
 
             isRunning.value = true
@@ -36,7 +36,7 @@ export function createInstance(startOnCreation: boolean) {
             store.queue.clear()
             store.items.clearLifecycleEvents()
 
-            setPush(createPushMock())
+            setNotify(createNotifyMock())
             unwatchStore.forEach((unwatch) => unwatch())
 
             isRunning.value = false

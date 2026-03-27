@@ -7,12 +7,17 @@ import type {
    NotivueItem,
    HiddenInternalItemData as InternalKeys,
    NotificationType,
+   NotificationOptions,
    NotivueConfigRequired,
    Obj,
    PushOptionsWithInternals,
 } from 'notivue'
 
 export const isSSR = typeof window === 'undefined'
+
+export function isUnlimited(value: number | null | undefined): boolean {
+   return value == null || value === Infinity || value === -1
+}
 
 export function mergeDeep<T extends Obj>(target: T, source: Record<string, any>): T {
    const merged: T = { ...target }
@@ -30,17 +35,50 @@ export function mergeDeep<T extends Obj>(target: T, source: Record<string, any>)
    return merged
 }
 
+/** @internal */
+const NOTIFICATION_TYPE_LEGACY: Partial<Record<NotificationType, NotificationType>> = {
+   loading: 'promise',
+   'loading-success': 'promise-resolve',
+   'loading-error': 'promise-reject',
+}
+
+/** Map `promise*` discriminators to canonical `loading*` at store ingress. */
+export function toCanonicalNotificationType(type: NotificationType): NotificationType {
+   switch (type) {
+      case 'promise':
+         return 'loading'
+      case 'promise-resolve':
+         return 'loading-success'
+      case 'promise-reject':
+         return 'loading-error'
+      default:
+         return type
+   }
+}
+
+function notificationTypeConfigSlice(
+   configOptions: NotivueConfigRequired['notifications'],
+   canonical: NotificationType
+): NotificationOptions {
+   const legacy = NOTIFICATION_TYPE_LEGACY[canonical]
+   const fromLegacy = legacy ? configOptions[legacy] : undefined
+   const fromCanon = configOptions[canonical]
+   return { ...fromLegacy, ...fromCanon } as NotificationOptions
+}
+
 export function mergeNotificationOptions<T extends Obj = Obj>(
    configOptions: NotivueConfigRequired['notifications'],
    pushOptions: PushOptionsWithInternals<T>
 ) {
    pushOptions.props ||= {} as T
+   const type = toCanonicalNotificationType(pushOptions.type)
 
    return {
-      ...configOptions[pushOptions.type],
       ...configOptions.global,
+      ...notificationTypeConfigSlice(configOptions, type),
       ...pushOptions,
-      ...(pushOptions.type === 'promise' ? { duration: Infinity } : {}), // Enforce this
+      ...(type === 'loading' ? { duration: -1 } : {}),
+      type,
    }
 }
 
@@ -94,7 +132,7 @@ export const internalKeys: (keyof InternalKeys)[] = [
    'timeout',
    'resumedAt',
    'remaining',
-   // Maybe in future releases these could be exposed
+   // Omitted from the slot payload for now
    'animationAttrs',
    'positionStyles',
 ]

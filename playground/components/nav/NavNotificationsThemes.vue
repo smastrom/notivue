@@ -38,4 +38,3 @@ function setConfigTheme(themeKey: ThemeNames) {
    grid-auto-flow: row;
 }
 </style>
-utils/store

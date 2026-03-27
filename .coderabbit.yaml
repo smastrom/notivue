@@ -1,0 +1,113 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+
+language: en-US
+tone_instructions: >-
+   Be direct and concise. Use imperative mood. Skip filler
+   and marketing language. Assume the reader is a competent
+   developer. State facts, not opinions.
+
+reviews:
+   profile: chill
+   sequence_diagrams: true
+   poem: false
+   auto_review:
+      enabled: true
+      drafts: false
+      auto_incremental_review: true
+      auto_pause_after_reviewed_commits: 0
+      ignore_title_keywords:
+         - 'WIP'
+         - 'DO NOT MERGE'
+      base_branches:
+         - main
+         - v3
+
+   # Never edit PR title or description. Reviews go in comments only.
+   high_level_summary: false
+   high_level_summary_placeholder: ''
+   auto_title_placeholder: ''
+   collapse_walkthrough: true
+
+   path_filters:
+      - '!pnpm-lock.yaml'
+      - '!**/*.snap'
+      - '!docs/public/**'
+      - '!playground/**'
+      - '!playground-astro/**'
+
+   path_instructions:
+      - path: 'packages/notivue/core/**'
+        instructions: |
+           This is the core notification engine. Pay close attention to:
+           - Reactivity correctness (Vue 3 reactive/ref usage)
+           - Type safety (strict TypeScript)
+           - Public API surface: any change here affects all consumers
+           - Backwards compatibility of exported types and functions
+      - path: 'packages/notivue/Notivue/**'
+        instructions: |
+           Main wrapper component with aria-live region for accessibility.
+           Ensure ARIA attributes and live region behavior are correct.
+      - path: 'packages/notivue/Notifications/**'
+        instructions: |
+           Pre-built notification components and themes.
+           Check CSS variable usage, theme consistency, and icon accessibility.
+      - path: 'packages/notivue/nuxt/**'
+        instructions: |
+           Nuxt module integration. Verify module hooks, auto-imports,
+           and compatibility with Nuxt 4 conventions.
+      - path: 'packages/notivue/astro/**'
+        instructions: |
+           Astro integration. Ensure SSR/island compatibility
+           and correct lifecycle handling.
+      - path: 'tests/**'
+        instructions: |
+           Test suite using Vitest (unit) and Cypress (component).
+           Includes accessibility testing via cypress-axe.
+           Ensure tests are deterministic and cover edge cases.
+      - path: 'docs/**'
+        instructions: |
+           VitePress documentation. Check code examples for accuracy,
+           correct imports, and consistency with the actual API.
+
+   tools:
+      eslint:
+         enabled: false
+      biome:
+         enabled: false
+      markdownlint:
+         enabled: true
+      actionlint:
+         enabled: true
+      gitleaks:
+         enabled: true
+
+   finishing_touches:
+      docstrings:
+         enabled: false
+      unit_tests:
+         enabled: false
+      simplify:
+         enabled: false
+
+chat:
+   auto_reply: true
+   allow_non_org_members: false
+
+code_generation:
+   unit_tests:
+      path_instructions:
+         - path: 'tests/**'
+           instructions: |
+              This project uses Cypress component tests as the primary
+              test suite, not unit tests. Include cypress-axe accessibility
+              checks where relevant. Use cypress-real-events for user
+              interaction testing. A small Vitest suite exists in
+              tests/config/ for configuration logic only.
+
+knowledge_base:
+   learnings:
+      scope: local
+   web_search:
+      enabled: true
+   code_guidelines:
+      enabled: true

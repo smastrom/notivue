@@ -2,8 +2,8 @@
 const { state, actions, messages } = useStore()
 
 function clearAllAndPushOne() {
-   push.destroyAll()
-   push.success(messages.value.success)
+   notify.destroyAll()
+   notify.success(messages.value.success)
 }
 
 function toggleRenderTitles() {

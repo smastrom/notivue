@@ -35,5 +35,5 @@ Cypress.Commands.add('pushUnqualified', () => cy.get('.PushUnqualified').click()
 Cypress.Commands.add('pushCandidateSilently', () => cy.get('body').type('{shift}c'))
 
 Cypress.Commands.add('checkLeaveAnnouncement', () =>
-   cy.get('.Notification').first().should('contain.text', "You're leaving the notifications stream")
+   cy.get('.Notification').first().should('contain.text', 'You left the notifications stream')
 )

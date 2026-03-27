@@ -1,26 +1,30 @@
 import type { Component, ComputedRef, Ref } from 'vue'
 
+/** @deprecated No longer used. */
 export type TabIndexValue = 0 | -1
+
+/** @deprecated No longer used. */
 export type ContainersTabIndexMap = Record<string, TabIndexValue>
 
+/** @deprecated No longer used. `useNotivueKeyboard()` is no longer needed. */
 export interface NotivueKeyboardData {
-   /**
-    * Reactive tab index value for the custom notification focusable elements tabindex.
-    *
-    * Meant to be added to the custom notification elements via `:tabindex="elementsTabIndex"`.
-    */
    elementsTabIndex: Ref<TabIndexValue>
-   /**
-    * Reactive map of tab index values for the notification containers.
-    *
-    * Meant to be passed as prop to Notivue via `:containersTabIndex="containersTabIndex"`.
-    */
    containersTabIndex: ComputedRef<ContainersTabIndexMap>
 }
 
 export interface NotivueKeyboardProps {
    /**
-    * Key to combine with Shift to enter or exit the stream.
+    * Custom function to determine if a notification container is a candidate
+    * for keyboard navigation. Receives the container element.
+    *
+    * By default, a container is a candidate if it contains at least one
+    * focusable element (buttons, links, inputs, selects, textareas, or elements with `tabindex="0"`).
+    *
+    * @default undefined
+    */
+   isCandidate?: (container: HTMLElement) => boolean
+   /**
+    * Key to combine with Control to enter or exit the stream.
     *
     * @default "n"
     */
@@ -33,9 +37,9 @@ export interface NotivueKeyboardProps {
     */
    handleClicks?: boolean
    /**
-    * Text to be announced when leaving the stream
+    * Text to be announced when leaving the stream.
     *
-    * @default "You're leaving the notifications stream. Press Control + N to navigate it again."
+    * @default "You left the notifications stream. Press Tab or Control + N to navigate it again."
     */
    leaveMessage?: string
    /**
@@ -47,7 +51,7 @@ export interface NotivueKeyboardProps {
    /**
     * Whether to render the enter/leave notification or just announce it via screen reader.
     *
-    * @default true
+    * @default false
     */
    renderAnnouncement?: boolean
    /**
@@ -59,8 +63,5 @@ export interface NotivueKeyboardProps {
 }
 
 export interface NotivueKeyboardSlot {
-   default(props: {
-      elementsTabIndex: TabIndexValue
-      containersTabIndex: ContainersTabIndexMap
-   }): Component
+   default(): Component
 }

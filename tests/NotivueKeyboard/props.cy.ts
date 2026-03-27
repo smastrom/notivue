@@ -82,7 +82,7 @@ describe('Props', () => {
          .realPress('Escape')
 
          .get('.Notification')
-         .should('contain.text', "You're leaving the notifications stream")
+         .should('contain.text', 'You left the notifications stream')
          .should('have.length', 1)
    })
 })

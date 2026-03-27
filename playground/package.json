@@ -5,18 +5,18 @@
       "build": "nuxt build",
       "dev": "nuxi cleanup && nuxt dev --port=5173",
       "generate": "nuxt generate",
-      "preview": "nuxt preview",
-      "postinstall": "nuxt prepare"
-   },
-   "devDependencies": {
-      "@types/luxon": "^3.4.2",
-      "@types/node": "^22.5.1",
-      "lightningcss": "^1.26.0",
-      "nuxt": "^3.13.0",
-      "vue": "^3.4.38"
+      "postinstall": "nuxt prepare",
+      "preview": "nuxt preview"
    },
    "dependencies": {
       "luxon": "^3.5.0",
       "notivue": "workspace:*"
+   },
+   "devDependencies": {
+      "@types/luxon": "^3.4.2",
+      "@types/node": "^22.13.1",
+      "lightningcss": "^1.29.3",
+      "nuxt": "^4.4.2",
+      "vue": "^3.5.13"
    }
 }

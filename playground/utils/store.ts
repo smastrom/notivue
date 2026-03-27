@@ -81,15 +81,15 @@ export function createStore() {
             info: {
                title: actions.getTitle(state.rtl ? 'معلومات' : 'Info'),
                message: actions.getMsg(
-                  'Did you know you can directly send a message using the keyboard?',
-                  'هل تعلم أنك يمكنك إرسال رسالة باستخدام لوحة المفاتيح؟ اضغط على Enter للإرسال.'
+                  'In the headless section, try the keyboard shortcuts (P or S) to fire sample notifications.',
+                  'في قسم الواجهة المخصصة، جرّب اختصارات لوحة المفاتيح (P أو S) لعرض إشعارات تجريبية.'
                ),
             },
-            promise: {
-               title: actions.getTitle(state.rtl ? 'إرسال...' : 'Sending...'),
+            dynamic: {
+               title: actions.getTitle(state.rtl ? 'جاري التحديث...' : 'Updating…'),
                message: actions.getMsg(
-                  `We're sending your message, hold on...`,
-                  'نحن نرسل رسالتك. سيستغرق ذلك لحظة أو اثنتين ...'
+                  'This notification will resolve to success or error in a moment.',
+                  'سيتحول هذا الإشعار إلى نجاح أو خطأ خلال لحظات.'
                ),
             },
          }) as const

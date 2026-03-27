@@ -1,29 +1,13 @@
 <script setup lang="ts">
-import {
-   onBeforeUnmount,
-   onMounted,
-   ref,
-   computed,
-   toRefs,
-   provide,
-   readonly,
-   nextTick,
-   watch,
-} from 'vue'
+import { onBeforeUnmount, onMounted, ref, computed, toRefs, nextTick, watch } from 'vue'
 
 import { useNotivue, useStore } from '@/core/useStore'
-import { push } from '@/core/createPush'
-import { focusableEls, keyboardInjectionKey, DEFAULT_PROPS } from './constants'
+import { notify } from '@/core/createNotify'
+import { focusableEls, DEFAULT_PROPS } from './constants'
 import { useKeyboardFocus } from './useKeyboardFocus'
 import { useLastFocused } from './useLastFocused'
 
-import type {
-   PushOptions,
-   TabIndexValue,
-   ContainersTabIndexMap,
-   NotivueKeyboardProps,
-   NotivueKeyboardSlot,
-} from 'notivue'
+import type { NotifyOptions, NotivueKeyboardProps, NotivueKeyboardSlot } from 'notivue'
 
 // Props
 
@@ -48,12 +32,12 @@ const sharedOptions = {
    },
 } as const
 
-const leavePushOptions = computed<PushOptions>(() => ({
+const leaveNotifyOptions = computed<NotifyOptions>(() => ({
    message: leaveMessage.value,
    ...sharedOptions,
 }))
 
-const emptyPushOptions = computed<PushOptions>(() => ({
+const emptyNotifyOptions = computed<NotifyOptions>(() => ({
    message: emptyMessage.value,
    ...sharedOptions,
 }))
@@ -71,15 +55,11 @@ const config = useNotivue()
 const { focusLastElement } = useLastFocused()
 const { isKeyboardFocus } = useKeyboardFocus()
 
-const candidateIds = ref({ qualified: [] as string[], unqualified: [] as string[] })
-
 const candidateContainers = ref<HTMLElement[]>([])
 const unqualifiedContainers = ref<HTMLElement[]>([])
 
-const elementsTabIndex = ref<TabIndexValue>(-1)
-
-function setTabIndex(value: TabIndexValue) {
-   elementsTabIndex.value = value
+function setContainersTabIndex(value: 0 | -1) {
+   candidateContainers.value.forEach((c) => (c.tabIndex = value))
 }
 
 // Non-reactive
@@ -89,23 +69,12 @@ let announcementsCount = 0
 let hasNeverTabbedStream = true
 let allInnerFocusableEls: HTMLElement[] = []
 
-// Computed
-
-const containersTabIndex = computed(() => {
-   const map = {} as ContainersTabIndexMap
-
-   candidateIds.value.qualified.forEach((id) => (map[id] = elementsTabIndex.value))
-   candidateIds.value.unqualified.forEach((id) => (map[id] = -1))
-
-   return map
-})
-
 // Actions
 
 function onStreamEnter() {
    if (candidateContainers.value.length === 0) return
 
-   setTabIndex(0)
+   setContainersTabIndex(0)
 
    timeouts.setStreamFocus()
    timeouts.pause()
@@ -118,7 +87,7 @@ function onStreamEnter() {
 function onStreamLeave({ announce = true } = {}) {
    focusLastElement()
 
-   setTabIndex(-1)
+   setContainersTabIndex(-1)
 
    timeouts.setStreamFocus(false)
    timeouts.resume()
@@ -126,16 +95,9 @@ function onStreamLeave({ announce = true } = {}) {
    if (announce && announcementsCount < maxAnnouncements.value) {
       announcementsCount++
 
-      push.info(leavePushOptions.value)
+      notify.info(leaveNotifyOptions.value)
    }
 }
-
-// Provide
-
-provide(keyboardInjectionKey, {
-   containersTabIndex,
-   elementsTabIndex: readonly(elementsTabIndex),
-})
 
 /* ====================================================================================
  * Collect candidates/unqualified
@@ -144,8 +106,6 @@ provide(keyboardInjectionKey, {
 watch(elements.containers, setCandidates, { deep: true })
 
 function setCandidates(newContainers: HTMLElement[]) {
-   const _ids = { qualified: [] as string[], unqualified: [] as string[] }
-
    let _candidateContainers: HTMLElement[] = []
    let _unqualifiedContainers: HTMLElement[] = []
 
@@ -154,23 +114,25 @@ function setCandidates(newContainers: HTMLElement[]) {
    newContainers
       .map((container) => ({ id: container.dataset.notivueContainer!, container }))
       .sort((a, b) => +b.id - +a.id)
-      .forEach(({ id, container }) => {
+      .forEach(({ container }) => {
          const innerFocusableEls = Array.from(container.querySelectorAll(focusableEls)).filter(
             (el) => el instanceof HTMLElement
          ) as HTMLElement[]
 
          _focusableEls.push(...innerFocusableEls)
 
-         if (innerFocusableEls.length > 1) {
-            _ids.qualified.push(id)
+         const isQualified = props.isCandidate
+            ? props.isCandidate(container)
+            : innerFocusableEls.length > 0
+
+         if (isQualified) {
+            container.tabIndex = timeouts.isStreamFocused.value ? 0 : -1
             _candidateContainers.push(container)
          } else {
-            _ids.unqualified.push(id)
+            container.tabIndex = -1
             _unqualifiedContainers.push(container)
          }
       })
-
-   candidateIds.value = _ids
 
    candidateContainers.value = _candidateContainers
    unqualifiedContainers.value = _unqualifiedContainers
@@ -333,7 +295,9 @@ function onCandidatesKeydown(e: KeyboardEvent) {
           */
          if (queue.length > 0) return
 
-         const nextContainer = candidateContainers.value[currCandidateIndex + 1]
+         const nextContainer =
+            candidateContainers.value[currCandidateIndex + 1] ??
+            candidateContainers.value[currCandidateIndex - 1]
 
          if (nextContainer) {
             nextContainer.focus()
@@ -359,7 +323,7 @@ function onComboKeyDown(e: KeyboardEvent) {
          if (candidateContainers.value.length > 0) {
             onStreamEnter()
          } else {
-            push.info(emptyPushOptions.value)
+            notify.info(emptyNotifyOptions.value)
          }
       }
    }
@@ -401,5 +365,5 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-   <slot v-bind="{ containersTabIndex, elementsTabIndex }" />
+   <slot />
 </template>
