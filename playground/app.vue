@@ -28,8 +28,9 @@ const config = useNotivue()
 
 const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme } as const
 
-!isSSR &&
+if (import.meta.client) {
    watchEffect(() => document.documentElement.style.setProperty('--nv-root-width', state.maxWidth))
+}
 
 watch(
    () => [config.enqueue.value, config.limit.value],
