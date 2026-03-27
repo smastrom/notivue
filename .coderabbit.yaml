@@ -10,6 +10,17 @@ reviews:
    profile: chill
    sequence_diagrams: true
    poem: false
+   auto_review:
+      enabled: true
+      drafts: false
+      auto_incremental_review: true
+      auto_pause_after_reviewed_commits: 0
+      ignore_title_keywords:
+         - 'WIP'
+         - 'DO NOT MERGE'
+      base_branches:
+         - main
+         - v3
 
    # Never edit PR title or description. Reviews go in comments only.
    high_level_summary: false
@@ -57,16 +68,6 @@ reviews:
         instructions: |
            VitePress documentation. Check code examples for accuracy,
            correct imports, and consistency with the actual API.
-
-   auto_review:
-      enabled: true
-      drafts: false
-      ignore_title_keywords:
-         - 'WIP'
-         - 'DO NOT MERGE'
-      base_branches:
-         - main
-         - v3
 
    tools:
       eslint:
