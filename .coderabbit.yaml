@@ -8,10 +8,14 @@ tone_instructions: >-
 
 reviews:
    profile: chill
-   high_level_summary: true
-   collapse_walkthrough: true
    sequence_diagrams: true
    poem: false
+
+   # Never edit PR title or description. Reviews go in comments only.
+   high_level_summary: false
+   high_level_summary_placeholder: ''
+   auto_title_placeholder: ''
+   collapse_walkthrough: true
 
    path_filters:
       - '!pnpm-lock.yaml'
