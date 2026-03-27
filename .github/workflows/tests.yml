@@ -11,6 +11,9 @@ on:
          - '*'
    workflow_call:
 
+permissions:
+   contents: read
+
 jobs:
    cypress-run:
       runs-on: ubuntu-latest
