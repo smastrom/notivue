@@ -28,19 +28,7 @@ Fully typed. Works with Vite, Nuxt, and Astro.
 
 🛡️ **Battle-tested** - 160+ E2E tests
 
-💫 **Nuxt and Astro modules** - Zero-config framework integration
-
-## Key exports
-
-| Export            | What it does                                                                                            |
-| ----------------- | ------------------------------------------------------------------------------------------------------- |
-| `createNotivue`   | Plugin factory — pass config, install on the app                                                        |
-| `notify`          | Push notifications: `notify.success()`, `.error()`, `.warning()`, `.info()`, `.promise()`, `.loading()` |
-| `Notivue`         | Renderless stream component — renders the notification list                                             |
-| `Notification`    | Built-in notification component with themes                                                             |
-| `NotivueSwipe`    | Wrapper — adds swipe-to-dismiss                                                                         |
-| `NotivueKeyboard` | Wrapper — adds full keyboard navigation                                                                 |
-| `useNotivue`      | Composable — reactive access to config                                                                  |
+💫 **Nuxt and Astro modules** - Zero-config framework integration |
 
 ## Installation
 
@@ -252,6 +240,19 @@ export default defineNuxtConfig({
 > **Note:** Astro **6** is not supported yet.
 
 [Installation → Astro](https://docs.notivue.smastrom.io/installation/astro.html) — `createNotivue` in the Vue app entry, Notivue island, `client:only`, view transitions.
+
+## Key exports
+
+| Export             | What it does                                                                                            |
+| ------------------ | ------------------------------------------------------------------------------------------------------- |
+| `createNotivue`    | Plugin factory — pass config, install on the app                                                        |
+| `notify`           | Push notifications: `notify.success()`, `.error()`, `.warning()`, `.info()`, `.promise()`, `.loading()` |
+| `Notivue`          | Renderless stream component — renders the notification list                                             |
+| `Notification`     | Built-in notification component with themes                                                             |
+| `NotivueSwipe`     | Wrapper — adds swipe-to-dismiss                                                                         |
+| `NotivueKeyboard`  | Wrapper — adds full keyboard navigation                                                                 |
+| `useNotivue`       | Composable — reactive access to config                                                                  |
+| `useNotifications` | Composable — reactive access to notifications                                                           |
 
 ## Thanks
 
