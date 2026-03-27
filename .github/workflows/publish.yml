@@ -5,6 +5,8 @@ on:
       tags: ['v*']
    workflow_dispatch:
 
+permissions: {}
+
 jobs:
    tests-workflow:
       uses: ./.github/workflows/tests.yml
