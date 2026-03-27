@@ -1,10 +1,11 @@
+import { readFileSync } from 'node:fs'
+
 import { getHead } from './utils/head'
 
-/** `NavPushHeadless.vue` keeps the legacy `push` export and `Push*` types for alias regression testing. */
+const { version } = JSON.parse(readFileSync('../packages/notivue/package.json', 'utf-8'))
+
 export default defineNuxtConfig({
-   srcDir: '.',
    modules: ['notivue/nuxt'],
-   ssr: true,
    devtools: {
       enabled: false,
    },
@@ -23,6 +24,9 @@ export default defineNuxtConfig({
       head: getHead(),
    },
    vite: {
+      define: {
+         __NOTIVUE_VERSION__: JSON.stringify(version),
+      },
       optimizeDeps: {
          include: ['luxon'],
       },
@@ -30,7 +34,6 @@ export default defineNuxtConfig({
          transformer: 'lightningcss',
       },
       build: {
-         minify: !import.meta.env.DEV,
          cssMinify: 'lightningcss',
       },
    },
