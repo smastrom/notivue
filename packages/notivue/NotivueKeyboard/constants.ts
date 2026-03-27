@@ -7,6 +7,6 @@ export const DEFAULT_PROPS = {
    leaveMessage:
       'You left the notifications stream. Press Tab or Control + N to navigate it again.',
    emptyMessage: 'No notifications to navigate',
-   renderAnnouncement: true,
+   renderAnnouncement: false,
    maxAnnouncements: 2,
 } as const
