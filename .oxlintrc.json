@@ -1,0 +1,93 @@
+{
+   "$schema": "./node_modules/oxlint/configuration_schema.json",
+   "plugins": ["typescript", "unicorn", "oxc"],
+   "jsPlugins": ["./oxlint-plugins.mjs"],
+   "categories": {
+      "correctness": "off",
+      "perf": "off",
+      "restriction": "off",
+      "suspicious": "off",
+      "pedantic": "off",
+      "style": "off",
+      "nursery": "off"
+   },
+   "rules": {
+      "stylistic/sort-imports": [
+         "error",
+         {
+            "internalPattern": ["^@/.+"],
+            "newlinesBetween": 1,
+            "customGroups": [
+               { "groupName": "vue-files", "elementNamePattern": "\\.vue$" },
+               { "groupName": "constants", "elementNamePattern": "/constants(/|$)" }
+            ],
+            "groups": [
+               "vue-files",
+               "type",
+               "builtin",
+               "external",
+               "internal",
+               "constants",
+               ["parent", "sibling", "index"],
+               "side-effect",
+               "style",
+               "unknown"
+            ]
+         }
+      ],
+      "stylistic/padding-line-between-statements": [
+         "error",
+         { "blankLine": "always", "prev": "import", "next": "*" },
+         { "blankLine": "any", "prev": "import", "next": "import" },
+         {
+            "blankLine": "always",
+            "prev": ["block-like", "if", "for", "while", "do", "switch", "try"],
+            "next": "*"
+         },
+         {
+            "blankLine": "always",
+            "prev": "*",
+            "next": ["block-like", "if", "for", "while", "do", "switch", "try"]
+         },
+         {
+            "blankLine": "any",
+            "prev": ["block-like", "if", "for", "while", "do", "switch", "try"],
+            "next": ["block-like", "if", "for", "while", "do", "switch", "try"]
+         },
+         { "blankLine": "always", "prev": "expression", "next": ["const", "let"] },
+         { "blankLine": "always", "prev": ["const", "let"], "next": "expression" },
+         { "blankLine": "always", "prev": "const", "next": "let" },
+         { "blankLine": "always", "prev": "let", "next": "const" },
+         {
+            "blankLine": "always",
+            "prev": [
+               { "selector": "ExpressionStatement[expression.type='AssignmentExpression']" },
+               { "selector": "ExpressionStatement[expression.type='UpdateExpression']" }
+            ],
+            "next": [
+               { "selector": "ExpressionStatement[expression.type='CallExpression']" },
+               { "selector": "ExpressionStatement[expression.type='AwaitExpression']" }
+            ]
+         },
+         {
+            "blankLine": "always",
+            "prev": [
+               { "selector": "ExpressionStatement[expression.type='CallExpression']" },
+               { "selector": "ExpressionStatement[expression.type='AwaitExpression']" }
+            ],
+            "next": [
+               { "selector": "ExpressionStatement[expression.type='AssignmentExpression']" },
+               { "selector": "ExpressionStatement[expression.type='UpdateExpression']" }
+            ]
+         },
+         {
+            "blankLine": "always",
+            "prev": "*",
+            "next": ["return", "throw", "break", "continue"]
+         }
+      ]
+   },
+   "env": {
+      "builtin": true
+   }
+}

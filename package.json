@@ -9,21 +9,32 @@
       "docs:build": "pnpm -C docs run build",
       "docs:dev": "pnpm -C docs run dev",
       "docs:preview": "pnpm -C docs run preview",
-      "format": "oxfmt .",
-      "format:check": "oxfmt --check .",
+      "format": "oxfmt . && pnpm -C playground-astro exec prettier --write \"src/**/*.astro\" && oxlint --fix .",
+      "format:check": "oxfmt --check . && oxlint .",
       "prepare": "husky",
       "test": "pnpm build && pnpm install && pnpm -C tests run test",
       "test:gui": "pnpm build && concurrently \"pnpm -C packages/notivue run watch\" \"pnpm -C tests run test:gui\"",
       "test:unit": "pnpm -C tests run test:unit"
    },
    "devDependencies": {
+      "@stylistic/eslint-plugin": "^5.10.0",
       "concurrently": "^9.1.2",
+      "eslint-plugin-perfectionist": "^5.9.0",
       "husky": "^9.1.7",
       "lint-staged": "^15.4.3",
-      "oxfmt": "^0.42.0"
+      "oxfmt": "^0.42.0",
+      "oxlint": "^1.67.0"
    },
    "lint-staged": {
-      "*.{js,ts,mts,cts,mjs,cjs,vue,json,css,md}": "oxfmt --write"
+      "*.{js,ts,mts,cts,mjs,cjs,vue}": [
+         "oxfmt --write",
+         "oxlint --fix"
+      ],
+      "*.{json,css,md,html}": "oxfmt --write",
+      "*.astro": [
+         "pnpm -C playground-astro exec prettier --write --config .prettierrc",
+         "oxlint --fix"
+      ]
    },
    "engines": {
       "node": ">=20.19.0"
