@@ -31,16 +31,16 @@ const baseStyles: Record<NotivueElements, CSSProperties> = {
       ...boxSizing,
       display: 'flex',
       margin: '0',
+      marginBottom: 'var(--nv-gap, 0.75rem)',
+      marginBlockEnd: 'var(--nv-gap, 0.75rem)',
+      maxWidth: '100%',
       position: 'absolute',
       transitionProperty: 'transform',
-      width: '100%',
+      width: 'max-content',
    },
    itemContainer: {
       ...boxSizing,
       maxWidth: '100%',
-      marginBottom: 'var(--nv-gap, 0.75rem)',
-      marginBlockEnd: 'var(--nv-gap, 0.75rem)',
-      outline: 'none',
       pointerEvents: 'auto',
    },
 }
@@ -70,16 +70,32 @@ export function useNotivueStyles() {
       return { inset: inset.join(' '), clipPath: `inset(${clipPath.join(' ')})` }
    })
 
-   const xAlignment = computed<CSSProperties>(() => ({
-      [position.value.startsWith('top') ? 'top' : 'bottom']: '0',
-      justifyContent: `var(--nv-root-x-align, ${
-         position.value.endsWith('left')
-            ? 'flex-start'
-            : position.value.endsWith('right')
-              ? 'flex-end'
-              : 'center'
-      })`,
-   }))
+   const xAlignFallback = computed(() =>
+      position.value.endsWith('left')
+         ? 'flex-start'
+         : position.value.endsWith('right')
+           ? 'flex-end'
+           : 'center'
+   )
+
+   const xAlignment = computed<CSSProperties>(() => {
+      const vertical = position.value.startsWith('top') ? 'top' : 'bottom'
+
+      const shared = {
+         [vertical]: '0',
+         justifyContent: `var(--nv-root-x-align, ${xAlignFallback.value})`,
+      } as CSSProperties
+
+      if (position.value.endsWith('left')) {
+         return { ...shared, left: '0', right: 'auto' }
+      }
+
+      if (position.value.endsWith('right')) {
+         return { ...shared, left: 'auto', right: '0' }
+      }
+
+      return { ...shared, left: '0', marginInline: 'auto', right: '0' }
+   })
 
    return computed<Record<NotivueElements, CSSProperties>>(() => ({
       list: { ...baseStyles.list, ...offset.value },

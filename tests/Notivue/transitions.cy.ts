@@ -1,3 +1,5 @@
+import { getListItemStackHeight } from '@/support/utils'
+
 describe('Transition styles are injected correctly', () => {
    it('Top alignment', () => {
       cy.mountNotivue()
@@ -10,7 +12,7 @@ describe('Transition styles are injected correctly', () => {
          notifications.each((_, notification) => {
             cy.checkTransitions(notification, accHeights)
 
-            accHeights += notification.clientHeight
+            accHeights += getListItemStackHeight(notification)
          })
       })
    })
@@ -26,7 +28,7 @@ describe('Transition styles are injected correctly', () => {
          notifications.each((_, notification) => {
             cy.checkTransitions(notification, accHeights)
 
-            accHeights += notification.clientHeight * -1
+            accHeights += getListItemStackHeight(notification) * -1
          })
       })
    })

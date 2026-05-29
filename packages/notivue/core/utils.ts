@@ -15,6 +15,18 @@ import { NotificationTypeKeys as NType } from './constants'
 
 export const isSSR = typeof window === 'undefined'
 
+/** List item height used for stack transforms: content box plus block-end gap margin. */
+export function getListItemStackHeight(el: HTMLElement) {
+   const style = getComputedStyle(el)
+   const marginEnd =
+      style.marginBlockEnd && style.marginBlockEnd !== '0px'
+         ? style.marginBlockEnd
+         : style.marginBottom
+   const gap = Number.parseFloat(marginEnd) || 0
+
+   return el.clientHeight + gap
+}
+
 export function isUnlimited(value: number | null | undefined): boolean {
    return value == null || value === Infinity || value === -1
 }

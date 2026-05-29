@@ -11,7 +11,7 @@ describe('Actions', () => {
 
          .pushCandidateSilently() // id: 3
          .focused()
-         .should('have.data', 'notivueContainer', 3)
+         .should('have.data', 'notivueItem', 3)
    })
 
    it('Should focus next container if clicking an action', () => {
@@ -29,7 +29,7 @@ describe('Actions', () => {
          .realPress(Math.random() > 0.5 ? 'Space' : 'Enter')
 
          .focused()
-         .should('have.data', 'notivueContainer', 0)
+         .should('have.data', 'notivueItem', 0)
    })
 
    it('Should focus previous candidate if pressing Space or Enter on action in last container', () => {
@@ -47,7 +47,7 @@ describe('Actions', () => {
          .realPress(Math.random() > 0.5 ? 'Space' : 'Enter')
 
          .focused()
-         .should('have.data', 'notivueContainer', 1) // Falls back to previous candidate
+         .should('have.data', 'notivueItem', 1) // Falls back to previous candidate
    })
 
    it('Should leave stream if clicking with mouse an action in any container', () => {

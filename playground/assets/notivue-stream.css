@@ -1,0 +1,12 @@
+/*
+ * Playground stream styles (NotivueKeyboard focuses [data-notivue-item]).
+ */
+
+[data-notivue-item]:focus-visible {
+   outline: none;
+}
+
+[data-notivue-item]:focus-visible .Notification,
+[data-notivue-item]:focus-visible .Notivue__notification {
+   box-shadow: var(--focus-ring-xl);
+}

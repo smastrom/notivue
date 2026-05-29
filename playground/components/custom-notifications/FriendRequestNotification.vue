@@ -43,12 +43,6 @@ defineProps<{
 </template>
 
 <style scoped>
-[data-notivue-container]:focus-visible .Notification {
-   outline: none;
-   border-radius: 10px;
-   box-shadow: var(--focus-ring-xl);
-}
-
 .Notification {
    width: 380px;
    max-width: 100%;

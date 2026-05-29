@@ -69,15 +69,19 @@ const isDynamic = computed(() => notification.item.type === 'loading')
    background-color: transparent;
    border: none;
    cursor: pointer;
-   padding: 0;
-   margin: 0;
-   outline: none;
-   transition: opacity 100ms ease-out;
    padding: 5px;
+   margin: 0;
+   transition: opacity 100ms ease-out;
    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
    &:hover {
       opacity: 0.5;
+   }
+
+   &:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 6px;
    }
 
    & svg {

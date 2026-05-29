@@ -14,15 +14,15 @@ export interface NotivueKeyboardData {
 
 export interface NotivueKeyboardProps {
    /**
-    * Custom function to determine if a notification container is a candidate
-    * for keyboard navigation. Receives the container element.
+    * Custom function to determine if a notification list item is a candidate
+    * for keyboard navigation. Receives the `<li>` element (`[data-notivue-item]`).
     *
-    * By default, a container is a candidate if it contains at least one
+    * By default, a list item is a candidate if it contains at least one
     * focusable element (buttons, links, inputs, selects, textareas, or elements with a non-negative `tabindex`).
     *
     * @default undefined
     */
-   isCandidate?: (container: HTMLElement) => boolean
+   isCandidate?: (el: HTMLElement) => boolean
    /**
     * Key to combine with Control to enter or exit the stream.
     *

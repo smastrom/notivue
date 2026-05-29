@@ -62,6 +62,7 @@ useSizes()
             tabindex="-1"
             :key="item.id"
             :data-notivue-item="item.id"
+            :aria-label="item.ariaLiveOnly ? undefined : getAriaLabel(item)"
             :aria-setsize="items.length"
             :aria-posinset="i + 1"
             :ref="elements.items"
@@ -78,8 +79,6 @@ useSizes()
             <div
                v-else
                v-bind="item.animationAttrs"
-               :aria-label="getAriaLabel(item)"
-               tabindex="-1"
                :data-notivue-container="item.id"
                :ref="elements.containers"
                :style="{ ...styles.itemContainer, ...props.styles?.itemContainer }"

@@ -39,6 +39,7 @@ export default defineNuxtConfig({
    },
    css: [
       'assets/style.css',
+      'assets/notivue-stream.css',
       'notivue/notifications.css',
       'notivue/notifications-progress.css',
       'notivue/animations.css',

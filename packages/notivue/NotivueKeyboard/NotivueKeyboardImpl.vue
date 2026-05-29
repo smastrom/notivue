@@ -57,11 +57,11 @@ const config = useNotivue()
 const { focusLastElement } = useLastFocused()
 const { isKeyboardFocus } = useKeyboardFocus()
 
-const candidateContainers = ref<HTMLElement[]>([])
-const unqualifiedContainers = ref<HTMLElement[]>([])
+const candidateItems = ref<HTMLElement[]>([])
+const unqualifiedItems = ref<HTMLElement[]>([])
 
-function setContainersTabIndex(value: 0 | -1) {
-   candidateContainers.value.forEach((c) => (c.tabIndex = value))
+function setItemsTabIndex(value: 0 | -1) {
+   candidateItems.value.forEach((item) => (item.tabIndex = value))
 }
 
 // Non-reactive
@@ -74,22 +74,22 @@ let allInnerFocusableEls: HTMLElement[] = []
 // Actions
 
 function onStreamEnter() {
-   if (candidateContainers.value.length === 0) return
+   if (candidateItems.value.length === 0) return
 
-   setContainersTabIndex(0)
+   setItemsTabIndex(0)
 
    timeouts.setStreamFocus()
    timeouts.pause()
 
    nextTick(() => {
-      candidateContainers.value[0].focus()
+      candidateItems.value[0].focus()
    })
 }
 
 function onStreamLeave({ announce = true } = {}) {
    focusLastElement()
 
-   setContainersTabIndex(-1)
+   setItemsTabIndex(-1)
 
    timeouts.setStreamFocus(false)
    timeouts.resume()
@@ -105,39 +105,40 @@ function onStreamLeave({ announce = true } = {}) {
  * Collect candidates/unqualified
  * ==================================================================================== */
 
-watch(elements.containers, setCandidates, { deep: true })
+watch(elements.items, setCandidates, { deep: true })
 
-function setCandidates(newContainers: HTMLElement[]) {
-   let _candidateContainers: HTMLElement[] = []
-   let _unqualifiedContainers: HTMLElement[] = []
+function setCandidates(newItems: HTMLElement[]) {
+   let _candidateItems: HTMLElement[] = []
+   let _unqualifiedItems: HTMLElement[] = []
 
    let _focusableEls: HTMLElement[] = []
 
-   newContainers
-      .map((container) => ({ id: container.dataset.notivueContainer!, container }))
+   newItems
+      .filter((item) => item.querySelector('[data-notivue-container]'))
+      .map((item) => ({ id: item.dataset.notivueItem!, item }))
       .sort((a, b) => +b.id - +a.id)
-      .forEach(({ container }) => {
-         const innerFocusableEls = Array.from(container.querySelectorAll(focusableEls)).filter(
+      .forEach(({ item }) => {
+         const innerFocusableEls = Array.from(item.querySelectorAll(focusableEls)).filter(
             (el) => el instanceof HTMLElement
          ) as HTMLElement[]
 
          _focusableEls.push(...innerFocusableEls)
 
-         const isQualified = innerFocusableEls.length > 0 || props.isCandidate?.(container) === true
+         const isQualified = innerFocusableEls.length > 0 || props.isCandidate?.(item) === true
 
          if (isQualified) {
-            container.tabIndex = timeouts.isStreamFocused.value ? 0 : -1
+            item.tabIndex = timeouts.isStreamFocused.value ? 0 : -1
 
-            _candidateContainers.push(container)
+            _candidateItems.push(item)
          } else {
-            container.tabIndex = -1
+            item.tabIndex = -1
 
-            _unqualifiedContainers.push(container)
+            _unqualifiedItems.push(item)
          }
       })
 
-   candidateContainers.value = _candidateContainers
-   unqualifiedContainers.value = _unqualifiedContainers
+   candidateItems.value = _candidateItems
+   unqualifiedItems.value = _unqualifiedItems
 
    allInnerFocusableEls = _focusableEls
 }
@@ -147,13 +148,13 @@ function setCandidates(newContainers: HTMLElement[]) {
  * ==================================================================================== */
 
 watch(
-   candidateContainers,
+   candidateItems,
    (currCandidates, prevCandidates, onCleanup) => {
       if (currCandidates.length === 0) return
 
       const hasCandidates = currCandidates.length > 0
-      const isNewCandidate = currCandidates.some((container) => {
-         return !prevCandidates.some((prevContainer) => prevContainer === container)
+      const isNewCandidate = currCandidates.some((item) => {
+         return !prevCandidates.some((prevItem) => prevItem === item)
       })
 
       const isAlreadyNavigating = isNewCandidate && timeouts.isStreamFocused.value
@@ -176,7 +177,7 @@ watch(
 )
 
 function onAllowedStreamNavigation(e: KeyboardEvent) {
-   if (!e.shiftKey && e.key === 'Tab' && candidateContainers.value.length > 0) {
+   if (!e.shiftKey && e.key === 'Tab' && candidateItems.value.length > 0) {
       e.preventDefault()
 
       if (hasNeverTabbedStream) hasNeverTabbedStream = false
@@ -209,13 +210,13 @@ function removeEnterListener() {
  * If candidates are instead available, we simply move the focus to the first one.
  */
 watch(
-   unqualifiedContainers,
+   unqualifiedItems,
    (newUnqualified) => {
       if (!config.enqueue.value || !timeouts.isStreamFocused.value) return
 
       if (newUnqualified.length > 0) {
-         if (candidateContainers.value.length > 0) {
-            candidateContainers.value[0].focus()
+         if (candidateItems.value.length > 0) {
+            candidateItems.value[0].focus()
          } else {
             onStreamLeave({ announce: false })
          }
@@ -266,8 +267,8 @@ watch(
 function onCandidatesKeydown(e: KeyboardEvent) {
    let currCandidateIndex = 0
 
-   const isNavigatingCandidates = candidateContainers.value.some((container, index) => {
-      if (container.contains(e.target as HTMLElement) || container === e.target) {
+   const isNavigatingCandidates = candidateItems.value.some((item, index) => {
+      if (item.contains(e.target as HTMLElement) || item === e.target) {
          currCandidateIndex = index
 
          return true
@@ -301,12 +302,12 @@ function onCandidatesKeydown(e: KeyboardEvent) {
           */
          if (queue.length > 0) return
 
-         const nextContainer =
-            candidateContainers.value[currCandidateIndex + 1] ??
-            candidateContainers.value[currCandidateIndex - 1]
+         const nextItem =
+            candidateItems.value[currCandidateIndex + 1] ??
+            candidateItems.value[currCandidateIndex - 1]
 
-         if (nextContainer) {
-            nextContainer.focus()
+         if (nextItem) {
+            nextItem.focus()
          } else {
             onStreamLeave()
          }
@@ -326,7 +327,7 @@ function onComboKeyDown(e: KeyboardEvent) {
 
          return onStreamLeave()
       } else {
-         if (candidateContainers.value.length > 0) {
+         if (candidateItems.value.length > 0) {
             onStreamEnter()
          } else {
             notify.info(emptyNotifyOptions.value)

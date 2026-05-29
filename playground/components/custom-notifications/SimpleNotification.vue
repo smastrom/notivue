@@ -67,6 +67,12 @@ defineProps<{
       color: #f9fafb;
    }
 
+   &:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 9999px;
+   }
+
    & svg {
       width: 1.25rem;
       height: 1.25rem;

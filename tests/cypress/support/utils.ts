@@ -17,6 +17,17 @@ export const SWIPE_NOTIFICATION_WIDTH = 300
 
 export const DEFAULT_ANIM_DURATION = 350
 
+export function getListItemStackHeight(el: HTMLElement) {
+   const style = getComputedStyle(el)
+   const marginEnd =
+      style.marginBlockEnd && style.marginBlockEnd !== '0px'
+         ? style.marginBlockEnd
+         : style.marginBottom
+   const gap = Number.parseFloat(marginEnd) || 0
+
+   return el.clientHeight + gap
+}
+
 export function getRandomInt(min: number, max: number) {
    return Math.floor(Math.random() * (max - min + 1)) + min
 }

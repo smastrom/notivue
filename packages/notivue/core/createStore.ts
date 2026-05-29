@@ -25,7 +25,7 @@ import {
    toRawConfig,
    toCanonicalNotificationType,
 } from './utils'
-import { isStatic, getSlotItem, isUnlimited } from './utils'
+import { isStatic, getSlotItem, isUnlimited, getListItemStackHeight } from './utils'
 
 export let updateConfig: (newConfig: NotivueConfigUpdateParam) => void = () => {}
 
@@ -290,8 +290,6 @@ export function createAnimations(
          })
       },
       updatePositions({ isImmediate = false } = {}) {
-         console.log('Updating positions')
-
          const isReduced = this.isReducedMotion.value || isImmediate
          const isTopAlign = config.position.value.startsWith('top')
 
@@ -311,7 +309,7 @@ export function createAnimations(
                },
             })
 
-            accPrevHeights += (isTopAlign ? 1 : -1) * el.clientHeight
+            accPrevHeights += (isTopAlign ? 1 : -1) * getListItemStackHeight(el)
          }
 
          items.triggerRef()
@@ -348,8 +346,6 @@ export function createTimeouts(items: ItemsSlice, animations: AnimationsSlice) {
       pause() {
          if (items.length === 0 || this.isStreamPaused.value) return
 
-         console.log('Pausing timeouts')
-
          this.setStreamPause()
 
          items.updateAll((item) => {
@@ -378,8 +374,6 @@ export function createTimeouts(items: ItemsSlice, animations: AnimationsSlice) {
       },
       resume() {
          if (items.length === 0 || !this.isStreamPaused.value) return
-
-         console.log('Resuming timeouts')
 
          this.setStreamPause(false)
 

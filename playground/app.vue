@@ -9,7 +9,7 @@ import UploadNotification, {
    type UploadNotificationProps,
 } from '@/components/custom-notifications/UploadNotification.vue'
 
-import type { NotivueItem } from 'notivue'
+import type { NotivueItem, Position } from 'notivue'
 
 useServerHead({
    link: ['regular', '700'].map((w) => ({
@@ -34,11 +34,50 @@ watch(
    () => [config.enqueue.value, config.limit.value],
    () => notify.destroyAll()
 )
+
+const userPosition = shallowRef<Position>(config.position.value)
+
+if (import.meta.client) {
+   const mobileMq = window.matchMedia('(max-width: 768px)')
+
+   let syncingPosition = false
+
+   const syncCenterOnMobile = () => {
+      syncingPosition = true
+
+      try {
+         if (state.centerOnMobile && mobileMq.matches) {
+            const vertical = userPosition.value.startsWith('top') ? 'top' : 'bottom'
+            const centered = `${vertical}-center` as Position
+
+            if (config.position.value !== centered) config.update({ position: centered })
+         } else if (config.position.value !== userPosition.value) {
+            config.update({ position: userPosition.value })
+         }
+      } finally {
+         syncingPosition = false
+      }
+   }
+
+   watch(
+      () => config.position.value,
+      (position) => {
+         if (syncingPosition) return
+         if (!(state.centerOnMobile && mobileMq.matches)) userPosition.value = position
+      }
+   )
+
+   watch(() => state.centerOnMobile, syncCenterOnMobile)
+
+   mobileMq.addEventListener('change', syncCenterOnMobile)
+   onMounted(syncCenterOnMobile)
+   onBeforeUnmount(() => mobileMq.removeEventListener('change', syncCenterOnMobile))
+}
 </script>
 
 <template>
    <NotivueKeyboard>
-      <Notivue :class="{ CenterOnMobile: state.centerOnMobile }" v-slot="item">
+      <Notivue v-slot="item">
          <FriendRequestNotification
             v-if="item.props.isFriendRequestNotification"
             :item="item as NotivueItem<FriendRequestNotificationProps>"
@@ -73,12 +112,6 @@ watch(
 </template>
 
 <style>
-@media (max-width: 768px) {
-   .CenterOnMobile {
-      --nv-root-x-align: center;
-   }
-}
-
 :root {
    --nv-root-bottom: var(--nav-height);
 }

@@ -35,7 +35,7 @@ describe('Props', () => {
          .realPress(['ControlLeft', 'u'])
 
          .focused()
-         .should('have.data', 'notivueContainer', 0)
+         .should('have.data', 'notivueItem', 0)
 
          .realPress(['ControlLeft', 'u'])
 
@@ -76,17 +76,17 @@ describe('Props', () => {
          .realPress('Tab')
 
          .focused()
-         .should('have.data', 'notivueContainer')
+         .should('have.data', 'notivueItem')
    })
 
-   it('Should qualify containers via isCandidate when they have no focusable children', () => {
+   it('Should qualify list items via isCandidate when they have no focusable children', () => {
       cy.mountKeyboard({ isCandidate: () => true })
          .pushUnqualified()
 
          .realPress('Tab')
 
          .focused()
-         .should('have.data', 'notivueContainer')
+         .should('have.data', 'notivueItem')
    })
 
    it('Should customize max number of leave announcements', () => {

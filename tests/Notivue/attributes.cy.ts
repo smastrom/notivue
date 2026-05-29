@@ -14,12 +14,11 @@ it('Notivue attributes are added correctly', () => {
 
       .get('li')
       .and('have.attr', 'tabindex', '-1')
-      .invoke('attr', 'data-notivue-id')
+      .invoke('attr', 'data-notivue-item')
+      .should('exist')
 
       .get('li > div')
       .invoke('attr', 'data-notivue-container')
       .should('exist')
-      .get('li > div')
-      .invoke('attr', 'tabindex')
-      .should('exist')
+      .should('not.have.attr', 'tabindex')
 })
