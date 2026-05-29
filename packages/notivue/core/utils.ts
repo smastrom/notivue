@@ -64,7 +64,8 @@ function notificationTypeConfigSlice(
    const fromLegacy = legacy ? configOptions[legacy] : undefined
    const fromCanon = configOptions[canonical]
 
-   return { ...fromLegacy, ...fromCanon } as NotificationOptions
+   // Per-type slice: canonical defaults, then legacy `promise*` overrides (deprecated alias).
+   return { ...fromCanon, ...fromLegacy } as NotificationOptions
 }
 
 export function mergeNotificationOptions<T extends Obj = Obj>(
@@ -75,6 +76,7 @@ export function mergeNotificationOptions<T extends Obj = Obj>(
 
    const type = toCanonicalNotificationType(pushOptions.type)
 
+   // global → per-type (canonical + legacy alias) → push → loading duration enforcement
    return {
       ...configOptions.global,
       ...notificationTypeConfigSlice(configOptions, type),

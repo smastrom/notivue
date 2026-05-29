@@ -40,7 +40,7 @@ export const DEFAULT_NOTIFICATION_OPTIONS = {
    [NotificationTypeKeys.LOADING_ERROR]: { ariaLive: 'assertive', ariaRole: 'alert' },
    [NotificationTypeKeys.PROMISE]: {},
    [NotificationTypeKeys.PROMISE_RESOLVE]: {},
-   [NotificationTypeKeys.PROMISE_REJECT]: { ariaLive: 'assertive', ariaRole: 'alert' },
+   [NotificationTypeKeys.PROMISE_REJECT]: {},
 } as NotivueConfigRequired['notifications']
 
 export const DEFAULT_CONFIG: NotivueConfigRequired = {

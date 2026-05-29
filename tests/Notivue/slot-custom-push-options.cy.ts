@@ -55,7 +55,7 @@ describe('Push notification options have higher priority over config', () => {
 
          .get('.Promise')
          .click()
-         .checkSlotAgainst({ ...options, duration: null })
+         .checkSlotAgainst({ ...options, duration: -1 })
    })
 
    it('Promise - Resolve', () => {
@@ -146,7 +146,7 @@ describe('Push notification options are merged properly with config', () => {
 
             .get('.Promise')
             .click()
-            .checkSlotAgainst({ ...expectedOptions, duration: null })
+            .checkSlotAgainst({ ...expectedOptions, duration: -1 })
       })
    })
 

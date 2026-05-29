@@ -3,10 +3,16 @@ import { RESOLVE_REJECT_DELAY } from '@/support/utils'
 import { DEFAULT_NOTIFICATION_OPTIONS as DEFAULT_OPTIONS } from '@/core/constants'
 
 describe('Default options match the slot content', () => {
-   const { success, error, warning, info, promise } = DEFAULT_OPTIONS as Record<
-      keyof typeof DEFAULT_OPTIONS,
-      Record<string, unknown>
-   >
+   const {
+      global,
+      success,
+      error,
+      warning,
+      info,
+      loading,
+      'loading-success': loadingSuccess,
+      'loading-error': loadingError,
+   } = DEFAULT_OPTIONS as unknown as Record<keyof typeof DEFAULT_OPTIONS, Record<string, unknown>>
 
    describe('First-level notifications', () => {
       it('Success', () => {
@@ -14,7 +20,7 @@ describe('Default options match the slot content', () => {
 
             .get('.Success')
             .click()
-            .checkSlotAgainst(success)
+            .checkSlotAgainst({ ...global, ...success })
       })
 
       it('Error', () => {
@@ -22,7 +28,7 @@ describe('Default options match the slot content', () => {
 
             .get('.Error')
             .click()
-            .checkSlotAgainst(error)
+            .checkSlotAgainst({ ...global, ...error })
       })
 
       it('Warning', () => {
@@ -30,7 +36,7 @@ describe('Default options match the slot content', () => {
 
             .get('.Warning')
             .click()
-            .checkSlotAgainst(warning)
+            .checkSlotAgainst({ ...global, ...warning })
       })
 
       it('Info', () => {
@@ -38,7 +44,7 @@ describe('Default options match the slot content', () => {
 
             .get('.Info')
             .click()
-            .checkSlotAgainst(info)
+            .checkSlotAgainst({ ...global, ...info })
       })
 
       it('Promise', () => {
@@ -46,21 +52,18 @@ describe('Default options match the slot content', () => {
 
             .get('.Promise')
             .click()
-            .checkSlotAgainst({ ...promise, duration: -1 })
+            .checkSlotAgainst({ ...global, ...loading, duration: -1 })
       })
    })
 
    describe('Promise - Resolve / Reject', () => {
-      const promiseResolve = DEFAULT_OPTIONS['promise-resolve'] as Record<string, unknown>
-      const promiseReject = DEFAULT_OPTIONS['promise-reject'] as Record<string, unknown>
-
       it('Promise - Resolve', () => {
          cy.mountNotivue()
 
             .get('.PushPromiseAndResolve')
             .click()
             .wait(RESOLVE_REJECT_DELAY)
-            .checkSlotAgainst(promiseResolve)
+            .checkSlotAgainst({ ...global, ...loadingSuccess })
       })
 
       it('Promise - Reject', () => {
@@ -68,7 +71,7 @@ describe('Default options match the slot content', () => {
             .get('.PushPromiseAndReject')
             .click()
             .wait(RESOLVE_REJECT_DELAY)
-            .checkSlotAgainst(promiseReject)
+            .checkSlotAgainst({ ...global, ...loadingError })
       })
    })
 })
