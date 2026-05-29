@@ -1,41 +1,20 @@
-import type { VueWrapper } from '@vue/test-utils'
-
-// In cypress/support/styles.css
-const customAnims = {
-   enter: 'fade-in',
-   leave: 'fade-out',
-   clearAll: 'fade-all',
-}
-
 describe('Animations', () => {
-   it('Custom animations classes are toggled properly', () => {
-      cy.mountNotivue({ config: { animations: customAnims } }).checkAnimations(
-         `.${customAnims.enter}`,
-         `.${customAnims.leave}`,
-         `.${customAnims.clearAll}`
-      )
+   it('Enter, leave, and clearAll use motion CSS variables', () => {
+      cy.mountNotivue().checkAnimations()
    })
 
-   it('Custom animations are merged properly with defaults', () => {
-      cy.mountNotivue({
-         config: {
-            animations: {
-               leave: customAnims.leave,
-               clearAll: customAnims.clearAll,
-            },
-         },
-      }).checkAnimations('.Notivue__enter', '.fade-out', '.fade-all')
-   })
-
-   it('Should update animations config dynamically', () => {
+   it('Custom motion CSS variables are applied', () => {
       cy.mountNotivue()
-         .get<VueWrapper>('@vue')
-         .then((wrapper) => wrapper.setProps({ animations: customAnims }))
 
-         .checkAnimations(
-            `.${customAnims.enter}`,
-            `.${customAnims.leave}`,
-            `.${customAnims.clearAll}`
+      cy.document().then((doc) => {
+         doc.documentElement.style.setProperty('--nv-enter-animation', 'fade-kf 300ms ease')
+         doc.documentElement.style.setProperty('--nv-leave-animation', 'fade-kf 300ms ease')
+         doc.documentElement.style.setProperty(
+            '--nv-clear-all-animation',
+            'fade-kf 600ms ease forwards'
          )
+      })
+
+      cy.checkAnimations()
    })
 })

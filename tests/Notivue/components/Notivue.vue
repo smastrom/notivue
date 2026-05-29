@@ -25,8 +25,7 @@ const config = useNotivue()
 const { startInstance, stopInstance } = useNotivueInstance()
 const { entries, queue } = useNotifications()
 
-const { pauseOnTouch, pauseOnHover, teleportTo, limit, animations, enqueue, avoidDuplicates } =
-   toRefs(cyProps)
+const { pauseOnTouch, pauseOnHover, teleportTo, limit, enqueue, avoidDuplicates } = toRefs(cyProps)
 
 const autoClearCount = ref(0)
 const manualClearCount = ref(0)
@@ -36,10 +35,8 @@ const manualClearCount = ref(0)
  * ==================================================================================== */
 
 watchEffect(() => {
-   if (animations?.value) config.animations.value = animations.value
    if (pauseOnTouch?.value) config.pauseOnTouch.value = pauseOnTouch.value
    if (pauseOnHover?.value) config.pauseOnHover.value = pauseOnHover.value
-   if (animations?.value) config.animations.value = animations.value
    if (teleportTo?.value) config.teleportTo.value = teleportTo.value
    if (limit?.value) config.limit.value = limit.value
    if (enqueue?.value) config.enqueue.value = enqueue.value
