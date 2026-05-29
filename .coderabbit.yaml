@@ -25,7 +25,7 @@ reviews:
          - 'DO NOT MERGE'
       base_branches:
          - main
-         - v3
+         - dev
 
    # Never edit PR title or description. Reviews go in comments only.
    high_level_summary: false
