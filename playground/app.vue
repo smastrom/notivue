@@ -11,6 +11,8 @@ import UploadNotification, {
 
 import type { NotivueItem, Position } from 'notivue'
 
+import { useMediaQuery } from '@vueuse/core'
+
 useServerHead({
    link: ['regular', '700'].map((w) => ({
       rel: 'preload',
@@ -35,44 +37,15 @@ watch(
    () => notify.destroyAll()
 )
 
-const userPosition = shallowRef<Position>(config.position.value)
+const isMobile = useMediaQuery('(max-width: 768px)')
 
-if (import.meta.client) {
-   const mobileMq = window.matchMedia('(max-width: 768px)')
+watchEffect(() => {
+   if (!import.meta.client || !state.centerOnMobile || !isMobile.value) return
 
-   let syncingPosition = false
+   const vertical = config.position.value.startsWith('top') ? 'top' : 'bottom'
 
-   const syncCenterOnMobile = () => {
-      syncingPosition = true
-
-      try {
-         if (state.centerOnMobile && mobileMq.matches) {
-            const vertical = userPosition.value.startsWith('top') ? 'top' : 'bottom'
-            const centered = `${vertical}-center` as Position
-
-            if (config.position.value !== centered) config.update({ position: centered })
-         } else if (config.position.value !== userPosition.value) {
-            config.update({ position: userPosition.value })
-         }
-      } finally {
-         syncingPosition = false
-      }
-   }
-
-   watch(
-      () => config.position.value,
-      (position) => {
-         if (syncingPosition) return
-         if (!(state.centerOnMobile && mobileMq.matches)) userPosition.value = position
-      }
-   )
-
-   watch(() => state.centerOnMobile, syncCenterOnMobile)
-
-   mobileMq.addEventListener('change', syncCenterOnMobile)
-   onMounted(syncCenterOnMobile)
-   onBeforeUnmount(() => mobileMq.removeEventListener('change', syncCenterOnMobile))
-}
+   config.update({ position: `${vertical}-center` as Position })
+})
 </script>
 
 <template>

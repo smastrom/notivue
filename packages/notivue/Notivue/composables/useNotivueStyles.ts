@@ -70,21 +70,10 @@ export function useNotivueStyles() {
       return { inset: inset.join(' '), clipPath: `inset(${clipPath.join(' ')})` }
    })
 
-   const xAlignFallback = computed(() =>
-      position.value.endsWith('left')
-         ? 'flex-start'
-         : position.value.endsWith('right')
-           ? 'flex-end'
-           : 'center'
-   )
-
    const xAlignment = computed<CSSProperties>(() => {
       const vertical = position.value.startsWith('top') ? 'top' : 'bottom'
 
-      const shared = {
-         [vertical]: '0',
-         justifyContent: `var(--nv-root-x-align, ${xAlignFallback.value})`,
-      } as CSSProperties
+      const shared = { [vertical]: '0' } as CSSProperties
 
       if (position.value.endsWith('left')) {
          return { ...shared, left: '0', right: 'auto' }

@@ -10,6 +10,13 @@ Notivue is a public OSS Vue 3 toast notification library. Treat `packages/notivu
 - Never run development servers unless the user explicitly requests them.
 - Use `pnpm` and the repo scripts: `pnpm build`, `pnpm test`, `pnpm test:unit`, `pnpm format:check`, `pnpm dev`, `pnpm dev:astro`.
 
+## Notivue stream layout
+
+- Notification rows use `width: max-content` on `<li data-notivue-item>` so keyboard focus rings hug the toast. Stream focus and `aria-label` belong on the `<li>`; `[data-notivue-container]` is not focusable.
+- Horizontal alignment follows `position` (`*-left`, `*-center`, `*-right`). Responsive changes use `config.update` / `updateConfig`, not CSS alignment overrides.
+- `--nv-gap` is block-end margin on list items. Stacking uses `getListItemStackHeight` in `packages/notivue/core/utils.ts`.
+- `NotivueKeyboard` `isCandidate` receives the item container element, not the `<li>`.
+
 ## Workflow
 
 - **GitHub (PR review):** CodeRabbit comments on pull requests. Triage each thread: fix when valid, dismiss with a short reason when not. Resolve threads after replying.

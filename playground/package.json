@@ -9,6 +9,7 @@
       "preview": "nuxt preview"
    },
    "dependencies": {
+      "@vueuse/core": "^14.3.0",
       "luxon": "^3.5.0",
       "notivue": "workspace:*"
    },
