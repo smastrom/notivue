@@ -59,7 +59,9 @@ export interface NotificationOptions {
    title?: string | Ref<string>
    message?: string | Ref<string>
    duration?: number
+   /** Inherited from `notifications.global` (`'polite'`). Overridden to `'assertive'` for `error`, `warning`, and `loading-error`. */
    ariaLive?: 'polite' | 'assertive'
+   /** Inherited from `notifications.global` (`'status'`). Overridden to `'alert'` for `error`, `warning`, and `loading-error`. */
    ariaRole?: 'alert' | 'status'
 }
 

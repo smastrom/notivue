@@ -1,4 +1,4 @@
-import { NotificationType as NTypeU, NotivueConfigRequired, NotificationOptions } from 'notivue'
+import { NotificationType as NTypeU, NotivueConfigRequired } from 'notivue'
 
 export const CLASS_PREFIX = 'Notivue__'
 
@@ -33,7 +33,7 @@ export const DEFAULT_NOTIFICATION_OPTIONS = {
    },
    [NotificationTypeKeys.SUCCESS]: {},
    [NotificationTypeKeys.ERROR]: { ariaLive: 'assertive', ariaRole: 'alert' },
-   [NotificationTypeKeys.WARNING]: { ariaRole: 'alert' },
+   [NotificationTypeKeys.WARNING]: { ariaLive: 'assertive', ariaRole: 'alert' },
    [NotificationTypeKeys.INFO]: {},
    [NotificationTypeKeys.LOADING]: {},
    [NotificationTypeKeys.LOADING_SUCCESS]: {},
