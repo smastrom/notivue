@@ -52,16 +52,22 @@ export default defineConfig({
             ...getComponents({ omit: ['Notivue'] }),
             ...getObjects(),
          ]
-         writeFileSync(
-            'dist/astro.js',
+         const astroAliases = [
+            ['notifyAstro', 'notify'],
+            ['pushAstro', 'push'],
+            ['NotivueAstro', 'Notivue'],
+            ['createNotivueAstro', 'createNotivue'],
+         ] as const
+         const getAstroExports = (source: './index.js' | './index') =>
             [
-               'export { notifyAstro as notify } from "./index.js";',
-               'export { pushAstro as push } from "./index.js";',
-               'export { NotivueAstro as Notivue } from "./index.js";',
-               'export { createNotivueAstro as createNotivue } from "./index.js";',
-               ...astroReExports.map((name) => `export { ${name} } from "./index.js";`),
+               ...astroAliases.map(
+                  ([name, alias]) => `export { ${name} as ${alias} } from "${source}";`
+               ),
+               ...astroReExports.map((name) => `export { ${name} } from "${source}";`),
             ].join('\n')
-         )
+
+         writeFileSync('dist/astro.js', getAstroExports('./index.js'))
+         writeFileSync('dist/astro.d.ts', getAstroExports('./index'))
       },
    },
 })

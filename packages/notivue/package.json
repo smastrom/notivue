@@ -49,7 +49,7 @@
       },
       "./astro": {
          "import": "./dist/astro.js",
-         "types": "./dist/index.d.ts"
+         "types": "./dist/astro.d.ts"
       },
       "./notifications.css": "./dist/Notifications/notifications.css",
       "./notifications-progress.css": "./dist/Notifications/notifications-progress.css",
