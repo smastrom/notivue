@@ -18,7 +18,7 @@ export interface NotivueKeyboardProps {
     * for keyboard navigation. Receives the container element.
     *
     * By default, a container is a candidate if it contains at least one
-    * focusable element (buttons, links, inputs, selects, textareas, or elements with `tabindex="0"`).
+    * focusable element (buttons, links, inputs, selects, textareas, or elements with a non-negative `tabindex`).
     *
     * @default undefined
     */
