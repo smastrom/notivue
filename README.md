@@ -1,8 +1,6 @@
-<img src="https://cdn.smastrom.io/notivue-readme.svg" width="800" height="auto" alt="notivue" />
-
 # Notivue
 
-### Toast notification system for Vue 3
+## Zero-dependency, powerful, and truly customizable toast notification system for Vue.
 
 Fully typed. Works with Vite, Nuxt, and Astro.
 
@@ -16,19 +14,13 @@ Fully typed. Works with Vite, Nuxt, and Astro.
 
 ## Features
 
-🧬 **Modular, zero dependencies** - Only what you import reaches your bundle
-
-✅ **Ready-made notifications** - CSS-variable themes with dark mode, progress bars, and RTL support.
-
-🧩 **Headless API** - Bring your own components. Notivue handles the stack and lifecycle.
-
-🌀 **Promise API** - Update a notification from _loading_ to _success_ or _error_ with a reactive handle.
-
-♿️ **Accessible** - Live regions, reduced-motion, pause-on-hover, pause-on-focus, swipe-to-dismiss, and full keyboard navigation.
-
-🛡️ **Battle-tested** - 160+ E2E tests
-
-💫 **Nuxt and Astro modules** - Zero-config framework integration |
+- 🧬 **Modular, zero dependencies** - Only what you import reaches your bundle
+- ✅ **Ready-made notifications** - CSS-variable themes with dark mode, progress bars, and RTL support.
+- 🧩 **Headless API** - Bring your own components. Notivue handles the stack and lifecycle.
+- 🌀 **Promise API** - Update a notification from _loading_ to _success_ or _error_ with a reactive handle.
+- ♿️ **Accessible** - Live regions, reduced-motion, pause-on-hover, pause-on-focus, swipe-to-dismiss, and full keyboard navigation.
+- 🛡️ **Battle-tested** - 160+ E2E tests
+- 💫 **Nuxt and Astro modules** - Zero-config framework integration
 
 ## Installation
 
@@ -240,19 +232,6 @@ export default defineNuxtConfig({
 > **Note:** Astro **6** is not supported yet.
 
 [Installation → Astro](https://docs.notivue.smastrom.io/installation/astro.html) — `createNotivue` in the Vue app entry, Notivue island, `client:only`, view transitions.
-
-## Key exports
-
-| Export             | What it does                                                                                            |
-| ------------------ | ------------------------------------------------------------------------------------------------------- |
-| `createNotivue`    | Plugin factory — pass config, install on the app                                                        |
-| `notify`           | Push notifications: `notify.success()`, `.error()`, `.warning()`, `.info()`, `.promise()`, `.loading()` |
-| `Notivue`          | Renderless stream component — renders the notification list                                             |
-| `Notification`     | Built-in notification component with themes                                                             |
-| `NotivueSwipe`     | Wrapper — adds swipe-to-dismiss                                                                         |
-| `NotivueKeyboard`  | Wrapper — adds full keyboard navigation                                                                 |
-| `useNotivue`       | Composable — reactive access to config                                                                  |
-| `useNotifications` | Composable — reactive access to notifications                                                           |
 
 ## Thanks
 
