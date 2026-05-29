@@ -48,12 +48,6 @@ export type Position =
    | 'bottom-center'
    | 'bottom-right'
 
-export interface NotivueAnimations {
-   enter?: string
-   leave?: string
-   clearAll?: string
-}
-
 export interface NotificationOptions {
    /** Default title (`''` hides the title). */
    title?: string | Ref<string>
@@ -75,9 +69,6 @@ export interface NotivueConfig {
    /** Stream anchor; see `Position`. */
    position?: Position
    notifications?: Partial<NotificationTypesOptions>
-   animations?: NotivueAnimations
-   /** Must match `transform <duration> <timing-function>`. */
-   transition?: string
    teleportTo?: string | HTMLElement | false
    /** Use `-1` for unlimited. @default -1 */
    limit?: number
@@ -112,7 +103,7 @@ export interface HiddenInternalItemData {
    timeout: number | undefined | (() => void) | void
    resumedAt: number
    remaining: number
-   animationAttrs: Partial<{ class: string; onAnimationend: () => void }>
+   animationAttrs: Partial<{ style: CSSProperties; onAnimationend: (e?: AnimationEvent) => void }>
    positionStyles: CSSProperties
 }
 

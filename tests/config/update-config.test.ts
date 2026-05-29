@@ -38,19 +38,6 @@ describe('Update method', () => {
    })
 
    describe('Should merge object properties', () => {
-      test('Animations', () => {
-         const animations = { enter: 'Vitest_Enter', leave: 'Vitest_Leave' }
-
-         const config = createConfig({}, isRunning) as ConfigSlice
-
-         config.update({ animations })
-
-         expect(config.animations.value).toStrictEqual({
-            ...animations,
-            clearAll: defaultConf.animations.clearAll,
-         })
-      })
-
       test('Notification options', () => {
          const newConf: NotivueConfig['notifications'] = {
             global: { duration: Math.random() * 100 },
@@ -88,7 +75,6 @@ describe('Update method', () => {
          pauseOnHover: false,
          teleportTo: 'foo',
          limit: 20000,
-         animations: { enter: 'foo', leave: 'bar', clearAll: 'baz' },
          notifications: {
             global: { duration: 3000 },
             error: { duration: 4000 },
@@ -123,10 +109,6 @@ describe('Update method', () => {
             enqueue: !curr.enqueue,
             position: (curr.position + 'foo') as unknown as NotivueConfig['position'],
             teleportTo: curr.teleportTo + 'bar',
-            animations: {
-               enter: curr.animations.enter + 'baz',
-               leave: curr.animations.leave + 'haz',
-            },
             limit: curr.limit * 2,
             notifications: {
                global: { duration: currNot.global.duration * 2 },
@@ -151,11 +133,6 @@ describe('Update method', () => {
       expect(c.position.value).toBe(prevConf.position + 'foo')
       expect(c.teleportTo.value).toBe(prevConf.teleportTo + 'bar')
       expect(c.limit.value).toBe(prevConf.limit * 2)
-      expect(c.animations.value).toStrictEqual({
-         enter: prevConf.animations.enter + 'baz',
-         leave: prevConf.animations.leave + 'haz',
-         clearAll: prevConf.animations.clearAll,
-      })
       expect(c.notifications.value).toStrictEqual({
          global: { ...prevNot.global, duration: prevNot.global.duration * 2 },
          info: { ...prevNot.info, duration: prevNot.info.duration * 2 },

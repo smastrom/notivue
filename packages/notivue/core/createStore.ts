@@ -14,9 +14,9 @@ import type {
    NotivueStore,
 } from 'notivue'
 
-import { ref, shallowRef, triggerRef, unref, isRef, type Ref } from 'vue'
+import { ref, shallowRef, triggerRef, unref, isRef, type CSSProperties, type Ref } from 'vue'
 
-import { DEFAULT_CONFIG, NotificationTypeKeys as NType } from './constants'
+import { DEFAULT_CONFIG, MOTION_VARS_CSS, NotificationTypeKeys as NType } from './constants'
 
 import {
    createConfigRefs,
@@ -60,7 +60,7 @@ export function createConfig(userConfig: NotivueConfig, isRunning: Readonly<Ref<
             const prev = config[key as K].value as Obj
             const next = newConfig[key as K] as any
 
-            config[key as K].value = mergeDeep(prev, next)
+            config[key as K].value = mergeDeep(prev, next) as any
          } else {
             config[key as K].value = newConfig[key as K] as any
          }
@@ -169,12 +169,15 @@ export function createItems(config: ConfigSlice, queue: QueueSlice) {
 }
 
 export function createElements() {
-   type AnimationAttrs = { class: string; onAnimationend: () => void }
+   type MotionAttrs = {
+      style?: CSSProperties
+      onAnimationend?: (e?: AnimationEvent) => void
+   }
 
    return {
       root: ref<HTMLElement | null>(null),
-      rootAttrs: shallowRef<Partial<AnimationAttrs>>({}),
-      setRootAttrs(newAttrs: Partial<AnimationAttrs>) {
+      rootAttrs: shallowRef<Partial<MotionAttrs>>({}),
+      setRootAttrs(newAttrs: Partial<MotionAttrs>) {
          this.rootAttrs.value = newAttrs
       },
       items: ref<HTMLElement[]>([]),
@@ -186,10 +189,10 @@ export function createElements() {
    } as {
       // Suppress TS7056
       root: Ref<HTMLElement | null>
-      rootAttrs: Ref<Partial<AnimationAttrs>>
+      rootAttrs: Ref<Partial<MotionAttrs>>
       items: Ref<HTMLElement[]>
       containers: Ref<HTMLElement[]>
-      setRootAttrs(newAttrs: Partial<AnimationAttrs>): void
+      setRootAttrs(newAttrs: Partial<MotionAttrs>): void
       getSortedItems(): HTMLElement[]
    }
 }
@@ -206,13 +209,17 @@ export function createAnimations(
          this.isReducedMotion.value = newVal
       },
       playLeave(id: string, { isDestroy = false, isUserTriggered = false } = {}) {
-         const { leave = '' } = config.animations.value
          const item = items.get(id)
+
+         let isDone = false
 
          window.clearTimeout(item?.timeout as number)
 
          const onAnimationend = (e?: AnimationEvent) => {
             if (e && e.currentTarget !== e.target) return
+            if (isDone) return
+
+            isDone = true
 
             if (item) {
                const slotItem = getSlotItem(item)
@@ -229,7 +236,7 @@ export function createAnimations(
             items.remove(id)
          }
 
-         if (!item || !leave || isDestroy || this.isReducedMotion.value) {
+         if (!item || isDestroy || this.isReducedMotion.value) {
             items.addLifecycleEvent()
 
             return onAnimationend()
@@ -241,28 +248,45 @@ export function createAnimations(
                zIndex: -1,
             },
             animationAttrs: {
-               class: leave,
+               style: { animation: MOTION_VARS_CSS.leaveAnimation },
                onAnimationend,
             },
          })
 
          items.addLifecycleEvent()
+
+         requestAnimationFrame(() => {
+            const el = elements.containers.value.find((el) => el.dataset.notivueContainer === id)
+
+            if (el && getComputedStyle(el).animationName === 'none') onAnimationend()
+         })
       },
       playClearAll() {
          items.entries.value.forEach((e) => window.clearTimeout(e.timeout as number))
 
-         const { clearAll = '' } = config.animations.value
+         let isDone = false
 
-         const onAnimationend = () => {
+         const onAnimationend = (e?: AnimationEvent) => {
+            if (e && e.currentTarget !== e.target) return
+            if (isDone) return
+
+            isDone = true
+
             queue.clear()
             items.clear()
          }
 
-         if (!clearAll || this.isReducedMotion.value) return onAnimationend()
+         if (this.isReducedMotion.value) return onAnimationend()
 
          elements.setRootAttrs({
-            class: clearAll,
+            style: { animation: MOTION_VARS_CSS.clearAllAnimation },
             onAnimationend,
+         })
+
+         requestAnimationFrame(() => {
+            const root = elements.root.value
+
+            if (root && getComputedStyle(root).animationName === 'none') onAnimationend()
          })
       },
       updatePositions({ isImmediate = false } = {}) {
@@ -270,7 +294,6 @@ export function createAnimations(
 
          const isReduced = this.isReducedMotion.value || isImmediate
          const isTopAlign = config.position.value.startsWith('top')
-         const leaveClass = config.animations.value.leave
 
          let accPrevHeights = 0
 
@@ -279,12 +302,12 @@ export function createAnimations(
             const item = items.get(id)
 
             if (!el || !item) continue
-            if (item.animationAttrs.class === leaveClass) continue
+            if (item.animationAttrs.style?.animation === MOTION_VARS_CSS.leaveAnimation) continue
 
             items.update(id, {
                positionStyles: {
                   transform: `translate3d(0, ${accPrevHeights}px, 0)`,
-                  transition: isReduced ? 'none' : config.transition.value,
+                  transition: isReduced ? 'none' : MOTION_VARS_CSS.transformTransition,
                },
             })
 
@@ -479,11 +502,15 @@ export function createNotifyProxies({
                createdAt,
                duplicateCount: 0,
                animationAttrs: {
-                  class: animations.isReducedMotion.value ? '' : config.animations.value.enter,
-                  onAnimationend() {
-                     if (item.animationAttrs.class === config.animations.value.enter) {
+                  style: animations.isReducedMotion.value
+                     ? {}
+                     : { animation: MOTION_VARS_CSS.enterAnimation },
+                  onAnimationend(e?: AnimationEvent) {
+                     if (e && e.currentTarget !== e.target) return
+
+                     if (item.animationAttrs.style?.animation === MOTION_VARS_CSS.enterAnimation) {
                         items.update(entry.id, {
-                           animationAttrs: { class: '', onAnimationend: () => {} },
+                           animationAttrs: { style: {}, onAnimationend: () => {} },
                         })
                      }
                   },

@@ -43,6 +43,22 @@ export const DEFAULT_NOTIFICATION_OPTIONS = {
    [NotificationTypeKeys.PROMISE_REJECT]: {},
 } as NotivueConfigRequired['notifications']
 
+export const MOTION_VARS = {
+   enterAnimation: '--nv-enter-animation',
+   leaveAnimation: '--nv-leave-animation',
+   clearAllAnimation: '--nv-clear-all-animation',
+   transformTransition: '--nv-transform-transition',
+} as const
+
+export const DEFAULT_TRANSFORM_TRANSITION = 'transform 0.35s cubic-bezier(0.5, 1, 0.25, 1)'
+
+export const MOTION_VARS_CSS = {
+   enterAnimation: `var(${MOTION_VARS.enterAnimation})`,
+   leaveAnimation: `var(${MOTION_VARS.leaveAnimation})`,
+   clearAllAnimation: `var(${MOTION_VARS.clearAllAnimation})`,
+   transformTransition: `var(${MOTION_VARS.transformTransition}, ${DEFAULT_TRANSFORM_TRANSITION})`,
+} as const
+
 export const DEFAULT_CONFIG: NotivueConfigRequired = {
    pauseOnHover: true,
    pauseOnTouch: true,
@@ -53,10 +69,4 @@ export const DEFAULT_CONFIG: NotivueConfigRequired = {
    notifications: DEFAULT_NOTIFICATION_OPTIONS,
    limit: -1,
    avoidDuplicates: false,
-   transition: 'transform 0.35s cubic-bezier(0.5, 1, 0.25, 1)',
-   animations: {
-      enter: CLASS_PREFIX + 'enter',
-      leave: CLASS_PREFIX + 'leave',
-      clearAll: CLASS_PREFIX + 'clearAll',
-   },
 }
