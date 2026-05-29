@@ -1,4 +1,5 @@
 import { lightTheme, darkTheme, pastelTheme, materialTheme, slateTheme } from 'notivue'
+
 import { Classes } from '@/Notifications/constants'
 
 describe('Themes', () => {

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { NotivueSwipeProps } from 'notivue'
+
 import {
    computed,
    shallowReactive,
@@ -12,12 +14,11 @@ import {
 } from 'vue'
 
 import { useStore } from '@/core/useStore'
-import { isMouse } from '@/Notivue/utils'
 import { isUnlimited } from '@/core/utils'
-import { NotificationTypeKeys as NType } from '@/core/constants'
-import { DEFAULT_PROPS, DEBOUNCE, RETURN_DUR } from './constants'
+import { isMouse } from '@/Notivue/utils'
 
-import type { NotivueSwipeProps } from 'notivue'
+import { DEFAULT_PROPS, DEBOUNCE, RETURN_DUR } from './constants'
+import { NotificationTypeKeys as NType } from '@/core/constants'
 
 /**
  * MOUSE - Notivue's mouse events (get from 'useMouseEvents') will still handle the pause/resume logic
@@ -238,6 +239,7 @@ function onPointerMove(e: PointerEvent) {
 
    if (Math.abs(state.currentX) > clientWidth * threshold.value) {
       state.isClearing = true
+
       onPointerMoveClear(e)
    }
 }

@@ -1,5 +1,6 @@
-import { DEFAULT_NOTIFICATION_OPTIONS as DEFAULT_OPTIONS } from '@/core/constants'
 import { RESOLVE_REJECT_DELAY } from '@/support/utils'
+
+import { DEFAULT_NOTIFICATION_OPTIONS as DEFAULT_OPTIONS } from '@/core/constants'
 
 describe('Default options match the slot content', () => {
    const { success, error, warning, info, promise } = DEFAULT_OPTIONS as Record<

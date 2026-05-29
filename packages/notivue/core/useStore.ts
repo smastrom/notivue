@@ -1,16 +1,17 @@
-import { inject, computed, toRefs, reactive, readonly, ref, type ComputedRef } from 'vue'
-
-import { isSSR, getSlotItem } from './utils'
-import { notivueInjectionKey, notivueInstanceInjectionKey } from './symbols'
-import { notify } from './createNotify'
-import { DEFAULT_CONFIG } from './constants'
-
 import type {
    NotivueStore,
    UseNotivueReturn,
    NotivueComputedEntries,
    NotivueInstance,
 } from 'notivue'
+
+import { inject, computed, toRefs, reactive, readonly, ref, type ComputedRef } from 'vue'
+
+import { DEFAULT_CONFIG } from './constants'
+
+import { notify } from './createNotify'
+import { notivueInjectionKey, notivueInstanceInjectionKey } from './symbols'
+import { isSSR, getSlotItem } from './utils'
 
 export function useStore() {
    return inject(notivueInjectionKey) as NotivueStore

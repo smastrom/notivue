@@ -1,10 +1,10 @@
-import type { App, Plugin } from 'vue'
 import type { NotivueConfig } from 'notivue'
+import type { App, Plugin } from 'vue'
 
-import { createNotify } from './createNotify'
-import { notivueInjectionKey, notivueInstanceInjectionKey } from './symbols'
 import { createInstance } from './createInstance'
+import { createNotify } from './createNotify'
 import { createNotifyProxies, createStore } from './createStore'
+import { notivueInjectionKey, notivueInstanceInjectionKey } from './symbols'
 
 export function createProvides(startOnCreation: boolean, userConfig: NotivueConfig) {
    const { setupInstance, isRunning } = createInstance(startOnCreation)

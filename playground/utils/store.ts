@@ -28,6 +28,7 @@ export function createStore() {
       },
       setTheme(themeName: ThemeNames) {
          document.documentElement.setAttribute('data-theme', themeName.replace('Theme', ''))
+
          state.theme = themeName
       },
       toggleOutlinedIcons() {
@@ -38,6 +39,7 @@ export function createStore() {
       },
       toggleRTL() {
          state.rtl = !state.rtl
+
          document.documentElement.setAttribute('dir', state.rtl ? 'rtl' : 'ltr')
       },
       toggleCenterOnMobile() {

@@ -1,7 +1,3 @@
-import { toRaw, customRef, type Ref, type ToRefs } from 'vue'
-
-import { NotificationTypeKeys as NType } from './constants'
-
 import type {
    StoreItem,
    NotivueItem,
@@ -12,6 +8,10 @@ import type {
    Obj,
    PushOptionsWithInternals,
 } from 'notivue'
+
+import { toRaw, customRef, type Ref, type ToRefs } from 'vue'
+
+import { NotificationTypeKeys as NType } from './constants'
 
 export const isSSR = typeof window === 'undefined'
 
@@ -63,6 +63,7 @@ function notificationTypeConfigSlice(
    const legacy = NOTIFICATION_TYPE_LEGACY[canonical]
    const fromLegacy = legacy ? configOptions[legacy] : undefined
    const fromCanon = configOptions[canonical]
+
    return { ...fromLegacy, ...fromCanon } as NotificationOptions
 }
 
@@ -71,6 +72,7 @@ export function mergeNotificationOptions<T extends Obj = Obj>(
    pushOptions: PushOptionsWithInternals<T>
 ) {
    pushOptions.props ||= {} as T
+
    const type = toCanonicalNotificationType(pushOptions.type)
 
    return {
@@ -89,6 +91,7 @@ function isPlainObject(value: unknown) {
    }
 
    const prototype = Object.getPrototypeOf(value)
+
    return prototype === null || Object.getPrototypeOf(prototype) === null
 }
 
@@ -103,18 +106,21 @@ export function createConfigRefs<T extends Obj>(
       return customRef((track, trigger) => ({
          get() {
             track()
+
             return value
          },
          set(newValue) {
             if (!isRunning.value) return
 
             value = newValue
+
             trigger()
          },
       }))
    }
 
    for (const key in conf) conf[key] = configRef(conf[key]) as any
+
    return conf as ToRefs<T>
 }
 

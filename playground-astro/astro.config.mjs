@@ -1,7 +1,6 @@
-import { defineConfig } from 'astro/config'
-
-import vue from '@astrojs/vue'
 import react from '@astrojs/react'
+import vue from '@astrojs/vue'
+import { defineConfig } from 'astro/config'
 
 /** Examples use `push` from `notivue/astro` for regression testing; `notify` is the same object. */
 export default defineConfig({

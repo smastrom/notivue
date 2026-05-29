@@ -1,17 +1,15 @@
 <script setup lang="ts">
-import type { NotivueItem } from 'notivue'
-
 import FriendRequestNotification, {
    type FriendRequestNotificationProps,
 } from '@/components/custom-notifications/FriendRequestNotification.vue'
-
+import SimpleNotification, {
+   type SimpleNotificationProps,
+} from '@/components/custom-notifications/SimpleNotification.vue'
 import UploadNotification, {
    type UploadNotificationProps,
 } from '@/components/custom-notifications/UploadNotification.vue'
 
-import SimpleNotification, {
-   type SimpleNotificationProps,
-} from '@/components/custom-notifications/SimpleNotification.vue'
+import type { NotivueItem } from 'notivue'
 
 useServerHead({
    link: ['regular', '700'].map((w) => ({

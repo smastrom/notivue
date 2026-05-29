@@ -1,9 +1,9 @@
+import type { NotivueStore, Notify } from 'notivue'
+
 import { readonly, ref } from 'vue'
 
 import { createNotifyMock, setNotify } from './createNotify'
 import { createStoreWatchers } from './createStoreWatchers'
-
-import type { NotivueStore, Notify } from 'notivue'
 
 export let startInstance: () => void = () => {}
 export let stopInstance: () => void = () => {}
@@ -25,6 +25,7 @@ export function createInstance(startOnCreation: boolean) {
             if (isRunning.value) return
 
             setNotify(notify)
+
             unwatchStore = watchStore()
 
             isRunning.value = true

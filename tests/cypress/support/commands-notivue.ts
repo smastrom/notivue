@@ -1,11 +1,11 @@
-import { mount } from 'cypress/vue'
-
-import { DEFAULT_DURATION } from '@/core/constants'
-import { parseText } from './utils'
-
 import Notivue, { type CyNotivueProps } from '@/tests/Notivue/components/Notivue.vue'
 
+import { mount } from 'cypress/vue'
 import { createNotivue, type NotivueConfig } from 'notivue'
+
+import { DEFAULT_DURATION } from '@/core/constants'
+
+import { parseText } from './utils'
 
 type MountNotificationsOptions = {
    config?: NotivueConfig & {

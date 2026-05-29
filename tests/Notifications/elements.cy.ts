@@ -1,7 +1,8 @@
 import { NotivueIcons, outlinedIcons } from 'notivue'
 
-import { Classes as _Classes } from '@/Notifications/constants'
 import { DEFAULT_ANIM_DURATION } from '@/support/utils'
+
+import { Classes as _Classes } from '@/Notifications/constants'
 
 const { TRANSITION, ...Classes } = _Classes
 

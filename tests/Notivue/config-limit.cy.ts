@@ -1,6 +1,6 @@
-import { getRandomInt } from '@/support/utils'
-
 import type { VueWrapper } from '@vue/test-utils'
+
+import { getRandomInt } from '@/support/utils'
 
 describe('Limit', () => {
    it('User-defined limit works correctly', () => {

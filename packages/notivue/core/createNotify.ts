@@ -1,9 +1,10 @@
+import type { NotificationType, Notify, NotifyOptions, NotifyParameter } from 'notivue'
+
 import { unref } from 'vue'
 
 import { NotificationTypeKeys as NType } from './constants'
-import { createNotifyProxies } from './createStore'
 
-import type { NotificationType, Notify, NotifyOptions, NotifyParameter } from 'notivue'
+import { createNotifyProxies } from './createStore'
 
 export const notify = createNotifyMock()
 
@@ -68,6 +69,7 @@ export function createNotify(proxies: ReturnType<typeof createNotifyProxies>): N
 
 export function createNotifyMock(): Notify {
    const noop = new Proxy({}, { get: () => () => {} }) as any
+
    return createNotify(noop)
 }
 

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import profilePicture from '@/assets/profile-picture.jpg?url'
+import type { FriendRequestNotificationProps } from '@/components/custom-notifications/FriendRequestNotification.vue'
+import type { SimpleNotificationProps } from '@/components/custom-notifications/SimpleNotification.vue'
+import type { UploadNotificationProps } from '@/components/custom-notifications/UploadNotification.vue'
 
 import { push, type PushOptions } from 'notivue'
 
-import type { UploadNotificationProps } from '@/components/custom-notifications/UploadNotification.vue'
-import type { FriendRequestNotificationProps } from '@/components/custom-notifications/FriendRequestNotification.vue'
-import type { SimpleNotificationProps } from '@/components/custom-notifications/SimpleNotification.vue'
+import profilePicture from '@/assets/profile-picture.jpg?url'
 
 const { state, actions, messages } = useStore()
 
@@ -14,6 +14,7 @@ function resetOptions() {
       push.destroyAll()
       actions.toggleRTL()
    }
+
    actions.setTheme('lightTheme')
 }
 

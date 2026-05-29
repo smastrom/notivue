@@ -3,12 +3,15 @@ import type { NotivueTheme } from 'notivue'
 /** Duplicate `--nv-promise-*` as `--nv-loading-*` when missing (deprecated alias support). */
 function withLoadingColorAliases<T extends NotivueTheme>(theme: T): T {
    const out = { ...theme } as Record<string, string>
+
    for (const [k, v] of Object.entries(theme)) {
       if (k.startsWith('--nv-promise')) {
          const lk = k.replace('--nv-promise', '--nv-loading')
+
          if (out[lk] === undefined) out[lk] = v
       }
    }
+
    return out as T
 }
 

@@ -1,7 +1,7 @@
 import { computed } from 'vue'
 
-import { isMouse } from '@/Notivue/utils'
 import { useStore } from '@/core/useStore'
+import { isMouse } from '@/Notivue/utils'
 
 export function useMouseEvents() {
    const { timeouts, config } = useStore()

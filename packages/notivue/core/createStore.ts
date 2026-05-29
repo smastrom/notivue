@@ -1,16 +1,3 @@
-import { ref, shallowRef, triggerRef, unref, isRef, type Ref } from 'vue'
-
-import {
-   createConfigRefs,
-   mergeDeep,
-   mergeNotificationOptions as mergeOptions,
-   toRawConfig,
-   toCanonicalNotificationType,
-} from './utils'
-
-import { isStatic, getSlotItem, isUnlimited } from './utils'
-import { DEFAULT_CONFIG, NotificationTypeKeys as NType } from './constants'
-
 import type {
    DeepPartial,
    StoreItem,
@@ -26,6 +13,19 @@ import type {
    NotivueConfigUpdateParam,
    NotivueStore,
 } from 'notivue'
+
+import { ref, shallowRef, triggerRef, unref, isRef, type Ref } from 'vue'
+
+import { DEFAULT_CONFIG, NotificationTypeKeys as NType } from './constants'
+
+import {
+   createConfigRefs,
+   mergeDeep,
+   mergeNotificationOptions as mergeOptions,
+   toRawConfig,
+   toCanonicalNotificationType,
+} from './utils'
+import { isStatic, getSlotItem, isUnlimited } from './utils'
 
 export let updateConfig: (newConfig: NotivueConfigUpdateParam) => void = () => {}
 
@@ -59,6 +59,7 @@ export function createConfig(userConfig: NotivueConfig, isRunning: Readonly<Ref<
          if (typeof config[key as K].value === 'object') {
             const prev = config[key as K].value as Obj
             const next = newConfig[key as K] as any
+
             config[key as K].value = mergeDeep(prev, next)
          } else {
             config[key as K].value = newConfig[key as K] as any
@@ -86,6 +87,7 @@ export function createQueue() {
       },
       update(id: string, newOptions: DeepPartial<StoreItem>) {
          const entry = this.get(id)
+
          if (entry) Object.assign(entry, newOptions)
       },
       remove(id: string) {
@@ -133,6 +135,7 @@ export function createItems(config: ConfigSlice, queue: QueueSlice) {
             const sameMessage =
                unref(e.message).replace(/\uFEFF/g, '') ===
                unref(item.message).replace(/\uFEFF/g, '')
+
             return sameMessage && unref(e.title) === unref(item.title) && e.type === item.type
          })
       },
@@ -141,6 +144,7 @@ export function createItems(config: ConfigSlice, queue: QueueSlice) {
       },
       update(id: string, newOptions: DeepPartial<StoreItem>) {
          const entry = this.get(id)
+
          if (entry) Object.assign(entry, newOptions)
       },
       triggerRef() {
@@ -155,6 +159,7 @@ export function createItems(config: ConfigSlice, queue: QueueSlice) {
          const shouldDequeue =
             queue.length > 0 &&
             (isUnlimited(config.limit.value) || this.length < config.limit.value)
+
          if (shouldDequeue) this.addFromQueue()
       },
       clear() {
@@ -226,6 +231,7 @@ export function createAnimations(
 
          if (!item || !leave || isDestroy || this.isReducedMotion.value) {
             items.addLifecycleEvent()
+
             return onAnimationend()
          }
 
@@ -400,6 +406,7 @@ export function createNotifyProxies({
       },
       clear(id: string, { isDestroy = false } = {}) {
          const isLast = items.entries.value[items.entries.value.length - 1]?.id === id
+
          if (isLast) timeouts.resume()
 
          animations.playLeave(id, { isUserTriggered: true, isDestroy })

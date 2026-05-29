@@ -1,8 +1,8 @@
+import type { NotivueElements } from 'notivue'
+
 import { computed, type CSSProperties } from 'vue'
 
 import { useNotivue } from '@/core/useStore'
-
-import type { NotivueElements } from 'notivue'
 
 /**
  * The follwing styles are not defined in a CSS file because
@@ -63,6 +63,7 @@ export function useNotivueStyles() {
       ]
 
       const clipPath = inset.map((v) => `calc(-1 * ${v})`)
+
       isTop ? clipPath.splice(2, 1, '0px') : clipPath.splice(0, 1, '0px')
 
       return { inset: inset.join(' '), clipPath: `inset(${clipPath.join(' ')})` }

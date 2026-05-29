@@ -1,8 +1,8 @@
 import { DEFAULT_ANIM_DURATION as LEAVE_ANIM_DUR, getRandomInt } from '@/support/utils'
-
-import { DEBOUNCE } from '@/NotivueSwipe/constants'
-import { DEFAULT_DURATION } from '@/core/constants'
 import { SWIPE_NOTIFICATION_WIDTH as WIDTH } from '@/support/utils'
+
+import { DEFAULT_DURATION } from '@/core/constants'
+import { DEBOUNCE } from '@/NotivueSwipe/constants'
 
 const LENGTH = 5
 
@@ -42,6 +42,7 @@ describe('Debounce', () => {
          .should('have.length', LENGTH - 1)
          .then(() => {
             elapsed = Date.now() - elapsed
+
             console.log('Elapsed: ', elapsed)
 
             cy.wait(DEFAULT_DURATION - elapsed + DEBOUNCE.Touch + LEAVE_ANIM_DUR)
@@ -65,6 +66,7 @@ describe('Debounce', () => {
          .trigger('pointerdown', pointerEventOptions)
          .then(() => {
             elapsed = Date.now() - elapsed
+
             console.log('Elapsed: ', elapsed)
 
             cy.wait(DEFAULT_DURATION - elapsed + DEBOUNCE.TouchExternal + LEAVE_ANIM_DUR)
@@ -92,6 +94,7 @@ describe('Debounce', () => {
                .trigger('pointerup', pointerEventOptions)
                .then(() => {
                   elapsed = Date.now() - elapsed
+
                   console.log('Elapsed: ', elapsed)
 
                   cy.wait(DEFAULT_DURATION - elapsed + DEBOUNCE.Touch + LEAVE_ANIM_DUR)

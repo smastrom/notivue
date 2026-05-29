@@ -1,23 +1,23 @@
 <script setup lang="ts">
-import { Teleport } from 'vue'
-
 import AriaLive from './AriaLive.vue'
+
+import type { NotivueProps, NotivueComponentSlot } from 'notivue'
+
+import { Teleport } from 'vue'
 
 import { useStore } from '@/core/useStore'
 import { getSlotItem } from '@/core/utils'
 
-import { useFocusEvents } from './composables/useFocusEvents'
-import { useMouseEvents } from './composables/useMouseEvents'
-import { useTouchEvents } from './composables/useTouchEvents'
-import { useNotivueStyles } from './composables/useNotivueStyles'
-import { useSizes } from './composables/useSizes'
-import { useWindowFocus } from './composables/useWindowFocus'
-import { useReducedMotion } from './composables/useReducedMotion'
-
-import { getAriaLabel } from './utils'
 import { DEFAULT_PROPS } from './constants'
 
-import type { NotivueProps, NotivueComponentSlot } from 'notivue'
+import { useFocusEvents } from './composables/useFocusEvents'
+import { useMouseEvents } from './composables/useMouseEvents'
+import { useNotivueStyles } from './composables/useNotivueStyles'
+import { useReducedMotion } from './composables/useReducedMotion'
+import { useSizes } from './composables/useSizes'
+import { useTouchEvents } from './composables/useTouchEvents'
+import { useWindowFocus } from './composables/useWindowFocus'
+import { getAriaLabel } from './utils'
 
 // Props
 

@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import type { NotifyOptions, NotivueKeyboardProps, NotivueKeyboardSlot } from 'notivue'
+
 import { onBeforeUnmount, onMounted, ref, computed, toRefs, nextTick, watch } from 'vue'
 
-import { useNotivue, useStore } from '@/core/useStore'
 import { notify } from '@/core/createNotify'
+import { useNotivue, useStore } from '@/core/useStore'
+
 import { focusableEls, DEFAULT_PROPS } from './constants'
+
 import { useKeyboardFocus } from './useKeyboardFocus'
 import { useLastFocused } from './useLastFocused'
-
-import type { NotifyOptions, NotivueKeyboardProps, NotivueKeyboardSlot } from 'notivue'
 
 // Props
 
@@ -127,9 +129,11 @@ function setCandidates(newContainers: HTMLElement[]) {
 
          if (isQualified) {
             container.tabIndex = timeouts.isStreamFocused.value ? 0 : -1
+
             _candidateContainers.push(container)
          } else {
             container.tabIndex = -1
+
             _unqualifiedContainers.push(container)
          }
       })
@@ -263,9 +267,11 @@ watch(
 
 function onCandidatesKeydown(e: KeyboardEvent) {
    let currCandidateIndex = 0
+
    const isNavigatingCandidates = candidateContainers.value.some((container, index) => {
       if (container.contains(e.target as HTMLElement) || container === e.target) {
          currCandidateIndex = index
+
          return true
       }
    })
@@ -275,6 +281,7 @@ function onCandidatesKeydown(e: KeyboardEvent) {
          e.preventDefault()
 
          isManualLeave = true
+
          return onStreamLeave()
       }
 
@@ -287,6 +294,7 @@ function onCandidatesKeydown(e: KeyboardEvent) {
          e.preventDefault()
 
          isManualLeave = true
+
          e.target.click()
 
          /**

@@ -1,17 +1,17 @@
+import CloseIcon from './CloseIcon.vue'
+import ErrorIcon from './ErrorIcon.vue'
+import ErrorOutlineIcon from './ErrorOutlineIcon.vue'
+import InfoIcon from './InfoIcon.vue'
+import InfoOutlineIcon from './InfoOutlineIcon.vue'
+import PromiseIcon from './PromiseIcon.vue'
+import SuccessIcon from './SuccessIcon.vue'
+import SuccessOutlineIcon from './SuccessOutlineIcon.vue'
+
+import type { NotivueIcons } from 'notivue'
+
 import { markRaw as raw, type SVGAttributes } from 'vue'
 
 import { NotificationTypeKeys as NType } from '@/core/constants'
-
-import SuccessIcon from './SuccessIcon.vue'
-import ErrorIcon from './ErrorIcon.vue'
-import InfoIcon from './InfoIcon.vue'
-import SuccessOutlineIcon from './SuccessOutlineIcon.vue'
-import ErrorOutlineIcon from './ErrorOutlineIcon.vue'
-import InfoOutlineIcon from './InfoOutlineIcon.vue'
-import PromiseIcon from './PromiseIcon.vue'
-import CloseIcon from './CloseIcon.vue'
-
-import type { NotivueIcons } from 'notivue'
 
 export const svgProps: SVGAttributes = {
    xmlns: 'http://www.w3.org/2000/svg',

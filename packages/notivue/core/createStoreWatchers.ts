@@ -1,6 +1,6 @@
-import { watch } from 'vue'
-
 import type { NotivueStore } from 'notivue'
+
+import { watch } from 'vue'
 
 export function createStoreWatchers(store: NotivueStore) {
    return [

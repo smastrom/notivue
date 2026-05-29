@@ -7,6 +7,7 @@ async function asyncRefMessagePush() {
 
    for (let n = 1; n < 4; n++) {
       await new Promise((resolve) => setTimeout(resolve, getRandomInt(1000, 2000)))
+
       initialMessage.value = state.rtl ? `جاري تحميل الملف ${n}/3...` : `Uploading file ${n}/3...`
    }
 
@@ -18,6 +19,7 @@ async function asyncPush() {
    if (Math.random() > 0.7) return asyncRefMessagePush()
 
    const notification = notify.loading(messages.value.dynamic)
+
    await new Promise((resolve) => setTimeout(resolve, getRandomInt(2000, 4000)))
 
    if (Math.random() > 0.5) {

@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import type { NotificationsProps } from 'notivue'
+
 import { unref, watch, shallowRef } from 'vue'
 
 import { Classes as Cx, DEFAULT_NOTIFICATIONS_PROPS } from './constants'
-
-import type { NotificationsProps } from 'notivue'
 
 const props = withDefaults(defineProps<NotificationsProps>(), DEFAULT_NOTIFICATIONS_PROPS)
 

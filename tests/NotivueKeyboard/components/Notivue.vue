@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, watchEffect } from 'vue'
-
-import { push, NotivueKeyboard, Notivue, useNotivue, type NotivueKeyboardProps } from 'notivue'
-
 import Candidate from './Candidate.vue'
 import Unqualified from './Unqualified.vue'
+
+import { push, NotivueKeyboard, Notivue, useNotivue, type NotivueKeyboardProps } from 'notivue'
+import { onMounted, onBeforeUnmount, watchEffect } from 'vue'
 
 export type CyNotivueKeyboardProps = NotivueKeyboardProps & { enqueue?: boolean; limit?: number }
 

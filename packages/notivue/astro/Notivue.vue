@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, getCurrentInstance, provide } from 'vue'
-
-import { DEFAULT_PROPS } from '@/Notivue/constants'
-import { NotivueClientOnly } from '@/shared/ClientOnly'
-import { createProvides } from '@/core/createNotivue'
-import { notivueInjectionKey, notivueInstanceInjectionKey } from '@/core/symbols'
-
 import NotivueImpl from '@/Notivue/NotivueImpl.vue'
 
-import type { NotivueConfig, NotivueComponentSlot, NotivueProps } from 'notivue'
 import type { PushAstroEvent } from './types'
+import type { NotivueConfig, NotivueComponentSlot, NotivueProps } from 'notivue'
+
+import { onMounted, onBeforeUnmount, getCurrentInstance, provide } from 'vue'
+
+import { createProvides } from '@/core/createNotivue'
+import { notivueInjectionKey, notivueInstanceInjectionKey } from '@/core/symbols'
+import { NotivueClientOnly } from '@/shared/ClientOnly'
+
+import { DEFAULT_PROPS } from '@/Notivue/constants'
 
 const props = withDefaults(defineProps<NotivueProps>(), DEFAULT_PROPS)
 

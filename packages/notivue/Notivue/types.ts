@@ -1,5 +1,5 @@
-import type { CSSProperties, Component } from 'vue'
 import type { NotivueItem } from 'notivue'
+import type { CSSProperties, Component } from 'vue'
 
 export interface NotivueProps {
    class?: string | Record<string, boolean> | (string | Record<string, boolean>)[]

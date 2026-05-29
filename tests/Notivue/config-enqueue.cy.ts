@@ -1,6 +1,6 @@
-import { RESOLVE_REJECT_DELAY, getRandomInt } from '@/support/utils'
-
 import type { VueWrapper } from '@vue/test-utils'
+
+import { RESOLVE_REJECT_DELAY, getRandomInt } from '@/support/utils'
 
 describe('Enqueue', () => {
    it('Should enqueue notifications according to limit', () => {
@@ -17,6 +17,7 @@ describe('Enqueue', () => {
 
    it('Should display enqueued notifications after dismissal', () => {
       const limit = 3
+
       cy.mountNotivue({ config: { enqueue: true, limit } })
 
       for (let i = 0; i < 10; i++) {

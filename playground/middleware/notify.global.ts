@@ -1,6 +1,7 @@
 export default defineNuxtRouteMiddleware(() => {
    updateConfig((currConf) => {
       console.log('Current config:', currConf)
+
       return {}
    })
 

@@ -7,6 +7,7 @@ const wrapperStyles = computed(() => {
    if (position.value.startsWith('top')) {
       return { bottom: 'calc(var(--nav-height) + 1.25rem)' }
    }
+
    return { top: '1.25rem' }
 })
 </script>

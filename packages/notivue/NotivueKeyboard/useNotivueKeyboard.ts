@@ -1,6 +1,6 @@
-import { ref, computed } from 'vue'
-
 import type { NotivueKeyboardData } from 'notivue'
+
+import { ref, computed } from 'vue'
 
 /**
  * @deprecated NotivueKeyboard now manages focus automatically.

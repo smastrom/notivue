@@ -1,10 +1,9 @@
-import { mount } from 'cypress/vue'
-
-import { Classes } from '@/Notifications/constants'
-
 import Notivue, { CyNotificationsProps } from '@/tests/Notifications/components/Notivue.vue'
 
+import { mount } from 'cypress/vue'
 import { createNotivue, type NotivueTheme, type NotivueConfig } from 'notivue'
+
+import { Classes } from '@/Notifications/constants'
 
 declare global {
    namespace Cypress {

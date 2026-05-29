@@ -1,6 +1,5 @@
-import type { Component } from 'vue'
-
 import type { NotificationType, NotivueItem } from 'notivue'
+import type { Component } from 'vue'
 
 export interface NotificationsProps {
    item: NotivueItem

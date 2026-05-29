@@ -1,14 +1,14 @@
+import type { NotivueConfig, NotivueConfigRequired, ConfigSlice } from 'notivue'
+
 import { describe, expect, test } from 'vitest'
+import { ref } from 'vue'
 
 import { createConfig } from '@/core/createStore'
+
 import {
    DEFAULT_CONFIG as defaultConf,
    DEFAULT_NOTIFICATION_OPTIONS as defaultNot,
 } from '@/core/constants'
-
-import { ref } from 'vue'
-
-import type { NotivueConfig, NotivueConfigRequired, ConfigSlice } from 'notivue'
 
 type ConfigPairs<K extends keyof NotivueConfig> = [K, NotivueConfig[K]]
 

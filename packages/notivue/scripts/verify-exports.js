@@ -1,5 +1,5 @@
-import { exports } from '../shared/exports.js'
 import * as index from '../dist/index.js'
+import { exports } from '../shared/exports.js'
 
 const objExports = Object.values(exports).flat()
 const jsExports = Object.keys(index)
@@ -7,9 +7,11 @@ const jsExports = Object.keys(index)
 if (objExports.length !== jsExports.length) {
    if (objExports.length < jsExports.length) {
       const missing = jsExports.filter((name) => !objExports.includes(name))
+
       throw new Error('Missing exports in shared/exports.js -> ' + missing.join(', '))
    } else {
       const missing = objExports.filter((name) => !jsExports.includes(name))
+
       throw new Error('Missing exports in dist/index.js -> ' + missing.join(', '))
    }
 } else {

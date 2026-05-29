@@ -3,4 +3,5 @@ module.exports = function (...args) {
 }
 
 const _meta = (module.exports.meta = require('./module.json'))
+
 module.exports.getMeta = () => Promise.resolve(_meta)

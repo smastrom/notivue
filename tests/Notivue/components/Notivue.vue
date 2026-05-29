@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ref, shallowRef, toRefs, watchEffect, type Ref } from 'vue'
-
 import {
    push,
    useNotivue,
@@ -11,6 +9,7 @@ import {
    type NotivueConfig,
    type Push,
 } from 'notivue'
+import { ref, shallowRef, toRefs, watchEffect, type Ref } from 'vue'
 
 import { RESOLVE_REJECT_DELAY } from '@/support/utils'
 
@@ -53,6 +52,7 @@ watchEffect(() => {
 
 function pushAndClear() {
    const notification = push.success(cyProps.options ?? {})
+
    setTimeout(() => notification.clear(), RESOLVE_REJECT_DELAY)
 }
 
@@ -95,6 +95,7 @@ function pushAndRenderClear() {
 
 function pushAndDestroy() {
    const notification = push.success(cyProps.options ?? {})
+
    setTimeout(() => notification.destroy(), RESOLVE_REJECT_DELAY)
 }
 
@@ -104,6 +105,7 @@ function pushSkipQueue() {
 
 async function pushPromiseAndResolve() {
    const promise = push.promise(cyProps.options ?? {})
+
    await new Promise((resolve) => setTimeout(resolve, RESOLVE_REJECT_DELAY))
 
    promise.resolve(cyProps.newOptions ?? cyProps.options ?? {})
@@ -111,6 +113,7 @@ async function pushPromiseAndResolve() {
 
 async function pushPromiseAndReject() {
    const promise = push.loading(cyProps.options ?? {})
+
    await new Promise((resolve) => setTimeout(resolve, RESOLVE_REJECT_DELAY))
 
    promise.error(cyProps.newOptions ?? cyProps.options ?? {})

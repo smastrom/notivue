@@ -1,8 +1,6 @@
 # Notivue
 
-## Zero-dependency, powerful, and truly customizable toast notification system for Vue.
-
-Fully typed. Works with Vite, Nuxt, and Astro.
+**Zero-dependency, powerful, and truly customizable toast notification system for Vue**
 
 [Live Demo](https://notivue.smastrom.io) - [Documentation](https://docs.notivue.smastrom.io)
 
@@ -230,8 +228,6 @@ export default defineNuxtConfig({
 > :bulb: Import from **`notivue/astro`** (not `notivue`). CSS: **`notivue/astro/notification.css`** and **`notivue/astro/animations.css`** when you use the built-in UI and default animations.
 
 > **Note:** Astro **6** is not supported yet.
-
-[Installation → Astro](https://docs.notivue.smastrom.io/installation/astro.html) — `createNotivue` in the Vue app entry, Notivue island, `client:only`, view transitions.
 
 ## Thanks
 
