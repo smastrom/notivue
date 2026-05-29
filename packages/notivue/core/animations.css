@@ -1,7 +1,7 @@
 :root {
-   --nv-enter-animation: notivue-enter-kf 350ms cubic-bezier(0.5, 1, 0.25, 1);
-   --nv-leave-animation: notivue-leave-kf 350ms ease;
-   --nv-clear-all-animation: notivue-clear-all-kf 500ms cubic-bezier(0.22, 1, 0.36, 1);
+   --nv-enter-animation: nv-enter-anim-kf 350ms cubic-bezier(0.5, 1, 0.25, 1);
+   --nv-leave-animation: nv-leave-anim-kf 350ms ease;
+   --nv-clear-all-animation: nv-clear-all-anim-kf 500ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 [data-notivue-align='top'] {
@@ -12,7 +12,7 @@
    --notivue-ty: 200%;
 }
 
-@keyframes notivue-enter-kf {
+@keyframes nv-enter-anim-kf {
    0% {
       transform: translate3d(0, var(--notivue-ty), 0) scale(0.25);
       opacity: 0;
@@ -24,7 +24,7 @@
    }
 }
 
-@keyframes notivue-leave-kf {
+@keyframes nv-leave-anim-kf {
    0% {
       transform: translate3d(0, 0, 0) scale(1);
       opacity: 0.7;
@@ -36,7 +36,7 @@
    }
 }
 
-@keyframes notivue-clear-all-kf {
+@keyframes nv-clear-all-anim-kf {
    0% {
       opacity: 1;
    }
