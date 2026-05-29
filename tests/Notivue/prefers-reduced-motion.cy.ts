@@ -1,3 +1,5 @@
+import { MOTION_VARS_CSS } from '@/core/constants'
+
 describe('prefers-reduced-motion', () => {
    beforeEach(() => {
       cy.stub(window, 'matchMedia').withArgs('(prefers-reduced-motion: reduce)').returns({
@@ -9,25 +11,31 @@ describe('prefers-reduced-motion', () => {
       cy.mountNotivue()
          .get('.PushAndRenderClear')
          .click()
-         .getContainer()
-         .invoke('attr', 'style')
-         .should('not.include', '--nv-enter-animation')
+         .get('[data-notivue-container]')
+         .should('exist')
+         .should(($el) => {
+            expect($el.attr('style') ?? '').not.to.include(MOTION_VARS_CSS.enterAnimation)
+         })
 
          .get('.RenderedClear')
          .click()
-         .getContainer()
-         .invoke('attr', 'style')
-         .should('not.include', '--nv-leave-animation')
+         .get('[data-notivue-container]')
+         .should('not.exist')
+         .get(`[style*="${MOTION_VARS_CSS.leaveAnimation}"]`)
+         .should('not.exist')
    })
 
    it('Should not add clearAll animation', () => {
       cy.mountNotivue()
          .clickRandomStatic()
+         .get('ol')
+         .should('exist')
          .get('.ClearAll')
          .click()
          .get('ol')
-         .invoke('attr', 'style')
-         .should('not.include', '--nv-clear-all-animation')
+         .should('not.exist')
+         .get(`[style*="${MOTION_VARS_CSS.clearAllAnimation}"]`)
+         .should('not.exist')
    })
 
    it('No transition should be applied', () => {
