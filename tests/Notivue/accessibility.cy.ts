@@ -16,7 +16,7 @@ describe('Aria label', () => {
       })
 
          .clickRandomStatic()
-         .getContainer()
+         .get('li')
          .should('have.attr', 'aria-label', 'This is a message')
    })
 
@@ -30,7 +30,7 @@ describe('Aria label', () => {
       })
 
          .clickRandomStatic()
-         .getContainer()
+         .get('li')
          .should('have.attr', 'aria-label', 'This is a title: This is a message')
    })
 })

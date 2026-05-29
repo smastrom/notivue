@@ -59,7 +59,7 @@ useSizes()
          <!-- List Item -->
          <li
             v-for="(item, i) in items.entries.value"
-            tabindex="-1"
+            :tabindex="item.ariaLiveOnly ? undefined : -1"
             :key="item.id"
             :data-notivue-item="item.id"
             :aria-label="item.ariaLiveOnly ? undefined : getAriaLabel(item)"

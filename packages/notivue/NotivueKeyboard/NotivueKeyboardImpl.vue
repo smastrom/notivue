@@ -114,17 +114,22 @@ function setCandidates(newItems: HTMLElement[]) {
    let _focusableEls: HTMLElement[] = []
 
    newItems
-      .filter((item) => item.querySelector('[data-notivue-container]'))
-      .map((item) => ({ id: item.dataset.notivueItem!, item }))
+      .map((item) => ({
+         id: item.dataset.notivueItem!,
+         item,
+         container: item.querySelector('[data-notivue-container]') as HTMLElement | null,
+      }))
+      .filter(({ container }) => container)
       .sort((a, b) => +b.id - +a.id)
-      .forEach(({ item }) => {
+      .forEach(({ item, container }) => {
          const innerFocusableEls = Array.from(item.querySelectorAll(focusableEls)).filter(
             (el) => el instanceof HTMLElement
          ) as HTMLElement[]
 
          _focusableEls.push(...innerFocusableEls)
 
-         const isQualified = innerFocusableEls.length > 0 || props.isCandidate?.(item) === true
+         const isQualified =
+            innerFocusableEls.length > 0 || props.isCandidate?.(container!) === true
 
          if (isQualified) {
             item.tabIndex = timeouts.isStreamFocused.value ? 0 : -1

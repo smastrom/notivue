@@ -9,16 +9,16 @@ it('Notivue attributes are added correctly', () => {
 
       .get('ol')
       .should('have.class', 'CustomClass')
-      .invoke('attr', 'data-notivue-align')
-      .should('exist')
+      .and('have.attr', 'data-notivue-align')
 
-      .get('li')
-      .and('have.attr', 'tabindex', '-1')
-      .invoke('attr', 'data-notivue-item')
-      .should('exist')
+   cy.get('li').should(($li) => {
+      expect($li).to.have.attr('tabindex', '-1')
+      expect($li).to.have.attr('data-notivue-item')
+      expect($li).to.have.attr('aria-label')
+   })
 
-      .get('li > div')
-      .invoke('attr', 'data-notivue-container')
-      .should('exist')
-      .should('not.have.attr', 'tabindex')
+   cy.get('li > div').should(($container) => {
+      expect($container).to.have.attr('data-notivue-container')
+      expect($container).not.to.have.attr('tabindex')
+   })
 })
