@@ -5,17 +5,19 @@ describe('prefers-reduced-motion', () => {
       })
    })
 
-   it('Should not add enter/leave animation classes', () => {
+   it('Should not add enter/leave animation styles', () => {
       cy.mountNotivue()
          .get('.PushAndRenderClear')
          .click()
-         .get('.Notivue__enter')
-         .should('not.exist')
+         .getContainer()
+         .invoke('attr', 'style')
+         .should('not.include', '--nv-enter-animation')
 
          .get('.RenderedClear')
          .click()
-         .get('.Notivue__leave')
-         .should('not.exist')
+         .getContainer()
+         .invoke('attr', 'style')
+         .should('not.include', '--nv-leave-animation')
    })
 
    it('Should not add clearAll animation', () => {
@@ -23,15 +25,17 @@ describe('prefers-reduced-motion', () => {
          .clickRandomStatic()
          .get('.ClearAll')
          .click()
-         .get('.Notivue__clearAll')
-         .should('not.exist')
+         .get('ol')
+         .invoke('attr', 'style')
+         .should('not.include', '--nv-clear-all-animation')
    })
 
    it('No transition should be applied', () => {
       cy.mountNotivue()
          .clickRandomStatic()
          .click()
-         .getNotifications()
-         .should('have.css', 'transition', 'all')
+         .get('li')
+         .invoke('attr', 'style')
+         .should('include', 'transition: none')
    })
 })

@@ -1,27 +1,15 @@
+:root {
+   --nv-enter-animation: Notivue__enter-kf 350ms cubic-bezier(0.5, 1, 0.25, 1);
+   --nv-leave-animation: Notivue__leave-kf 350ms ease;
+   --nv-clear-all-animation: Notivue__clearAll-kf 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 [data-notivue-align='top'] {
-   & .Notivue__enter,
-   & .Notivue__leave {
-      --notivue-ty: -200%;
-   }
+   --notivue-ty: -200%;
 }
 
 [data-notivue-align='bottom'] {
-   & .Notivue__enter,
-   & .Notivue__leave {
-      --notivue-ty: 200%;
-   }
-}
-
-.Notivue__enter {
-   animation: Notivue__enter-kf 350ms cubic-bezier(0.5, 1, 0.25, 1);
-}
-
-.Notivue__leave {
-   animation: Notivue__leave-kf 350ms ease;
-}
-
-.Notivue__clearAll {
-   animation: Notivue__clearAll-kf 500ms cubic-bezier(0.22, 1, 0.36, 1);
+   --notivue-ty: 200%;
 }
 
 @keyframes Notivue__enter-kf {
