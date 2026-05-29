@@ -8,7 +8,7 @@ import type { NotivueKeyboardData } from 'notivue'
  */
 export function useNotivueKeyboard(): NotivueKeyboardData {
    return {
-      elementsTabIndex: ref(0),
+      elementsTabIndex: ref(-1),
       containersTabIndex: computed(() => ({})),
    }
 }
