@@ -85,7 +85,8 @@
    "peerDependencies": {
       "@nuxt/kit": ">=3.5.0",
       "@nuxt/schema": ">=3.5.0",
-      "defu": ">=6"
+      "defu": ">=6",
+      "vue": ">=3"
    },
    "peerDependenciesMeta": {
       "@nuxt/kit": {
