@@ -23,6 +23,7 @@ Notivue is a public OSS Vue 3 toast notification library. Treat `packages/notivu
 - **Local (implementation):** Cursor Agent makes changes, commits, and pushes on request. When answering CodeRabbit on GitHub, post replies on the review thread and note they were written by the agent (see below).
 - Do not create commits or push to remotes unless the user explicitly requests it in the current conversation.
 - After implementing changes, stop and let the user review the diff before committing or pushing. Do not commit proactively at the end of a task unless they asked for it in that message.
+- **Before pushing:** If the branch has an open PR, run `gh pr view` and update the PR title and body when new commits change scope, behavior, dependencies, or the test plan. Do not push with an outdated description.
 
 ## Writing
 
