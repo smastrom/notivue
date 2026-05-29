@@ -211,10 +211,15 @@ export function createAnimations(
       playLeave(id: string, { isDestroy = false, isUserTriggered = false } = {}) {
          const item = items.get(id)
 
+         let isDone = false
+
          window.clearTimeout(item?.timeout as number)
 
          const onAnimationend = (e?: AnimationEvent) => {
             if (e && e.currentTarget !== e.target) return
+            if (isDone) return
+
+            isDone = true
 
             if (item) {
                const slotItem = getSlotItem(item)
@@ -249,11 +254,24 @@ export function createAnimations(
          })
 
          items.addLifecycleEvent()
+
+         requestAnimationFrame(() => {
+            const el = elements.containers.value.find((el) => el.dataset.notivueContainer === id)
+
+            if (el && getComputedStyle(el).animationName === 'none') onAnimationend()
+         })
       },
       playClearAll() {
          items.entries.value.forEach((e) => window.clearTimeout(e.timeout as number))
 
-         const onAnimationend = () => {
+         let isDone = false
+
+         const onAnimationend = (e?: AnimationEvent) => {
+            if (e && e.currentTarget !== e.target) return
+            if (isDone) return
+
+            isDone = true
+
             queue.clear()
             items.clear()
          }
@@ -263,6 +281,12 @@ export function createAnimations(
          elements.setRootAttrs({
             style: { animation: MOTION_VARS_CSS.clearAllAnimation },
             onAnimationend,
+         })
+
+         requestAnimationFrame(() => {
+            const root = elements.root.value
+
+            if (root && getComputedStyle(root).animationName === 'none') onAnimationend()
          })
       },
       updatePositions({ isImmediate = false } = {}) {
@@ -481,7 +505,9 @@ export function createNotifyProxies({
                   style: animations.isReducedMotion.value
                      ? {}
                      : { animation: MOTION_VARS_CSS.enterAnimation },
-                  onAnimationend() {
+                  onAnimationend(e?: AnimationEvent) {
+                     if (e && e.currentTarget !== e.target) return
+
                      if (item.animationAttrs.style?.animation === MOTION_VARS_CSS.enterAnimation) {
                         items.update(entry.id, {
                            animationAttrs: { style: {}, onAnimationend: () => {} },
