@@ -38,8 +38,9 @@ const baseStyles: Record<NotivueElements, CSSProperties> = {
    itemContainer: {
       ...boxSizing,
       maxWidth: '100%',
+      marginBottom: 'var(--nv-gap, 0.75rem)',
+      marginBlockEnd: 'var(--nv-gap, 0.75rem)',
       outline: 'none',
-      padding: `0 0 var(--nv-gap, 0.75rem) 0`,
       pointerEvents: 'auto',
    },
 }
