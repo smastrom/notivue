@@ -62,6 +62,7 @@ onBeforeUnmount(() => {
       :emptyMessage="cyProps.emptyMessage"
       :renderAnnouncement="cyProps.renderAnnouncement"
       :maxAnnouncements="cyProps.maxAnnouncements"
+      :isCandidate="cyProps.isCandidate"
    >
       <Notivue v-slot="item">
          <Candidate :item="item" v-if="item.props.isCandidate" />
