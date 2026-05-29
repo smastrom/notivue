@@ -8,6 +8,11 @@ tone_instructions: >-
 
 reviews:
    profile: chill
+   instructions: >-
+      Do not report minor severity issues or formatting nits (markdown structure,
+      heading levels, trailing punctuation, blank lines in blockquotes). Focus on
+      critical and major issues that affect correctness, security, or public API
+      behavior.
    sequence_diagrams: true
    poem: false
    auto_review:
@@ -75,7 +80,7 @@ reviews:
       biome:
          enabled: false
       markdownlint:
-         enabled: true
+         enabled: false
       actionlint:
          enabled: true
       gitleaks:
