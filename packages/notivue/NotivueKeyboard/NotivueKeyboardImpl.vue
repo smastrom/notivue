@@ -123,9 +123,7 @@ function setCandidates(newContainers: HTMLElement[]) {
 
          _focusableEls.push(...innerFocusableEls)
 
-         const isQualified = props.isCandidate
-            ? props.isCandidate(container)
-            : innerFocusableEls.length > 0
+         const isQualified = innerFocusableEls.length > 0 || props.isCandidate?.(container) === true
 
          if (isQualified) {
             container.tabIndex = timeouts.isStreamFocused.value ? 0 : -1

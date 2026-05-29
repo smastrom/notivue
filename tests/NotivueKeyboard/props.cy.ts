@@ -69,6 +69,26 @@ describe('Props', () => {
          .should('have.length', 0)
    })
 
+   it('Should treat focusable children as candidates even when isCandidate returns false', () => {
+      cy.mountKeyboard({ isCandidate: () => false })
+         .pushCandidate()
+
+         .realPress('Tab')
+
+         .focused()
+         .should('have.data', 'notivueContainer')
+   })
+
+   it('Should qualify containers via isCandidate when they have no focusable children', () => {
+      cy.mountKeyboard({ isCandidate: () => true })
+         .pushUnqualified()
+
+         .realPress('Tab')
+
+         .focused()
+         .should('have.data', 'notivueContainer')
+   })
+
    it('Should customize max number of leave announcements', () => {
       cy.mountKeyboard({ maxAnnouncements: 1 })
          .pushCandidate()

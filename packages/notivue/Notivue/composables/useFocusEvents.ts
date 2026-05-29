@@ -6,7 +6,7 @@ export function useFocusEvents() {
    const { timeouts } = useStore()
 
    function onFocusin() {
-      timeouts.pause()
+      if (!timeouts.isStreamFocused.value) timeouts.pause()
    }
 
    function onFocusout(e: FocusEvent) {
@@ -18,5 +18,7 @@ export function useFocusEvents() {
       }
    }
 
-   return computed(() => (!timeouts.isStreamFocused.value ? { onFocusin, onFocusout } : {}))
+   return computed(() =>
+      timeouts.isStreamFocused.value ? { onFocusout } : { onFocusin, onFocusout }
+   )
 }

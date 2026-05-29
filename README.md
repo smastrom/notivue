@@ -226,7 +226,6 @@ export default defineNuxtConfig({
 ## Astro
 
 > :bulb: Import from **`notivue/astro`** (not `notivue`). CSS: **`notivue/astro/notification.css`** and **`notivue/astro/animations.css`** when you use the built-in UI and default animations.
-
 > **Note:** Astro **6** is not supported yet.
 
 ## Thanks

@@ -39,5 +39,13 @@
    "engines": {
       "node": ">=20.19.0"
    },
-   "packageManager": "pnpm@9.15.9"
+   "packageManager": "pnpm@9.15.9",
+   "pnpm": {
+      "onlyBuiltDependencies": [
+         "@parcel/watcher",
+         "cypress",
+         "esbuild",
+         "sharp"
+      ]
+   }
 }

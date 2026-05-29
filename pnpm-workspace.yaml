@@ -4,8 +4,3 @@ packages:
    - 'playground'
    - 'playground-astro'
    - 'docs'
-allowBuilds:
-   '@parcel/watcher': true
-   cypress: true
-   esbuild: true
-   sharp: true

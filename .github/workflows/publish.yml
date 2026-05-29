@@ -10,6 +10,8 @@ permissions: {}
 jobs:
    tests-workflow:
       uses: ./.github/workflows/tests.yml
+      permissions:
+         contents: read
    publish:
       needs: tests-workflow
       runs-on: ubuntu-latest
