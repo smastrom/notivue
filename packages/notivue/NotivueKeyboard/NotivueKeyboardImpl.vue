@@ -46,7 +46,7 @@ const emptyNotifyOptions = computed<NotifyOptions>(() => ({
 
 // Store
 
-const { elements, timeouts, queue } = useStore()
+const { elements, timeouts, queue, items } = useStore()
 
 const config = useNotivue()
 
@@ -114,22 +114,24 @@ function setCandidates(newItems: HTMLElement[]) {
    let _focusableEls: HTMLElement[] = []
 
    newItems
-      .map((item) => ({
-         id: item.dataset.notivueItem!,
-         item,
-         container: item.querySelector('[data-notivue-container]') as HTMLElement | null,
-      }))
-      .filter(({ container }) => container)
-      .sort((a, b) => +b.id - +a.id)
-      .forEach(({ item, container }) => {
+      .filter((item) => {
+         const id = item.dataset.notivueListItem
+
+         if (!id) return false
+
+         const entry = items.get(id)
+
+         return Boolean(entry && !entry.ariaLiveOnly)
+      })
+      .sort((a, b) => +b.dataset.notivueListItem! - +a.dataset.notivueListItem!)
+      .forEach((item) => {
          const innerFocusableEls = Array.from(item.querySelectorAll(focusableEls)).filter(
             (el) => el instanceof HTMLElement
          ) as HTMLElement[]
 
          _focusableEls.push(...innerFocusableEls)
 
-         const isQualified =
-            innerFocusableEls.length > 0 || props.isCandidate?.(container!) === true
+         const isQualified = innerFocusableEls.length > 0 || props.isCandidate?.(item) === true
 
          if (isQualified) {
             item.tabIndex = timeouts.isStreamFocused.value ? 0 : -1

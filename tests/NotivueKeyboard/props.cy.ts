@@ -35,7 +35,7 @@ describe('Props', () => {
          .realPress(['ControlLeft', 'u'])
 
          .focused()
-         .should('have.data', 'notivueItem', 0)
+         .should('have.data', 'notivueListItem', 0)
 
          .realPress(['ControlLeft', 'u'])
 
@@ -76,7 +76,7 @@ describe('Props', () => {
          .realPress('Tab')
 
          .focused()
-         .should('have.data', 'notivueItem')
+         .should('have.data', 'notivueListItem')
    })
 
    it('Should qualify list items via isCandidate when they have no focusable children', () => {
@@ -86,7 +86,22 @@ describe('Props', () => {
          .realPress('Tab')
 
          .focused()
-         .should('have.data', 'notivueItem')
+         .should('have.data', 'notivueListItem')
+   })
+
+   it('Should pass list items to isCandidate', () => {
+      const isCandidate = cy.stub().returns(false)
+
+      cy.mountKeyboard({ isCandidate })
+         .pushUnqualified()
+         .then(() => {
+            expect(isCandidate).to.have.been.calledOnce
+
+            const el = isCandidate.firstCall.args[0] as HTMLElement
+
+            expect(el.dataset.notivueListItem).to.exist
+            expect(el.hasAttribute('data-notivue-item')).to.be.false
+         })
    })
 
    it('Should customize max number of leave announcements', () => {

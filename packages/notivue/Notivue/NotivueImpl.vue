@@ -50,6 +50,7 @@ useSizes()
       <ol
          v-if="items.entries.value.length > 0"
          v-bind="{ ...focusEvents, ...mouseEvents, ...touchEvents, ...elements.rootAttrs.value }"
+         data-notivue-list=""
          :data-notivue-align="config.position.value.split('-')[0]"
          :aria-label="props.listAriaLabel"
          :ref="elements.root"
@@ -61,7 +62,7 @@ useSizes()
             v-for="(item, i) in items.entries.value"
             :tabindex="item.ariaLiveOnly ? undefined : -1"
             :key="item.id"
-            :data-notivue-item="item.id"
+            :data-notivue-list-item="item.id"
             :aria-label="item.ariaLiveOnly ? undefined : getAriaLabel(item)"
             :aria-setsize="items.length"
             :aria-posinset="i + 1"
@@ -73,14 +74,14 @@ useSizes()
             }"
          >
             <!-- ariaLiveOnly Push Option -->
-            <AriaLive v-if="item.ariaLiveOnly" :item="item" />
+            <AriaLive v-if="item.ariaLiveOnly" :item="item" data-notivue-aria-live="" />
 
             <!-- Item Container -->
             <div
                v-else
                v-bind="item.animationAttrs"
-               :data-notivue-container="item.id"
-               :ref="elements.containers"
+               :data-notivue-item="item.id"
+               :ref="elements.itemContainers"
                :style="{ ...styles.itemContainer, ...props.styles?.itemContainer }"
             >
                <!-- Notification -->

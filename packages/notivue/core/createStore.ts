@@ -181,17 +181,19 @@ export function createElements() {
          this.rootAttrs.value = newAttrs
       },
       items: ref<HTMLElement[]>([]),
+      itemContainers: ref<HTMLElement[]>([]),
       getSortedItems() {
          // This is a bit dirty, but it's better than cloning and reversing the array on every repositioning
-         return this.items.value.sort((a, b) => +b.dataset.notivueItem! - +a.dataset.notivueItem!)
+         return this.items.value.sort(
+            (a, b) => +b.dataset.notivueListItem! - +a.dataset.notivueListItem!
+         )
       },
-      containers: ref<HTMLElement[]>([]),
    } as {
       // Suppress TS7056
       root: Ref<HTMLElement | null>
       rootAttrs: Ref<Partial<MotionAttrs>>
       items: Ref<HTMLElement[]>
-      containers: Ref<HTMLElement[]>
+      itemContainers: Ref<HTMLElement[]>
       setRootAttrs(newAttrs: Partial<MotionAttrs>): void
       getSortedItems(): HTMLElement[]
    }
@@ -256,7 +258,7 @@ export function createAnimations(
          items.addLifecycleEvent()
 
          requestAnimationFrame(() => {
-            const el = elements.containers.value.find((el) => el.dataset.notivueContainer === id)
+            const el = elements.itemContainers.value.find((el) => el.dataset.notivueItem === id)
 
             if (el && getComputedStyle(el).animationName === 'none') onAnimationend()
          })
@@ -296,7 +298,7 @@ export function createAnimations(
          let accPrevHeights = 0
 
          for (const el of elements.getSortedItems()) {
-            const id = el.dataset.notivueItem!
+            const id = el.dataset.notivueListItem!
             const item = items.get(id)
 
             if (!el || !item) continue

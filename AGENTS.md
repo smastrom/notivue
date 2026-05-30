@@ -12,10 +12,10 @@ Notivue is a public OSS Vue 3 toast notification library. Treat `packages/notivu
 
 ## Notivue stream layout
 
-- Notification rows use `width: max-content` on `<li data-notivue-item>` so keyboard focus rings hug the toast. Stream focus and `aria-label` belong on the `<li>`; `[data-notivue-container]` is not focusable.
+- Notification rows use `width: max-content` on `<li data-notivue-list-item>` so keyboard focus rings hug the toast. Stream focus and `aria-label` belong on the `<li>`; `[data-notivue-item]` is not focusable.
 - Horizontal alignment follows `position` (`*-left`, `*-center`, `*-right`). Responsive changes use `config.update` / `updateConfig`, not CSS alignment overrides.
 - `--nv-gap` is block-end margin on list items. Stacking uses `getListItemStackHeight` in `packages/notivue/core/utils.ts`.
-- `NotivueKeyboard` `isCandidate` receives the item container element, not the `<li>`.
+- `NotivueKeyboard` `isCandidate` receives the `<li>` (`[data-notivue-list-item]`), same element as stream focus.
 
 ## Workflow
 
