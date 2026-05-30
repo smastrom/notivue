@@ -1,5 +1,8 @@
 import type { VueWrapper } from '@vue/test-utils'
 
+import { mount } from 'cypress/vue'
+import { Notivue, createNotivue, push } from 'notivue'
+
 describe('Teleport', () => {
    it('By default is teleported to body', () => {
       cy.mountNotivue()
@@ -55,5 +58,23 @@ describe('Teleport', () => {
          .get('html')
          .children()
          .should('have.class', 'Root')
+   })
+
+   it('Prop takes priority over config teleportTo', () => {
+      const notivue = createNotivue({ teleportTo: 'body' })
+
+      mount(Notivue, {
+         global: { plugins: [notivue] },
+         props: { teleportTo: 'html', class: 'Root' },
+         slots: {
+            default: () => null,
+         },
+      })
+
+      cy.wrap(null).then(() => {
+         push.success({ message: 'test' })
+      })
+
+      cy.get('html').children().should('have.class', 'Root')
    })
 })

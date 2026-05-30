@@ -8,7 +8,7 @@ import { Teleport } from 'vue'
 import { useStore } from '@/core/useStore'
 import { getSlotItem } from '@/core/utils'
 
-import { DEFAULT_PROPS } from './constants'
+import { DEFAULT_IMPL_PROPS } from './constants'
 
 import { useFocusEvents } from './composables/useFocusEvents'
 import { useMouseEvents } from './composables/useMouseEvents'
@@ -21,7 +21,11 @@ import { getAriaLabel } from './utils'
 
 // Props
 
-const props = withDefaults(defineProps<NotivueProps>(), DEFAULT_PROPS)
+type NotivueImplProps = Omit<NotivueProps, 'teleportTo'> & {
+   teleportTo?: NotivueProps['teleportTo'] | null
+}
+
+const props = withDefaults(defineProps<NotivueImplProps>(), DEFAULT_IMPL_PROPS)
 
 defineSlots<NotivueComponentSlot>()
 
@@ -39,13 +43,20 @@ const touchEvents = useTouchEvents()
 useReducedMotion()
 useWindowFocus()
 useSizes()
+
+function getTeleportChoice() {
+   return props.teleportTo === null ? config.teleportTo.value : props.teleportTo
+}
+
+function getTeleportTo() {
+   const choice = getTeleportChoice()
+
+   return choice === false ? undefined : choice
+}
 </script>
 
 <template>
-   <Teleport
-      :to="config.teleportTo.value === false ? undefined : config.teleportTo.value"
-      :disabled="config.teleportTo.value === false"
-   >
+   <Teleport :to="getTeleportTo()" :disabled="getTeleportChoice() === false">
       <!-- List Container -->
       <ol
          v-if="items.entries.value.length > 0"

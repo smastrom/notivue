@@ -32,6 +32,14 @@ export interface NotivueProps {
     * @default undefined
     */
    styles?: Partial<Record<NotivueElements, CSSProperties>>
+   /**
+    * Vue Teleport target for the stream container. Takes priority over `teleportTo` in config.
+    *
+    * Prefer this prop when you need a non-serializable value (e.g. `HTMLElement`).
+    *
+    * @default undefined (uses config.teleportTo)
+    */
+   teleportTo?: string | HTMLElement | false
 }
 
 export interface NotivueComponentSlot {

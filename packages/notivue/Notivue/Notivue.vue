@@ -17,7 +17,14 @@ defineSlots<NotivueComponentSlot>()
 
 <template>
    <NotivueClientOnly>
-      <NotivueImpl v-bind="props" v-slot="item" v-if="isRunning">
+      <NotivueImpl
+         v-if="isRunning"
+         v-slot="item"
+         :class="props.class"
+         :listAriaLabel="props.listAriaLabel"
+         :styles="props.styles"
+         :teleportTo="props.teleportTo ?? null"
+      >
          <slot v-bind="item" />
       </NotivueImpl>
    </NotivueClientOnly>
