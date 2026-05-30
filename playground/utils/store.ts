@@ -6,7 +6,6 @@ const initialState = {
    renderTitles: false,
    outlinedIcons: false,
    rtl: false,
-   centerOnMobile: false,
    enableSwipe: true,
    hasProgress: false,
    noDupes: false,
@@ -41,9 +40,6 @@ export function createStore() {
          state.rtl = !state.rtl
 
          document.documentElement.setAttribute('dir', state.rtl ? 'rtl' : 'ltr')
-      },
-      toggleCenterOnMobile() {
-         state.centerOnMobile = !state.centerOnMobile
       },
       toggleSwipe() {
          state.enableSwipe = !state.enableSwipe

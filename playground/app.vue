@@ -9,9 +9,7 @@ import UploadNotification, {
    type UploadNotificationProps,
 } from '@/components/custom-notifications/UploadNotification.vue'
 
-import type { NotivueItem, Position } from 'notivue'
-
-import { useMediaQuery } from '@vueuse/core'
+import type { NotivueItem } from 'notivue'
 
 useServerHead({
    link: ['regular', '700'].map((w) => ({
@@ -36,16 +34,6 @@ watch(
    () => [config.enqueue.value, config.limit.value],
    () => notify.destroyAll()
 )
-
-const isMobile = useMediaQuery('(max-width: 768px)')
-
-watchEffect(() => {
-   if (!import.meta.client || !state.centerOnMobile || !isMobile.value) return
-
-   const vertical = config.position.value.startsWith('top') ? 'top' : 'bottom'
-
-   config.update({ position: `${vertical}-center` as Position })
-})
 </script>
 
 <template>
