@@ -1,80 +1,89 @@
-import type { VueWrapper } from '@vue/test-utils'
+import NotivueImpl from '@/Notivue/NotivueImpl.vue'
+
+import type { App } from 'vue'
 
 import { mount } from 'cypress/vue'
-import { Notivue, createNotivue, push } from 'notivue'
+import { type NotivueConfig, type Notify } from 'notivue'
 
-describe('Teleport', () => {
-   it('By default is teleported to body', () => {
-      cy.mountNotivue()
+import { createProvides } from '@/core/createNotivue'
+import { notivueInjectionKey, notivueInstanceInjectionKey } from '@/core/symbols'
 
-         .clickRandomStatic()
+const listSelector = '[data-notivue-list]'
 
-         .get('body')
-         .children()
-         .should('have.class', 'Root')
-   })
+function mountRoot(config: NotivueConfig = {}, props = {}) {
+   const { store, instance, notify } = createProvides(true, config)
 
-   it('Can teleport to different element', () => {
-      cy.mountNotivue({ config: { teleportTo: 'html' } })
-
-         .clickRandomStatic()
-
-         .get('body')
-         .children()
-         .should('not.have.class', 'Root')
-
-         .get('html')
-         .children()
-         .should('have.class', 'Root')
-   })
-
-   it('Can teleport to custom HTMLElement', () => {
-      cy.mountNotivue({
-         config: { teleportTo: document.getElementById('teleport') as HTMLElement },
-      })
-
-         .clickRandomStatic()
-
-         .get('body')
-         .children()
-         .should('not.have.class', 'Root')
-
-         .get('#teleport')
-         .children()
-         .should('have.class', 'Root')
-   })
-
-   it('Can update teleport config dynamically', () => {
-      cy.mountNotivue()
-         .get<VueWrapper>('@vue')
-         .then((wrapper) => wrapper.setProps({ teleportTo: 'html' }))
-
-         .clickRandomStatic()
-
-         .get('body')
-         .children()
-         .should('not.have.class', 'Root')
-
-         .get('html')
-         .children()
-         .should('have.class', 'Root')
-   })
-
-   it('Prop takes priority over config teleportTo', () => {
-      const notivue = createNotivue({ teleportTo: 'body' })
-
-      mount(Notivue, {
-         global: { plugins: [notivue] },
-         props: { teleportTo: 'html', class: 'Root' },
+   return mount(
+      NotivueImpl as any,
+      {
+         global: {
+            plugins: [
+               {
+                  install(app: App) {
+                     app.provide(notivueInstanceInjectionKey, instance)
+                     app.provide(notivueInjectionKey, store)
+                  },
+               },
+            ],
+         },
+         props: { class: 'Root', ...props },
          slots: {
             default: () => null,
          },
+      } as any
+   ).then((result) => ({ ...result, notify }))
+}
+
+function pushNotification(notify: Notify) {
+   notify.success({ message: 'test' })
+}
+
+describe('Teleport', () => {
+   it('By default is teleported to body', () => {
+      mountRoot().then(({ notify }) => pushNotification(notify))
+
+      cy.get(`body > ${listSelector}`).should('exist')
+   })
+
+   it('Can teleport to different element', () => {
+      mountRoot({ teleportTo: 'html' }).then(({ notify }) => pushNotification(notify))
+
+      cy.get(`body > ${listSelector}`).should('not.exist')
+      cy.get(`html > ${listSelector}`).should('exist')
+   })
+
+   it('Can teleport to custom HTMLElement', () => {
+      cy.document()
+         .then((doc) => {
+            const teleportTo = doc.createElement('div')
+
+            teleportTo.id = 'teleport'
+
+            doc.body.appendChild(teleportTo)
+
+            return mountRoot({ teleportTo })
+         })
+         .then(({ notify }) => pushNotification(notify))
+
+      cy.get(`body > ${listSelector}`).should('not.exist')
+      cy.get(`#teleport > ${listSelector}`).should('exist')
+   })
+
+   it('Can update teleport config dynamically', () => {
+      mountRoot().then(({ wrapper, notify }) => {
+         return wrapper.setProps({ teleportTo: 'html' }).then(() => pushNotification(notify))
       })
 
-      cy.wrap(null).then(() => {
-         push.success({ message: 'test' })
-      })
+      cy.get(`body > ${listSelector}`).should('not.exist')
+      cy.get(`html > ${listSelector}`).should('exist')
+   })
 
-      cy.get('html').children().should('have.class', 'Root')
+   it('Prop takes priority over config teleportTo', () => {
+      mountRoot({ teleportTo: 'body' }, { teleportTo: 'html' }).then(({ notify }) =>
+         pushNotification(notify)
+      )
+
+      cy.get(`body > ${listSelector}`).should('not.exist')
+      cy.get(`html > ${listSelector}`).should('exist')
    })
 })

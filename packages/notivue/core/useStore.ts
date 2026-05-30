@@ -3,6 +3,7 @@ import type {
    UseNotivueReturn,
    NotivueComputedEntries,
    NotivueInstance,
+   NotivueConfigUpdateParam,
 } from 'notivue'
 
 import { inject, computed, toRefs, reactive, readonly, ref, type ComputedRef } from 'vue'
@@ -32,7 +33,7 @@ export function useNotivueInstance(): NotivueInstance {
    if (isSSR) {
       return {
          isRunning: ref(true),
-         startInstance: (_config?) => {},
+         startInstance: (_config?: NotivueConfigUpdateParam): void => {},
          stopInstance: () => {},
       } as NotivueInstance
    }

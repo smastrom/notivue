@@ -22,7 +22,11 @@ export function createInstance(startOnCreation: boolean) {
       const instance = {
          isRunning: isRunningReadonly,
          startInstance(config?: NotivueConfigUpdateParam) {
-            if (isRunning.value) return
+            if (isRunning.value) {
+               if (config !== undefined) store.config.update(config)
+
+               return
+            }
 
             setNotify(notify)
 
