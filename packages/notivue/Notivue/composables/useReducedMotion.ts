@@ -1,5 +1,6 @@
-import { useStore } from '@/core/useStore'
 import { onBeforeUnmount, onMounted } from 'vue'
+
+import { useStore } from '@/core/useStore'
 
 export function useReducedMotion() {
    const { animations } = useStore()

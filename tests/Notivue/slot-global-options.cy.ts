@@ -4,7 +4,7 @@ const globalOptions = getRandomOptions()
 const options = getRandomOptions()
 const newOptions = getRandomOptions()
 
-describe('Global options have higher priority over defaults', () => {
+describe('Per-type options override global config', () => {
    const customConfig = {
       config: {
          notifications: {
@@ -28,7 +28,7 @@ describe('Global options have higher priority over defaults', () => {
 
             .get('.Success')
             .click()
-            .checkSlotAgainst(globalOptions)
+            .checkSlotAgainst(options)
       })
 
       it('Error', () => {
@@ -36,7 +36,7 @@ describe('Global options have higher priority over defaults', () => {
 
             .get('.Error')
             .click()
-            .checkSlotAgainst(globalOptions)
+            .checkSlotAgainst(options)
       })
 
       it('Warning', () => {
@@ -44,7 +44,7 @@ describe('Global options have higher priority over defaults', () => {
 
             .get('.Warning')
             .click()
-            .checkSlotAgainst(globalOptions)
+            .checkSlotAgainst(options)
       })
 
       it('Info', () => {
@@ -52,7 +52,7 @@ describe('Global options have higher priority over defaults', () => {
 
             .get('.Info')
             .click()
-            .checkSlotAgainst(globalOptions)
+            .checkSlotAgainst(options)
       })
 
       it('Promise - Should not override duration', () => {
@@ -60,7 +60,7 @@ describe('Global options have higher priority over defaults', () => {
 
             .get('.Promise')
             .click()
-            .checkSlotAgainst({ ...globalOptions, duration: null })
+            .checkSlotAgainst({ ...options, duration: -1 })
       })
    })
 
@@ -71,7 +71,7 @@ describe('Global options have higher priority over defaults', () => {
             .get('.PushPromiseAndResolve')
             .click()
             .wait(RESOLVE_REJECT_DELAY)
-            .checkSlotAgainst(globalOptions)
+            .checkSlotAgainst(newOptions)
       })
 
       it('Promise - Reject', () => {
@@ -80,12 +80,12 @@ describe('Global options have higher priority over defaults', () => {
             .get('.PushPromiseAndReject')
             .click()
             .wait(RESOLVE_REJECT_DELAY)
-            .checkSlotAgainst(globalOptions)
+            .checkSlotAgainst(newOptions)
       })
    })
 })
 
-describe('Push options have higher priority over globals', () => {
+describe('Push options have higher priority over config', () => {
    const componentConf = {
       config: { notifications: { global: globalOptions } },
       props: {
@@ -133,7 +133,7 @@ describe('Push options have higher priority over globals', () => {
 
             .get('.Promise')
             .click()
-            .checkSlotAgainst({ ...options, duration: null })
+            .checkSlotAgainst({ ...options, duration: -1 })
       })
    })
 

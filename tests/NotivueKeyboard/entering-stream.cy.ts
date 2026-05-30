@@ -21,7 +21,7 @@ describe('Entering the stream', () => {
       cy.realPress('Tab')
 
          .focused()
-         .should('have.data', 'notivueContainer')
+         .should('have.data', 'notivueListItem')
    })
 
    it('If an unqualified notification is pushed, it should not be focused if tab is pressed', () => {
@@ -49,7 +49,7 @@ describe('Entering the stream', () => {
          .realPress('Tab')
 
          .focused()
-         .should('have.data', 'notivueContainer', limit - 1)
+         .should('have.data', 'notivueListItem', limit - 1)
    })
 
    it('If never navigated and unqualified are pushed after candidates, the first candidate should be focused once tab is pressed', () => {
@@ -62,7 +62,7 @@ describe('Entering the stream', () => {
          .realPress('Tab')
 
          .focused()
-         .should('have.data', 'notivueContainer', 1) // Ids starts from 0
+         .should('have.data', 'notivueListItem', 1) // Ids starts from 0
    })
 
    it('Should enter with CTRL+N', () => {
@@ -73,7 +73,7 @@ describe('Entering the stream', () => {
          .realPress(['ControlLeft', 'n'])
 
          .focused()
-         .should('have.data', 'notivueContainer', 0)
+         .should('have.data', 'notivueListItem', 0)
    })
 
    it('Should not enter with Tab if already navigated and no new candidates are available', () => {
@@ -91,7 +91,6 @@ describe('Entering the stream', () => {
 
       cy.realPress('Tab') // Leave the stream
          .realPress('Tab') // Try to enter again
-
          .get('@relatedTarget')
          .should('be.focused')
    })

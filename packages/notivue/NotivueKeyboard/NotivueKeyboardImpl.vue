@@ -1,29 +1,15 @@
 <script setup lang="ts">
-import {
-   onBeforeUnmount,
-   onMounted,
-   ref,
-   computed,
-   toRefs,
-   provide,
-   readonly,
-   nextTick,
-   watch,
-} from 'vue'
+import type { NotifyOptions, NotivueKeyboardProps, NotivueKeyboardSlot } from 'notivue'
 
+import { onBeforeUnmount, onMounted, ref, computed, toRefs, nextTick, watch } from 'vue'
+
+import { notify } from '@/core/createNotify'
 import { useNotivue, useStore } from '@/core/useStore'
-import { push } from '@/core/createPush'
-import { focusableEls, keyboardInjectionKey, DEFAULT_PROPS } from './constants'
+
+import { focusableEls, DEFAULT_PROPS } from './constants'
+
 import { useKeyboardFocus } from './useKeyboardFocus'
 import { useLastFocused } from './useLastFocused'
-
-import type {
-   PushOptions,
-   TabIndexValue,
-   ContainersTabIndexMap,
-   NotivueKeyboardProps,
-   NotivueKeyboardSlot,
-} from 'notivue'
 
 // Props
 
@@ -48,19 +34,19 @@ const sharedOptions = {
    },
 } as const
 
-const leavePushOptions = computed<PushOptions>(() => ({
+const leaveNotifyOptions = computed<NotifyOptions>(() => ({
    message: leaveMessage.value,
    ...sharedOptions,
 }))
 
-const emptyPushOptions = computed<PushOptions>(() => ({
+const emptyNotifyOptions = computed<NotifyOptions>(() => ({
    message: emptyMessage.value,
    ...sharedOptions,
 }))
 
 // Store
 
-const { elements, timeouts, queue } = useStore()
+const { elements, timeouts, queue, items } = useStore()
 
 const config = useNotivue()
 
@@ -71,15 +57,11 @@ const config = useNotivue()
 const { focusLastElement } = useLastFocused()
 const { isKeyboardFocus } = useKeyboardFocus()
 
-const candidateIds = ref({ qualified: [] as string[], unqualified: [] as string[] })
+const candidateItems = ref<HTMLElement[]>([])
+const unqualifiedItems = ref<HTMLElement[]>([])
 
-const candidateContainers = ref<HTMLElement[]>([])
-const unqualifiedContainers = ref<HTMLElement[]>([])
-
-const elementsTabIndex = ref<TabIndexValue>(-1)
-
-function setTabIndex(value: TabIndexValue) {
-   elementsTabIndex.value = value
+function setItemsTabIndex(value: 0 | -1) {
+   candidateItems.value.forEach((item) => (item.tabIndex = value))
 }
 
 // Non-reactive
@@ -89,36 +71,25 @@ let announcementsCount = 0
 let hasNeverTabbedStream = true
 let allInnerFocusableEls: HTMLElement[] = []
 
-// Computed
-
-const containersTabIndex = computed(() => {
-   const map = {} as ContainersTabIndexMap
-
-   candidateIds.value.qualified.forEach((id) => (map[id] = elementsTabIndex.value))
-   candidateIds.value.unqualified.forEach((id) => (map[id] = -1))
-
-   return map
-})
-
 // Actions
 
 function onStreamEnter() {
-   if (candidateContainers.value.length === 0) return
+   if (candidateItems.value.length === 0) return
 
-   setTabIndex(0)
+   setItemsTabIndex(0)
 
    timeouts.setStreamFocus()
    timeouts.pause()
 
    nextTick(() => {
-      candidateContainers.value[0].focus()
+      candidateItems.value[0].focus()
    })
 }
 
 function onStreamLeave({ announce = true } = {}) {
    focusLastElement()
 
-   setTabIndex(-1)
+   setItemsTabIndex(-1)
 
    timeouts.setStreamFocus(false)
    timeouts.resume()
@@ -126,54 +97,55 @@ function onStreamLeave({ announce = true } = {}) {
    if (announce && announcementsCount < maxAnnouncements.value) {
       announcementsCount++
 
-      push.info(leavePushOptions.value)
+      notify.info(leaveNotifyOptions.value)
    }
 }
-
-// Provide
-
-provide(keyboardInjectionKey, {
-   containersTabIndex,
-   elementsTabIndex: readonly(elementsTabIndex),
-})
 
 /* ====================================================================================
  * Collect candidates/unqualified
  * ==================================================================================== */
 
-watch(elements.containers, setCandidates, { deep: true })
+watch(elements.items, setCandidates, { deep: true })
 
-function setCandidates(newContainers: HTMLElement[]) {
-   const _ids = { qualified: [] as string[], unqualified: [] as string[] }
-
-   let _candidateContainers: HTMLElement[] = []
-   let _unqualifiedContainers: HTMLElement[] = []
+function setCandidates(newItems: HTMLElement[]) {
+   let _candidateItems: HTMLElement[] = []
+   let _unqualifiedItems: HTMLElement[] = []
 
    let _focusableEls: HTMLElement[] = []
 
-   newContainers
-      .map((container) => ({ id: container.dataset.notivueContainer!, container }))
-      .sort((a, b) => +b.id - +a.id)
-      .forEach(({ id, container }) => {
-         const innerFocusableEls = Array.from(container.querySelectorAll(focusableEls)).filter(
+   newItems
+      .filter((item) => {
+         const id = item.dataset.notivueListItem
+
+         if (!id) return false
+
+         const entry = items.get(id)
+
+         return Boolean(entry && !entry.ariaLiveOnly)
+      })
+      .sort((a, b) => +b.dataset.notivueListItem! - +a.dataset.notivueListItem!)
+      .forEach((item) => {
+         const innerFocusableEls = Array.from(item.querySelectorAll(focusableEls)).filter(
             (el) => el instanceof HTMLElement
          ) as HTMLElement[]
 
          _focusableEls.push(...innerFocusableEls)
 
-         if (innerFocusableEls.length > 1) {
-            _ids.qualified.push(id)
-            _candidateContainers.push(container)
+         const isQualified = innerFocusableEls.length > 0 || props.isCandidate?.(item) === true
+
+         if (isQualified) {
+            item.tabIndex = timeouts.isStreamFocused.value ? 0 : -1
+
+            _candidateItems.push(item)
          } else {
-            _ids.unqualified.push(id)
-            _unqualifiedContainers.push(container)
+            item.tabIndex = -1
+
+            _unqualifiedItems.push(item)
          }
       })
 
-   candidateIds.value = _ids
-
-   candidateContainers.value = _candidateContainers
-   unqualifiedContainers.value = _unqualifiedContainers
+   candidateItems.value = _candidateItems
+   unqualifiedItems.value = _unqualifiedItems
 
    allInnerFocusableEls = _focusableEls
 }
@@ -183,13 +155,13 @@ function setCandidates(newContainers: HTMLElement[]) {
  * ==================================================================================== */
 
 watch(
-   candidateContainers,
+   candidateItems,
    (currCandidates, prevCandidates, onCleanup) => {
       if (currCandidates.length === 0) return
 
       const hasCandidates = currCandidates.length > 0
-      const isNewCandidate = currCandidates.some((container) => {
-         return !prevCandidates.some((prevContainer) => prevContainer === container)
+      const isNewCandidate = currCandidates.some((item) => {
+         return !prevCandidates.some((prevItem) => prevItem === item)
       })
 
       const isAlreadyNavigating = isNewCandidate && timeouts.isStreamFocused.value
@@ -212,7 +184,7 @@ watch(
 )
 
 function onAllowedStreamNavigation(e: KeyboardEvent) {
-   if (!e.shiftKey && e.key === 'Tab' && candidateContainers.value.length > 0) {
+   if (!e.shiftKey && e.key === 'Tab' && candidateItems.value.length > 0) {
       e.preventDefault()
 
       if (hasNeverTabbedStream) hasNeverTabbedStream = false
@@ -245,13 +217,13 @@ function removeEnterListener() {
  * If candidates are instead available, we simply move the focus to the first one.
  */
 watch(
-   unqualifiedContainers,
+   unqualifiedItems,
    (newUnqualified) => {
       if (!config.enqueue.value || !timeouts.isStreamFocused.value) return
 
       if (newUnqualified.length > 0) {
-         if (candidateContainers.value.length > 0) {
-            candidateContainers.value[0].focus()
+         if (candidateItems.value.length > 0) {
+            candidateItems.value[0].focus()
          } else {
             onStreamLeave({ announce: false })
          }
@@ -301,9 +273,11 @@ watch(
 
 function onCandidatesKeydown(e: KeyboardEvent) {
    let currCandidateIndex = 0
-   const isNavigatingCandidates = candidateContainers.value.some((container, index) => {
-      if (container.contains(e.target as HTMLElement) || container === e.target) {
+
+   const isNavigatingCandidates = candidateItems.value.some((item, index) => {
+      if (item.contains(e.target as HTMLElement) || item === e.target) {
          currCandidateIndex = index
+
          return true
       }
    })
@@ -313,6 +287,7 @@ function onCandidatesKeydown(e: KeyboardEvent) {
          e.preventDefault()
 
          isManualLeave = true
+
          return onStreamLeave()
       }
 
@@ -325,6 +300,7 @@ function onCandidatesKeydown(e: KeyboardEvent) {
          e.preventDefault()
 
          isManualLeave = true
+
          e.target.click()
 
          /**
@@ -333,10 +309,12 @@ function onCandidatesKeydown(e: KeyboardEvent) {
           */
          if (queue.length > 0) return
 
-         const nextContainer = candidateContainers.value[currCandidateIndex + 1]
+         const nextItem =
+            candidateItems.value[currCandidateIndex + 1] ??
+            candidateItems.value[currCandidateIndex - 1]
 
-         if (nextContainer) {
-            nextContainer.focus()
+         if (nextItem) {
+            nextItem.focus()
          } else {
             onStreamLeave()
          }
@@ -356,10 +334,10 @@ function onComboKeyDown(e: KeyboardEvent) {
 
          return onStreamLeave()
       } else {
-         if (candidateContainers.value.length > 0) {
+         if (candidateItems.value.length > 0) {
             onStreamEnter()
          } else {
-            push.info(emptyPushOptions.value)
+            notify.info(emptyNotifyOptions.value)
          }
       }
    }
@@ -401,5 +379,5 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-   <slot v-bind="{ containersTabIndex, elementsTabIndex }" />
+   <slot />
 </template>

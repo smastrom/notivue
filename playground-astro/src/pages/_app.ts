@@ -1,6 +1,6 @@
-import { createNotivue } from 'notivue/astro'
-
 import type { App, Plugin } from 'vue'
+
+import { createNotivue } from 'notivue/astro'
 
 const notivue = createNotivue({
    teleportTo: '#notivue_teleport',

@@ -1,18 +1,35 @@
-import { toRaw, customRef, type Ref, type ToRefs } from 'vue'
-
-import { NotificationTypeKeys as NType } from './constants'
-
 import type {
    StoreItem,
    NotivueItem,
    HiddenInternalItemData as InternalKeys,
    NotificationType,
+   NotificationOptions,
    NotivueConfigRequired,
    Obj,
    PushOptionsWithInternals,
 } from 'notivue'
 
+import { toRaw, customRef, type Ref, type ToRefs } from 'vue'
+
+import { NotificationTypeKeys as NType } from './constants'
+
 export const isSSR = typeof window === 'undefined'
+
+/** List item height used for stack transforms: content box plus block-end gap margin. */
+export function getListItemStackHeight(el: HTMLElement) {
+   const style = getComputedStyle(el)
+   const marginEnd =
+      style.marginBlockEnd && style.marginBlockEnd !== '0px'
+         ? style.marginBlockEnd
+         : style.marginBottom
+   const gap = Number.parseFloat(marginEnd) || 0
+
+   return el.clientHeight + gap
+}
+
+export function isUnlimited(value: number | null | undefined): boolean {
+   return value == null || value === Infinity || value === -1
+}
 
 export function mergeDeep<T extends Obj>(target: T, source: Record<string, any>): T {
    const merged: T = { ...target }
@@ -30,17 +47,54 @@ export function mergeDeep<T extends Obj>(target: T, source: Record<string, any>)
    return merged
 }
 
+/** @internal */
+const NOTIFICATION_TYPE_LEGACY: Partial<Record<NotificationType, NotificationType>> = {
+   loading: 'promise',
+   'loading-success': 'promise-resolve',
+   'loading-error': 'promise-reject',
+}
+
+/** Map `promise*` discriminators to canonical `loading*` at store ingress. */
+export function toCanonicalNotificationType(type: NotificationType): NotificationType {
+   switch (type) {
+      case 'promise':
+         return 'loading'
+      case 'promise-resolve':
+         return 'loading-success'
+      case 'promise-reject':
+         return 'loading-error'
+      default:
+         return type
+   }
+}
+
+function notificationTypeConfigSlice(
+   configOptions: NotivueConfigRequired['notifications'],
+   canonical: NotificationType
+): NotificationOptions {
+   const legacy = NOTIFICATION_TYPE_LEGACY[canonical]
+   const fromLegacy = legacy ? configOptions[legacy] : undefined
+   const fromCanon = configOptions[canonical]
+
+   // Per-type slice: canonical defaults, then legacy `promise*` overrides (deprecated alias).
+   return { ...fromCanon, ...fromLegacy } as NotificationOptions
+}
+
 export function mergeNotificationOptions<T extends Obj = Obj>(
    configOptions: NotivueConfigRequired['notifications'],
    pushOptions: PushOptionsWithInternals<T>
 ) {
    pushOptions.props ||= {} as T
 
+   const type = toCanonicalNotificationType(pushOptions.type)
+
+   // global → per-type (canonical + legacy alias) → push → loading duration enforcement
    return {
-      ...configOptions[pushOptions.type],
       ...configOptions.global,
+      ...notificationTypeConfigSlice(configOptions, type),
       ...pushOptions,
-      ...(pushOptions.type === 'promise' ? { duration: Infinity } : {}), // Enforce this
+      ...(type === 'loading' ? { duration: -1 } : {}),
+      type,
    }
 }
 
@@ -51,6 +105,7 @@ function isPlainObject(value: unknown) {
    }
 
    const prototype = Object.getPrototypeOf(value)
+
    return prototype === null || Object.getPrototypeOf(prototype) === null
 }
 
@@ -65,18 +120,21 @@ export function createConfigRefs<T extends Obj>(
       return customRef((track, trigger) => ({
          get() {
             track()
+
             return value
          },
          set(newValue) {
             if (!isRunning.value) return
 
             value = newValue
+
             trigger()
          },
       }))
    }
 
    for (const key in conf) conf[key] = configRef(conf[key]) as any
+
    return conf as ToRefs<T>
 }
 
@@ -94,7 +152,7 @@ export const internalKeys: (keyof InternalKeys)[] = [
    'timeout',
    'resumedAt',
    'remaining',
-   // Maybe in future releases these could be exposed
+   // Omitted from the slot payload for now
    'animationAttrs',
    'positionStyles',
 ]

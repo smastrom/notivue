@@ -1,22 +1,23 @@
 <script setup lang="ts">
-import { Teleport } from 'vue'
-
 import AriaLive from './AriaLive.vue'
+
+import type { NotivueProps, NotivueComponentSlot } from 'notivue'
+
+import { Teleport } from 'vue'
 
 import { useStore } from '@/core/useStore'
 import { getSlotItem } from '@/core/utils'
 
-import { useMouseEvents } from './composables/useMouseEvents'
-import { useTouchEvents } from './composables/useTouchEvents'
-import { useNotivueStyles } from './composables/useNotivueStyles'
-import { useSizes } from './composables/useSizes'
-import { useWindowFocus } from './composables/useWindowFocus'
-import { useReducedMotion } from './composables/useReducedMotion'
-
-import { getAriaLabel } from './utils'
 import { DEFAULT_PROPS } from './constants'
 
-import type { NotivueProps, NotivueComponentSlot } from 'notivue'
+import { useFocusEvents } from './composables/useFocusEvents'
+import { useMouseEvents } from './composables/useMouseEvents'
+import { useNotivueStyles } from './composables/useNotivueStyles'
+import { useReducedMotion } from './composables/useReducedMotion'
+import { useSizes } from './composables/useSizes'
+import { useTouchEvents } from './composables/useTouchEvents'
+import { useWindowFocus } from './composables/useWindowFocus'
+import { getAriaLabel } from './utils'
 
 // Props
 
@@ -31,6 +32,7 @@ const { config, items, elements } = useStore()
 // Composables
 
 const styles = useNotivueStyles()
+const focusEvents = useFocusEvents()
 const mouseEvents = useMouseEvents()
 const touchEvents = useTouchEvents()
 
@@ -47,7 +49,8 @@ useSizes()
       <!-- List Container -->
       <ol
          v-if="items.entries.value.length > 0"
-         v-bind="{ ...mouseEvents, ...touchEvents, ...elements.rootAttrs.value }"
+         v-bind="{ ...focusEvents, ...mouseEvents, ...touchEvents, ...elements.rootAttrs.value }"
+         data-notivue-list=""
          :data-notivue-align="config.position.value.split('-')[0]"
          :aria-label="props.listAriaLabel"
          :ref="elements.root"
@@ -57,9 +60,10 @@ useSizes()
          <!-- List Item -->
          <li
             v-for="(item, i) in items.entries.value"
-            tabindex="-1"
+            :tabindex="item.ariaLiveOnly ? undefined : -1"
             :key="item.id"
-            :data-notivue-item="item.id"
+            :data-notivue-list-item="item.id"
+            :aria-label="item.ariaLiveOnly ? undefined : getAriaLabel(item)"
             :aria-setsize="items.length"
             :aria-posinset="i + 1"
             :ref="elements.items"
@@ -70,16 +74,14 @@ useSizes()
             }"
          >
             <!-- ariaLiveOnly Push Option -->
-            <AriaLive v-if="item.ariaLiveOnly" :item="item" />
+            <AriaLive v-if="item.ariaLiveOnly" :item="item" data-notivue-aria-live="" />
 
             <!-- Item Container -->
             <div
                v-else
                v-bind="item.animationAttrs"
-               :aria-label="getAriaLabel(item)"
-               :tabindex="containersTabIndex?.[item.id] ?? -1"
-               :data-notivue-container="item.id"
-               :ref="elements.containers"
+               :data-notivue-item="item.id"
+               :ref="elements.itemContainers"
                :style="{ ...styles.itemContainer, ...props.styles?.itemContainer }"
             >
                <!-- Notification -->

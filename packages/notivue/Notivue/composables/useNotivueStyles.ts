@@ -1,8 +1,8 @@
+import type { NotivueElements } from 'notivue'
+
 import { computed, type CSSProperties } from 'vue'
 
 import { useNotivue } from '@/core/useStore'
-
-import type { NotivueElements } from 'notivue'
 
 /**
  * The follwing styles are not defined in a CSS file because
@@ -31,27 +31,29 @@ const baseStyles: Record<NotivueElements, CSSProperties> = {
       ...boxSizing,
       display: 'flex',
       margin: '0',
+      marginBottom: 'var(--nv-gap, 0.75rem)',
+      marginBlockEnd: 'var(--nv-gap, 0.75rem)',
+      maxWidth: '100%',
       position: 'absolute',
       transitionProperty: 'transform',
-      width: '100%',
+      width: 'max-content',
    },
    itemContainer: {
       ...boxSizing,
       maxWidth: '100%',
-      padding: `0 0 var(--nv-gap, 0.75rem) 0`,
       pointerEvents: 'auto',
    },
 }
 
 export function useNotivueStyles() {
-   const { isTopAlign, position } = useNotivue()
+   const { position } = useNotivue()
 
    /**
     * Simulates overflow-hidden only on the opposite side of the current vertical align.
     * This will not clip enter animations but will contain the stream vertically.
     */
    const offset = computed<CSSProperties>(() => {
-      const isTop = isTopAlign.value
+      const isTop = position.value.startsWith('top')
 
       // IMPORTANT: Order of values must match 'top right bottom left'
       const inset = [
@@ -62,21 +64,27 @@ export function useNotivueStyles() {
       ]
 
       const clipPath = inset.map((v) => `calc(-1 * ${v})`)
+
       isTop ? clipPath.splice(2, 1, '0px') : clipPath.splice(0, 1, '0px')
 
       return { inset: inset.join(' '), clipPath: `inset(${clipPath.join(' ')})` }
    })
 
-   const xAlignment = computed<CSSProperties>(() => ({
-      [isTopAlign.value ? 'top' : 'bottom']: '0',
-      justifyContent: `var(--nv-root-x-align, ${
-         position.value.endsWith('left')
-            ? 'flex-start'
-            : position.value.endsWith('right')
-              ? 'flex-end'
-              : 'center'
-      })`,
-   }))
+   const xAlignment = computed<CSSProperties>(() => {
+      const vertical = position.value.startsWith('top') ? 'top' : 'bottom'
+
+      const shared = { [vertical]: '0' } as CSSProperties
+
+      if (position.value.endsWith('left')) {
+         return { ...shared, left: '0', right: 'auto' }
+      }
+
+      if (position.value.endsWith('right')) {
+         return { ...shared, left: 'auto', right: '0' }
+      }
+
+      return { ...shared, left: '0', marginInline: 'auto', right: '0' }
+   })
 
    return computed<Record<NotivueElements, CSSProperties>>(() => ({
       list: { ...baseStyles.list, ...offset.value },

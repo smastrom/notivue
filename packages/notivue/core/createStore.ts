@@ -1,20 +1,8 @@
-import { ref, shallowRef, triggerRef, unref, isRef, type Ref } from 'vue'
-
-import {
-   createConfigRefs,
-   mergeDeep,
-   mergeNotificationOptions as mergeOptions,
-   toRawConfig,
-} from './utils'
-
-import { isStatic, getSlotItem } from './utils'
-import { DEFAULT_CONFIG, NotificationTypeKeys as NType } from './constants'
-
 import type {
    DeepPartial,
    StoreItem,
    NotivueConfig,
-   PushOptionsWithInternals,
+   NotifyOptionsWithInternals,
    Obj,
    ConfigSlice,
    ItemsSlice,
@@ -22,11 +10,24 @@ import type {
    ElementsSlice,
    TimeoutsSlice,
    AnimationsSlice,
-   UpdateParam,
+   NotivueConfigUpdateParam,
    NotivueStore,
 } from 'notivue'
 
-export let updateConfig: (newConfig: UpdateParam) => void = () => {}
+import { ref, shallowRef, triggerRef, unref, isRef, type CSSProperties, type Ref } from 'vue'
+
+import { DEFAULT_CONFIG, MOTION_VARS_CSS, NotificationTypeKeys as NType } from './constants'
+
+import {
+   createConfigRefs,
+   mergeDeep,
+   mergeNotificationOptions as mergeOptions,
+   toRawConfig,
+   toCanonicalNotificationType,
+} from './utils'
+import { isStatic, getSlotItem, isUnlimited, getListItemStackHeight } from './utils'
+
+export let updateConfig: (newConfig: NotivueConfigUpdateParam) => void = () => {}
 
 export function createStore(
    userConfig: NotivueConfig,
@@ -45,7 +46,7 @@ export function createStore(
 export function createConfig(userConfig: NotivueConfig, isRunning: Readonly<Ref<boolean>>) {
    const config = createConfigRefs(DEFAULT_CONFIG, userConfig, isRunning)
 
-   function update(newConfig: UpdateParam) {
+   function update(newConfig: NotivueConfigUpdateParam) {
       if (!isRunning.value) return
 
       if (typeof newConfig === 'function') {
@@ -56,7 +57,10 @@ export function createConfig(userConfig: NotivueConfig, isRunning: Readonly<Ref<
          type K = keyof NotivueConfig
 
          if (typeof config[key as K].value === 'object') {
-            config[key as K].value = mergeDeep(config[key as K].value as Obj, newConfig[key as K] as any) // prettier-ignore
+            const prev = config[key as K].value as Obj
+            const next = newConfig[key as K] as any
+
+            config[key as K].value = mergeDeep(prev, next) as any
          } else {
             config[key as K].value = newConfig[key as K] as any
          }
@@ -83,6 +87,7 @@ export function createQueue() {
       },
       update(id: string, newOptions: DeepPartial<StoreItem>) {
          const entry = this.get(id)
+
          if (entry) Object.assign(entry, newOptions)
       },
       remove(id: string) {
@@ -126,18 +131,20 @@ export function createItems(config: ConfigSlice, queue: QueueSlice) {
          this.add(next)
       },
       findDupe(item: StoreItem) {
-         return this.entries.value.find(
-            (e) =>
-               unref(e.message).replace(/\uFEFF/g, '') === unref(item.message).replace(/\uFEFF/g, '') && // prettier-ignore
-               unref(e.title) === unref(item.title) &&
-               e.type === item.type
-         )
+         return this.entries.value.find((e) => {
+            const sameMessage =
+               unref(e.message).replace(/\uFEFF/g, '') ===
+               unref(item.message).replace(/\uFEFF/g, '')
+
+            return sameMessage && unref(e.title) === unref(item.title) && e.type === item.type
+         })
       },
       get(id: string) {
          return this.entries.value.find((e) => e.id === id)
       },
       update(id: string, newOptions: DeepPartial<StoreItem>) {
          const entry = this.get(id)
+
          if (entry) Object.assign(entry, newOptions)
       },
       triggerRef() {
@@ -149,7 +156,10 @@ export function createItems(config: ConfigSlice, queue: QueueSlice) {
       remove(id: string) {
          this.entries.value = this.entries.value.filter((e) => e.id !== id)
 
-         const shouldDequeue = queue.length > 0 && this.length < config.limit.value
+         const shouldDequeue =
+            queue.length > 0 &&
+            (isUnlimited(config.limit.value) || this.length < config.limit.value)
+
          if (shouldDequeue) this.addFromQueue()
       },
       clear() {
@@ -159,27 +169,32 @@ export function createItems(config: ConfigSlice, queue: QueueSlice) {
 }
 
 export function createElements() {
-   type AnimationAttrs = { class: string; onAnimationend: () => void }
+   type MotionAttrs = {
+      style?: CSSProperties
+      onAnimationend?: (e?: AnimationEvent) => void
+   }
 
    return {
       root: ref<HTMLElement | null>(null),
-      rootAttrs: shallowRef<Partial<AnimationAttrs>>({}),
-      setRootAttrs(newAttrs: Partial<AnimationAttrs>) {
+      rootAttrs: shallowRef<Partial<MotionAttrs>>({}),
+      setRootAttrs(newAttrs: Partial<MotionAttrs>) {
          this.rootAttrs.value = newAttrs
       },
       items: ref<HTMLElement[]>([]),
+      itemContainers: ref<HTMLElement[]>([]),
       getSortedItems() {
          // This is a bit dirty, but it's better than cloning and reversing the array on every repositioning
-         return this.items.value.sort((a, b) => +b.dataset.notivueItem! - +a.dataset.notivueItem!)
+         return this.items.value.sort(
+            (a, b) => +b.dataset.notivueListItem! - +a.dataset.notivueListItem!
+         )
       },
-      containers: ref<HTMLElement[]>([]),
    } as {
       // Suppress TS7056
       root: Ref<HTMLElement | null>
-      rootAttrs: Ref<Partial<AnimationAttrs>>
+      rootAttrs: Ref<Partial<MotionAttrs>>
       items: Ref<HTMLElement[]>
-      containers: Ref<HTMLElement[]>
-      setRootAttrs(newAttrs: Partial<AnimationAttrs>): void
+      itemContainers: Ref<HTMLElement[]>
+      setRootAttrs(newAttrs: Partial<MotionAttrs>): void
       getSortedItems(): HTMLElement[]
    }
 }
@@ -196,20 +211,36 @@ export function createAnimations(
          this.isReducedMotion.value = newVal
       },
       playLeave(id: string, { isDestroy = false, isUserTriggered = false } = {}) {
-         const { leave = '' } = config.animations.value
          const item = items.get(id)
+
+         let isDone = false
 
          window.clearTimeout(item?.timeout as number)
 
          const onAnimationend = (e?: AnimationEvent) => {
             if (e && e.currentTarget !== e.target) return
+            if (isDone) return
 
-            item?.[isUserTriggered ? 'onManualClear' : 'onAutoClear']?.(getSlotItem(item))
+            isDone = true
+
+            if (item) {
+               const slotItem = getSlotItem(item)
+
+               if (isDestroy) {
+                  ;(item.onDestroy ?? item.onManualClear)?.(slotItem)
+               } else if (isUserTriggered) {
+                  ;(item.onClear ?? item.onManualClear)?.(slotItem)
+               } else {
+                  ;(item.onTimedOut ?? item.onAutoClear)?.(slotItem)
+               }
+            }
+
             items.remove(id)
          }
 
-         if (!item || !leave || isDestroy || this.isReducedMotion.value) {
+         if (!item || isDestroy || this.isReducedMotion.value) {
             items.addLifecycleEvent()
+
             return onAnimationend()
          }
 
@@ -219,53 +250,68 @@ export function createAnimations(
                zIndex: -1,
             },
             animationAttrs: {
-               class: leave,
+               style: { animation: MOTION_VARS_CSS.leaveAnimation },
                onAnimationend,
             },
          })
 
          items.addLifecycleEvent()
+
+         requestAnimationFrame(() => {
+            const el = elements.itemContainers.value.find((el) => el.dataset.notivueItem === id)
+
+            if (el && getComputedStyle(el).animationName === 'none') onAnimationend()
+         })
       },
       playClearAll() {
          items.entries.value.forEach((e) => window.clearTimeout(e.timeout as number))
 
-         const { clearAll = '' } = config.animations.value
+         let isDone = false
 
-         const onAnimationend = () => {
+         const onAnimationend = (e?: AnimationEvent) => {
+            if (e && e.currentTarget !== e.target) return
+            if (isDone) return
+
+            isDone = true
+
             queue.clear()
             items.clear()
          }
 
-         if (!clearAll || this.isReducedMotion.value) return onAnimationend()
+         if (this.isReducedMotion.value) return onAnimationend()
 
          elements.setRootAttrs({
-            class: clearAll,
+            style: { animation: MOTION_VARS_CSS.clearAllAnimation },
             onAnimationend,
+         })
+
+         requestAnimationFrame(() => {
+            const root = elements.root.value
+
+            if (root && getComputedStyle(root).animationName === 'none') onAnimationend()
          })
       },
       updatePositions({ isImmediate = false } = {}) {
-         console.log('Updating positions')
-
          const isReduced = this.isReducedMotion.value || isImmediate
-         const isTopAlign = config.position.value.indexOf('top') === 0
-         const leaveClass = config.animations.value.leave
+         const isTopAlign = config.position.value.startsWith('top')
 
          let accPrevHeights = 0
 
          for (const el of elements.getSortedItems()) {
-            const id = el.dataset.notivueItem!
+            const id = el.dataset.notivueListItem!
             const item = items.get(id)
 
-            if (!el || !item || item.animationAttrs.class === leaveClass) continue // prettier-ignore
+            if (!el || !item) continue
+            if (item.animationAttrs.style?.animation === MOTION_VARS_CSS.leaveAnimation) continue
 
             items.update(id, {
                positionStyles: {
                   transform: `translate3d(0, ${accPrevHeights}px, 0)`,
-                  transition: isReduced ? 'none' : config.transition.value,
+                  transition: isReduced ? 'none' : MOTION_VARS_CSS.transformTransition,
                },
             })
 
-            accPrevHeights += (isTopAlign ? 1 : -1) * el.clientHeight
+            accPrevHeights += (isTopAlign ? 1 : -1) * getListItemStackHeight(el)
          }
 
          items.triggerRef()
@@ -302,14 +348,12 @@ export function createTimeouts(items: ItemsSlice, animations: AnimationsSlice) {
       pause() {
          if (items.length === 0 || this.isStreamPaused.value) return
 
-         console.log('Pausing timeouts')
-
          this.setStreamPause()
 
          items.updateAll((item) => {
             window.clearTimeout(item.timeout as number)
 
-            if (item.duration === Infinity) return item
+            if (isUnlimited(item.duration)) return item
 
             let remaining = 0
 
@@ -333,14 +377,12 @@ export function createTimeouts(items: ItemsSlice, animations: AnimationsSlice) {
       resume() {
          if (items.length === 0 || !this.isStreamPaused.value) return
 
-         console.log('Resuming timeouts')
-
          this.setStreamPause(false)
 
          items.updateAll((item) => {
             window.clearTimeout(item.timeout as number)
 
-            if (item.duration === Infinity) return item
+            if (isUnlimited(item.duration)) return item
 
             return {
                ...item,
@@ -357,7 +399,7 @@ export function createTimeouts(items: ItemsSlice, animations: AnimationsSlice) {
    }
 }
 
-export function createPushProxies({
+export function createNotifyProxies({
    config,
    items,
    queue,
@@ -372,6 +414,9 @@ export function createPushProxies({
 }) {
    return {
       destroyAll() {
+         items.entries.value.forEach((item) => {
+            window.clearTimeout(item.timeout as number)
+         })
          queue.clear()
          items.clear()
       },
@@ -380,12 +425,14 @@ export function createPushProxies({
       },
       clear(id: string, { isDestroy = false } = {}) {
          const isLast = items.entries.value[items.entries.value.length - 1]?.id === id
+
          if (isLast) timeouts.resume()
 
          animations.playLeave(id, { isUserTriggered: true, isDestroy })
       },
-      push<T extends Obj = Obj>(options: PushOptionsWithInternals<T>) {
-         const entry = mergeOptions<T>(config.notifications.value, options)
+      notify<T extends Obj = Obj>(options: NotifyOptionsWithInternals<T>) {
+         const opts = { ...options, type: toCanonicalNotificationType(options.type) }
+         const entry = mergeOptions<T>(config.notifications.value, opts)
          const createdAt = Date.now()
 
          if (config.avoidDuplicates.value && isStatic(entry.type)) {
@@ -425,7 +472,7 @@ export function createPushProxies({
 
          const createTimeout = () => timeouts.create(entry.id, entry.duration)
 
-         if (options.type === NType.PROMISE_RESOLVE || options.type === NType.PROMISE_REJECT) {
+         if (opts.type === NType.LOADING_SUCCESS || opts.type === NType.LOADING_ERROR) {
             if (queue.get(entry.id)) {
                queue.update(entry.id, { ...entry, createdAt, timeout: createTimeout })
                queue.triggerRef() // ...but we're exposing the queue via `useNotifications` so consumers may need this
@@ -435,9 +482,10 @@ export function createPushProxies({
             }
          } else {
             const isQueueActive = config.enqueue.value
-            const hasReachedLimit = items.length >= config.limit.value
+            const hasReachedLimit =
+               !isUnlimited(config.limit.value) && items.length >= config.limit.value
             const shouldDiscard = !isQueueActive && hasReachedLimit
-            const shouldEnqueue = isQueueActive && !options.skipQueue && hasReachedLimit
+            const shouldEnqueue = isQueueActive && !opts.skipQueue && hasReachedLimit
 
             if (shouldDiscard) {
                items.entries.value
@@ -450,11 +498,15 @@ export function createPushProxies({
                createdAt,
                duplicateCount: 0,
                animationAttrs: {
-                  class: animations.isReducedMotion.value ? '' : config.animations.value.enter,
-                  onAnimationend() {
-                     if (item.animationAttrs.class === config.animations.value.enter) {
+                  style: animations.isReducedMotion.value
+                     ? {}
+                     : { animation: MOTION_VARS_CSS.enterAnimation },
+                  onAnimationend(e?: AnimationEvent) {
+                     if (e && e.currentTarget !== e.target) return
+
+                     if (item.animationAttrs.style?.animation === MOTION_VARS_CSS.enterAnimation) {
                         items.update(entry.id, {
-                           animationAttrs: { class: '', onAnimationend: () => {} },
+                           animationAttrs: { style: {}, onAnimationend: () => {} },
                         })
                      }
                   },
@@ -473,3 +525,6 @@ export function createPushProxies({
       },
    }
 }
+
+/** @deprecated Use createNotifyProxies */
+export const createPushProxies = createNotifyProxies

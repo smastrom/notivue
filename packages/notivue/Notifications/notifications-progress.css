@@ -1,7 +1,5 @@
 @media (prefers-reduced-motion: no-preference) {
    .Notivue__notification:has(.Notivue__progress) {
-      border-radius: var(--nv-radius, 0) var(--nv-radius, 0) var(--nv-radius, 0) 0;
-
       & .Notivue__content-message {
          margin-bottom: var(--nv-progress-height, 4px);
       }
@@ -16,17 +14,11 @@
       background-color: var(--nv-accent);
       animation: Notivue__progress-kf var(--nv-anim-dur) linear forwards;
       transform-origin: left;
-      border-radius: 0 var(--nv-radius, 0) var(--nv-radius, 0) 0;
    }
 
    [dir='rtl'] {
       & .Notivue__progress {
          transform-origin: right;
-         border-radius: var(--nv-radius, 0) 0 0 var(--nv-radius, 0);
-      }
-
-      & .Notivue__notification:has(.Notivue__progress) {
-         border-radius: var(--nv-radius, 0) var(--nv-radius, 0) 0 var(--nv-radius, 0);
       }
    }
 

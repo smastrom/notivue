@@ -1,5 +1,5 @@
-import type { Push, PushOptions } from 'notivue'
 import type { PushAstroEvent, MaybeAstroPushPromiseReturn } from './types'
+import type { Push, PushOptions } from 'notivue'
 
 export function pushEvent<T extends Omit<PushAstroEvent, 'resultEventName'>>(
    detail: T
@@ -8,6 +8,7 @@ export function pushEvent<T extends Omit<PushAstroEvent, 'resultEventName'>>(
 
    // Prepare to listen for the result of the notification that will be created by NotivueAstro...
    let pushResult = {} as MaybeAstroPushPromiseReturn<T>
+
    const resultEventName = `notivue:id:${eventId}`
 
    // ...upon receival, save the result and remove the listener
@@ -34,13 +35,19 @@ export function pushEvent<T extends Omit<PushAstroEvent, 'resultEventName'>>(
    return pushResult
 }
 
-export const push = {
+const dynamicNotification = (options: PushOptions) => pushEvent({ ...options, type: 'loading' })
+
+/** `load` / `promise` on this object are deprecated aliases of `loading`. */
+const astroNotifyApi = {
    success: (options: PushOptions) => pushEvent({ ...options, type: 'success' }),
    info: (options: PushOptions) => pushEvent({ ...options, type: 'info' }),
    error: (options: PushOptions) => pushEvent({ ...options, type: 'error' }),
    warning: (options: PushOptions) => pushEvent({ ...options, type: 'warning' }),
-   promise: (options: PushOptions) => pushEvent({ ...options, type: 'promise' }),
-   load: (options: PushOptions) => pushEvent({ ...options, type: 'promise' }),
+   loading: dynamicNotification,
+   /** @deprecated Use `loading`. */
+   load: dynamicNotification,
+   /** @deprecated Use `loading`. */
+   promise: dynamicNotification,
    clearAll() {
       window.dispatchEvent(new CustomEvent('notivue:clear-all'))
    },
@@ -48,3 +55,6 @@ export const push = {
       window.dispatchEvent(new CustomEvent('notivue:destroy-all'))
    },
 } as Push
+
+export const push = astroNotifyApi
+export const notify = astroNotifyApi

@@ -10,11 +10,9 @@ describe('Pause on touch', () => {
 
          .clickRandomStatic()
          .wait(5000) // Remaining: 1000ms
-
          .get('.Notification')
          .trigger('pointerdown', { pointerType: 'touch' })
          .wait(2000) // More than the remaining time
-
          .get('.Notification')
          .should('exist')
    })
@@ -24,11 +22,9 @@ describe('Pause on touch', () => {
 
          .clickRandomStatic()
          .wait(5000) // Remaining: 1000ms
-
          .get('.Notification')
          .trigger('pointerdown', { pointerType: 'touch' })
          .wait(2000) // More than the remaining time
-
          .get('.Notification')
          .should('not.exist')
    })
@@ -41,11 +37,9 @@ describe('Pause on touch', () => {
 
          .clickRandomStatic()
          .wait(5000) // Remaining: 1000ms
-
          .get('.Notification')
          .trigger('pointerdown', { pointerType: 'touch' })
          .wait(2000) // More than the remaining time
-
          .get('.Notification')
          .should('exist')
    })

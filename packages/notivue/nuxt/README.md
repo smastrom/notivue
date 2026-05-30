@@ -34,7 +34,7 @@ _Themes, icons, progress bar, and native RTL support_
 _Use your own components while Notivue handles the rest_
 
 **💊 Drop-in components to enhance notifications**  
-_NotivueSwipe, NotivueKeyboard, all optional and customizable_
+_NotivueSwipe_ (alias `NotificationSwipe`), _NotivueKeyboard_, all optional and customizable\_
 
 **🌀 Dynamic Notifications**  
 _Update pending notifications with a breeze_
@@ -68,11 +68,11 @@ export default defineNuxtConfig({
   modules: ['notivue/nuxt'],
   css: [
     'notivue/notification.css', // Only needed if using built-in <Notification />
-    'notivue/animations.css' // Only needed if using default animations
+    'notivue/animations.css', // Only needed if using default animations
   ],
   notivue: {
     // Options
-  }
+  },
 })
 ```
 

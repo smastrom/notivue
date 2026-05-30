@@ -1,6 +1,5 @@
-import type { Component } from 'vue'
-
 import type { NotificationType, NotivueItem } from 'notivue'
+import type { Component } from 'vue'
 
 export interface NotificationsProps {
    item: NotivueItem
@@ -55,6 +54,13 @@ type WarningColorsVars =
 
 type InfoColorsVars = '--nv-info-fg' | '--nv-info-bg' | '--nv-info-border' | '--nv-info-accent'
 
+type LoadingColorsVars =
+   | '--nv-loading-fg'
+   | '--nv-loading-bg'
+   | '--nv-loading-border'
+   | '--nv-loading-accent'
+
+/** @deprecated Deprecated alias of `--nv-loading-*`. */
 type PromiseColorsVars =
    | '--nv-promise-fg'
    | '--nv-promise-bg'
@@ -68,6 +74,7 @@ type ThemeVars =
    | ErrorColorsVars
    | WarningColorsVars
    | InfoColorsVars
+   | LoadingColorsVars
    | PromiseColorsVars
 
 // New v2.4.0 aliases

@@ -10,11 +10,9 @@ describe('Pause on hover', () => {
 
          .clickRandomStatic()
          .wait(4000) // Remaining time 2000ms
-
          .get('.Notification')
          .realMouseMove(0, 0, { position: 'center' })
          .wait(4000) // Any value greater than the remaining time
-
          .get('.Notification')
          .should('exist')
 
@@ -31,11 +29,9 @@ describe('Pause on hover', () => {
 
          .clickRandomStatic()
          .wait(4000) // Remaining: 2000ms
-
          .get('.Notification')
          .realMouseMove(0, 0, { position: 'center' })
          .wait(4000) // Any value greater than the remaining time
-
          .get('.Notification')
          .should('not.exist')
    })
@@ -48,11 +44,9 @@ describe('Pause on hover', () => {
 
          .clickRandomStatic()
          .wait(4000) // Remaining time 2000ms
-
          .get('.Notification')
          .realMouseMove(0, 0, { position: 'center' })
          .wait(4000) // Any value greater than the remaining time
-
          .get('.Notification')
          .should('exist')
    })

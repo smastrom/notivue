@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, watchEffect } from 'vue'
-
-import { push, NotivueKeyboard, Notivue, useNotivue, type NotivueKeyboardProps } from 'notivue'
-
 import Candidate from './Candidate.vue'
 import Unqualified from './Unqualified.vue'
+
+import { push, NotivueKeyboard, Notivue, useNotivue, type NotivueKeyboardProps } from 'notivue'
+import { onMounted, onBeforeUnmount, watchEffect } from 'vue'
 
 export type CyNotivueKeyboardProps = NotivueKeyboardProps & { enqueue?: boolean; limit?: number }
 
@@ -12,7 +11,7 @@ const cyProps = withDefaults(defineProps<CyNotivueKeyboardProps>(), {
    handleClicks: true,
    renderAnnouncement: true,
    enqueue: false,
-   limit: Infinity,
+   limit: -1,
    maxAnnouncements: 2,
 })
 
@@ -57,15 +56,15 @@ onBeforeUnmount(() => {
 
 <template>
    <NotivueKeyboard
-      v-slot="{ containersTabIndex }"
       :comboKey="cyProps.comboKey"
       :handleClicks="cyProps.handleClicks"
       :leaveMessage="cyProps.leaveMessage"
       :emptyMessage="cyProps.emptyMessage"
       :renderAnnouncement="cyProps.renderAnnouncement"
       :maxAnnouncements="cyProps.maxAnnouncements"
+      :isCandidate="cyProps.isCandidate"
    >
-      <Notivue :containersTabIndex="containersTabIndex" v-slot="item">
+      <Notivue v-slot="item">
          <Candidate :item="item" v-if="item.props.isCandidate" />
          <Unqualified :item="item" v-else />
       </Notivue>

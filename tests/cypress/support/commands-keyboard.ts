@@ -1,9 +1,9 @@
-import { mount } from 'cypress/vue'
-
 import Notivue, { CyNotivueKeyboardProps } from '@/tests/NotivueKeyboard/components/Notivue.vue'
 
-import { DEFAULT_ANIM_DURATION as ANIM_DUR } from '@/support/utils'
+import { mount } from 'cypress/vue'
 import { createNotivue } from 'notivue'
+
+import { DEFAULT_ANIM_DURATION as ANIM_DUR } from '@/support/utils'
 
 declare global {
    namespace Cypress {
@@ -35,5 +35,5 @@ Cypress.Commands.add('pushUnqualified', () => cy.get('.PushUnqualified').click()
 Cypress.Commands.add('pushCandidateSilently', () => cy.get('body').type('{shift}c'))
 
 Cypress.Commands.add('checkLeaveAnnouncement', () =>
-   cy.get('.Notification').first().should('contain.text', "You're leaving the notifications stream")
+   cy.get('.Notification').first().should('contain.text', 'You left the notifications stream')
 )

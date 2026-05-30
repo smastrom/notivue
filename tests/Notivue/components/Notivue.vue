@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ref, shallowRef, toRefs, watchEffect, type Ref } from 'vue'
-
 import {
    push,
    useNotivue,
@@ -11,6 +9,7 @@ import {
    type NotivueConfig,
    type Push,
 } from 'notivue'
+import { ref, shallowRef, toRefs, watchEffect, type Ref } from 'vue'
 
 import { RESOLVE_REJECT_DELAY } from '@/support/utils'
 
@@ -26,8 +25,7 @@ const config = useNotivue()
 const { startInstance, stopInstance } = useNotivueInstance()
 const { entries, queue } = useNotifications()
 
-const { pauseOnTouch, pauseOnHover, teleportTo, limit, animations, enqueue, avoidDuplicates } =
-   toRefs(cyProps)
+const { pauseOnTouch, pauseOnHover, teleportTo, limit, enqueue, avoidDuplicates } = toRefs(cyProps)
 
 const autoClearCount = ref(0)
 const manualClearCount = ref(0)
@@ -37,10 +35,8 @@ const manualClearCount = ref(0)
  * ==================================================================================== */
 
 watchEffect(() => {
-   if (animations?.value) config.animations.value = animations.value
    if (pauseOnTouch?.value) config.pauseOnTouch.value = pauseOnTouch.value
    if (pauseOnHover?.value) config.pauseOnHover.value = pauseOnHover.value
-   if (animations?.value) config.animations.value = animations.value
    if (teleportTo?.value) config.teleportTo.value = teleportTo.value
    if (limit?.value) config.limit.value = limit.value
    if (enqueue?.value) config.enqueue.value = enqueue.value
@@ -53,6 +49,7 @@ watchEffect(() => {
 
 function pushAndClear() {
    const notification = push.success(cyProps.options ?? {})
+
    setTimeout(() => notification.clear(), RESOLVE_REJECT_DELAY)
 }
 
@@ -71,7 +68,7 @@ function pushWithAutoClearCallback() {
    })
 
    push.promise(pushCallbacks).reject(pushCallbacks)
-   push.load(pushCallbacks).success(pushCallbacks)
+   push.loading(pushCallbacks).success(pushCallbacks)
 }
 
 function pushWithManualClearCallback() {
@@ -82,7 +79,7 @@ function pushWithManualClearCallback() {
    })
 
    notifications.push(push.promise(pushCallbacks).resolve(pushCallbacks))
-   notifications.push(push.load(pushCallbacks).error(pushCallbacks))
+   notifications.push(push.loading(pushCallbacks).error(pushCallbacks))
 
    notifications.forEach((n) => n.clear())
 }
@@ -95,6 +92,7 @@ function pushAndRenderClear() {
 
 function pushAndDestroy() {
    const notification = push.success(cyProps.options ?? {})
+
    setTimeout(() => notification.destroy(), RESOLVE_REJECT_DELAY)
 }
 
@@ -104,13 +102,15 @@ function pushSkipQueue() {
 
 async function pushPromiseAndResolve() {
    const promise = push.promise(cyProps.options ?? {})
+
    await new Promise((resolve) => setTimeout(resolve, RESOLVE_REJECT_DELAY))
 
    promise.resolve(cyProps.newOptions ?? cyProps.options ?? {})
 }
 
 async function pushPromiseAndReject() {
-   const promise = push.load(cyProps.options ?? {})
+   const promise = push.loading(cyProps.options ?? {})
+
    await new Promise((resolve) => setTimeout(resolve, RESOLVE_REJECT_DELAY))
 
    promise.error(cyProps.newOptions ?? cyProps.options ?? {})
@@ -131,7 +131,7 @@ async function pushPromiseAndReject() {
       <button class="Error" @click="push.error(options ?? {})">Error</button>
       <button class="Warning" @click="push.warning(options ?? {})">Warning</button>
       <button class="Info" @click="push.info(options ?? {})">Info</button>
-      <button class="Promise" @click="push.load(options ?? {})">Promise</button>
+      <button class="Promise" @click="push.loading(options ?? {})">Loading</button>
 
       <!-------------------------------- Clear all Tests ---------------------------------->
 

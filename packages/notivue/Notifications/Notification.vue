@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import type { NotificationsProps } from 'notivue'
+
 import { unref, watch, shallowRef } from 'vue'
 
 import { Classes as Cx, DEFAULT_NOTIFICATIONS_PROPS } from './constants'
-
-import type { NotificationsProps } from 'notivue'
 
 const props = withDefaults(defineProps<NotificationsProps>(), DEFAULT_NOTIFICATIONS_PROPS)
 
@@ -45,11 +45,10 @@ watch(
       </div>
 
       <button
-         v-if="!props.hideClose && Close && item.type !== 'promise'"
+         v-if="!props.hideClose && Close && item.type !== 'loading'"
          :class="Cx.CLOSE"
          :aria-label="closeAriaLabel"
          type="button"
-         tabindex="-1"
          @click="item.clear"
       >
          <Component v-if="typeof Close === 'object'" :is="Close" :class="Cx.CLOSE_ICON" />

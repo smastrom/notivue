@@ -1,11 +1,11 @@
-import { mount } from 'cypress/vue'
-
-import { DEFAULT_DURATION } from '@/core/constants'
-import { parseText } from './utils'
-
 import Notivue, { type CyNotivueProps } from '@/tests/Notivue/components/Notivue.vue'
 
+import { mount } from 'cypress/vue'
 import { createNotivue, type NotivueConfig } from 'notivue'
+
+import { DEFAULT_DURATION, MOTION_VARS_CSS } from '@/core/constants'
+
+import { parseText } from './utils'
 
 type MountNotificationsOptions = {
    config?: NotivueConfig & {
@@ -26,11 +26,7 @@ declare global {
          getContainer(): Chainable<any>
          checkSlotAgainst(obj: Record<string, any>): Chainable<any>
          checkSlotPropsAgainst(obj: Record<string, any>): Chainable<any>
-         checkAnimations(
-            enterClass: string,
-            leaveClass: string,
-            clearAllClass: string
-         ): Chainable<any>
+         checkAnimations(): Chainable<any>
          checkTransitions(element: HTMLElement, height: number): Chainable<any>
       }
    }
@@ -101,27 +97,30 @@ Cypress.Commands.add('checkSlotPropsAgainst', (obj: Record<string, any>) =>
    cy.getNotifications().then((el) => cy.wrap(parseText(el).props).should('eql', obj))
 )
 
-Cypress.Commands.add(
-   'checkAnimations',
-   (enterClass: string, leaveClass: string, clearAllClass: string) => {
-      cy.get('.Success').click()
+Cypress.Commands.add('checkAnimations', () => {
+   cy.get('.Success').click()
 
-      cy.get(enterClass).should('exist').get(leaveClass).should('not.exist').wait(DEFAULT_DURATION)
+   cy.getContainer()
+      .should('have.attr', 'style')
+      .and('include', MOTION_VARS_CSS.enterAnimation)
+      .getContainer()
+      .invoke('attr', 'style')
+      .should('not.include', MOTION_VARS_CSS.leaveAnimation)
+      .wait(DEFAULT_DURATION)
 
-      cy.get(leaveClass).should('exist').get(enterClass).should('not.exist')
+   cy.getContainer().should('have.attr', 'style').and('include', MOTION_VARS_CSS.leaveAnimation)
 
-      cy.get('.Success').click()
+   cy.get('.Success').click()
 
-      cy.get('.ClearAll').click()
+   cy.get('.ClearAll').click()
 
-      cy.get(clearAllClass).should('exist')
-   }
-)
+   cy.get('ol').should('have.attr', 'style').and('include', MOTION_VARS_CSS.clearAllAnimation)
+})
 
 Cypress.Commands.add('checkTransitions', (element: HTMLElement, height: number) =>
    cy
       .wrap(element)
       .should('have.attr', 'style')
       .and('include', `transform: translate3d(0px, ${height}px, 0px)`)
-      .and('include', 'transition: transform 0.35s cubic-bezier(0.5, 1, 0.25, 1)')
+      .and('include', MOTION_VARS_CSS.transformTransition)
 )

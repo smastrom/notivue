@@ -35,7 +35,7 @@ describe('Props', () => {
          .realPress(['ControlLeft', 'u'])
 
          .focused()
-         .should('have.data', 'notivueContainer', 0)
+         .should('have.data', 'notivueListItem', 0)
 
          .realPress(['ControlLeft', 'u'])
 
@@ -69,6 +69,41 @@ describe('Props', () => {
          .should('have.length', 0)
    })
 
+   it('Should treat focusable children as candidates even when isCandidate returns false', () => {
+      cy.mountKeyboard({ isCandidate: () => false })
+         .pushCandidate()
+
+         .realPress('Tab')
+
+         .focused()
+         .should('have.data', 'notivueListItem')
+   })
+
+   it('Should qualify list items via isCandidate when they have no focusable children', () => {
+      cy.mountKeyboard({ isCandidate: () => true })
+         .pushUnqualified()
+
+         .realPress('Tab')
+
+         .focused()
+         .should('have.data', 'notivueListItem')
+   })
+
+   it('Should pass list items to isCandidate', () => {
+      const isCandidate = cy.stub().returns(false)
+
+      cy.mountKeyboard({ isCandidate })
+         .pushUnqualified()
+         .then(() => {
+            expect(isCandidate).to.have.been.calledOnce
+
+            const el = isCandidate.firstCall.args[0] as HTMLElement
+
+            expect(el.dataset.notivueListItem).to.exist
+            expect(el.hasAttribute('data-notivue-item')).to.be.false
+         })
+   })
+
    it('Should customize max number of leave announcements', () => {
       cy.mountKeyboard({ maxAnnouncements: 1 })
          .pushCandidate()
@@ -82,7 +117,7 @@ describe('Props', () => {
          .realPress('Escape')
 
          .get('.Notification')
-         .should('contain.text', "You're leaving the notifications stream")
+         .should('contain.text', 'You left the notifications stream')
          .should('have.length', 1)
    })
 })

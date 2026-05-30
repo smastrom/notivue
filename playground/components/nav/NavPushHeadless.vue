@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import profilePicture from '@/assets/profile-picture.jpg?url'
-
-import type { UploadNotificationProps } from '@/components/custom-notifications/UploadNotification.vue'
 import type { FriendRequestNotificationProps } from '@/components/custom-notifications/FriendRequestNotification.vue'
 import type { SimpleNotificationProps } from '@/components/custom-notifications/SimpleNotification.vue'
+import type { UploadNotificationProps } from '@/components/custom-notifications/UploadNotification.vue'
+
+import { push, type PushOptions } from 'notivue'
+
+import profilePicture from '@/assets/profile-picture.jpg?url'
 
 const { state, actions, messages } = useStore()
 
@@ -12,6 +14,7 @@ function resetOptions() {
       push.destroyAll()
       actions.toggleRTL()
    }
+
    actions.setTheme('lightTheme')
 }
 
@@ -19,7 +22,7 @@ function pushFriendRequest() {
    resetOptions()
 
    push.info<FriendRequestNotificationProps>({
-      title: 'New Message Request',
+      title: 'New message request',
       message: `Stephanie LaGarde wants to send you a message.`,
       props: {
          name: 'Stephanie LaGarde',
@@ -28,7 +31,7 @@ function pushFriendRequest() {
       },
       ariaRole: 'alert',
       ariaLive: 'assertive',
-      duration: Infinity,
+      duration: -1,
    })
 }
 
@@ -37,15 +40,15 @@ async function pushFileUpload() {
 
    const props = { isUploadNotifiation: true, fileName: 'excel-sheet.xlsx' }
 
-   const promise = push.promise<UploadNotificationProps>({
-      message: 'Your file is being uploaded...',
+   const notification = push.loading<UploadNotificationProps>({
+      message: 'Uploading your file…',
       props,
    })
 
    await new Promise((resolve) => setTimeout(resolve, getRandomInt(2000, 4000)))
 
-   promise.resolve({
-      message: 'Your file has been successfully uploaded.',
+   notification.success({
+      message: 'Your file was uploaded successfully.',
       props,
    })
 }
@@ -53,12 +56,14 @@ async function pushFileUpload() {
 function pushSimple() {
    resetOptions()
 
-   push.success<SimpleNotificationProps>({
-      message: `Your message has been deleted.`,
+   const options = {
+      message: 'Your message was deleted.',
       props: {
          isSimpleNotification: true,
       },
-   })
+   } satisfies PushOptions<SimpleNotificationProps>
+
+   push.success<SimpleNotificationProps>(options)
 }
 
 function pushUsingComboKey(e: KeyboardEvent) {
@@ -79,10 +84,10 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-   <SharedButton @click="pushFriendRequest" text="Actions">
+   <SharedButton @click="pushFriendRequest" text="Friend request">
       <IconsVueIcon />
    </SharedButton>
-   <SharedButton @click="pushFileUpload" text="Promise">
+   <SharedButton @click="pushFileUpload" text="Dynamic">
       <IconsVueIcon />
    </SharedButton>
    <SharedButton @click="pushSimple" text="Simple">

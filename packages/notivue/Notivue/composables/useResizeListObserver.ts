@@ -18,8 +18,6 @@ export function useResizeListObserver(elements: HTMLElement[], onSizeChange: () 
                   observer.unobserve(e.target)
                } else {
                   // The element actually changed size, trigger callback and remove
-                  console.log('ResizeObserver Triggered')
-
                   onSizeChange()
                   calls.delete(e.target)
                   observer.unobserve(e.target)

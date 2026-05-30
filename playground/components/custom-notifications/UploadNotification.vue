@@ -10,7 +10,8 @@ const notification = defineProps<{
    item: NotivueItem<UploadNotificationProps>
 }>()
 
-const isPromise = computed(() => notification.item.type === 'promise')
+/** Pending dynamic notification (`notify.loading()`). */
+const isDynamic = computed(() => notification.item.type === 'loading')
 </script>
 
 <template>
@@ -18,7 +19,7 @@ const isPromise = computed(() => notification.item.type === 'promise')
       <div class="Header">
          <div class="Title">
             <h3 :aria-live="item.ariaLive" :role="item.ariaRole">{{ item.message }}</h3>
-            <button class="Close" @click="item.clear" v-if="!isPromise">
+            <button class="Close" @click="item.clear" v-if="!isDynamic">
                <IconsCloseIcon />
             </button>
          </div>
@@ -31,7 +32,7 @@ const isPromise = computed(() => notification.item.type === 'promise')
          <p class="FileName">{{ item.props.fileName }}</p>
       </div>
 
-      <div class="Progress" v-if="isPromise">
+      <div class="Progress" v-if="isDynamic">
          <div class="indeterminate-progress-bar">
             <div class="indeterminate-progress-bar__progress"></div>
          </div>
@@ -68,15 +69,19 @@ const isPromise = computed(() => notification.item.type === 'promise')
    background-color: transparent;
    border: none;
    cursor: pointer;
-   padding: 0;
-   margin: 0;
-   outline: none;
-   transition: opacity 100ms ease-out;
    padding: 5px;
+   margin: 0;
+   transition: opacity 100ms ease-out;
    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
    &:hover {
       opacity: 0.5;
+   }
+
+   &:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 6px;
    }
 
    & svg {

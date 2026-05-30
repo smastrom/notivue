@@ -5,12 +5,15 @@ import { SWIPE_NOTIFICATION_WIDTH } from '@/support/utils'
 
 export type CyNotivueSwipeProps = Omit<NotivueSwipeProps, 'item'>
 
+/** @deprecated Use `CyNotivueSwipeProps`. */
+export type CyNotificationSwipeProps = CyNotivueSwipeProps
+
 const cyProps = defineProps<CyNotivueSwipeProps>()
 
 function pushPromise() {
-   push.load({
+   push.loading({
       title: 'Promise',
-      message: 'This is a promise notification and should not be swipeable',
+      message: 'This pending dynamic notification should not be swipeable',
    })
 }
 

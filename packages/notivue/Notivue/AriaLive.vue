@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { getAriaLabel as getAriaLiveContent } from './utils'
-
 import type { NotivueItem } from 'notivue'
 import type { CSSProperties } from 'vue'
+
+import { getAriaLabel as getAriaLiveContent } from './utils'
 
 const props = defineProps<{
    item: NotivueItem

@@ -1,17 +1,15 @@
 <script setup lang="ts">
-import type { NotivueItem } from 'notivue'
-
 import FriendRequestNotification, {
    type FriendRequestNotificationProps,
 } from '@/components/custom-notifications/FriendRequestNotification.vue'
-
+import SimpleNotification, {
+   type SimpleNotificationProps,
+} from '@/components/custom-notifications/SimpleNotification.vue'
 import UploadNotification, {
    type UploadNotificationProps,
 } from '@/components/custom-notifications/UploadNotification.vue'
 
-import SimpleNotification, {
-   type SimpleNotificationProps,
-} from '@/components/custom-notifications/SimpleNotification.vue'
+import type { NotivueItem } from 'notivue'
 
 useServerHead({
    link: ['regular', '700'].map((w) => ({
@@ -28,22 +26,19 @@ const config = useNotivue()
 
 const themes = { lightTheme, pastelTheme, materialTheme, darkTheme, slateTheme } as const
 
-!isSSR &&
+if (import.meta.client) {
    watchEffect(() => document.documentElement.style.setProperty('--nv-root-width', state.maxWidth))
+}
 
 watch(
    () => [config.enqueue.value, config.limit.value],
-   () => push.destroyAll()
+   () => notify.destroyAll()
 )
 </script>
 
 <template>
-   <NotivueKeyboard v-slot="{ containersTabIndex }">
-      <Notivue
-         :class="{ CenterOnMobile: state.centerOnMobile }"
-         :containersTabIndex="containersTabIndex"
-         v-slot="item"
-      >
+   <NotivueKeyboard>
+      <Notivue v-slot="item">
          <FriendRequestNotification
             v-if="item.props.isFriendRequestNotification"
             :item="item as NotivueItem<FriendRequestNotificationProps>"
@@ -78,12 +73,6 @@ watch(
 </template>
 
 <style>
-@media (max-width: 768px) {
-   .CenterOnMobile {
-      --nv-root-x-align: center;
-   }
-}
-
 :root {
    --nv-root-bottom: var(--nav-height);
 }

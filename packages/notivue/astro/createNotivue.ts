@@ -1,6 +1,6 @@
-import { NotivueConfig } from 'notivue'
-
 import type { Plugin, App } from 'vue'
+
+import { NotivueConfig } from 'notivue'
 
 export function createNotivue(
    pluginConfig: NotivueConfig & {

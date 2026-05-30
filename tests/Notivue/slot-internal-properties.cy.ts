@@ -1,5 +1,5 @@
-import { parseText } from '@/support/utils'
 import { internalKeys } from '@/core/utils'
+import { parseText } from '@/support/utils'
 
 it('Hidden internal properties are never defined', () => {
    cy.mountNotivue()

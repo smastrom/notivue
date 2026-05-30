@@ -1,17 +1,17 @@
+import CloseIcon from './CloseIcon.vue'
+import ErrorIcon from './ErrorIcon.vue'
+import ErrorOutlineIcon from './ErrorOutlineIcon.vue'
+import InfoIcon from './InfoIcon.vue'
+import InfoOutlineIcon from './InfoOutlineIcon.vue'
+import PromiseIcon from './PromiseIcon.vue'
+import SuccessIcon from './SuccessIcon.vue'
+import SuccessOutlineIcon from './SuccessOutlineIcon.vue'
+
+import type { NotivueIcons } from 'notivue'
+
 import { markRaw as raw, type SVGAttributes } from 'vue'
 
 import { NotificationTypeKeys as NType } from '@/core/constants'
-
-import SuccessIcon from './SuccessIcon.vue'
-import ErrorIcon from './ErrorIcon.vue'
-import InfoIcon from './InfoIcon.vue'
-import SuccessOutlineIcon from './SuccessOutlineIcon.vue'
-import ErrorOutlineIcon from './ErrorOutlineIcon.vue'
-import InfoOutlineIcon from './InfoOutlineIcon.vue'
-import PromiseIcon from './PromiseIcon.vue'
-import CloseIcon from './CloseIcon.vue'
-
-import type { NotivueIcons } from 'notivue'
 
 export const svgProps: SVGAttributes = {
    xmlns: 'http://www.w3.org/2000/svg',
@@ -38,9 +38,9 @@ export const filledIcons: NotivueIcons = {
    [NType.ERROR]: raw(ErrorIcon),
    [NType.INFO]: raw(InfoIcon),
    [NType.WARNING]: raw(ErrorIcon),
-   [NType.PROMISE]: raw(PromiseIcon),
-   [NType.PROMISE_RESOLVE]: raw(SuccessIcon),
-   [NType.PROMISE_REJECT]: raw(ErrorIcon),
+   [NType.LOADING]: raw(PromiseIcon),
+   [NType.LOADING_SUCCESS]: raw(SuccessIcon),
+   [NType.LOADING_ERROR]: raw(ErrorIcon),
    close: raw(CloseIcon),
 }
 
@@ -49,8 +49,8 @@ export const outlinedIcons: NotivueIcons = {
    [NType.ERROR]: raw(ErrorOutlineIcon),
    [NType.INFO]: raw(InfoOutlineIcon),
    [NType.WARNING]: raw(ErrorOutlineIcon),
-   [NType.PROMISE]: raw(PromiseIcon),
-   [NType.PROMISE_RESOLVE]: raw(SuccessOutlineIcon),
-   [NType.PROMISE_REJECT]: raw(ErrorOutlineIcon),
+   [NType.LOADING]: raw(PromiseIcon),
+   [NType.LOADING_SUCCESS]: raw(SuccessOutlineIcon),
+   [NType.LOADING_ERROR]: raw(ErrorOutlineIcon),
    close: raw(CloseIcon),
 }

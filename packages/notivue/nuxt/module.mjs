@@ -8,7 +8,7 @@ const module = defineNuxtModule({
       name: 'nuxt/notivue',
       configKey: 'notivue',
       compatibility: {
-         nuxt: '>=3.5.0',
+         nuxt: '>=3.5.0 || ^4.0.0',
       },
    },
 

@@ -46,7 +46,7 @@ describe('Default behavior', () => {
          .should('exist')
    })
 
-   it('Should not swipe if it is a promise', () => {
+   it('Should not swipe while dynamic notification is pending', () => {
       cy.mountSwipe()
          .get('.Promise')
          .click()

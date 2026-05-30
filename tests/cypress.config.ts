@@ -1,7 +1,7 @@
-import { defineConfig } from 'cypress'
-import { alias } from './shared-config'
-
 import vue from '@vitejs/plugin-vue'
+import { defineConfig } from 'cypress'
+
+import { alias } from './shared-config'
 
 export default defineConfig({
    video: false,
@@ -27,6 +27,7 @@ export default defineConfig({
          on('task', {
             log(message) {
                console.log(message)
+
                return null
             },
          })

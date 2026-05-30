@@ -43,14 +43,6 @@ const btnProps = {
       <button v-bind="btnProps" :aria-checked="isFullWidth" @click="actions.setFullWidth">
          Full Width
       </button>
-      <button
-         v-bind="btnProps"
-         :aria-checked="state.centerOnMobile"
-         @click="actions.toggleCenterOnMobile"
-         :disabled="config.position.value.endsWith('center')"
-      >
-         Center on Mobile
-      </button>
    </div>
 </template>
 

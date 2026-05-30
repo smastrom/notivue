@@ -1,14 +1,14 @@
+import type { NotivueConfig, NotivueConfigRequired, ConfigSlice } from 'notivue'
+
 import { describe, expect, test } from 'vitest'
+import { ref } from 'vue'
 
 import { createConfig } from '@/core/createStore'
+
 import {
    DEFAULT_CONFIG as defaultConf,
    DEFAULT_NOTIFICATION_OPTIONS as defaultNot,
 } from '@/core/constants'
-
-import { ref } from 'vue'
-
-import type { NotivueConfig, NotivueConfigRequired, ConfigSlice } from 'notivue'
 
 type ConfigPairs<K extends keyof NotivueConfig> = [K, NotivueConfig[K]]
 
@@ -38,19 +38,6 @@ describe('Update method', () => {
    })
 
    describe('Should merge object properties', () => {
-      test('Animations', () => {
-         const animations = { enter: 'Vitest_Enter', leave: 'Vitest_Leave' }
-
-         const config = createConfig({}, isRunning) as ConfigSlice
-
-         config.update({ animations })
-
-         expect(config.animations.value).toStrictEqual({
-            ...animations,
-            clearAll: defaultConf.animations.clearAll,
-         })
-      })
-
       test('Notification options', () => {
          const newConf: NotivueConfig['notifications'] = {
             global: { duration: Math.random() * 100 },
@@ -73,6 +60,9 @@ describe('Update method', () => {
             error: { ...defaultNot.error, ...newConf.error },
             info: { ...defaultNot.info, ...newConf.info },
             warning: { ...defaultNot.warning, ...newConf.warning },
+            loading: defaultNot.loading,
+            'loading-success': defaultNot['loading-success'],
+            'loading-error': defaultNot['loading-error'],
             promise: { ...defaultNot.promise, ...newConf.promise },
             'promise-resolve': { ...defaultNot['promise-resolve'], ...newConf['promise-resolve'] },
             'promise-reject': { ...defaultNot['promise-reject'], ...newConf['promise-reject'] },
@@ -85,7 +75,6 @@ describe('Update method', () => {
          pauseOnHover: false,
          teleportTo: 'foo',
          limit: 20000,
-         animations: { enter: 'foo', leave: 'bar', clearAll: 'baz' },
          notifications: {
             global: { duration: 3000 },
             error: { duration: 4000 },
@@ -120,10 +109,6 @@ describe('Update method', () => {
             enqueue: !curr.enqueue,
             position: (curr.position + 'foo') as unknown as NotivueConfig['position'],
             teleportTo: curr.teleportTo + 'bar',
-            animations: {
-               enter: curr.animations.enter + 'baz',
-               leave: curr.animations.leave + 'haz',
-            },
             limit: curr.limit * 2,
             notifications: {
                global: { duration: currNot.global.duration * 2 },
@@ -148,11 +133,6 @@ describe('Update method', () => {
       expect(c.position.value).toBe(prevConf.position + 'foo')
       expect(c.teleportTo.value).toBe(prevConf.teleportTo + 'bar')
       expect(c.limit.value).toBe(prevConf.limit * 2)
-      expect(c.animations.value).toStrictEqual({
-         enter: prevConf.animations.enter + 'baz',
-         leave: prevConf.animations.leave + 'haz',
-         clearAll: prevConf.animations.clearAll,
-      })
       expect(c.notifications.value).toStrictEqual({
          global: { ...prevNot.global, duration: prevNot.global.duration * 2 },
          info: { ...prevNot.info, duration: prevNot.info.duration * 2 },
@@ -160,6 +140,9 @@ describe('Update method', () => {
 
          success: { ...prevNot.success, duration: defaultNot.success.duration * 2 },
          warning: { ...prevNot.warning, duration: defaultNot.warning.duration * 2 },
+         loading: prevNot.loading,
+         'loading-success': prevNot['loading-success'],
+         'loading-error': prevNot['loading-error'],
          promise: { ...prevNot.promise, duration: 100 },
 
          'promise-resolve': { ...prevNot['promise-resolve'], duration: 100 },

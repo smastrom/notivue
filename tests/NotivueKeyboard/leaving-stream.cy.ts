@@ -41,7 +41,6 @@ describe('Leaving the stream', () => {
       }
 
       cy.realPress('Tab') // Leave the stream
-
          .get('@relatedTarget')
          .should('be.focused')
          .checkLeaveAnnouncement()

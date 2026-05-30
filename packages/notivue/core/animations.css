@@ -1,30 +1,18 @@
+:root {
+   --nv-enter-animation: nv-enter-anim-kf 350ms cubic-bezier(0.5, 1, 0.25, 1);
+   --nv-leave-animation: nv-leave-anim-kf 350ms ease;
+   --nv-clear-all-animation: nv-clear-all-anim-kf 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 [data-notivue-align='top'] {
-   & .Notivue__enter,
-   & .Notivue__leave {
-      --notivue-ty: -200%;
-   }
+   --notivue-ty: -200%;
 }
 
 [data-notivue-align='bottom'] {
-   & .Notivue__enter,
-   & .Notivue__leave {
-      --notivue-ty: 200%;
-   }
+   --notivue-ty: 200%;
 }
 
-.Notivue__enter {
-   animation: Notivue__enter-kf 350ms cubic-bezier(0.5, 1, 0.25, 1);
-}
-
-.Notivue__leave {
-   animation: Notivue__leave-kf 350ms ease;
-}
-
-.Notivue__clearAll {
-   animation: Notivue__clearAll-kf 500ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@keyframes Notivue__enter-kf {
+@keyframes nv-enter-anim-kf {
    0% {
       transform: translate3d(0, var(--notivue-ty), 0) scale(0.25);
       opacity: 0;
@@ -36,7 +24,7 @@
    }
 }
 
-@keyframes Notivue__leave-kf {
+@keyframes nv-leave-anim-kf {
    0% {
       transform: translate3d(0, 0, 0) scale(1);
       opacity: 0.7;
@@ -48,7 +36,7 @@
    }
 }
 
-@keyframes Notivue__clearAll-kf {
+@keyframes nv-clear-all-anim-kf {
    0% {
       opacity: 1;
    }

@@ -30,9 +30,11 @@ watch(isRunning, (newVal) => {
       dir="ltr"
    >
       <template v-if="isRunning">
-         Notivue is now running again. This notice will be dismissed shortly.</template
-      >
-      <template v-else> Notivue has been stopped. Restart it to create notifications. </template>
+         Notivue is running again. This notice will disappear shortly.
+      </template>
+      <template v-else>
+         Notivue is stopped. Start the instance to show notifications again.
+      </template>
    </div>
 
    <nav dir="ltr">
@@ -46,7 +48,7 @@ watch(isRunning, (newVal) => {
          </SharedButtonGroup>
 
          <div class="DefaultComponent">
-            <SharedButtonGroup name="Push 👇" isPush>
+            <SharedButtonGroup name="Built-in UI" isPush>
                <NavPushBuiltIn />
             </SharedButtonGroup>
 
@@ -59,7 +61,7 @@ watch(isRunning, (newVal) => {
             </SharedButtonGroup>
          </div>
 
-         <SharedButtonGroup name="Headless 👇" isPush>
+         <SharedButtonGroup name="Headless UI" isPush>
             <NavPushHeadless />
          </SharedButtonGroup>
 

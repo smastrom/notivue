@@ -1,5 +1,6 @@
-import { DEFAULT_DURATION } from '@/core/constants'
 import { DEFAULT_ANIM_DURATION, RESOLVE_REJECT_DELAY } from '@/support/utils'
+
+import { DEFAULT_DURATION } from '@/core/constants'
 
 describe('Push', () => {
    it('Can push any type of notification', () => {
@@ -23,7 +24,7 @@ describe('Push', () => {
          .should('have.length', 0)
    })
 
-   it('Updates and dismisses promises', () => {
+   it('Updates and dismisses dynamic (load) notifications', () => {
       cy.mountNotivue()
 
          .get('.PushPromiseAndResolve')

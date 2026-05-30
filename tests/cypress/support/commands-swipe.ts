@@ -1,9 +1,9 @@
-import { mount } from 'cypress/vue'
-
 import Notivue, { type CyNotivueSwipeProps } from '@/tests/NotivueSwipe/components/Notivue.vue'
 
-import { DEFAULT_ANIM_DURATION as ANIM_DUR } from '@/support/utils'
+import { mount } from 'cypress/vue'
 import { createNotivue } from 'notivue'
+
+import { DEFAULT_ANIM_DURATION as ANIM_DUR } from '@/support/utils'
 
 declare global {
    namespace Cypress {

@@ -1,6 +1,6 @@
-import * as _nuxt_schema from '@nuxt/schema'
-
 import type { NotificationType, NotificationOptions, NotivueConfig } from 'notivue'
+
+import * as _nuxt_schema from '@nuxt/schema'
 
 type ModuleOptions = Omit<NotivueConfig, 'notifications'> & {
    startOnCreation?: boolean

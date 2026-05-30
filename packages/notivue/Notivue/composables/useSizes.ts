@@ -1,6 +1,7 @@
-import { useWindowSize } from './useWindowSize'
-import { useResizeListObserver } from './useResizeListObserver'
 import { useStore } from '@/core/useStore'
+
+import { useResizeListObserver } from './useResizeListObserver'
+import { useWindowSize } from './useWindowSize'
 
 export function useSizes() {
    const { elements, animations } = useStore()
