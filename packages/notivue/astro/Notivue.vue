@@ -69,7 +69,13 @@ onBeforeUnmount(() => {
 
 <template>
    <NotivueClientOnly>
-      <NotivueImpl v-bind="props" v-slot="item">
+      <NotivueImpl
+         v-slot="item"
+         :class="props.class"
+         :listAriaLabel="props.listAriaLabel"
+         :styles="props.styles"
+         :teleportTo="props.teleportTo ?? null"
+      >
          <slot v-bind="item" />
       </NotivueImpl>
    </NotivueClientOnly>

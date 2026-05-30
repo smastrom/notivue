@@ -15,7 +15,7 @@ export interface NotivueKeyboardData {
 export interface NotivueKeyboardProps {
    /**
     * Custom function to determine if a notification list item is a candidate for
-    * keyboard navigation. Receives the `<li>` element (`[data-notivue-list-item]`).
+    * keyboard navigation. Receives the `<li>` element (`[data-notivue-item]`).
     *
     * By default, a list item is a candidate if it contains at least one focusable
     * element (buttons, links, inputs, selects, textareas, or elements with a non-negative `tabindex`).

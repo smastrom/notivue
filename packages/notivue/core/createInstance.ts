@@ -1,11 +1,11 @@
-import type { NotivueStore, Notify } from 'notivue'
+import type { NotivueConfigUpdateParam, NotivueStore, Notify } from 'notivue'
 
 import { readonly, ref } from 'vue'
 
 import { createNotifyMock, setNotify } from './createNotify'
 import { createStoreWatchers } from './createStoreWatchers'
 
-export let startInstance: () => void = () => {}
+export let startInstance: (config?: NotivueConfigUpdateParam) => void = () => {}
 export let stopInstance: () => void = () => {}
 
 export function createInstance(startOnCreation: boolean) {
@@ -21,14 +21,20 @@ export function createInstance(startOnCreation: boolean) {
 
       const instance = {
          isRunning: isRunningReadonly,
-         startInstance() {
-            if (isRunning.value) return
+         startInstance(config?: NotivueConfigUpdateParam) {
+            if (isRunning.value) {
+               if (config !== undefined) store.config.update(config)
+
+               return
+            }
 
             setNotify(notify)
 
             unwatchStore = watchStore()
 
             isRunning.value = true
+
+            if (config !== undefined) store.config.update(config)
          },
          stopInstance() {
             if (!isRunning.value) return
@@ -44,7 +50,7 @@ export function createInstance(startOnCreation: boolean) {
          },
       }
 
-      startInstance = () => instance.startInstance()
+      startInstance = (config?: NotivueConfigUpdateParam) => instance.startInstance(config)
       stopInstance = () => instance.stopInstance()
 
       return instance

@@ -1,5 +1,7 @@
 import type { VueWrapper } from '@vue/test-utils'
 
+import { startInstance } from 'notivue'
+
 function testStoppedInstance() {
    cy.getNotifications().should('have.length', 0, { timeout: 0 })
    cy.get('.QueueCount').should('have.text', '0')
@@ -59,6 +61,25 @@ it('Instance can be stopped and started again', () => {
          .get('.EntriesCount')
          .should('have.text', '4', { timeout: 0 })
    }
+})
+
+it('startInstance accepts config', () => {
+   cy.mountNotivue({
+      config: {
+         startOnCreation: false,
+         position: 'top-center',
+      },
+   })
+
+   cy.wrap(null).then(() => {
+      startInstance({ position: 'bottom-center' })
+   })
+
+   cy.clickAllStatic()
+      .get('[data-notivue-list]')
+      .should('have.attr', 'data-notivue-align', 'bottom')
+      .getNotifications()
+      .should('have.length', 4, { timeout: 0 })
 })
 
 it('Config is not updated if instance is stopped', () => {

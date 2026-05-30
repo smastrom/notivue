@@ -251,7 +251,7 @@ export type ElementsSlice = ReturnType<typeof createElements>
 
 export interface NotivueInstance {
    isRunning: Readonly<Ref<boolean>>
-   startInstance: () => void
+   startInstance: (config?: NotivueConfigUpdateParam) => void
    stopInstance: () => void
 }
 
@@ -272,6 +272,7 @@ export interface NotivueComputedEntries {
 export type UseNotivueReturn = Prettify<
    ConfigSlice & {
       isStreamPaused: ComputedRef<boolean>
+      isStreamFocused: ComputedRef<boolean>
       /** @deprecated Create computed property instead: `computed(() => config.position.value.startsWith('top'))`. */
       isTopAlign: ComputedRef<boolean>
    }

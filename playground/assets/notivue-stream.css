@@ -1,12 +1,12 @@
 /*
- * Playground stream styles (NotivueKeyboard focuses [data-notivue-list-item]).
+ * Playground stream styles (NotivueKeyboard focuses [data-notivue-item] on <li>).
  */
 
-[data-notivue-list-item]:focus-visible {
+[data-notivue-item]:focus-visible {
    outline: none;
 }
 
-[data-notivue-list-item]:focus-visible .Notification,
-[data-notivue-list-item]:focus-visible .Notivue__notification {
+[data-notivue-item]:focus-visible .Notification,
+[data-notivue-item]:focus-visible .Notivue__notification {
    box-shadow: var(--focus-ring-xl);
 }

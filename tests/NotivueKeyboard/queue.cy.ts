@@ -9,7 +9,7 @@ describe('Queue', () => {
          .realPress('Tab')
          .realPress('Space') // Dismiss first candidate (id: 0)
          .focused()
-         .and('have.data', 'notivueListItem', 1)
+         .and('have.data', 'notivueItem', 1)
    })
 
    it('Should focus first candidate available if unqualified is pushed from the queue', () => {
@@ -23,7 +23,7 @@ describe('Queue', () => {
          .realPress('Tab')
          .realPress('Space') // Dismiss last candidate (id: 1)
          .focused()
-         .and('have.data', 'notivueListItem', 0)
+         .and('have.data', 'notivueItem', 0)
    })
 
    it('Should leave the stream if unqualified is pushed and no candidates are available', () => {

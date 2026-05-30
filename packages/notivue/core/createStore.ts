@@ -184,9 +184,7 @@ export function createElements() {
       itemContainers: ref<HTMLElement[]>([]),
       getSortedItems() {
          // This is a bit dirty, but it's better than cloning and reversing the array on every repositioning
-         return this.items.value.sort(
-            (a, b) => +b.dataset.notivueListItem! - +a.dataset.notivueListItem!
-         )
+         return this.items.value.sort((a, b) => +b.dataset.notivueItem! - +a.dataset.notivueItem!)
       },
    } as {
       // Suppress TS7056
@@ -258,7 +256,9 @@ export function createAnimations(
          items.addLifecycleEvent()
 
          requestAnimationFrame(() => {
-            const el = elements.itemContainers.value.find((el) => el.dataset.notivueItem === id)
+            const el = elements.itemContainers.value.find(
+               (el) => el.dataset.notivueContainer === id
+            )
 
             if (el && getComputedStyle(el).animationName === 'none') onAnimationend()
          })
@@ -298,7 +298,7 @@ export function createAnimations(
          let accPrevHeights = 0
 
          for (const el of elements.getSortedItems()) {
-            const id = el.dataset.notivueListItem!
+            const id = el.dataset.notivueItem!
             const item = items.get(id)
 
             if (!el || !item) continue

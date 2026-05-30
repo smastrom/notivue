@@ -35,7 +35,7 @@ describe('Props', () => {
          .realPress(['ControlLeft', 'u'])
 
          .focused()
-         .should('have.data', 'notivueListItem', 0)
+         .should('have.data', 'notivueItem', 0)
 
          .realPress(['ControlLeft', 'u'])
 
@@ -76,7 +76,7 @@ describe('Props', () => {
          .realPress('Tab')
 
          .focused()
-         .should('have.data', 'notivueListItem')
+         .should('have.data', 'notivueItem')
    })
 
    it('Should qualify list items via isCandidate when they have no focusable children', () => {
@@ -86,7 +86,7 @@ describe('Props', () => {
          .realPress('Tab')
 
          .focused()
-         .should('have.data', 'notivueListItem')
+         .should('have.data', 'notivueItem')
    })
 
    it('Should pass list items to isCandidate', () => {
@@ -99,8 +99,8 @@ describe('Props', () => {
 
             const el = isCandidate.firstCall.args[0] as HTMLElement
 
-            expect(el.dataset.notivueListItem).to.exist
-            expect(el.hasAttribute('data-notivue-item')).to.be.false
+            expect(el.dataset.notivueItem).to.exist
+            expect(el.tagName).to.equal('LI')
          })
    })
 

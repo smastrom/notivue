@@ -8,7 +8,7 @@ import { Teleport } from 'vue'
 import { useStore } from '@/core/useStore'
 import { getSlotItem } from '@/core/utils'
 
-import { DEFAULT_PROPS } from './constants'
+import { DEFAULT_IMPL_PROPS } from './constants'
 
 import { useFocusEvents } from './composables/useFocusEvents'
 import { useMouseEvents } from './composables/useMouseEvents'
@@ -21,7 +21,11 @@ import { getAriaLabel } from './utils'
 
 // Props
 
-const props = withDefaults(defineProps<NotivueProps>(), DEFAULT_PROPS)
+type NotivueImplProps = Omit<NotivueProps, 'teleportTo'> & {
+   teleportTo?: NotivueProps['teleportTo'] | null
+}
+
+const props = withDefaults(defineProps<NotivueImplProps>(), DEFAULT_IMPL_PROPS)
 
 defineSlots<NotivueComponentSlot>()
 
@@ -39,13 +43,20 @@ const touchEvents = useTouchEvents()
 useReducedMotion()
 useWindowFocus()
 useSizes()
+
+function getTeleportChoice() {
+   return props.teleportTo === null ? config.teleportTo.value : props.teleportTo
+}
+
+function getTeleportTo() {
+   const choice = getTeleportChoice()
+
+   return choice === false ? undefined : choice
+}
 </script>
 
 <template>
-   <Teleport
-      :to="config.teleportTo.value === false ? undefined : config.teleportTo.value"
-      :disabled="config.teleportTo.value === false"
-   >
+   <Teleport :to="getTeleportTo()" :disabled="getTeleportChoice() === false">
       <!-- List Container -->
       <ol
          v-if="items.entries.value.length > 0"
@@ -62,7 +73,7 @@ useSizes()
             v-for="(item, i) in items.entries.value"
             :tabindex="item.ariaLiveOnly ? undefined : -1"
             :key="item.id"
-            :data-notivue-list-item="item.id"
+            :data-notivue-item="item.id"
             :aria-label="item.ariaLiveOnly ? undefined : getAriaLabel(item)"
             :aria-setsize="items.length"
             :aria-posinset="i + 1"
@@ -74,13 +85,13 @@ useSizes()
             }"
          >
             <!-- ariaLiveOnly Push Option -->
-            <AriaLive v-if="item.ariaLiveOnly" :item="item" data-notivue-aria-live="" />
+            <AriaLive v-if="item.ariaLiveOnly" :item="item" />
 
             <!-- Item Container -->
             <div
                v-else
                v-bind="item.animationAttrs"
-               :data-notivue-item="item.id"
+               :data-notivue-container="item.id"
                :ref="elements.itemContainers"
                :style="{ ...styles.itemContainer, ...props.styles?.itemContainer }"
             >

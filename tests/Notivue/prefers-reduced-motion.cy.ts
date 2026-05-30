@@ -11,7 +11,7 @@ describe('prefers-reduced-motion', () => {
       cy.mountNotivue()
          .get('.PushAndRenderClear')
          .click()
-         .get('[data-notivue-item]')
+         .get('[data-notivue-container]')
          .should('exist')
          .should(($el) => {
             expect($el.attr('style') ?? '').not.to.include(MOTION_VARS_CSS.enterAnimation)
@@ -19,7 +19,7 @@ describe('prefers-reduced-motion', () => {
 
          .get('.RenderedClear')
          .click()
-         .get('[data-notivue-item]')
+         .get('[data-notivue-container]')
          .should('not.exist')
          .get(`[style*="${MOTION_VARS_CSS.leaveAnimation}"]`)
          .should('not.exist')

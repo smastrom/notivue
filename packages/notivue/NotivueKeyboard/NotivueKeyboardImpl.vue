@@ -115,7 +115,7 @@ function setCandidates(newItems: HTMLElement[]) {
 
    newItems
       .filter((item) => {
-         const id = item.dataset.notivueListItem
+         const id = item.dataset.notivueItem
 
          if (!id) return false
 
@@ -123,7 +123,7 @@ function setCandidates(newItems: HTMLElement[]) {
 
          return Boolean(entry && !entry.ariaLiveOnly)
       })
-      .sort((a, b) => +b.dataset.notivueListItem! - +a.dataset.notivueListItem!)
+      .sort((a, b) => +b.dataset.notivueItem! - +a.dataset.notivueItem!)
       .forEach((item) => {
          const innerFocusableEls = Array.from(item.querySelectorAll(focusableEls)).filter(
             (el) => el instanceof HTMLElement
