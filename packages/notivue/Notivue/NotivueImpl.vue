@@ -73,7 +73,7 @@ function getTeleportTo() {
             v-for="(item, i) in items.entries.value"
             :tabindex="item.ariaLiveOnly ? undefined : -1"
             :key="item.id"
-            :data-notivue-list-item="item.id"
+            :data-notivue-item="item.id"
             :aria-label="item.ariaLiveOnly ? undefined : getAriaLabel(item)"
             :aria-setsize="items.length"
             :aria-posinset="i + 1"
@@ -85,13 +85,13 @@ function getTeleportTo() {
             }"
          >
             <!-- ariaLiveOnly Push Option -->
-            <AriaLive v-if="item.ariaLiveOnly" :item="item" data-notivue-aria-live="" />
+            <AriaLive v-if="item.ariaLiveOnly" :item="item" />
 
             <!-- Item Container -->
             <div
                v-else
                v-bind="item.animationAttrs"
-               :data-notivue-item="item.id"
+               :data-notivue-container="item.id"
                :ref="elements.itemContainers"
                :style="{ ...styles.itemContainer, ...props.styles?.itemContainer }"
             >
