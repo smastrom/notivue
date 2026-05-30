@@ -171,7 +171,7 @@ async function pushPromiseAndReject() {
 
       <!-------------------------------- Instance Tests ---------------------------------->
 
-      <button class="StartInstance" @click="startInstance">Start Instance</button>
+      <button class="StartInstance" @click="startInstance()">Start Instance</button>
       <button class="StopInstance" @click="stopInstance">Stop Instance</button>
       <div class="QueueCount">{{ queue.length }}</div>
       <div class="EntriesCount">{{ entries.length }}</div>

@@ -251,7 +251,7 @@ export type ElementsSlice = ReturnType<typeof createElements>
 
 export interface NotivueInstance {
    isRunning: Readonly<Ref<boolean>>
-   startInstance: () => void
+   startInstance: (config?: NotivueConfigUpdateParam) => void
    stopInstance: () => void
 }
 

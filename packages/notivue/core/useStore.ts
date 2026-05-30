@@ -22,7 +22,7 @@ export function useStore() {
  *
  * @returns
  *
- * - `startInstance` - Starts or restarts the Notivue instance.
+ * - `startInstance` - Starts or restarts the Notivue instance. Optionally accepts a config patch.
  * - `stopInstance` - Stops the Notivue instance.
  * - `isRunning` - Readonly ref to check if the Notivue instance is running.
  *
@@ -32,7 +32,7 @@ export function useNotivueInstance(): NotivueInstance {
    if (isSSR) {
       return {
          isRunning: ref(true),
-         startInstance: () => {},
+         startInstance: (_config?) => {},
          stopInstance: () => {},
       } as NotivueInstance
    }
