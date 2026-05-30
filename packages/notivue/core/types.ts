@@ -272,6 +272,7 @@ export interface NotivueComputedEntries {
 export type UseNotivueReturn = Prettify<
    ConfigSlice & {
       isStreamPaused: ComputedRef<boolean>
+      isStreamFocused: ComputedRef<boolean>
       /** @deprecated Create computed property instead: `computed(() => config.position.value.startsWith('top'))`. */
       isTopAlign: ComputedRef<boolean>
    }

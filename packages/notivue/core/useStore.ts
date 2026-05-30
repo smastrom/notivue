@@ -58,6 +58,7 @@ export function useNotivue(): UseNotivueReturn {
          update: () => {},
          isTopAlign: computed(() => true),
          isStreamPaused: ref(false) as ComputedRef<boolean>,
+         isStreamFocused: ref(false) as ComputedRef<boolean>,
       } as UseNotivueReturn
    }
 
@@ -66,6 +67,7 @@ export function useNotivue(): UseNotivueReturn {
    return {
       ...store.config,
       isStreamPaused: readonly(store.timeouts.isStreamPaused) as ComputedRef<boolean>,
+      isStreamFocused: readonly(store.timeouts.isStreamFocused) as ComputedRef<boolean>,
       isTopAlign: computed(() => store.config.position.value.indexOf('top') === 0),
    }
 }
